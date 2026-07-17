@@ -302,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
       qrCode: currentCode,
       images: uploadedImages.length
         ? uploadedImages
-        : ["./assets/images/items/default.jpg"],
+        : ["../assets/images/items/default.jpg"],
       rating: 5.0, // New items start with 5 stars
       distanceKm: 1, // Mock distance
       owner: {
@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /*
   function setPlaceholderQr() {
-    qrImage.src = "./assets/images/QR-generico.svg";
+    qrImage.src = "../assets/images/QR-generico.svg";
     qrText.textContent = "Sin generar";
     qrStatus.textContent = "Pendiente";
     qrStatus.style.background = "rgba(46, 204, 113, 0.15)";

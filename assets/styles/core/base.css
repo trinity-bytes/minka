@@ -85,7 +85,7 @@
   font-family: "Inter";
   src:
     local("Inter"),
-    url("../fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+    url("../../fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -96,7 +96,7 @@
   src:
     local("Inter Italic"),
     local("Inter-Italic"),
-    url("../fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf")
+    url("../../fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf")
       format("truetype");
   font-weight: 100 900;
   font-style: italic;
@@ -107,7 +107,7 @@
   font-family: "Nunito";
   src:
     local("Nunito"),
-    url("../fonts/Nunito/Nunito-VariableFont_wght.ttf") format("truetype");
+    url("../../fonts/Nunito/Nunito-VariableFont_wght.ttf") format("truetype");
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -118,7 +118,7 @@
   src:
     local("Nunito Italic"),
     local("Nunito-Italic"),
-    url("../fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
+    url("../../fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf")
       format("truetype");
   font-weight: 200 900;
   font-style: italic;
@@ -129,7 +129,7 @@
   font-family: "Pacifico";
   src:
     local("Pacifico"),
-    url("../fonts/Pacifico/Pacifico-Regular.ttf") format("truetype");
+    url("../../fonts/Pacifico/Pacifico-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;

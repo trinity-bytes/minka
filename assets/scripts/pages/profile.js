@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       item.id
     }'">
       <img src="${
-        item.images ? item.images[0] : "./assets/images/items/default.jpg"
+        item.images ? item.images[0] : "../assets/images/items/default.jpg"
       }" alt="${item.title}" />
       <div class="profile-item-info">
         <h4>${item.title}</h4>
@@ -552,7 +552,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 1,
       author: "María González",
-      avatar: "./assets/images/items/default.jpg",
+      avatar: "../assets/images/items/default.jpg",
       date: "Hace 2 días",
       rating: 5,
       content:
@@ -562,7 +562,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 2,
       author: "Juan Pérez",
-      avatar: "./assets/images/items/default.jpg",
+      avatar: "../assets/images/items/default.jpg",
       date: "Hace 1 semana",
       rating: 4,
       content:
@@ -572,7 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 3,
       author: "Carlos Ruiz",
-      avatar: "./assets/images/items/default.jpg",
+      avatar: "../assets/images/items/default.jpg",
       date: "Hace 2 semanas",
       rating: 1,
       content:

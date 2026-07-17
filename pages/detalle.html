@@ -9,23 +9,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mink'a - Detalle de publicación</title>
-    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <!-- Arquitectura CSS modular -->
-    <link rel="stylesheet" href="./assets/styles/base.css" />
-    <link rel="stylesheet" href="./assets/styles/components.css" />
-    <link rel="stylesheet" href="./assets/styles/layout.css" />
-    <link rel="stylesheet" href="./assets/styles/pages/home.css" />
-    <link rel="stylesheet" href="./assets/styles/pages/detail.css" />
-    <link rel="stylesheet" href="./assets/styles/pages/timeline.css" />
-    <link rel="stylesheet" href="./assets/styles/responsive.css" />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/home.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/detail.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/timeline.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
     <!-- Scripts core -->
-    <script defer src="./assets/scripts/core/components.js"></script>
-    <script defer src="./assets/scripts/core/translations.js"></script>
-    <script defer src="./assets/scripts/core/i18n.js"></script>
+    <script defer src="../assets/scripts/core/components.js"></script>
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
   </head>
   <body class="detail-page">
     <!-- Navegación generada por components.js -->
@@ -47,7 +47,7 @@
           <div class="detail-left">
             <div class="gallery" id="gallery">
               <img
-                src="./assets/images/items/bicicleta-vintage.jpg"
+                src="../assets/images/items/bicicleta-vintage.jpg"
                 alt="Imagen principal"
                 class="gallery__main"
                 id="gallery-main"
@@ -112,7 +112,7 @@
               <div class="qr-card__body">
                 <img
                   id="qr-image"
-                  src="./assets/images/QR-generico.svg"
+                  src="../assets/images/QR-generico.svg"
                   alt="QR de la publicación"
                   width="220"
                   height="220"
@@ -441,8 +441,8 @@
       </div>
     </section>
 
-    <script src="./assets/scripts/core/notif-badge.js" defer></script>
-    <!-- <script src="./assets/scripts/pages/detail.js"></script> Moved to end of body -->
+    <script src="../assets/scripts/core/notif-badge.js" defer></script>
+    <!-- <script src="../assets/scripts/pages/detail.js"></script> Moved to end of body -->
 
     <!-- Modal de Motivo de Cierre -->
     <section class="modal" id="close-reason-modal" aria-hidden="true">
@@ -635,6 +635,6 @@
         </footer>
       </div>
     </section>
-    <script src="./assets/scripts/pages/detail.js"></script>
+    <script src="../assets/scripts/pages/detail.js"></script>
   </body>
 </html>
