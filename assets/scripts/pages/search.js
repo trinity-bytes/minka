@@ -64,8 +64,6 @@ const mockItems = [
   },
 ];
 
-const PUBLISHED_KEY = "minka_published_items";
-
 const state = {
   query: "",
   category: "",
@@ -75,11 +73,6 @@ const state = {
   maxDistance: 15,
   sort: "relevance",
 };
-
-const STORAGE_KEY = "minka_search_filters";
-const SAVED_SEARCHES_KEY = "minka_saved_searches";
-const FAVORITES_KEY = "minka_favorites";
-const HISTORY_KEY = "minka_search_history";
 
 const el = {
   results: document.getElementById("results-list"),
@@ -231,19 +224,13 @@ function attachEvents() {
 }
 
 function restoreFilters() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return syncUI();
-  try {
-    const saved = JSON.parse(raw);
-    Object.assign(state, saved);
-  } catch (error) {
-    console.warn("No se pudo leer filtros guardados", error);
-  }
+  const saved = Store.getSearchFilters();
+  if (saved) Object.assign(state, saved);
   syncUI();
 }
 
 function persist() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  Store.saveSearchFilters(state);
 }
 
 function syncUI() {
@@ -259,7 +246,7 @@ function syncUI() {
 }
 
 function render() {
-  const localItems = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
+  const localItems = Store.getItems();
   const allItems = [...localItems, ...mockItems];
   const favorites = getFavorites(); // T30
 
@@ -401,24 +388,17 @@ function userDistanceKm(location) {
 
 // T30 - Funciones de Favoritos (HU33)
 function getFavorites() {
-  return JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]");
+  return Store.getFavorites();
 }
 
 window.toggleFavorite = (id) => {
-  const favorites = getFavorites();
-  const index = favorites.indexOf(id);
-  if (index === -1) {
-    favorites.push(id);
-  } else {
-    favorites.splice(index, 1);
-  }
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+  Store.toggleFavorite(id);
   render();
 };
 
 // T30 - Funciones de Búsquedas Guardadas (HU32)
 function saveCurrentSearch() {
-  const searches = JSON.parse(localStorage.getItem(SAVED_SEARCHES_KEY) || "[]");
+  const searches = Store.getSavedSearches();
   const newSearch = {
     id: Date.now(),
     query: state.query,
@@ -433,7 +413,7 @@ function saveCurrentSearch() {
   );
   if (!exists) {
     searches.unshift(newSearch);
-    localStorage.setItem(SAVED_SEARCHES_KEY, JSON.stringify(searches));
+    Store.saveSearches(searches);
     loadSavedSearches();
     const feedback = document.getElementById("save-search-feedback");
     if (feedback) {
@@ -450,7 +430,7 @@ function saveCurrentSearch() {
 function loadSavedSearches() {
   if (!el.savedSearchesContainer || !el.savedSearchesList) return;
 
-  const searches = JSON.parse(localStorage.getItem(SAVED_SEARCHES_KEY) || "[]");
+  const searches = Store.getSavedSearches();
   if (searches.length === 0) {
     el.savedSearchesContainer.classList.add("hidden");
     return;
@@ -472,7 +452,7 @@ function loadSavedSearches() {
 }
 
 window.applySavedSearch = (id) => {
-  const searches = JSON.parse(localStorage.getItem(SAVED_SEARCHES_KEY) || "[]");
+  const searches = Store.getSavedSearches();
   const search = searches.find((s) => s.id === id);
   if (search) {
     state.query = search.query;
@@ -485,27 +465,26 @@ window.applySavedSearch = (id) => {
 
 window.removeSavedSearch = (e, id) => {
   e.stopPropagation();
-  const searches = JSON.parse(localStorage.getItem(SAVED_SEARCHES_KEY) || "[]");
-  const filtered = searches.filter((s) => s.id !== id);
-  localStorage.setItem(SAVED_SEARCHES_KEY, JSON.stringify(filtered));
+  const filtered = Store.getSavedSearches().filter((s) => s.id !== id);
+  Store.saveSearches(filtered);
   loadSavedSearches();
 };
 
 // T30 - Historial y Sugerencias (HU35)
 function addToHistory(query) {
   if (!query) return;
-  const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  const history = Store.getSearchHistory();
   if (!history.includes(query)) {
     history.unshift(query);
     if (history.length > 10) history.pop(); // Mantener solo últimos 10
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    Store.saveSearchHistory(history);
     loadSearchHistory();
   }
 }
 
 function loadSearchHistory() {
   if (!el.historyList) return;
-  const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  const history = Store.getSearchHistory();
   el.historyList.innerHTML = history
     .map((term) => `<option value="${term}">`)
     .join("");

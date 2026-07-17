@@ -38,8 +38,14 @@ let evolutionChart = null;
 let categoryChart = null;
 
 function initDashboard() {
-  // Generate 1 year of mock data
-  allData = generateData(365);
+  // Datos estables: se generan una sola vez y se persisten en Store
+  const stored = window.Store ? Store.getDashboard() : null;
+  if (stored && Array.isArray(stored) && stored.length) {
+    allData = stored;
+  } else {
+    allData = generateData(365);
+    if (window.Store) Store.saveDashboard(allData);
+  }
 
   populateCategoryFilter();
   setupFilters();
@@ -104,9 +110,19 @@ function setupExport() {
   const exportBtn = document.getElementById("export-btn");
   if (exportBtn) {
     exportBtn.addEventListener("click", () => {
-      alert(
-        "Generando reporte PDF... (Simulación: El archivo se descargaría aquí)"
-      );
+      let csv = "date,co2,water,category\n";
+      allData.forEach((row) => {
+        csv += `${row.date},${row.co2},${row.water},${row.category}\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "minka-impacto.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     });
   }
 }
@@ -203,6 +219,12 @@ function animateValue(id, end) {
 
   const start = parseInt(obj.textContent.replace(/,/g, "")) || 0;
   if (start === end) return;
+
+  // Sin rAF disponible (pestaña oculta), asignar directo
+  if (document.visibilityState === "hidden") {
+    obj.textContent = end.toLocaleString();
+    return;
+  }
 
   const duration = 1000;
   const startTime = performance.now();

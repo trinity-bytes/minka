@@ -96,8 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ],
   };
 
-  const STORAGE_KEY = "minka_publish_draft";
-  const PUBLISHED_KEY = "minka_published_items";
   let currentCode = "";
   let dynamicData = {};
   let uploadedImages = [];
@@ -309,22 +307,30 @@ document.addEventListener("DOMContentLoaded", () => {
         : ["../assets/images/items/default.jpg"],
       rating: 5.0, // New items start with 5 stars
       distanceKm: 1, // Mock distance
-      owner: {
-        name: "Usuario Demo", // Should come from session
-        location: "Lima, Perú",
-        rating: 4.5,
-      },
+      owner: buildOwner(),
       publishedAt: new Date().toISOString(),
     };
 
-    const existingItems = JSON.parse(
-      localStorage.getItem(PUBLISHED_KEY) || "[]"
-    );
-    existingItems.unshift(newItem);
-    localStorage.setItem(PUBLISHED_KEY, JSON.stringify(existingItems));
+    Store.saveItem(newItem);
+    Store.addNotification({
+      type: "news",
+      title: "Publicación creada",
+      text: `"${newItem.title}" ya está visible para la comunidad.`,
+      payload: { itemId: newItem.id, title: newItem.title },
+    });
 
     // Also save as draft just in case
     saveDraft(true);
+  }
+
+  function buildOwner() {
+    const s = window.Session ? Session.getSession() : null;
+    return {
+      id: s?.id || s?.email || "demo",
+      name: s?.name || "Usuario Demo",
+      location: s?.location || "Lima, Perú",
+      rating: s?.rating || 4.5,
+    };
   }
 
   function generateQr() {
@@ -467,14 +473,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (includeTimestamp) {
       data.savedAt = new Date().toISOString();
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    Store.saveDraft(data);
   }
 
   function hydrateDraft() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
+    const data = Store.getDraft();
+    if (!data) return;
     try {
-      const data = JSON.parse(raw);
       Object.entries(inputRefs).forEach(([key, input]) => {
         if (data[key]) input.value = data[key];
       });

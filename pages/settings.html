@@ -24,6 +24,7 @@
     <script defer src="../assets/scripts/core/translations.js"></script>
     <script defer src="../assets/scripts/core/i18n.js"></script>
     <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/store.js"></script>
     <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="settings-page">
@@ -401,6 +402,12 @@
           class="form-input"
           placeholder="Contraseña"
         />
+        <p
+          class="form__error"
+          id="reauth-error"
+          role="status"
+          aria-live="polite"
+        ></p>
         <div class="modal-actions">
           <button class="btn btn-secondary" id="cancel-reauth">Cancelar</button>
           <button class="btn btn-primary" id="confirm-reauth">Confirmar</button>

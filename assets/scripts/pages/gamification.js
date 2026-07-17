@@ -7,12 +7,15 @@ document.addEventListener("DOMContentLoaded", () => {
   initGamification();
 });
 
-// Mock Data
-const MOCK_USER_DATA = {
-  points: 450,
+// Estado del jugador: persistido en Store, seed por defecto la primera vez.
+// points inicial = 250 para coincidir con las estadísticas del home.
+const DEFAULT_GAME = {
+  points: 250,
   level: "Truequero Entusiasta",
   badges: ["verified", "first_trade"],
   optOutRanking: false,
+  exchanges: 8,
+  co2Saved: 12.5,
   history: [
     {
       id: 1,
@@ -37,6 +40,13 @@ const MOCK_USER_DATA = {
     },
   ],
 };
+
+const MOCK_USER_DATA = (window.Store && Store.getGame()) || DEFAULT_GAME;
+if (window.Store && !Store.getGame()) Store.saveGame(MOCK_USER_DATA);
+
+function persistGame() {
+  if (window.Store) Store.saveGame(MOCK_USER_DATA);
+}
 
 const EARN_ACTIONS = [
   { action: "Publicar un objeto", points: 10, frequency: "Ilimitado" },
@@ -298,8 +308,8 @@ function setupOptOut() {
 
   checkbox.addEventListener("change", (e) => {
     MOCK_USER_DATA.optOutRanking = e.target.checked;
+    persistGame();
     renderRanking();
-    // In real app, save preference to server
     alert(
       e.target.checked
         ? "Te has ocultado del ranking público."
@@ -330,6 +340,16 @@ window.redeemReward = function (rewardId) {
         date: new Date().toISOString().split("T")[0],
         type: "spend",
       });
+
+      persistGame();
+      if (window.Store) {
+        Store.addNotification({
+          type: "reward",
+          title: "Canje exitoso",
+          text: `Canjeaste "${reward.name}" por ${reward.cost} puntos.`,
+          payload: { rewardName: reward.name },
+        });
+      }
 
       // Re-render
       loadUserData();
