@@ -9,7 +9,7 @@ const mockItems = [
     rating: 4.8,
     distanceKm: 4,
     location: "Miraflores",
-    image: "./assets/images/items/bicicleta-vintage.jpg",
+    image: "../assets/images/items/bicicleta-vintage.jpg",
   },
   {
     id: "itm-002",
@@ -19,7 +19,7 @@ const mockItems = [
     rating: 4.2,
     distanceKm: 9,
     location: "San Borja",
-    image: "./assets/images/items/set-libros.jpg",
+    image: "../assets/images/items/set-libros.jpg",
   },
   {
     id: "itm-003",
@@ -40,7 +40,7 @@ const mockItems = [
     rating: 4.1,
     distanceKm: 6,
     location: "Barranco",
-    image: "./assets/images/items/mesa-centro.jpg",
+    image: "../assets/images/items/mesa-centro.jpg",
   },
   {
     id: "itm-005",
@@ -50,7 +50,7 @@ const mockItems = [
     rating: 4.5,
     distanceKm: 12,
     location: "Surco",
-    image: "./assets/images/items/guitarra-acustica.jpg",
+    image: "../assets/images/items/guitarra-acustica.jpg",
   },
   {
     id: "itm-006",
@@ -60,7 +60,7 @@ const mockItems = [
     rating: 3.9,
     distanceKm: 3,
     location: "La Molina",
-    image: "./assets/images/items/abrigo-lana-mujer.jpg",
+    image: "../assets/images/items/abrigo-lana-mujer.jpg",
   },
 ];
 

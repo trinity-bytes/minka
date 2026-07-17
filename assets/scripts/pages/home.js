@@ -9,7 +9,7 @@ const popularItems = [
     location: "Miraflores",
     distanceKm: 4,
     rating: 4.8,
-    image: "./assets/images/items/bicicleta-vintage.jpg",
+    image: "../assets/images/items/bicicleta-vintage.jpg",
   },
   {
     id: "pop-002",
@@ -18,7 +18,7 @@ const popularItems = [
     location: "Surco",
     distanceKm: 12,
     rating: 4.5,
-    image: "./assets/images/items/guitarra-acustica.jpg",
+    image: "../assets/images/items/guitarra-acustica.jpg",
   },
   {
     id: "pop-003",
@@ -27,7 +27,7 @@ const popularItems = [
     location: "Barranco",
     distanceKm: 6,
     rating: 4.1,
-    image: "./assets/images/items/mesa-centro.jpg",
+    image: "../assets/images/items/mesa-centro.jpg",
   },
   {
     id: "pop-004",
@@ -36,7 +36,7 @@ const popularItems = [
     location: "San Borja",
     distanceKm: 9,
     rating: 4.2,
-    image: "./assets/images/items/set-libros.jpg",
+    image: "../assets/images/items/set-libros.jpg",
   },
 ];
 

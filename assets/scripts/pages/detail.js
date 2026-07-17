@@ -20,7 +20,7 @@ const mockDetail = {
     Color: "Verde menta",
   },
   images: [
-    "./assets/images/items/bicicleta-vintage.jpg",
+    "../assets/images/items/bicicleta-vintage.jpg",
     "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
     "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=900&q=80",
   ],
@@ -161,7 +161,7 @@ function init() {
     qrText.textContent = currentCode;
     qrStatus.textContent = "Activo";
     // drawPseudoQr(currentCode); // Removed dynamic generation
-    qrImage.src = "./assets/images/QR-generico.svg"; // Use generic QR
+    qrImage.src = "../assets/images/QR-generico.svg"; // Use generic QR
     qrDownload.disabled = false;
     qrShare.disabled = false;
   } else {
@@ -454,7 +454,7 @@ function updateState(state) {
 }
 
 function setPlaceholderQr(label = "Pendiente") {
-  qrImage.src = "./assets/images/QR-generico.svg";
+  qrImage.src = "../assets/images/QR-generico.svg";
   qrText.textContent = label === "Pendiente" ? "Sin generar" : label;
   qrStatus.textContent = label;
   qrDownload.disabled = true;
@@ -470,7 +470,7 @@ function generateQr() {
   qrStatus.textContent = "Activo";
 
   // drawPseudoQr(currentCode); // Removed dynamic generation
-  qrImage.src = "./assets/images/QR-generico.svg"; // Use generic QR
+  qrImage.src = "../assets/images/QR-generico.svg"; // Use generic QR
   qrDownload.disabled = false;
   qrShare.disabled = false;
 }

@@ -130,7 +130,7 @@
     placeholder.innerHTML =
       '<div class="auth-header__container">' +
       '  <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">' +
-      '    <img src="./assets/images/minka-logo.png" alt="Mink\'a" class="logo-image" />' +
+      '    <img src="../assets/images/minka-logo.png" alt="Mink\'a" class="logo-image" />' +
       "  </a>" +
       '  <button class="mobile-menu-toggle" aria-label="Abrir menú" aria-expanded="false">' +
       '    <span class="hamburger-icon">' +
