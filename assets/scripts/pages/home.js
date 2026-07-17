@@ -41,7 +41,21 @@ const popularItems = [
 
 const userNameEl = document.getElementById("home-username");
 const popularListEl = document.getElementById("popular-list");
-const PUBLISHED_KEY = "minka_published_items";
+// Estadísticas de impacto coherentes con gamification (Store.getGame)
+function hydrateImpactStats() {
+  if (!window.Store) return;
+  const game = Store.getGame();
+  if (!game) return;
+  const pointsEl = document.getElementById("eco-points");
+  const exchangesEl = document.getElementById("exchanges");
+  const co2El = document.getElementById("co2-saved");
+  if (pointsEl) pointsEl.textContent = game.points;
+  if (exchangesEl && typeof game.exchanges === "number")
+    exchangesEl.textContent = game.exchanges;
+  if (co2El && typeof game.co2Saved === "number")
+    co2El.textContent = game.co2Saved;
+}
+hydrateImpactStats();
 
 setWelcomeName();
 renderPopular();
@@ -78,7 +92,7 @@ document.addEventListener("languageChanged", () => {
 function renderPopular() {
   if (!popularListEl) return;
 
-  const localItems = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
+  const localItems = window.Store ? Store.getItems() : [];
   // Combine local items with mock items
   const allItems = [...localItems, ...popularItems];
 

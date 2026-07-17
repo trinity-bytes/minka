@@ -1,7 +1,7 @@
 // T22 - Miguel Sanca: Badge de notificaciones no leídas (shared script)
 (function () {
   const NAV_BADGE_SELECTOR = "[data-unread-badge]";
-  const STORAGE_FEED = "minka-notif-feed";
+  const STORAGE_FEED = "minka_notifications";
 
   function initNavBadge() {
     renderBadge();

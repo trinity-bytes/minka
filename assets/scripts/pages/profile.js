@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalOpeners = document.querySelectorAll("[data-open-modal]");
   const modalClosers = document.querySelectorAll("[data-close-modal]");
   const myItemsList = document.getElementById("my-items-list");
-  const PUBLISHED_KEY = "minka_published_items";
+  let viewedUserId = null; // seteado en init() si llega ?user=
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -60,7 +60,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const isReadonly =
       viewedUser && viewedUser !== (ownUser?.id || ownUser?.email);
     if (isReadonly) {
+      viewedUserId = viewedUser;
       enterReadonlyMode(viewedUser);
+    }
+    // Restaurar verificación persistida
+    if (window.Store) {
+      const saved = Store.getProfile();
+      if (saved.verificationLevel && saved.verificationLevel !== "none") {
+        profileState.verified = true;
+        profileState.verificationLevel = saved.verificationLevel;
+      }
     }
     bindEvents();
     renderMyItems();
@@ -93,7 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderMyItems() {
     if (!myItemsList) return;
-    const items = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
+    // Perfil propio: mis publicaciones. Perfil público (?user=): las de ese owner.
+    const sessionUser = getSessionUser();
+    const myId = viewedUserId || sessionUser?.id || sessionUser?.email || "demo";
+    const items = (window.Store ? Store.getItems() : []).filter(
+      (item) => item.owner?.id === myId
+    );
 
     if (items.length === 0) {
       myItemsList.innerHTML = `<p class="form__hint">${
@@ -221,6 +235,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // HU27: Basic <= 5 mins (Simulated instant)
         profileState.verified = true;
         profileState.verificationLevel = "basic";
+        if (window.Store)
+          Store.saveProfile({ verified: true, verificationLevel: "basic" });
         identitySuccess.textContent = window.I18n
           ? window.I18n.t("profile.identityModal.successBasic")
           : "✓ Teléfono verificado. Insignia 'Brote Verificado' otorgada.";
@@ -229,6 +245,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // HU27: Advanced <= 24 hours (Simulated instant for demo)
         profileState.verified = true;
         profileState.verificationLevel = "advanced";
+        if (window.Store)
+          Store.saveProfile({ verified: true, verificationLevel: "advanced" });
         identitySuccess.textContent = window.I18n
           ? window.I18n.t("profile.identityModal.successAdvanced")
           : "✓ Documentos enviados. Insignia 'Raíz Verificada' otorgada.";
@@ -491,7 +509,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (profileInputs.length) {
       profileInputs.forEach((input) => {
-        input.addEventListener("input", updateProfileProgress);
+        // Arrow para evitar TDZ: updateProfileProgress es const y se define
+        // después de que init() ejecute bindEvents().
+        input.addEventListener("input", () => updateProfileProgress());
       });
     }
 
@@ -560,6 +580,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const sessionUser = getSessionUser();
   hydrateProfileWithUser(sessionUser || demoUser);
   updateProfileProgress();
+
+  // T29/HU26 - Privacidad efectiva en la tarjeta pública (vista ?user=)
+  if (viewedUserId && window.Store) {
+    const prefs = Store.getPreferences();
+    if (prefs.hideDistrict && profileSummary.location) {
+      profileSummary.location.textContent = "Lima";
+    }
+    const availability = prefs.availability || {};
+    const days = Object.keys(availability).filter(
+      (d) => availability[d] && availability[d].length
+    );
+    if (days.length && profileSummary.location) {
+      const hint = document.createElement("p");
+      hint.className = "form__hint profile-availability";
+      hint.textContent =
+        "Horarios disponibles: " +
+        days.map((d) => `${d} (${availability[d].join(", ")})`).join(" · ");
+      profileSummary.location.parentElement?.appendChild(hint);
+    }
+  }
 
   // T35 - Gestión de Reputación (HU28)
   const mockReviews = [

@@ -98,7 +98,6 @@ const controls = {
 let currentCode = "";
 let itemState = "activo";
 let currentItem = null;
-const PUBLISHED_KEY = "minka_published_items";
 
 // T33 - Mock Timeline Data
 const mockTimeline = [
@@ -136,8 +135,7 @@ function init() {
   let item = mockDetail;
 
   if (id) {
-    const localItems = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
-    const found = localItems.find((i) => i.id === id);
+    const found = Store.getItem(id);
     if (found) {
       item = found;
       currentCode = item.qrCode; // Use stored QR code
@@ -306,6 +304,14 @@ function bindActions() {
         setStatus("Cerrado");
         persistItemPatch({ status: "cerrado" });
       }
+      if (window.Store && currentItem) {
+        Store.addNotification({
+          type: "match",
+          title: reason === "exchanged" ? "Intercambio cerrado" : "Publicación cerrada",
+          text: `"${currentItem.title}" cambió de estado.`,
+          payload: { itemId: currentItem.id, action: "closed" },
+        });
+      }
     });
   }
 
@@ -321,9 +327,17 @@ function bindActions() {
   });
 
   controls.pauseBtn?.addEventListener("click", () => updateState("pausado"));
-  controls.reserveBtn?.addEventListener("click", () =>
-    updateState("reservado")
-  );
+  controls.reserveBtn?.addEventListener("click", () => {
+    updateState("reservado");
+    if (window.Store && currentItem) {
+      Store.addNotification({
+        type: "match",
+        title: "Publicación reservada",
+        text: `Reservaste "${currentItem.title}".`,
+        payload: { itemId: currentItem.id, action: "reserved" },
+      });
+    }
+  });
   controls.activateBtn?.addEventListener("click", () => updateState("activo"));
 
   setupRatingModal();
@@ -446,27 +460,14 @@ function setStatus(label) {
 
 function persistItemPatch(patch) {
   if (!currentItem || !currentItem.id) return;
-  try {
-    const items = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
-    const idx = items.findIndex((i) => i.id === currentItem.id);
-    if (idx === -1) return; // item mock, no persistido
-    items[idx] = { ...items[idx], ...patch };
-    localStorage.setItem(PUBLISHED_KEY, JSON.stringify(items));
-    currentItem = { ...currentItem, ...patch };
-  } catch (error) {
-    console.warn("No se pudo persistir el item", error);
-  }
+  if (!Store.getItem(currentItem.id)) return; // item mock, no persistido
+  Store.updateItem(currentItem.id, patch);
+  currentItem = { ...currentItem, ...patch };
 }
 
 function removePersistedItem() {
   if (!currentItem || !currentItem.id) return;
-  try {
-    const items = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
-    const filtered = items.filter((i) => i.id !== currentItem.id);
-    localStorage.setItem(PUBLISHED_KEY, JSON.stringify(filtered));
-  } catch (error) {
-    console.warn("No se pudo eliminar el item", error);
-  }
+  Store.deleteItem(currentItem.id);
 }
 
 function updateState(state) {

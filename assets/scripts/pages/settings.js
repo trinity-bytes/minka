@@ -18,34 +18,50 @@ function initSettings() {
 }
 
 // T28 - Leonardo Chavez: Gestión de Sesiones (HU23)
+const DEFAULT_SESSIONS = [
+  {
+    id: 1,
+    device: "Windows PC - Chrome",
+    location: "Lima, PE",
+    active: true,
+    current: true,
+  },
+  {
+    id: 2,
+    device: "Android Mobile - App",
+    location: "Lima, PE",
+    active: true,
+    lastActive: "Hace 2 horas",
+  },
+  {
+    id: 3,
+    device: "iPhone 13 - Safari",
+    location: "Arequipa, PE",
+    active: true,
+    lastActive: "Hace 1 día",
+  },
+];
+
+function getSessions() {
+  const prefs = window.Store ? Store.getPreferences() : {};
+  return Array.isArray(prefs.sessions) ? prefs.sessions : DEFAULT_SESSIONS;
+}
+
+function persistSessions(sessions) {
+  if (window.Store) Store.savePreferences({ sessions: sessions });
+}
+
 function loadSessions() {
   const sessionsList = document.getElementById("sessions-list");
   if (!sessionsList) return;
 
-  // Mock Data
-  const sessions = [
-    {
-      id: 1,
-      device: "Windows PC - Chrome",
-      location: "Lima, PE",
-      active: true,
-      current: true,
-    },
-    {
-      id: 2,
-      device: "Android Mobile - App",
-      location: "Lima, PE",
-      active: true,
-      lastActive: "Hace 2 horas",
-    },
-    {
-      id: 3,
-      device: "iPhone 13 - Safari",
-      location: "Arequipa, PE",
-      active: true,
-      lastActive: "Hace 1 día",
-    },
-  ];
+  const sessions = getSessions();
+
+  if (!sessions.length) {
+    sessionsList.innerHTML =
+      '<p class="text-center">No hay otras sesiones activas.</p>';
+    return;
+  }
 
   sessionsList.innerHTML = sessions
     .map(
@@ -83,6 +99,7 @@ function loadSessions() {
 
 window.logoutSession = (id) => {
   if (confirm("¿Cerrar esta sesión?")) {
+    persistSessions(getSessions().filter((s) => s.id !== id));
     const el = document.getElementById(`session-${id}`);
     if (el) {
       el.style.opacity = "0.5";
@@ -93,7 +110,7 @@ window.logoutSession = (id) => {
 };
 
 function setupEventListeners() {
-  const prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
+  const prefs = window.Store ? Store.getPreferences() : {};
 
   // Language - Ahora manejado por i18n.js
   const langSelect = document.getElementById("language-select");
@@ -180,9 +197,7 @@ function setupEventListeners() {
       availModal.classList.remove("hidden");
       availModal.style.display = "flex";
       // Cargar estado actual en checkboxes
-      const prefs = JSON.parse(
-        localStorage.getItem("minka_preferences") || "{}"
-      );
+      const prefs = window.Store ? Store.getPreferences() : {};
       const availability = prefs.availability || {};
 
       document.querySelectorAll("input[name='day']").forEach((dayCb) => {
@@ -273,6 +288,7 @@ function setupEventListeners() {
   if (logoutAllBtn) {
     logoutAllBtn.addEventListener("click", () => {
       requestReauth(() => {
+        persistSessions(getSessions().filter((s) => s.current));
         document.getElementById("sessions-list").innerHTML =
           '<p class="text-center">Todas las sesiones remotas han sido cerradas.</p>';
         alert("Se han cerrado todas las sesiones excepto la actual.");
@@ -290,20 +306,31 @@ function setupEventListeners() {
 
     confirmReauthBtn.addEventListener("click", () => {
       const password = reauthPasswordInput.value;
-      if (password) {
-        // Simulación de verificación exitosa
-        localStorage.setItem("minka_last_reauth", Date.now().toString()); // Guardar timestamp
+      const reauthError = document.getElementById("reauth-error");
+      const expected =
+        (window.Session && Session.getSession()?.password) || "Minka123";
 
-        reauthModal.classList.add("hidden");
-        reauthModal.style.display = "none";
+      if (!password) {
+        if (reauthError) reauthError.textContent = "Ingresa tu contraseña.";
+        return;
+      }
+      if (password !== expected) {
+        if (reauthError)
+          reauthError.textContent = "Contraseña incorrecta. Intenta de nuevo.";
         reauthPasswordInput.value = "";
+        return;
+      }
 
-        if (pendingAction) {
-          pendingAction();
-          pendingAction = null;
-        }
-      } else {
-        alert("Por favor ingresa tu contraseña.");
+      if (reauthError) reauthError.textContent = "";
+      localStorage.setItem("minka_last_reauth", Date.now().toString()); // Guardar timestamp
+
+      reauthModal.classList.add("hidden");
+      reauthModal.style.display = "none";
+      reauthPasswordInput.value = "";
+
+      if (pendingAction) {
+        pendingAction();
+        pendingAction = null;
       }
     });
   }
@@ -373,16 +400,13 @@ function applyFontSize(size) {
 function loadPreferences() {
   // Esta función ahora solo carga preferencias visuales que no son idioma
   // El idioma lo maneja i18n.js
-  const prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
-  // ... resto de lógica si fuera necesaria
 }
 
 function savePreferences() {
-  const prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
+  const prefs = window.Store ? Store.getPreferences() : {};
 
-  const newPrefs = {
-    ...prefs,
-    // language: document.getElementById("language-select").value, // Ya se guarda en i18n.js al cambiar
+  Store.savePreferences({
+    // language: ya se guarda en i18n.js al cambiar
     highContrast: document.getElementById("high-contrast-toggle").checked,
     lowData: document.getElementById("low-data-toggle").checked,
     fontSize:
@@ -392,8 +416,6 @@ function savePreferences() {
     hideDistrict:
       document.getElementById("hide-district-toggle")?.checked || false,
     availability: window.tempAvailability || prefs.availability || {},
-  };
-
-  localStorage.setItem("minka_preferences", JSON.stringify(newPrefs));
+  });
   alert("Preferencias guardadas correctamente.");
 }

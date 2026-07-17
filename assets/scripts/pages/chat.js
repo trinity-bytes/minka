@@ -1,9 +1,7 @@
 // T17 - Lucero Pipa: Chat con plantillas y puntos de encuentro
 // T31 - Andy Salcedo: Geolocalización en chat
 // T34 - Ronel Rojas: Mejoras de chat (fotos, lectura)
-const STORAGE_KEY = "minka-chat-thread";
-const MESSAGES_KEY = "minka_chat_messages"; // { [threadId]: [messages] }
-const DYN_THREADS_KEY = "minka_chat_dynamic_threads"; // hilos creados via ?owner=
+// Persistencia centralizada en core/store.js (window.Store)
 
 const threads = [
   {
@@ -100,65 +98,40 @@ attachRating();
 bindCloseTriggers();
 
 function restoreThread() {
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved = Store.getChatThread();
   if (saved && threads.some((t) => t.id === saved)) {
     currentThreadId = saved;
   }
 }
 
 function persistThread() {
-  localStorage.setItem(STORAGE_KEY, currentThreadId);
+  Store.saveChatThread(currentThreadId);
 }
 
 // Hilos creados dinámicamente (handoff desde detalle) que sobreviven recarga
 function loadDynamicThreads() {
-  try {
-    const dynamic = JSON.parse(localStorage.getItem(DYN_THREADS_KEY) || "[]");
-    dynamic.forEach((meta) => {
-      if (!threads.some((t) => t.id === meta.id)) {
-        threads.push({ ...meta, messages: [] });
-      }
-    });
-  } catch (error) {
-    console.warn("No se pudieron leer los hilos dinámicos", error);
-  }
+  Store.getDynamicThreads().forEach((meta) => {
+    if (!threads.some((t) => t.id === meta.id)) {
+      threads.push({ ...meta, messages: [] });
+    }
+  });
 }
 
 function persistDynamicThread(thread) {
-  try {
-    const dynamic = JSON.parse(localStorage.getItem(DYN_THREADS_KEY) || "[]");
-    if (!dynamic.some((t) => t.id === thread.id)) {
-      const { messages, ...meta } = thread;
-      dynamic.push(meta);
-      localStorage.setItem(DYN_THREADS_KEY, JSON.stringify(dynamic));
-    }
-  } catch (error) {
-    console.warn("No se pudo persistir el hilo", error);
-  }
+  const { messages, ...meta } = thread;
+  Store.saveDynamicThread(meta);
 }
 
 // Mensajes persistidos reemplazan/extienden los del mock por hilo
 function hydrateMessages() {
-  try {
-    const stored = JSON.parse(localStorage.getItem(MESSAGES_KEY) || "{}");
-    threads.forEach((thread) => {
-      if (Array.isArray(stored[thread.id]) && stored[thread.id].length) {
-        thread.messages = stored[thread.id];
-      }
-    });
-  } catch (error) {
-    console.warn("No se pudieron leer los mensajes", error);
-  }
+  threads.forEach((thread) => {
+    const stored = Store.getMessages(thread.id);
+    if (stored.length) thread.messages = stored;
+  });
 }
 
 function persistMessages(thread) {
-  try {
-    const stored = JSON.parse(localStorage.getItem(MESSAGES_KEY) || "{}");
-    stored[thread.id] = thread.messages;
-    localStorage.setItem(MESSAGES_KEY, JSON.stringify(stored));
-  } catch (error) {
-    console.warn("No se pudieron persistir los mensajes", error);
-  }
+  Store.saveMessages(thread.id, thread.messages);
 }
 
 // Handoff desde detalle: ?thread=<itemId>&owner=<ownerId>
@@ -489,6 +462,16 @@ function insertMessage(text, fromUser = false, image = null) {
   thread.messages.push(newMessage);
   persistMessages(thread);
   renderConversation();
+
+  // Notificar mensajes entrantes (badge + feed)
+  if (!fromUser && window.Store) {
+    Store.addNotification({
+      type: "message",
+      title: `Nuevo mensaje de ${thread.user}`,
+      text: text.slice(0, 80),
+      payload: { threadId: thread.id, from: "them" },
+    });
+  }
 
   // T34 - Simulate Status Updates (Sent -> Delivered -> Read)
   if (fromUser) {

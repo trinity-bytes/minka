@@ -1,7 +1,6 @@
 // T22 - Miguel Sanca: Sistema de notificaciones con feed y preferencias
 (function () {
-  const STORAGE_PREFS = "minka-notif-preferences";
-  const STORAGE_FEED = "minka-notif-feed";
+  // Persistencia centralizada en core/store.js (window.Store)
 
   const defaultFeed = [
     {
@@ -101,15 +100,25 @@
     },
   };
 
-  let feed = loadFeed();
-  let prefs = loadPrefs();
+  let feed = [];
+  let prefs = {};
 
-  saveFeed();
-
-  renderFeed();
-  applyPrefsToUI();
-  updateSummary();
-  bindEvents();
+  // Esperar DOMContentLoaded: garantiza que i18n.js (defer) ya corrió,
+  // este script va al final del body SIN defer y correría antes.
+  function start() {
+    feed = loadFeed();
+    prefs = loadPrefs();
+    saveFeed();
+    renderFeed();
+    applyPrefsToUI();
+    updateSummary();
+    bindEvents();
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
 
   function bindEvents() {
     ui.filterUnread?.addEventListener("change", renderFeed);
@@ -151,10 +160,13 @@
       .map((item) => {
         const badgeClass = `badge badge--${item.type}`;
         const icon = iconForType(item.type);
+        const href = hrefForNotification(item);
         return `
         <article class="notification-item ${
           item.unread ? "is-unread" : ""
-        }" aria-label="${item.title}">
+        }" aria-label="${item.title}"${
+          href ? ` data-href="${href}" style="cursor:pointer"` : ""
+        }>
           <div class="notification-icon">${icon}</div>
           <div class="notification-body">
             <div class="notification-meta">
@@ -192,6 +204,14 @@
       btn.addEventListener("click", () => handleAction(btn));
     });
 
+    // Click en la notificación (no en sus botones) navega al destino
+    ui.list.querySelectorAll(".notification-item[data-href]").forEach((node) => {
+      node.addEventListener("click", (e) => {
+        if (e.target.closest("button[data-action]")) return;
+        window.location.href = node.dataset.href;
+      });
+    });
+
     updateSummary();
   }
 
@@ -227,10 +247,26 @@
   }
 
   function prefsForType(type) {
-    if (type === "message") return prefs.messages;
-    if (type === "match") return prefs.matches;
-    if (type === "reminder") return prefs.reminders;
-    return true;
+    const map = {
+      message: "messages",
+      match: "matches",
+      reminder: "reminders",
+      reviews: "reviews",
+      news: "news",
+    };
+    const prefKey = map[type];
+    return prefKey ? prefs[prefKey] !== false : true;
+  }
+
+  // Destino al hacer click en una notificación, según tipo y payload
+  function hrefForNotification(item) {
+    const p = item.payload || {};
+    if (item.type === "message" && p.threadId)
+      return `chat.html?thread=${encodeURIComponent(p.threadId)}`;
+    if (p.itemId) return `detalle.html?id=${encodeURIComponent(p.itemId)}`;
+    if (item.type === "reward") return "gamification.html";
+    if (item.type === "reminder" && p.challengeId) return "comunidad.html";
+    return null;
   }
 
   function labelForType(type) {
@@ -248,43 +284,21 @@
   }
 
   function loadFeed() {
-    try {
-      const raw = localStorage.getItem(STORAGE_FEED);
-      if (!raw) return defaultFeed;
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length ? parsed : defaultFeed;
-    } catch (error) {
-      console.warn("No se pudo leer feed", error);
-      return defaultFeed;
-    }
+    const stored = Store.getNotifications();
+    return stored.length ? stored : defaultFeed;
   }
 
   function saveFeed() {
-    try {
-      localStorage.setItem(STORAGE_FEED, JSON.stringify(feed));
-      window.dispatchEvent(new Event("minka-feed-update"));
-    } catch (error) {
-      console.warn("No se pudo guardar feed", error);
-    }
+    Store.saveNotifications(feed);
+    window.dispatchEvent(new Event("minka-feed-update"));
   }
 
   function loadPrefs() {
-    try {
-      const raw = localStorage.getItem(STORAGE_PREFS);
-      if (!raw) return defaultPrefs;
-      return { ...defaultPrefs, ...JSON.parse(raw) };
-    } catch (error) {
-      console.warn("No se pudo leer prefs", error);
-      return defaultPrefs;
-    }
+    return { ...defaultPrefs, ...(Store.getNotifPreferences() || {}) };
   }
 
   function savePrefs() {
-    try {
-      localStorage.setItem(STORAGE_PREFS, JSON.stringify(prefs));
-    } catch (error) {
-      console.warn("No se pudo guardar prefs", error);
-    }
+    Store.saveNotifPreferences(prefs);
   }
 
   function applyPrefsToUI() {

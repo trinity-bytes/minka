@@ -1,6 +1,7 @@
 // T32 - Retos Comunitarios (HU38)
+// Estado persistido en Store: { challenges: [...], joined: [ids] }
 
-const challenges = [
+const SEED_CHALLENGES = [
   {
     id: "ch-001",
     title: "Semana del Libro",
@@ -44,7 +45,83 @@ const challenges = [
     collectiveGoal: 500,
     collectiveCurrent: 120,
   },
+  {
+    id: "ch-004",
+    title: "Hogar Renovado",
+    description: "Intercambia 4 artículos de hogar en San Borja.",
+    district: "San Borja",
+    type: "individual",
+    goal: 4,
+    current: 0,
+    deadline: "2025-12-28",
+    reward: "Hogar Circular",
+    points: 80,
+    collectiveGoal: 800,
+    collectiveCurrent: 260,
+  },
+  {
+    id: "ch-005",
+    title: "Juguetes que Vuelven",
+    description: "Dale una segunda vida a 5 juguetes en Jesús María.",
+    district: "Jesús María",
+    type: "individual",
+    goal: 5,
+    current: 0,
+    deadline: "2026-01-10",
+    reward: "Amigo de la Infancia",
+    points: 90,
+    collectiveGoal: 600,
+    collectiveCurrent: 150,
+  },
+  {
+    id: "ch-006",
+    title: "Biblioteca Abierta",
+    description: "Comparte 6 libros con vecinos de Magdalena.",
+    district: "Magdalena",
+    type: "individual",
+    goal: 6,
+    current: 0,
+    deadline: "2026-01-15",
+    reward: "Lector Solidario",
+    points: 70,
+    collectiveGoal: 400,
+    collectiveCurrent: 90,
+  },
+  {
+    id: "ch-007",
+    title: "Deporte para Todos",
+    description: "Intercambia 3 artículos deportivos en La Molina.",
+    district: "La Molina",
+    type: "individual",
+    goal: 3,
+    current: 0,
+    deadline: "2026-01-20",
+    reward: "Espíritu Deportivo",
+    points: 110,
+    collectiveGoal: 300,
+    collectiveCurrent: 45,
+  },
+  {
+    id: "ch-008",
+    title: "Moda Circular Surquillo",
+    description: "Renueva tu ropero: intercambia 5 prendas.",
+    district: "Surquillo",
+    type: "individual",
+    goal: 5,
+    current: 0,
+    deadline: "2026-01-25",
+    reward: "Eco-Estilo",
+    points: 95,
+    collectiveGoal: 700,
+    collectiveCurrent: 180,
+  },
 ];
+
+const state = (window.Store && Store.getCommunity()) || {
+  challenges: SEED_CHALLENGES,
+  joined: [],
+};
+if (window.Store && !Store.getCommunity()) Store.saveCommunity(state);
 
 const el = {
   grid: document.getElementById("challenges-grid"),
@@ -52,12 +129,18 @@ const el = {
   userDistrict: document.getElementById("user-district-display"),
 };
 
-// Simular usuario
+// Distrito del usuario: sesión → preferencias → fallback
 const currentUser = {
-  district: "Miraflores",
+  district:
+    (window.Session && Session.getSession()?.district) ||
+    (window.Store && Store.getPreferences().district) ||
+    "Miraflores",
 };
 
 function init() {
+  if (el.userDistrict) {
+    el.userDistrict.textContent = `Tu distrito: ${currentUser.district}`;
+  }
   if (el.districtSelect) {
     el.districtSelect.value = currentUser.district;
     el.districtSelect.addEventListener("change", (e) => {
@@ -69,8 +152,26 @@ function init() {
   renderChallenges();
 }
 
+function joinChallenge(id) {
+  const challenge = state.challenges.find((c) => c.id === id);
+  if (!challenge || state.joined.includes(id)) return;
+  challenge.current += 1;
+  challenge.collectiveCurrent += 1;
+  state.joined.push(id);
+  if (window.Store) {
+    Store.saveCommunity(state);
+    Store.addNotification({
+      type: "reminder",
+      title: "Te uniste a un reto",
+      text: `Participas en "${challenge.title}" (${challenge.district}).`,
+      payload: { challengeId: id },
+    });
+  }
+  renderChallenges();
+}
+
 function renderChallenges() {
-  const filtered = challenges.filter(
+  const filtered = state.challenges.filter(
     (c) => c.district === currentUser.district
   );
 
@@ -135,16 +236,28 @@ function renderChallenges() {
             <i class="fas fa-trophy"></i>
             <span>${challenge.reward} (+${challenge.points} pts)</span>
           </div>
-          <button class="btn btn-primary btn-sm" ${
-            individualProgress >= 100 ? "disabled" : ""
+          <button class="btn btn-primary btn-sm" data-join="${challenge.id}" ${
+            individualProgress >= 100 || state.joined.includes(challenge.id)
+              ? "disabled"
+              : ""
           }>
-            ${individualProgress >= 100 ? "Completado" : "Participar"}
+            ${
+              individualProgress >= 100
+                ? "Completado"
+                : state.joined.includes(challenge.id)
+                ? "Participando"
+                : "Participar"
+            }
           </button>
         </div>
       </article>
     `;
     })
     .join("");
+
+  el.grid.querySelectorAll("[data-join]").forEach((btn) => {
+    btn.addEventListener("click", () => joinChallenge(btn.dataset.join));
+  });
 }
 
 document.addEventListener("DOMContentLoaded", init);
