@@ -63,6 +63,7 @@
       label: "Salir",
       i18n: "nav_logout",
       icon: "fa-right-from-bracket",
+      action: "logout",
     },
   ];
 
@@ -88,6 +89,7 @@
       var isCurrent = link.href === currentPage;
       var ariaCurrent = isCurrent ? ' aria-current="page"' : "";
       var i18nAttr = link.i18n ? ' data-i18n="' + link.i18n + '"' : "";
+      var actionAttr = link.action ? ' data-action="' + link.action + '"' : "";
 
       if (link.badge) {
         return (
@@ -95,6 +97,7 @@
           link.href +
           '" class="auth-header__link"' +
           ariaCurrent +
+          actionAttr +
           ">" +
           '<i class="fa-solid ' +
           link.icon +
@@ -114,6 +117,7 @@
         link.href +
         '" class="auth-header__link"' +
         ariaCurrent +
+        actionAttr +
         ">" +
         '<i class="fa-solid ' +
         link.icon +
@@ -148,6 +152,18 @@
 
     // Initialize mobile menu behavior
     initMobileMenu();
+
+    // Logout delegation
+    var nav = document.getElementById("app-nav");
+    if (nav) {
+      nav.addEventListener("click", function (e) {
+        var a = e.target.closest("[data-action=logout]");
+        if (!a) return;
+        e.preventDefault();
+        if (window.Session) Session.clearSession();
+        location.href = "auth.html";
+      });
+    }
   }
 
   /**

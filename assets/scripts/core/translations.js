@@ -40,6 +40,8 @@ const MINKA_TRANSLATIONS = {
     home_welcome_subtitle:
       "Explora trueques populares, publica algo nuevo o revisa tus chats pendientes. Todo está listo para que sigas sumando impacto.",
     home_search_placeholder: "Buscar objetos, categorías, ubicaciones...",
+    search_results_count: "resultados",
+    search_placeholder: "Buscar por título, tags o distrito",
     home_search_button: "Buscar",
     home_publish_button: "Publicar",
     home_impact_title: "Tu impacto",
@@ -336,6 +338,8 @@ const MINKA_TRANSLATIONS = {
     home_welcome_subtitle:
       "Explore popular trades, publish something new, or check your pending chats. Everything is ready for you to keep making an impact.",
     home_search_placeholder: "Search items, categories, locations...",
+    search_results_count: "results",
+    search_placeholder: "Search by title, tags or district",
     home_search_button: "Search",
     home_publish_button: "Publish",
     home_impact_title: "Your Impact",
@@ -628,6 +632,8 @@ const MINKA_TRANSLATIONS = {
     home_welcome_subtitle:
       "Maskay truequekunata, musuqta willakuy, utaq chatkunata qaway. Tukuy imapas listo kachkan.",
     home_search_placeholder: "Maskay imakunata, maypi...",
+    search_results_count: "resultados",
+    search_placeholder: "Maskay título, tags utaq distrito",
     home_search_button: "Maskay",
     home_publish_button: "Willakuy",
     home_impact_title: "Impactoyki",

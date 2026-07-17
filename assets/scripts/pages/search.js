@@ -103,10 +103,27 @@ const el = {
 };
 
 restoreFilters();
+applyUrlParams();
 loadSavedSearches(); // T30
 loadSearchHistory(); // T30
 attachEvents();
 render();
+
+// Permite llegar con ?q= y ?category= desde home u otras páginas
+function applyUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get("q");
+  const category = params.get("category");
+  if (q) {
+    state.query = q.trim().toLowerCase();
+    el.query.value = q;
+    addToHistory(state.query);
+  }
+  if (category) {
+    state.category = category;
+    el.category.value = category;
+  }
+}
 
 function attachEvents() {
   el.searchBtn.addEventListener("click", () => {
@@ -144,8 +161,10 @@ function attachEvents() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
-            // Simular geocodificación inversa
-            const mockAddress = "Miraflores, Lima";
+            const mockAddress = mockReverseGeocode(
+              pos.coords.latitude,
+              pos.coords.longitude
+            );
             el.userLocation.value = mockAddress;
             state.userLocation = mockAddress;
             render();
@@ -281,13 +300,12 @@ function render() {
     .map((item) => {
       const isFav = favorites.includes(item.id);
 
-      // T31 - Simular cálculo de distancia (HU36)
+      // T31 - Distancia relativa al distrito del usuario (mock determinista)
       let displayDist = item.distanceKm;
       if (state.userLocation) {
-        // Simular cambio de distancia basado en ubicación
-        const offset = (state.userLocation.length % 3) + 1;
-        displayDist = Math.abs(item.distanceKm - offset).toFixed(1);
-        if (displayDist == 0) displayDist = 0.5;
+        const originKm = userDistanceKm(state.userLocation);
+        displayDist = Math.abs(item.distanceKm - originKm).toFixed(1);
+        if (Number(displayDist) === 0) displayDist = 0.5;
       }
 
       return `
@@ -344,6 +362,43 @@ document.addEventListener("languageChanged", () => {
   render();
 });
 
+// T31 - Geocodificación inversa simulada: distrito determinista según coords
+const LIMA_DISTRICTS = [
+  "Miraflores",
+  "San Isidro",
+  "Barranco",
+  "Santiago de Surco",
+  "San Borja",
+  "Jesús María",
+  "Magdalena",
+  "La Molina",
+  "Surquillo",
+  "Lince",
+];
+
+const DISTRICT_KM = {
+  Miraflores: 0,
+  "San Isidro": 2,
+  Barranco: 3,
+  "Santiago de Surco": 6,
+  "San Borja": 4,
+  "Jesús María": 5,
+  Magdalena: 6,
+  "La Molina": 10,
+  Surquillo: 2,
+  Lince: 4,
+};
+
+function mockReverseGeocode(lat, lng) {
+  const idx = Math.abs(Math.round((lat + lng) * 100)) % LIMA_DISTRICTS.length;
+  return `${LIMA_DISTRICTS[idx]}, Lima`;
+}
+
+function userDistanceKm(location) {
+  const district = Object.keys(DISTRICT_KM).find((d) => location.includes(d));
+  return district ? DISTRICT_KM[district] : 0;
+}
+
 // T30 - Funciones de Favoritos (HU33)
 function getFavorites() {
   return JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]");
@@ -380,7 +435,15 @@ function saveCurrentSearch() {
     searches.unshift(newSearch);
     localStorage.setItem(SAVED_SEARCHES_KEY, JSON.stringify(searches));
     loadSavedSearches();
-    alert("Búsqueda guardada correctamente");
+    const feedback = document.getElementById("save-search-feedback");
+    if (feedback) {
+      feedback.textContent = "Búsqueda guardada correctamente";
+      feedback.classList.add("is-success");
+      setTimeout(() => {
+        feedback.textContent = "";
+        feedback.classList.remove("is-success");
+      }, 3000);
+    }
   }
 }
 

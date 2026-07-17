@@ -1,5 +1,4 @@
 // T19 - Andy Salcedo: Home app con datos simulados de populares
-const SESSION_KEY = "minka-demo-session";
 
 const popularItems = [
   {
@@ -50,11 +49,10 @@ renderPopular();
 function setWelcomeName() {
   if (!userNameEl) return;
   try {
-    const raw = localStorage.getItem(SESSION_KEY);
+    const user = window.Session ? Session.getSession() : null;
     let name = "Mink'a user";
 
-    if (raw) {
-      const user = JSON.parse(raw);
+    if (user) {
       name = user.name || user.email || "Mink'a user";
     }
 

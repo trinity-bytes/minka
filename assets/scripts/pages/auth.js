@@ -8,16 +8,21 @@ const demoUser = {
   location: "Lima, Perú",
 };
 
-const SESSION_KEY = "minka-demo-session";
 const LOGIN_ATTEMPTS_KEY = "minka-login-attempts";
 const ACCOUNT_LOCK_KEY = "minka-account-lock";
 
 const saveSession = (user) => {
   try {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    const remember = !!document.querySelector('[name="remember"]')?.checked;
+    Session.setSession(user, { remember });
   } catch (error) {
     console.warn("No se pudo guardar la sesión demo", error);
   }
+};
+
+const redirectAfterLogin = () => {
+  const target = new URLSearchParams(location.search).get("redirect");
+  window.location.href = target || "home.html";
 };
 
 // Gestión de intentos de login
@@ -242,15 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (userData) {
         saveSession(userData);
 
-        // T28 - Leonardo Chavez: Guardar consentimiento legal (HU22)
-        const consent = {
-          termsVersion: "v1.2",
-          privacyVersion: "v1.0",
-          timestamp: new Date().toISOString(),
-          method: "standard_registration",
-        };
-        localStorage.setItem("minka_legal_consent", JSON.stringify(consent));
-
         hideOTPModal();
 
         // Mostrar mensaje de éxito
@@ -263,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         setTimeout(() => {
-          window.location.href = "home.html";
+          redirectAfterLogin();
         }, 1200);
       }
     });
@@ -464,7 +460,7 @@ authForms.forEach((form) => {
         `✓ Sesión iniciada como ${demoUser.name}. Redirigiendo...`
       );
       setTimeout(() => {
-        window.location.href = "home.html";
+        redirectAfterLogin();
       }, 900);
       return;
     }
@@ -524,16 +520,7 @@ window.simulateSocialLogin = (provider) => {
 
     saveSession(socialUser);
 
-    // Simular registro de consentimiento (HU22)
-    const consent = {
-      termsVersion: "v1.2",
-      privacyVersion: "v1.0",
-      timestamp: new Date().toISOString(),
-      method: "social_login",
-    };
-    localStorage.setItem("minka_legal_consent", JSON.stringify(consent));
-
     alert(`¡Bienvenido! Has iniciado sesión correctamente con ${provider}.`);
-    window.location.href = "home.html";
+    redirectAfterLogin();
   }
 };
