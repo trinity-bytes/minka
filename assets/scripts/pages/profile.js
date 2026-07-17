@@ -1,7 +1,6 @@
 // T13 - Lucero Pipa: Lógica de perfil e identidad simulada
 // T35 - Leonardo Chavez: Gestión de reputación
 document.addEventListener("DOMContentLoaded", () => {
-  const SESSION_KEY = "minka-demo-session";
 
   const demoUser = {
     email: "lucero.pipa@minka.com",
@@ -12,21 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const getSessionUser = () => {
-    try {
-      const raw = localStorage.getItem(SESSION_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch (error) {
-      console.warn("No se pudo leer la sesión demo", error);
-      return null;
-    }
-  };
-
-  const clearSession = () => {
-    try {
-      localStorage.removeItem(SESSION_KEY);
-    } catch (error) {
-      console.warn("No se pudo limpiar la sesión demo", error);
-    }
+    return window.Session ? Session.getSession() : null;
   };
 
   const profileForm = document.getElementById("profile-form");
@@ -54,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const identityModal = document.getElementById("identity-modal");
   const modalOpeners = document.querySelectorAll("[data-open-modal]");
   const modalClosers = document.querySelectorAll("[data-close-modal]");
-  const logoutBtn = document.getElementById("logout-btn");
   const myItemsList = document.getElementById("my-items-list");
   const PUBLISHED_KEY = "minka_published_items";
 
@@ -69,9 +53,42 @@ document.addEventListener("DOMContentLoaded", () => {
   init();
 
   function init() {
+    // Handoff desde detalle: ?user=<id> muestra el perfil de otro usuario
+    // en modo solo lectura (sin edición).
+    const viewedUser = new URLSearchParams(window.location.search).get("user");
+    const ownUser = getSessionUser();
+    const isReadonly =
+      viewedUser && viewedUser !== (ownUser?.id || ownUser?.email);
+    if (isReadonly) {
+      enterReadonlyMode(viewedUser);
+    }
     bindEvents();
     renderMyItems();
     setupVerificationTabs(); // T29
+  }
+
+  function enterReadonlyMode(userId) {
+    document.body.classList.add("is-readonly");
+    // Ocultar todo control de edición
+    const editControls = [
+      ...document.querySelectorAll("[data-save-profile]"),
+      ...document.querySelectorAll("[data-open-modal]"),
+      ...document.querySelectorAll("[data-verify-action]"),
+      profilePhotoInput,
+    ].filter(Boolean);
+    editControls.forEach((node) => (node.style.display = "none"));
+    if (profileForm) {
+      profileForm
+        .querySelectorAll("input, textarea, select, button")
+        .forEach((field) => (field.disabled = true));
+    }
+    // Banner de contexto
+    const banner = document.createElement("p");
+    banner.className = "form__hint profile-readonly-banner";
+    banner.setAttribute("role", "status");
+    banner.textContent = `Estás viendo el perfil público de ${userId}. La edición está deshabilitada.`;
+    const main = document.querySelector("main") || document.body;
+    main.prepend(banner);
   }
 
   function renderMyItems() {
@@ -497,7 +514,11 @@ document.addEventListener("DOMContentLoaded", () => {
           };
           hydrateProfileWithUser(user);
           try {
-            localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+            const current = Session.getSession() || {};
+            Session.setSession(
+              { ...current, ...user },
+              { remember: !!current.remember }
+            );
           } catch (error) {
             console.warn("No se pudo persistir el perfil", error);
           }
@@ -529,14 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (event.key === "Escape") toggleModalVisibility(identityModal, false);
     });
 
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        clearSession();
-        window.location.href = "auth.html";
-      });
-    }
-
-    window.addEventListener("languageChanged", () => {
+    document.addEventListener("languageChanged", () => {
       renderMyItems();
       renderReviews();
       updateProfileProgress();

@@ -67,15 +67,9 @@ const modals = {
   closeReason: document.getElementById("close-reason-modal"), // T25
 };
 
-// T25 - Ronel Rojas: Factores de impacto ambiental (CO2 kg, Agua L)
-const ECO_FACTORS = {
-  Ropa: { co2: 5, water: 2000 },
-  Electrónica: { co2: 20, water: 500 },
-  Muebles: { co2: 15, water: 0 },
-  Libros: { co2: 1, water: 10 },
-  Juguetes: { co2: 3, water: 50 },
-  Otros: { co2: 2, water: 20 },
-};
+// T25 - Ronel Rojas: Factores de impacto ambiental — fuente única en
+// core/constants.js (window.MINKA_CONSTANTS).
+const ECO_FACTORS = window.MINKA_CONSTANTS.ECO_FACTORS;
 
 const forms = {
   rating: document.getElementById("rating-form"),
@@ -156,16 +150,33 @@ function init() {
   currentItem = item;
   renderDetail(item);
 
+  // Handoff hacia chat y perfil del dueño con contexto del item
+  const ownerId = item.owner?.id || "seller-demo";
+  const contactLink = document.getElementById("action-contact");
+  if (contactLink) {
+    contactLink.href = `chat.html?thread=${encodeURIComponent(
+      item.id
+    )}&owner=${encodeURIComponent(ownerId)}`;
+  }
+  const ownerLink = document.getElementById("owner-profile-link");
+  if (ownerLink) {
+    ownerLink.href = `perfil.html?user=${encodeURIComponent(ownerId)}`;
+  }
+
   if (item.qrCode) {
     currentCode = item.qrCode;
     qrText.textContent = currentCode;
     qrStatus.textContent = "Activo";
-    // drawPseudoQr(currentCode); // Removed dynamic generation
-    qrImage.src = "../assets/images/QR-generico.svg"; // Use generic QR
+    renderQrImage(currentCode);
     qrDownload.disabled = false;
     qrShare.disabled = false;
   } else {
     setPlaceholderQr();
+  }
+
+  // Restaurar estado persistido (pausado/reservado/etc.)
+  if (item.status && ["activo", "pausado", "reservado"].includes(item.status)) {
+    updateState(item.status);
   }
 
   renderTimeline(); // T33
@@ -259,6 +270,7 @@ function bindActions() {
     );
     if (newTitle) {
       el.title.textContent = newTitle;
+      persistItemPatch({ title: newTitle });
       alert("Cambios guardados exitosamente.");
     }
   });
@@ -285,12 +297,14 @@ function bindActions() {
       if (reason === "exchanged") {
         setPlaceholderQr("Intercambiado");
         setStatus("Intercambiado");
+        persistItemPatch({ status: "intercambiado" });
         // Use currentItem category if available, else fallback
         const category = currentItem ? currentItem.category : "Otros";
         showEcoMetrics(category);
       } else {
         setPlaceholderQr("Cerrado");
         setStatus("Cerrado");
+        persistItemPatch({ status: "cerrado" });
       }
     });
   }
@@ -300,6 +314,7 @@ function bindActions() {
       "¿Eliminar publicación? Esta acción es simulada."
     );
     if (confirmDel) {
+      removePersistedItem();
       setPlaceholderQr("Eliminado");
       setStatus("Eliminado");
     }
@@ -418,15 +433,45 @@ function bindActions() {
     });
   }
 
-  generateQr();
+  // Solo generar un QR nuevo si el item no tiene uno persistido;
+  // si existe, init() ya lo mostró y no debe sobreescribirse.
+  if (!currentCode) {
+    generateQr();
+  }
 }
 
 function setStatus(label) {
   qrStatus.textContent = label;
 }
 
+function persistItemPatch(patch) {
+  if (!currentItem || !currentItem.id) return;
+  try {
+    const items = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
+    const idx = items.findIndex((i) => i.id === currentItem.id);
+    if (idx === -1) return; // item mock, no persistido
+    items[idx] = { ...items[idx], ...patch };
+    localStorage.setItem(PUBLISHED_KEY, JSON.stringify(items));
+    currentItem = { ...currentItem, ...patch };
+  } catch (error) {
+    console.warn("No se pudo persistir el item", error);
+  }
+}
+
+function removePersistedItem() {
+  if (!currentItem || !currentItem.id) return;
+  try {
+    const items = JSON.parse(localStorage.getItem(PUBLISHED_KEY) || "[]");
+    const filtered = items.filter((i) => i.id !== currentItem.id);
+    localStorage.setItem(PUBLISHED_KEY, JSON.stringify(filtered));
+  } catch (error) {
+    console.warn("No se pudo eliminar el item", error);
+  }
+}
+
 function updateState(state) {
   itemState = state;
+  persistItemPatch({ status: state });
   const labels = {
     activo: "Publicación activa",
     pausado: "Publicación pausada",
@@ -462,17 +507,27 @@ function setPlaceholderQr(label = "Pendiente") {
 }
 
 function generateQr() {
-  // if (!qrCanvas || !qrCtx) return; // Canvas no longer needed for generation
   currentCode = `MINKA-DET-${Date.now()}-${Math.floor(
     Math.random() * 1e6
   ).toString(16)}`;
   qrText.textContent = currentCode;
   qrStatus.textContent = "Activo";
 
-  // drawPseudoQr(currentCode); // Removed dynamic generation
-  qrImage.src = "../assets/images/QR-generico.svg"; // Use generic QR
+  renderQrImage(currentCode);
+  persistItemPatch({ qrCode: currentCode });
   qrDownload.disabled = false;
   qrShare.disabled = false;
+}
+
+// Dibuja el pseudo-QR en el canvas y refleja el resultado en la imagen.
+// Si no hay canvas disponible, cae al SVG genérico.
+function renderQrImage(code) {
+  if (qrCanvas && qrCtx) {
+    drawPseudoQr(code);
+    qrImage.src = qrCanvas.toDataURL("image/png");
+  } else {
+    qrImage.src = "../assets/images/QR-generico.svg";
+  }
 }
 
 function drawPseudoQr(seedStr) {

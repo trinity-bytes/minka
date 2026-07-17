@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSummary();
   });
 
-  window.addEventListener("languageChanged", () => {
+  document.addEventListener("languageChanged", () => {
     renderDynamicFields(inputRefs.category.value);
     updateSummary();
   });
@@ -176,24 +176,23 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    const photoError = document.getElementById("photo-error");
     if (fileInput.files.length === 0) {
       setSuccess("");
-      alert(
-        window.I18n
+      if (photoError)
+        photoError.textContent = window.I18n
           ? window.I18n.t("publish.messages.uploadOne")
-          : "Sube al menos 1 foto."
-      );
+          : "Sube al menos 1 foto.";
       isValid = false;
-    }
-
-    if (fileInput.files.length > 5) {
+    } else if (fileInput.files.length > 5) {
       setSuccess("");
-      alert(
-        window.I18n
+      if (photoError)
+        photoError.textContent = window.I18n
           ? window.I18n.t("publish.messages.uploadMax")
-          : "Sube máximo 5 fotos."
-      );
+          : "Sube máximo 5 fotos.";
       isValid = false;
+    } else if (photoError) {
+      photoError.textContent = "";
     }
 
     const dynInputs = dynamicFields.querySelectorAll("input[data-dynamic]");
@@ -242,6 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p class="form__error"></p>
       `;
       const input = wrap.querySelector("input");
+      input.required = true;
       input.value = dynamicData[field.key] || "";
       input.addEventListener("input", () => {
         dynamicData[field.key] = input.value.trim();
@@ -298,6 +298,10 @@ document.addEventListener("DOMContentLoaded", () => {
       availability: inputRefs.availability.value,
       status: statusSelect.value,
       reserved: reservedToggle.checked,
+      mode: Array.from(
+        document.querySelectorAll('input[name="mode"]:checked')
+      ).map((c) => c.value),
+      notes: inputRefs.notes.value.trim(),
       dynamicData,
       qrCode: currentCode,
       images: uploadedImages.length
@@ -498,13 +502,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (data.code) {
+        // La UI de QR vive en detalle.html; aquí solo se restaura el código.
         currentCode = data.code;
-        qrText.textContent = data.code;
-        qrStatus.textContent = "Guardado";
-        qrStatus.style.background = "rgba(46, 204, 113, 0.15)";
-        drawPseudoQr(data.code);
-        qrImage.src = qrCanvas.toDataURL("image/png");
-        downloadBtn.disabled = false;
       }
       updateSummary();
     } catch (error) {

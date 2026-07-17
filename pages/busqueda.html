@@ -23,6 +23,8 @@
     <script defer src="../assets/scripts/core/components.js"></script>
     <script defer src="../assets/scripts/core/translations.js"></script>
     <script defer src="../assets/scripts/core/i18n.js"></script>
+    <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="search-page">
     <!-- Navegación generada por components.js -->
@@ -64,6 +66,12 @@
             >
               <i class="far fa-bookmark"></i>
             </button>
+            <span
+              id="save-search-feedback"
+              class="form__success"
+              role="status"
+              aria-live="polite"
+            ></span>
           </div>
           <!-- T30 - Andy Salcedo: Lista de Búsquedas Guardadas (HU32) -->
           <div id="saved-searches-container" class="saved-searches hidden">
