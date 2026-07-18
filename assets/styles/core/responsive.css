@@ -736,16 +736,16 @@
   }
 
   /* --- Home Footer --- */
-  .home-footer__content {
+  .app-footer__content {
     flex-direction: column;
     text-align: center;
   }
 
-  .home-footer__brand {
+  .app-footer__brand {
     flex-direction: column;
   }
 
-  .home-footer__links {
+  .app-footer__links {
     justify-content: center;
     gap: var(--space-12);
   }
@@ -1026,7 +1026,7 @@
   .header,
   .auth-header,
   .footer,
-  .home-footer,
+  .app-footer,
   .mobile-menu-toggle,
   .mobile-nav-overlay,
   .btn,

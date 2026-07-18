@@ -108,6 +108,14 @@
         <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
       </div>
     </header>
+    <nav class="breadcrumb" aria-label="Migas de pan">
+      <ol class="container">
+        <li><a href="home.html">Inicio</a></li>
+        <li><a href="busqueda.html">Búsqueda</a></li>
+      <li aria-current="page"><span id="breadcrumb-current">Detalle</span></li>
+      </ol>
+    </nav>
+
 
     <main class="detail-main">
       <section class="detail-hero">
@@ -521,6 +529,25 @@
       </div>
     </section>
 
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
+          <img
+            src="../assets/images/minka-logo-negativo-blanco.png"
+            alt="Mink'a"
+            class="app-footer__logo"
+          />
+          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+        </div>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
     <script src="../assets/scripts/core/notif-badge.js" defer></script>
     <!-- detail.js se carga al final del body -->
 
@@ -703,6 +730,8 @@
               <a
                 href="#"
                 id="eco-methodology-link"
+                data-action="open-modal"
+                data-modal="eco-modal"
                 style="color: var(--color-primary)"
                 >Ver metodología</a
               >.

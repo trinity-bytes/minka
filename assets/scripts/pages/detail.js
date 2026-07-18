@@ -205,6 +205,8 @@ function renderTimeline() {
 function renderDetail(item) {
   if (!item) return;
   el.title.textContent = item.title;
+  const breadcrumbCurrent = document.getElementById("breadcrumb-current");
+  if (breadcrumbCurrent) breadcrumbCurrent.textContent = item.title;
   el.meta.textContent = `${item.category} · ${item.location} · ${item.condition}`;
   el.description.textContent = item.description;
   el.condition.textContent = item.condition;

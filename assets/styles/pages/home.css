@@ -372,55 +372,6 @@
 
 
 /* T19 - Andy Salcedo: Footer minimalista */
-.home-footer {
-  background: var(--color-secondary-dark);
-  color: rgba(255, 255, 255, 0.85);
-  padding: var(--space-32) 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.home-footer__content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-24);
-  flex-wrap: wrap;
-}
-
-.home-footer__brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-16);
-}
-
-.home-footer__logo {
-  height: 32px;
-  width: auto;
-  opacity: 0.95;
-}
-
-.home-footer__brand p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.home-footer__links {
-  display: flex;
-  gap: var(--space-24);
-  flex-wrap: wrap;
-}
-
-.home-footer__links a {
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s ease;
-}
-
-.home-footer__links a:hover {
-  color: var(--color-primary);
-}
-
 @media (max-width: 1024px) {
   .home-hero__grid {
     grid-template-columns: 1fr;
@@ -500,16 +451,4 @@
     height: 160px;
   }
 
-  .home-footer__content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .home-footer__brand {
-    flex-direction: column;
-  }
-
-  .home-footer__links {
-    justify-content: center;
-  }
 }
