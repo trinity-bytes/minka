@@ -116,7 +116,7 @@
 
 .auth-header__link:hover {
   color: var(--color-primary);
-  background: #f6f8f6;
+  background: var(--color-surface-alt);
 }
 
 .auth-header__link[aria-current="page"],
@@ -124,6 +124,8 @@
   color: var(--color-primary);
   background: rgba(46, 204, 113, 0.12);
   font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* Nav icon in links (visible mainly on mobile) */

@@ -118,6 +118,18 @@
 .notification-item.is-unread {
   border-color: rgba(46, 204, 113, 0.3);
   box-shadow: var(--shadow-sm);
+  font-weight: 600;
+}
+
+.notification-item.is-unread::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  flex-shrink: 0;
+  align-self: center;
 }
 
 .notification-icon {

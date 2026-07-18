@@ -110,6 +110,8 @@
 .tab-btn.active {
   color: var(--color-primary);
   border-bottom-color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 6px;
 }
 
 .tab-content {

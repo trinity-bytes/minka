@@ -21,10 +21,15 @@
   display: block;
   height: 48px;
   width: auto;
+  aspect-ratio: 1041 / 405; /* reserva espacio: sin CLS al cargar */
 }
 
 .logo-image--footer {
   height: 56px;
+}
+
+.app-footer__logo {
+  aspect-ratio: 1042 / 406;
 }
 
 /* === Buttons === */

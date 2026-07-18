@@ -79,7 +79,13 @@
 
 .thread--active {
   border-color: var(--color-primary);
+  border-left: 4px solid var(--color-primary);
   box-shadow: var(--shadow-sm);
+}
+
+.thread--active .thread__title::after {
+  content: " \2713";
+  color: var(--color-primary);
 }
 
 .thread__title {

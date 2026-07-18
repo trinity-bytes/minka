@@ -30,7 +30,7 @@
   --color-gray-300: #95a5a6;
   --color-gray-400: #8e9aa0;
   --color-gray-500: #95a5a6;
-  --color-gray-600: #7f8c8d;
+  --color-gray-600: #5d6d7e; /* ≥4.5:1 sobre blanco (antes #7f8c8d, 3.95:1) */
   --color-gray-700: #636e72;
   --color-gray-800: #2c3e50;
   --color-gray-900: #1a1a1a;
@@ -167,8 +167,13 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -243,6 +248,73 @@ label {
   color: var(--color-secondary-dark);
   display: inline-block;
   margin-bottom: var(--space-8);
+}
+
+/* === Skip link === */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-16);
+  background: var(--color-primary-darker);
+  color: var(--color-white);
+  padding: var(--space-8) var(--space-16);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  z-index: 1200;
+  font-weight: 700;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  color: #ffffff;
+}
+
+/* === Reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* === Dark mode automático (tokens) === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #12161c;
+    --color-surface: #171c24;
+    --color-surface-alt: #1b212b;
+    --color-white: #1e242e; /* superficie de tarjetas */
+    --color-text: #e8ecf1;
+    --color-text-secondary: #a8b3bd;
+    --color-border: #2c3642;
+    --color-gray-50: #232b36;
+    --color-gray-100: #33404d;
+    --color-gray-200: #3d4b5a;
+    --color-gray-300: #6b7a88;
+    --color-gray-400: #8494a2;
+    --color-gray-600: #9aa7b1;
+    --color-gray-700: #b3bec8;
+    --color-gray-800: #dfe6ec;
+    --color-gray-900: #eef2f6;
+    --color-secondary-dark: #dfe6ec;
+    --color-secondary: #c4cfd9;
+    --color-primary-light: rgba(46, 204, 113, 0.18);
+    --color-primary-soft: rgba(46, 204, 113, 0.15);
+    --color-info-soft: rgba(52, 152, 219, 0.16);
+    --color-warning-soft: rgba(243, 156, 18, 0.16);
+  }
+
+  .auth-header {
+    background: rgba(23, 28, 36, 0.98);
+  }
+
+  img {
+    filter: brightness(0.92);
+  }
 }
 
 /* === Utility Classes === */

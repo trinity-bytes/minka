@@ -81,6 +81,8 @@
   background: var(--color-white);
   color: var(--color-primary);
   box-shadow: var(--shadow-sm);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .auth-form {
