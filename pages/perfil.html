@@ -7,6 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
     <title>Mink'a - Perfil</title>
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link
@@ -31,8 +32,80 @@
     <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="profile-page">
-    <!-- Navegación generada por components.js -->
-    <header id="app-header" class="auth-header"></header>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
 
     <main class="profile-page__main">
       <section class="profile">

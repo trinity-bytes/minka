@@ -9,36 +9,6 @@
   color: var(--color-secondary-dark);
 }
 
-.auth-header {
-  border-bottom: 1px solid var(--color-gray-50);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-}
-
-.auth-header__container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: var(--space-16) 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.auth-header__nav {
-  display: flex;
-  gap: var(--space-16);
-}
-
-.auth-header__link {
-  text-decoration: none;
-  color: var(--color-secondary);
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.auth-header__link:hover {
-  color: var(--color-primary);
-}
 
 .auth-layout {
   max-width: 1100px;
@@ -285,7 +255,6 @@
 }
 
 @media (max-width: 600px) {
-  .auth-header__container,
   .auth-layout {
     padding: var(--space-24) 16px;
   }

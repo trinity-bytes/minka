@@ -12,88 +12,6 @@
   padding-bottom: var(--space-48);
 }
 
-/* T13 - Lucero Pipa: Navbar idÃ©ntico al home */
-.auth-header {
-  border-bottom: 1px solid var(--color-gray-50);
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-}
-
-.auth-header__container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--space-12) 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-16);
-}
-
-.auth-header__logo {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.logo-image {
-  height: 36px;
-  width: auto;
-}
-
-.auth-header__nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.auth-header__link {
-  position: relative;
-  text-decoration: none;
-  color: var(--color-secondary);
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 8px 14px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.auth-header__link:hover {
-  color: var(--color-primary);
-  background: var(--color-surface-alt);
-}
-
-.auth-header__link[aria-current="page"] {
-  color: var(--color-primary);
-  background: rgba(46, 204, 113, 0.12);
-  font-weight: 700;
-}
-
-.nav-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  background: var(--color-primary);
-  color: var(--color-white);
-  border-radius: 10px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  margin-left: 4px;
-}
-
-.nav-badge:empty {
-  display: none;
-}
 
 .profile {
   padding: var(--space-64) 0;
@@ -369,10 +287,6 @@
 }
 
 @media (max-width: 768px) {
-  .auth-header__container {
-    padding: var(--space-16) 16px;
-  }
-
   .profile__grid {
     grid-template-columns: 1fr;
   }
@@ -391,35 +305,8 @@
     align-items: flex-start;
   }
 
-  .modal__content {
-    padding: var(--space-24);
-    max-width: 100%;
-  }
-
   .form__row {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  /* T13 - Navbar responsivo en mÃ³vil */
-  .auth-header__nav {
-    gap: 8px;
-  }
-
-  .auth-header__nav-link {
-    font-size: 11px;
-    padding: 8px 12px;
-  }
-
-  .auth-header__nav-link i {
-    font-size: 14px;
-  }
-
-  .auth-header__badge {
-    min-width: 16px;
-    height: 16px;
-    font-size: 9px;
-    top: 4px;
-    right: 4px;
   }
 }
