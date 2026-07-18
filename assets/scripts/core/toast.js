@@ -23,9 +23,9 @@
     toast.className = "toast toast--" + kind;
     toast.textContent = message;
     box.appendChild(toast);
-    requestAnimationFrame(function () {
-      toast.classList.add("is-visible");
-    });
+    // Reflow síncrono: garantiza la transición aunque rAF esté throttled
+    void toast.offsetHeight;
+    toast.classList.add("is-visible");
     var ms = typeof duration === "number" ? duration : 3500;
     setTimeout(function () {
       toast.classList.remove("is-visible");
