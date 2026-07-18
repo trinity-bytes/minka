@@ -110,11 +110,20 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     if (items.length === 0) {
-      myItemsList.innerHTML = `<p class="form__hint">${
-        window.I18n
-          ? window.I18n.t("profile.noItems")
-          : "No tienes publicaciones activas."
-      }</p>`;
+      const message = window.I18n
+        ? window.I18n.t("profile.noItems")
+        : "No tienes publicaciones activas.";
+      const cta = viewedUserId
+        ? ""
+        : `<div class="empty-state__actions">
+            <a class="btn btn-primary" href="publicar.html">Publicar mi primer objeto</a>
+          </div>`;
+      myItemsList.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state__icon" aria-hidden="true">📦</div>
+          <p>${message}</p>
+          ${cta}
+        </div>`;
       return;
     }
 
@@ -129,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       item.id
     }'">
       <img src="${
-        item.images ? item.images[0] : "../assets/images/items/default.jpg"
+        item.images ? item.images[0] : "../assets/images/items/default.svg"
       }" alt="${item.title}" />
       <div class="profile-item-info">
         <h4>${item.title}</h4>
@@ -602,7 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 1,
       author: "María González",
-      avatar: "../assets/images/items/default.jpg",
+      avatar: "../assets/images/items/default.svg",
       date: "Hace 2 días",
       rating: 5,
       content:
@@ -612,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 2,
       author: "Juan Pérez",
-      avatar: "../assets/images/items/default.jpg",
+      avatar: "../assets/images/items/default.svg",
       date: "Hace 1 semana",
       rating: 4,
       content:
@@ -622,7 +631,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       id: 3,
       author: "Carlos Ruiz",
-      avatar: "../assets/images/items/default.jpg",
+      avatar: "../assets/images/items/default.svg",
       date: "Hace 2 semanas",
       rating: 1,
       content:

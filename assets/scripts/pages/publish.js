@@ -304,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
       qrCode: currentCode,
       images: uploadedImages.length
         ? uploadedImages
-        : ["../assets/images/items/default.jpg"],
+        : ["../assets/images/items/default.svg"],
       rating: 5.0, // New items start with 5 stars
       distanceKm: 1, // Mock distance
       owner: buildOwner(),

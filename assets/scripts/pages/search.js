@@ -1,68 +1,6 @@
 // T15 - Andy Salcedo: Buscador con filtros simulados (categoría, reputación, distancia)
 // T30 - Andy Salcedo: Búsquedas guardadas y filtros avanzados
-const mockItems = [
-  {
-    id: "itm-001",
-    title: "Bicicleta urbana vintage",
-    category: "Electrónica",
-    tags: ["movilidad", "urbano", "bicicleta"],
-    rating: 4.8,
-    distanceKm: 4,
-    location: "Miraflores",
-    image: "../assets/images/items/bicicleta-vintage.jpg",
-  },
-  {
-    id: "itm-002",
-    title: "Set de libros ciencia ficción",
-    category: "Libros",
-    tags: ["libros", "sci-fi", "colección"],
-    rating: 4.2,
-    distanceKm: 9,
-    location: "San Borja",
-    image: "../assets/images/items/set-libros.jpg",
-  },
-  {
-    id: "itm-003",
-    title: "Laptop ligera i5",
-    category: "Electrónica",
-    tags: ["tech", "trabajo", "portátil"],
-    rating: 4.9,
-    distanceKm: 18,
-    location: "Pueblo Libre",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "itm-004",
-    title: "Mesa de centro reciclada",
-    category: "Hogar",
-    tags: ["madera", "reciclado", "hogar"],
-    rating: 4.1,
-    distanceKm: 6,
-    location: "Barranco",
-    image: "../assets/images/items/mesa-centro.jpg",
-  },
-  {
-    id: "itm-005",
-    title: "Clases de guitarra",
-    category: "Servicios",
-    tags: ["música", "clases", "servicio"],
-    rating: 4.5,
-    distanceKm: 12,
-    location: "Surco",
-    image: "../assets/images/items/guitarra-acustica.jpg",
-  },
-  {
-    id: "itm-006",
-    title: "Abrigo de lana mujer M",
-    category: "Ropa y accesorios",
-    tags: ["ropa", "abrigo", "mujer"],
-    rating: 3.9,
-    distanceKm: 3,
-    location: "La Molina",
-    image: "../assets/images/items/abrigo-lana-mujer.jpg",
-  },
-];
+// Los datos demo viven en Store.seedDemo(); la búsqueda lee solo Store.getItems().
 
 const state = {
   query: "",
@@ -246,10 +184,37 @@ function syncUI() {
   el.sort.value = state.sort;
 }
 
+function renderEmptyCatalog() {
+  el.count.textContent = `0 ${
+    window.I18n ? window.I18n.t("search_results_count") : "resultados"
+  }`;
+  el.results.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-state__icon" aria-hidden="true">🔍</div>
+      <h3>Todavía no hay publicaciones</h3>
+      <p>Publica tu primer objeto o carga datos de ejemplo para explorar la demo.</p>
+      <div class="empty-state__actions">
+        <a class="btn btn-primary" href="publicar.html">Publicar mi primer objeto</a>
+        <button class="btn btn-secondary" type="button" id="seed-demo-btn">
+          Cargar datos de ejemplo
+        </button>
+      </div>
+    </div>`;
+  document.getElementById("seed-demo-btn")?.addEventListener("click", () => {
+    Store.seedDemo();
+    render();
+    if (window.Toast) Toast.show("Datos de ejemplo cargados.", "success");
+  });
+}
+
 function render() {
-  const localItems = Store.getItems();
-  const allItems = [...localItems, ...mockItems];
+  const allItems = Store.getItems();
   const favorites = getFavorites(); // T30
+
+  if (allItems.length === 0) {
+    renderEmptyCatalog();
+    return;
+  }
 
   const results = allItems
     .filter((item) => {
@@ -284,6 +249,25 @@ function render() {
   el.count.textContent = `${sorted.length} ${
     window.I18n ? window.I18n.t("search_results_count") : "resultados"
   }`;
+
+  if (sorted.length === 0) {
+    el.results.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">🤷</div>
+        <h3>Sin resultados con estos filtros</h3>
+        <p>Prueba con otros términos o restablece los filtros.</p>
+        <div class="empty-state__actions">
+          <button class="btn btn-secondary" type="button" id="empty-reset-filters">
+            Restablecer filtros
+          </button>
+        </div>
+      </div>`;
+    document
+      .getElementById("empty-reset-filters")
+      ?.addEventListener("click", () => el.reset?.click());
+    return;
+  }
+
   el.results.innerHTML = sorted
     .map((item) => {
       const isFav = favorites.includes(item.id);
