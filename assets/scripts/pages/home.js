@@ -95,12 +95,21 @@ function renderPopular() {
   popularListEl.innerHTML = allItems
     .map(
       (item) => `
-        <article class="popular-card" aria-label="${
+        <article class="popular-card is-entering" aria-label="${
           item.title
         }" onclick="window.location.href='detalle.html?id=${item.id}'">
-          <img src="${item.images ? item.images[0] : item.image}" alt="${
+          <div style="position: relative;">
+            <img src="${item.images ? item.images[0] : item.image}" alt="${
         item.title
-      }" loading="lazy" decoding="async" width="400" height="200" style="object-fit: cover; height: 200px; width: 100%;" />
+      }" loading="lazy" decoding="async" width="400" height="200" style="object-fit: cover; height: 200px; width: 100%; display: block;" />
+            <button class="fav-toggle" type="button" aria-pressed="${
+              window.Store ? Store.isFavorite(item.id) : false
+            }" aria-label="Marcar como favorito" onclick="event.stopPropagation(); window.toggleHomeFavorite('${
+        item.id
+      }', this)">
+              <i class="fas fa-heart" aria-hidden="true"></i>
+            </button>
+          </div>
           <div class="popular-card__body">
             <h3 class="popular-card__title">${item.title}</h3>
             <div class="popular-card__meta">
@@ -136,6 +145,17 @@ function renderPopular() {
 document.addEventListener("languageChanged", () => {
   renderPopular();
 });
+
+// Favorito persistido desde la card (sin navegar)
+window.toggleHomeFavorite = (id, btn) => {
+  if (!window.Store) return;
+  Store.toggleFavorite(id);
+  btn.setAttribute("aria-pressed", String(Store.isFavorite(id)));
+  btn.setAttribute(
+    "aria-label",
+    Store.isFavorite(id) ? "Quitar de favoritos" : "Marcar como favorito"
+  );
+};
 
 // T19 - Andy Salcedo: Mejorar interactividad de búsqueda
 const searchForm = document.querySelector(".home-search__form");

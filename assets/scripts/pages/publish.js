@@ -104,8 +104,20 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!validateForm()) return;
-    generateQr();
-    publishItem();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn?.disabled) return;
+    submitBtn?.classList.add("is-loading");
+    if (submitBtn) submitBtn.disabled = true;
+    // Latencia simulada: feedback perceptible y bloqueo de doble submit
+    setTimeout(() => {
+      generateQr();
+      publishItem();
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("is-loading");
+      }
+      if (window.Toast) Toast.show("Publicación creada.", "success");
+    }, 500);
   });
 
   saveDraftBtn.addEventListener("click", () => {

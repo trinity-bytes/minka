@@ -281,17 +281,19 @@ function render() {
       }
 
       return `
-        <article class="result-card" aria-label="${item.title}">
+        <article class="result-card is-entering" aria-label="${item.title}">
           <div style="position: relative;">
             <img src="${item.images ? item.images[0] : item.image}" alt="${
         item.title
-      }" class="result-card__img" loading="lazy" style="object-fit: cover;" />
+      }" class="result-card__img" loading="lazy" decoding="async" style="object-fit: cover;" />
             <button class="item-card__favorite ${
               isFav ? "active" : ""
-            }" onclick="toggleFavorite('${item.id}')" aria-label="${
+            }" aria-pressed="${isFav}" onclick="toggleFavorite('${
+        item.id
+      }')" aria-label="${
         isFav ? "Quitar de favoritos" : "Añadir a favoritos"
       }">
-              <i class="fas fa-heart"></i>
+              <i class="fas fa-heart" aria-hidden="true"></i>
             </button>
           </div>
           <div class="result-card__body">

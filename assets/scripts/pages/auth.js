@@ -454,6 +454,13 @@ authForms.forEach((form) => {
       localStorage.removeItem(LOGIN_ATTEMPTS_KEY);
       localStorage.removeItem(ACCOUNT_LOCK_KEY);
 
+      // Bloquear doble submit durante el redirect
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add("is-loading");
+      }
+
       saveSession(demoUser);
       setFormSuccess(
         form,

@@ -330,6 +330,10 @@ window.redeemReward = function (rewardId) {
       { title: "Canjear premio", confirmText: "Canjear" }
     ).then((ok) => {
       if (!ok) return;
+      // Bloquear doble canje mientras se procesa
+      document
+        .querySelectorAll(".btn-redeem")
+        .forEach((b) => (b.disabled = true));
       // Deduct points
       MOCK_USER_DATA.points -= reward.cost;
 

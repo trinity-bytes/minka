@@ -252,10 +252,18 @@ function setupEventListeners() {
     });
   }
 
-  // Save Button
-  document
-    .getElementById("save-settings")
-    ?.addEventListener("click", savePreferences);
+  // Save Button (con bloqueo de doble click y feedback perceptible)
+  document.getElementById("save-settings")?.addEventListener("click", (e) => {
+    const btn = e.currentTarget;
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.add("is-loading");
+    setTimeout(() => {
+      savePreferences();
+      btn.disabled = false;
+      btn.classList.remove("is-loading");
+    }, 400);
+  });
 
   // T28 - Leonardo Chavez: Reautenticación (HU24)
   const changePassBtn = document.getElementById("change-password-btn");
