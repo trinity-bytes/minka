@@ -1,7 +1,7 @@
 /* T17 - Lucero Pipa: Estilos de chat con plantillas y puntos de encuentro */
 .chat-page {
   background: var(--color-surface);
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;

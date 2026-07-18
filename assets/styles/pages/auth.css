@@ -5,7 +5,7 @@
 
 .auth-page {
   background: linear-gradient(180deg, #ffffff 0%, var(--color-surface-alt) 100%);
-  min-height: 100vh;
+  min-height: 100dvh;
   color: var(--color-secondary-dark);
 }
 

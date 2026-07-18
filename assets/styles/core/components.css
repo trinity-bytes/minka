@@ -381,7 +381,7 @@
 .modal__content {
   position: relative;
   width: min(560px, 100%);
-  max-height: calc(100vh - var(--space-32));
+  max-height: calc(100dvh - var(--space-32));
   overflow-y: auto;
   background: var(--color-white);
   border-radius: var(--space-16);
