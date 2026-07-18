@@ -194,8 +194,7 @@ function setupEventListeners() {
 
   if (openAvailBtn && availModal) {
     openAvailBtn.addEventListener("click", () => {
-      availModal.classList.remove("hidden");
-      availModal.style.display = "flex";
+      Modal.open(availModal);
       // Cargar estado actual en checkboxes
       const prefs = window.Store ? Store.getPreferences() : {};
       const availability = prefs.availability || {};
@@ -214,8 +213,7 @@ function setupEventListeners() {
     });
 
     cancelAvailBtn.addEventListener("click", () => {
-      availModal.classList.add("hidden");
-      availModal.style.display = "none";
+      Modal.close(availModal);
     });
 
     saveAvailBtn.addEventListener("click", () => {
@@ -237,8 +235,7 @@ function setupEventListeners() {
 
       window.tempAvailability = availability;
       updateAvailabilitySummary(availability);
-      availModal.classList.add("hidden");
-      availModal.style.display = "none";
+      Modal.close(availModal);
     });
   }
 
@@ -274,8 +271,7 @@ function setupEventListeners() {
       action(); // Ejecutar directamente si está en periodo de gracia
     } else {
       pendingAction = action;
-      reauthModal.classList.remove("hidden");
-      reauthModal.style.display = "flex";
+      Modal.open(reauthModal);
     }
   };
 
@@ -298,8 +294,7 @@ function setupEventListeners() {
 
   if (reauthModal) {
     cancelReauthBtn.addEventListener("click", () => {
-      reauthModal.classList.add("hidden");
-      reauthModal.style.display = "none";
+      Modal.close(reauthModal);
       reauthPasswordInput.value = "";
       pendingAction = null;
     });
@@ -324,8 +319,7 @@ function setupEventListeners() {
       if (reauthError) reauthError.textContent = "";
       localStorage.setItem("minka_last_reauth", Date.now().toString()); // Guardar timestamp
 
-      reauthModal.classList.add("hidden");
-      reauthModal.style.display = "none";
+      Modal.close(reauthModal);
       reauthPasswordInput.value = "";
 
       if (pendingAction) {

@@ -25,6 +25,7 @@
     <script defer src="../assets/scripts/core/i18n.js"></script>
     <script src="../assets/scripts/core/session.js"></script>
     <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
     <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="settings-page">
@@ -229,10 +230,18 @@
     </main>
 
     <!-- T29 - Lucero Pipa: Modal de Disponibilidad (HU26) -->
-    <div id="availability-modal" class="modal hidden">
-      <div class="modal-content modal-large">
-        <h3>Configurar Disponibilidad</h3>
-        <p>
+    <div id="availability-modal" class="modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="availability-title"
+      >
+        <h3 id="availability-title" class="modal__title">
+          Configurar Disponibilidad
+        </h3>
+        <p class="modal__subtitle">
           Selecciona los días y franjas horarias en las que puedes realizar
           intercambios.
         </p>
@@ -380,7 +389,7 @@
           </div>
         </div>
 
-        <div class="modal-actions">
+        <div class="modal__actions">
           <button class="btn btn-secondary" id="cancel-availability">
             Cancelar
           </button>
@@ -392,10 +401,18 @@
     </div>
 
     <!-- T28 - Reauth Modal -->
-    <div id="reauth-modal" class="modal hidden">
-      <div class="modal-content">
-        <h3>Confirmar Identidad</h3>
-        <p>Por seguridad, ingresa tu contraseña para continuar.</p>
+    <div id="reauth-modal" class="modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reauth-title"
+      >
+        <h3 id="reauth-title" class="modal__title">Confirmar Identidad</h3>
+        <p class="modal__subtitle">
+          Por seguridad, ingresa tu contraseña para continuar.
+        </p>
         <input
           type="password"
           id="reauth-password"
@@ -408,7 +425,7 @@
           role="status"
           aria-live="polite"
         ></p>
-        <div class="modal-actions">
+        <div class="modal__actions">
           <button class="btn btn-secondary" id="cancel-reauth">Cancelar</button>
           <button class="btn btn-primary" id="confirm-reauth">Confirmar</button>
         </div>

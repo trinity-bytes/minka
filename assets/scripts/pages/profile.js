@@ -266,12 +266,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const toggleModalVisibility = (modal, open) => {
     if (!modal) return;
-    modal.classList.toggle("is-open", open);
-    modal.setAttribute("aria-hidden", String(!open));
-    if (open) {
-      const firstField = modal.querySelector("input");
-      if (firstField) firstField.focus();
-    }
+    if (open) Modal.open(modal);
+    else Modal.close(modal);
   };
 
   const setFieldError = (field, message) => {

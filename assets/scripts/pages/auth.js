@@ -201,7 +201,7 @@ const showOTPModal = (destination, userData) => {
   if (destinationEl) destinationEl.textContent = destination;
   if (otpInput) otpInput.value = "";
   if (otpError) otpError.textContent = "";
-  if (modal) modal.hidden = false;
+  if (modal) Modal.open(modal);
 
   // Guardar datos temporales
   modal.dataset.userData = JSON.stringify(userData);
@@ -209,7 +209,7 @@ const showOTPModal = (destination, userData) => {
 
 const hideOTPModal = () => {
   const modal = document.getElementById("otp-modal");
-  if (modal) modal.hidden = true;
+  if (modal) Modal.close(modal);
 };
 
 // Listeners para el modal OTP

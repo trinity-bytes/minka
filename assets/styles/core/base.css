@@ -75,6 +75,11 @@
   --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-lift: 0 5px 15px rgba(0, 0, 0, 0.1);
 
+  /* Z-index layers */
+  --z-overlay: 900;
+  --z-modal: 1000;
+  --z-toast: 1100;
+
   /* Border Radius */
   --radius-sm: 4px;
   --radius-md: 8px;

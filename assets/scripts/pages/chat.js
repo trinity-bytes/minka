@@ -400,15 +400,11 @@ function attachRating() {
 }
 
 function openModal(modal) {
-  if (!modal) return;
-  modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("modal-open");
+  if (window.Modal) Modal.open(modal);
 }
 
 function closeModal(modal) {
-  if (!modal) return;
-  modal.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("modal-open");
+  if (window.Modal) Modal.close(modal);
 }
 
 // T31 - Location Sharing (HU45)
@@ -430,17 +426,7 @@ function attachLocationSharing() {
 }
 
 function bindCloseTriggers() {
-  document.querySelectorAll("[data-close-modal]").forEach((trigger) => {
-    const modalId = trigger.getAttribute("data-close-modal");
-    const modal = modalId ? document.getElementById(modalId) : null;
-    trigger.addEventListener("click", () => closeModal(modal));
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      Object.values(modals).forEach((modal) => closeModal(modal));
-    }
-  });
+  // core/modal.js maneja data-close-modal, Escape y focus trap
 }
 
 function insertMessage(text, fromUser = false, image = null) {
