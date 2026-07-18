@@ -2,7 +2,7 @@
 
 .dashboard-main {
   padding: 2rem 0;
-  background-color: var(--bg-color, #f8f9fa);
+  background-color: var(--color-bg);
   min-height: calc(100vh - 80px);
 }
 
@@ -57,7 +57,7 @@
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-soft);
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -79,17 +79,17 @@
 }
 
 .kpi-icon--co2 {
-  background-color: #e8f5e9;
+  background-color: var(--color-primary-soft);
   color: var(--color-primary);
 }
 
 .kpi-icon--water {
-  background-color: #e3f2fd;
-  color: #3498db;
+  background-color: var(--color-info-soft);
+  color: var(--color-info);
 }
 
 .kpi-icon--objects {
-  background-color: #fff3e0;
+  background-color: var(--color-warning-soft);
   color: var(--color-warning);
 }
 
@@ -128,7 +128,7 @@
   background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-soft);
 }
 
 .chart-card h3 {
@@ -151,7 +151,7 @@
   min-height: 300px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-soft);
   margin-bottom: 2rem;
   text-align: center;
   padding: 2rem;

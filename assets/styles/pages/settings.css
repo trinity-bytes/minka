@@ -2,7 +2,7 @@
 
 .settings-main {
   padding: 2rem 0;
-  background-color: var(--bg-color, #f8f9fa);
+  background-color: var(--color-bg);
   min-height: calc(100vh - 80px);
 }
 
@@ -47,7 +47,7 @@
 .settings-icon {
   width: 40px;
   height: 40px;
-  background-color: #e8f5e9;
+  background-color: var(--color-primary-soft);
   color: var(--color-primary);
   border-radius: 50%;
   display: flex;
@@ -157,8 +157,8 @@ input:checked + .slider:before {
 body.high-contrast {
   --color-primary: #00ff00;
   --color-secondary: #ffffff;
-  --bg-color: #000000;
-  --text-color: #ffffff;
+  --color-bg: #000000;
+  --color-text: #ffffff;
   --color-gray-600: #dddddd;
   background-color: #000000 !important;
   color: #ffffff !important;

@@ -2,7 +2,7 @@
 /* T18 - Leonardo Chavez: Estilos de modales de rating y reporte */
 /* T23 - Ronel Rojas: Variantes de badge para estados */
 .detail-page {
-  background: #f9faf9;
+  background: var(--color-surface);
 }
 
 .detail-main {
@@ -11,7 +11,7 @@
 
 .detail-hero {
   padding: var(--space-32) 0;
-  background: linear-gradient(135deg, #f6f8f6 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, #ffffff 100%);
   border-bottom: 1px solid var(--color-gray-50);
 }
 
@@ -54,11 +54,11 @@
 }
 
 .card__header {
-  padding: var(--space-16) var(--space-20, 20px) 0;
+  padding: var(--space-16) var(--space-20) 0;
 }
 
 .card__body {
-  padding: var(--space-16) var(--space-20, 20px) var(--space-20, 20px);
+  padding: var(--space-16) var(--space-20) var(--space-20);
 }
 
 .gallery {
@@ -87,7 +87,7 @@
   width: 100%;
   height: 90px;
   object-fit: cover;
-  border-radius: var(--space-10, 10px);
+  border-radius: var(--space-10);
   border: 2px solid transparent;
   cursor: pointer;
   transition: border-color 0.2s ease;
@@ -120,7 +120,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.95rem;
-  color: var(--color-gray-700, #4d4d4d);
+  color: var(--color-gray-700);
 }
 
 .info-row strong {
@@ -177,7 +177,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  color: var(--color-gray-700, #4d4d4d);
+  color: var(--color-gray-700);
 }
 
 .modal {

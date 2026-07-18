@@ -1,7 +1,7 @@
 /* T14 - Ronel Rojas: Estilos de publicación y QR */
 /* T23 - Ronel Rojas: Switch toggle y campos dinámicos */
 .publish-page {
-  background: #f9faf9;
+  background: var(--color-surface);
 }
 
 .publish-main {
@@ -10,7 +10,7 @@
 
 .publish-hero {
   padding: var(--space-48) 0 var(--space-32);
-  background: linear-gradient(135deg, #f6f8f6 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, #ffffff 100%);
   border-bottom: 1px solid var(--color-gray-50);
 }
 

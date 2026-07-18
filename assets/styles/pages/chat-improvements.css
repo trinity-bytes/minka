@@ -2,7 +2,7 @@
 .typing-indicator {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-style: italic;
 }
 
@@ -13,20 +13,20 @@
 .message__status {
   font-size: 0.75rem;
   margin-left: 0.5rem;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 }
 
 .message__status.read {
-  color: var(--primary-color);
+  color: var(--color-primary);
 }
 
 .message__image {
   max-width: 200px;
   border-radius: var(--radius-md);
   margin-top: 0.5rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
 }
 
 .message--me .message__image {
-  border-color: var(--primary-light);
+  border-color: var(--color-primary-light);
 }

@@ -4,7 +4,7 @@
 }
 
 .profile-page {
-  background: #f9faf9;
+  background: var(--color-surface);
   min-height: 100vh;
 }
 
@@ -67,7 +67,7 @@
 
 .auth-header__link:hover {
   color: var(--color-primary);
-  background: #f6f8f6;
+  background: var(--color-surface-alt);
 }
 
 .auth-header__link[aria-current="page"] {
