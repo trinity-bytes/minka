@@ -21,8 +21,8 @@ const mockDetail = {
   },
   images: [
     "../assets/images/items/bicicleta-vintage.jpg",
-    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=900&q=80",
+    "../assets/images/items/mesa-centro.jpg",
+    "../assets/images/items/estante-pino.svg",
   ],
   owner: {
     name: "Lucero Pipa",

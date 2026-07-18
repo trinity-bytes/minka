@@ -13,6 +13,9 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
     />
     <!-- Arquitectura CSS modular -->
     <link rel="stylesheet" href="../assets/styles/core/base.css" />
@@ -133,7 +136,9 @@
                 <div class="profile-card__header">
                   <div class="profile-card__avatar">
                     <img
-                      src="https://i.pravatar.cc/200?u=minka-user"
+                      src="../assets/images/avatars/avatar-user.svg"
+                  loading="lazy"
+                  decoding="async"
                       alt="Foto de perfil"
                       id="profile-photo-preview"
                     />

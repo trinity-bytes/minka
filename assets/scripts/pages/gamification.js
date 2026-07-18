@@ -119,32 +119,32 @@ const RANKING_DATA = [
     position: 1,
     name: "Maria L.",
     points: 1250,
-    avatar: "https://i.pravatar.cc/150?u=1",
+    avatar: "../assets/images/avatars/avatar-1.svg",
   },
   {
     position: 2,
     name: "Juan P.",
     points: 1100,
-    avatar: "https://i.pravatar.cc/150?u=2",
+    avatar: "../assets/images/avatars/avatar-2.svg",
   },
   {
     position: 3,
     name: "Usuario Demo",
     points: 450,
-    avatar: "https://i.pravatar.cc/200?u=minka-user",
+    avatar: "../assets/images/avatars/avatar-user.svg",
     isMe: true,
   },
   {
     position: 4,
     name: "Carlos R.",
     points: 420,
-    avatar: "https://i.pravatar.cc/150?u=3",
+    avatar: "../assets/images/avatars/avatar-3.svg",
   },
   {
     position: 5,
     name: "Ana S.",
     points: 380,
-    avatar: "https://i.pravatar.cc/150?u=4",
+    avatar: "../assets/images/avatars/avatar-4.svg",
   },
 ];
 
