@@ -98,15 +98,19 @@ function loadSessions() {
 }
 
 window.logoutSession = (id) => {
-  if (confirm("¿Cerrar esta sesión?")) {
+  Modal.confirm("¿Cerrar esta sesión?", {
+    title: "Cerrar sesión",
+    confirmText: "Cerrar sesión",
+  }).then((ok) => {
+    if (!ok) return;
     persistSessions(getSessions().filter((s) => s.id !== id));
     const el = document.getElementById(`session-${id}`);
     if (el) {
       el.style.opacity = "0.5";
       setTimeout(() => el.remove(), 500);
-      alert("Sesión cerrada correctamente.");
+      Toast.show("Sesión cerrada correctamente.", "success");
     }
-  }
+  });
 };
 
 function setupEventListeners() {
@@ -241,8 +245,9 @@ function setupEventListeners() {
 
   if (previewBtn) {
     previewBtn.addEventListener("click", () => {
-      alert(
-        "Vista Previa: Así ven tu perfil los usuarios públicos.\n(Se ocultará tu distrito exacto si la opción está activa)."
+      Modal.alert(
+        "Así ven tu perfil los usuarios públicos. Se ocultará tu distrito exacto si la opción está activa.",
+        "Vista previa"
       );
     });
   }
@@ -277,7 +282,7 @@ function setupEventListeners() {
 
   if (changePassBtn) {
     changePassBtn.addEventListener("click", () => {
-      requestReauth(() => alert("Redirigiendo a cambio de contraseña..."));
+      requestReauth(() => Toast.show("Redirigiendo a cambio de contraseña...", "info"));
     });
   }
 
@@ -287,7 +292,7 @@ function setupEventListeners() {
         persistSessions(getSessions().filter((s) => s.current));
         document.getElementById("sessions-list").innerHTML =
           '<p class="text-center">Todas las sesiones remotas han sido cerradas.</p>';
-        alert("Se han cerrado todas las sesiones excepto la actual.");
+        Toast.show("Se han cerrado todas las sesiones excepto la actual.", "success");
       });
     });
   }
@@ -411,5 +416,5 @@ function savePreferences() {
       document.getElementById("hide-district-toggle")?.checked || false,
     availability: window.tempAvailability || prefs.availability || {},
   });
-  alert("Preferencias guardadas correctamente.");
+  Toast.show("Preferencias guardadas correctamente.", "success");
 }

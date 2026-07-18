@@ -164,13 +164,14 @@ function attachEvents() {
             persist();
           },
           (err) => {
-            alert(
-              "No se pudo obtener la ubicación. Por favor ingrésala manualmente."
+            Toast.show(
+              "No se pudo obtener la ubicación. Por favor ingrésala manualmente.",
+              "error"
             );
           }
         );
       } else {
-        alert("Geolocalización no soportada.");
+        Toast.show("Geolocalización no soportada.", "error");
       }
     });
   }

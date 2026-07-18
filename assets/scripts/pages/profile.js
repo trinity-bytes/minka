@@ -716,10 +716,11 @@ document.addEventListener("DOMContentLoaded", () => {
         : "Enviando...";
 
       setTimeout(() => {
-        alert(
+        Toast.show(
           window.I18n
             ? window.I18n.t("profile.appealModal.success")
-            : "Tu apelación ha sido enviada y será revisada por nuestro equipo de moderación."
+            : "Tu apelación ha sido enviada y será revisada por nuestro equipo de moderación.",
+          "success"
         );
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;

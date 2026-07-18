@@ -259,23 +259,20 @@ function bindActions() {
 
   editBtn?.addEventListener("click", () => {
     if (itemState !== "activo") {
-      alert("No puedes editar una publicación pausada o reservada.");
+      Toast.show("No puedes editar una publicación pausada o reservada.", "error");
       return;
     }
-    const newTitle = prompt(
-      "Editar título (simulación):",
-      el.title.textContent
-    );
-    if (newTitle) {
-      el.title.textContent = newTitle;
-      persistItemPatch({ title: newTitle });
-      alert("Cambios guardados exitosamente.");
-    }
+    Modal.prompt("Editar título (simulación):", {
+      title: "Editar publicación",
+      value: el.title.textContent,
+    }).then((newTitle) => {
+      if (newTitle) {
+        el.title.textContent = newTitle;
+        persistItemPatch({ title: newTitle });
+        Toast.show("Cambios guardados exitosamente.", "success");
+      }
+    });
   });
-
-  /* contactBtn?.addEventListener("click", () => {
-    alert("Contacto simulado. El chat se implementará en T17.");
-  }); */
 
   closeBtn?.addEventListener("click", () => {
     // T25 - Ronel Rojas: Usar modal en lugar de prompt
@@ -316,14 +313,17 @@ function bindActions() {
   }
 
   deleteBtn?.addEventListener("click", () => {
-    const confirmDel = confirm(
-      "¿Eliminar publicación? Esta acción es simulada."
-    );
-    if (confirmDel) {
-      removePersistedItem();
-      setPlaceholderQr("Eliminado");
-      setStatus("Eliminado");
-    }
+    Modal.confirm("¿Eliminar publicación? Esta acción es simulada.", {
+      title: "Eliminar publicación",
+      confirmText: "Eliminar",
+      danger: true,
+    }).then((confirmDel) => {
+      if (confirmDel) {
+        removePersistedItem();
+        setPlaceholderQr("Eliminado");
+        setStatus("Eliminado");
+      }
+    });
   });
 
   controls.pauseBtn?.addEventListener("click", () => updateState("pausado"));
@@ -369,24 +369,24 @@ function bindActions() {
         });
       } else {
         await navigator.clipboard.writeText(currentCode);
-        alert("Código QR copiado al portapapeles.");
+        Toast.show("Código QR copiado al portapapeles.", "success");
       }
     } catch (error) {
       console.warn("No se pudo compartir el QR", error);
-      alert("No se pudo compartir el QR en este navegador.");
+      Toast.show("No se pudo compartir el QR en este navegador.", "error");
     }
   });
 
   // T33 - Reemitir QR (HU39)
   if (controls.reissueQrBtn) {
     controls.reissueQrBtn.addEventListener("click", () => {
-      if (
-        confirm(
-          "¿Estás seguro de que deseas reemitir el código QR? El código anterior dejará de ser válido."
-        )
-      ) {
+      Modal.confirm(
+        "¿Estás seguro de que deseas reemitir el código QR? El código anterior dejará de ser válido.",
+        { title: "Reemitir QR", confirmText: "Reemitir" }
+      ).then((ok) => {
+        if (!ok) return;
         generateQr();
-        alert("Nuevo código QR generado exitosamente.");
+        Toast.show("Nuevo código QR generado exitosamente.", "success");
         // Agregar evento al timeline
         mockTimeline.push({
           date: new Date().toLocaleString(),
@@ -395,7 +395,7 @@ function bindActions() {
           completed: true,
         });
         renderTimeline();
-      }
+      });
     });
   }
 
@@ -420,7 +420,7 @@ function bindActions() {
 
         setTimeout(() => {
           closeModal(modals.offline);
-          alert("¡Intercambio cerrado exitosamente!");
+          Toast.show("¡Intercambio cerrado exitosamente!", "success");
 
           // Actualizar estado
           updateState("intercambiado"); // Nuevo estado simulado

@@ -412,16 +412,18 @@ function attachLocationSharing() {
   if (!els.btnShareLocation) return;
 
   els.btnShareLocation.addEventListener("click", () => {
-    const duration = prompt(
-      "¿Por cuánto tiempo quieres compartir tu ubicación? (minutos)",
-      "15"
-    );
-    if (!duration) return;
+    Modal.prompt("¿Por cuánto tiempo quieres compartir tu ubicación?", {
+      title: "Compartir ubicación",
+      label: "Minutos",
+      value: "15",
+    }).then((duration) => {
+      if (!duration) return;
 
-    insertMessage(
-      `📍 Compartiendo ubicación en tiempo real por ${duration} min.`,
-      true
-    );
+      insertMessage(
+        `📍 Compartiendo ubicación en tiempo real por ${duration} min.`,
+        true
+      );
+    });
   });
 }
 

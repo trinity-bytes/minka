@@ -505,11 +505,11 @@ switchAuthTab("login");
 
 // T28 - Leonardo Chavez: Simulación de Social Login (HU21)
 window.simulateSocialLogin = (provider) => {
-  const confirmLogin = confirm(
-    `Mink'a dice:\n\n¿Deseas continuar usando tu cuenta de ${provider}?`
-  );
-
-  if (confirmLogin) {
+  Modal.confirm(`¿Deseas continuar usando tu cuenta de ${provider}?`, {
+    title: "Inicio de sesión social",
+    confirmText: "Continuar",
+  }).then((confirmLogin) => {
+    if (!confirmLogin) return;
     // Simular proceso de autenticación
     const socialUser = {
       ...demoUser,
@@ -520,7 +520,10 @@ window.simulateSocialLogin = (provider) => {
 
     saveSession(socialUser);
 
-    alert(`¡Bienvenido! Has iniciado sesión correctamente con ${provider}.`);
-    redirectAfterLogin();
-  }
+    Toast.show(
+      `¡Bienvenido! Has iniciado sesión correctamente con ${provider}.`,
+      "success"
+    );
+    setTimeout(redirectAfterLogin, 900);
+  });
 };

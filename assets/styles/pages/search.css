@@ -313,17 +313,6 @@
   color: var(--color-gray-600);
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(46, 204, 113, 0.12);
-  color: var(--color-primary-dark);
-  font-weight: 700;
-  font-size: 0.85rem;
-}
 
 .result-card__tags {
   font-size: 0.9rem;
