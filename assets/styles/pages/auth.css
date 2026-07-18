@@ -4,41 +4,11 @@
 }
 
 .auth-page {
-  background: linear-gradient(180deg, #ffffff 0%, #f6f8f6 100%);
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-surface-alt) 100%);
   min-height: 100vh;
   color: var(--color-secondary-dark);
 }
 
-.auth-header {
-  border-bottom: 1px solid var(--color-gray-50);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-}
-
-.auth-header__container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: var(--space-16) 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.auth-header__nav {
-  display: flex;
-  gap: var(--space-16);
-}
-
-.auth-header__link {
-  text-decoration: none;
-  color: var(--color-secondary);
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.auth-header__link:hover {
-  color: var(--color-primary);
-}
 
 .auth-layout {
   max-width: 1100px;
@@ -123,76 +93,6 @@
   display: none;
 }
 
-.form__group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-}
-
-.form__group label {
-  font-weight: 600;
-  color: var(--color-secondary-dark);
-}
-
-.form__group input {
-  padding: var(--space-12);
-  border: 1px solid var(--color-gray-100);
-  border-radius: var(--space-8);
-  font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.form__group input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
-}
-
-.form__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-12);
-}
-
-.form__checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  font-size: 0.95rem;
-  color: var(--color-secondary);
-}
-
-.form__checkbox input {
-  width: 18px;
-  height: 18px;
-}
-
-.form__link {
-  border: none;
-  background: none;
-  color: var(--color-primary);
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.form__error {
-  min-height: 18px;
-  font-size: 0.85rem;
-  color: #e74c3c;
-}
-
-.form__success {
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
-.form__hint {
-  font-size: 0.9rem;
-  color: var(--color-gray-600);
-}
-
 /* Indicador de fortaleza de contraseña */
 .password-strength {
   display: flex;
@@ -243,80 +143,9 @@
 }
 
 .password-strength__label.strong {
-  color: #27ae60;
+  color: var(--color-primary-dark);
 }
 
-/* Modal OTP */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 24px;
-}
-
-.modal-overlay[hidden] {
-  display: none;
-}
-
-.modal-dialog {
-  background: var(--color-white);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-xl);
-  max-width: 480px;
-  width: 100%;
-  overflow: hidden;
-  animation: modalSlideUp 0.3s ease;
-}
-
-@keyframes modalSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.modal-header {
-  padding: var(--space-24);
-  border-bottom: 1px solid var(--color-gray-100);
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: var(--color-secondary-dark);
-  font-size: 1.5rem;
-}
-
-.modal-body {
-  padding: var(--space-24);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-}
-
-.modal-body p {
-  margin: 0;
-  color: var(--color-secondary);
-  line-height: 1.6;
-}
-
-.modal-footer {
-  padding: var(--space-24);
-  border-top: 1px solid var(--color-gray-100);
-  display: flex;
-  gap: var(--space-12);
-  justify-content: flex-end;
-}
 
 #otp-input {
   padding: var(--space-12);
@@ -426,7 +255,6 @@
 }
 
 @media (max-width: 600px) {
-  .auth-header__container,
   .auth-layout {
     padding: var(--space-24) 16px;
   }
@@ -438,17 +266,5 @@
   .form__row {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .modal-dialog {
-    margin: 0;
-  }
-
-  .modal-footer {
-    flex-direction: column-reverse;
-  }
-
-  .modal-footer button {
-    width: 100%;
   }
 }

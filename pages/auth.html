@@ -23,6 +23,8 @@
     <script defer src="../assets/scripts/core/translations.js"></script>
     <script defer src="../assets/scripts/core/i18n.js"></script>
     <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
   </head>
   <body class="auth-page">
     <!-- T12 - Leonardo Chavez: Header simple para auth -->
@@ -290,19 +292,9 @@
               <!-- T28 - Leonardo Chavez: Consentimiento Legal (HU22) -->
               <span
                 ><span data-i18n="auth_terms_accept">Acepto los</span>
-                <a
-                  href="#"
-                  onclick="alert('Términos y Condiciones simulados')"
-                  data-i18n="auth_terms_link"
-                  >Términos</a
-                >
+                <a href="about.html" data-i18n="auth_terms_link">Términos</a>
                 <span data-i18n="auth_terms_and">y la</span>
-                <a
-                  href="#"
-                  onclick="alert('Política de Privacidad simulada')"
-                  data-i18n="auth_privacy_link"
-                  >Política de Privacidad</a
-                ></span
+                <a href="about.html" data-i18n="auth_privacy_link">Política de Privacidad</a></span
               >
             </label>
             <button
@@ -349,17 +341,18 @@
     </main>
 
     <!-- Modal OTP para verificación -->
-    <div class="modal-overlay" id="otp-modal" hidden>
+    <div class="modal" id="otp-modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal></div>
       <div
-        class="modal-dialog"
+        class="modal__content"
         role="dialog"
         aria-labelledby="otp-title"
         aria-modal="true"
       >
-        <div class="modal-header">
+        <div class="modal__header">
           <h2 id="otp-title">Verificación de Cuenta</h2>
         </div>
-        <div class="modal-body">
+        <div class="modal__body">
           <p>
             Hemos enviado un código de verificación a
             <strong id="otp-destination"></strong>
@@ -381,7 +374,7 @@
           </div>
           <p class="form__hint">Código de prueba: <strong>123456</strong></p>
         </div>
-        <div class="modal-footer">
+        <div class="modal__footer">
           <button type="button" class="btn btn-secondary" id="otp-cancel">
             Cancelar
           </button>

@@ -172,8 +172,9 @@
     display: none;
   }
 
-  /* ===== APP HEADER: Slide-out Menu ===== */
-  .mobile-menu-toggle {
+  /* ===== APP HEADER: Slide-out Menu =====
+     Off-canvas solo con JS activo (html.js); sin JS el nav queda inline y navegable. */
+  html.js .mobile-menu-toggle {
     display: flex;
   }
 
@@ -181,7 +182,7 @@
     padding: var(--space-12) 16px;
   }
 
-  .auth-header__nav {
+  html.js .auth-header__nav {
     position: fixed;
     top: 0;
     right: -300px;
@@ -200,7 +201,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .auth-header__nav.auth-header__nav--open {
+  html.js .auth-header__nav.auth-header__nav--open {
     right: 0;
   }
 
@@ -735,16 +736,16 @@
   }
 
   /* --- Home Footer --- */
-  .home-footer__content {
+  .app-footer__content {
     flex-direction: column;
     text-align: center;
   }
 
-  .home-footer__brand {
+  .app-footer__brand {
     flex-direction: column;
   }
 
-  .home-footer__links {
+  .app-footer__links {
     justify-content: center;
     gap: var(--space-12);
   }
@@ -933,7 +934,7 @@
     font-size: 1.5rem;
   }
 
-  .auth-header__nav {
+  html.js .auth-header__nav {
     width: 240px;
     right: -260px;
   }
@@ -1009,7 +1010,7 @@
     display: none;
   }
 
-  .auth-header__nav {
+  html.js .auth-header__nav {
     padding-top: 60px;
   }
 
@@ -1025,7 +1026,7 @@
   .header,
   .auth-header,
   .footer,
-  .home-footer,
+  .app-footer,
   .mobile-menu-toggle,
   .mobile-nav-overlay,
   .btn,

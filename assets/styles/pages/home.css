@@ -1,6 +1,6 @@
 /* T19 - Andy Salcedo: Estilos de home/app */
 .home-page {
-  background: #f9faf9;
+  background: var(--color-surface);
 }
 
 /* T19 - Andy Salcedo: Navbar de la aplicación - Moved to styles.css */
@@ -11,7 +11,7 @@
 
 .home-hero {
   padding: var(--space-48) 0 var(--space-32);
-  background: linear-gradient(135deg, #f6f8f6 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, #ffffff 100%);
   border-bottom: 1px solid var(--color-gray-50);
 }
 
@@ -97,7 +97,7 @@
 }
 
 .home-search__button:hover {
-  background: #27ae60;
+  background: var(--color-primary-dark);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
 }
@@ -143,7 +143,7 @@
 }
 
 .home-hero__card h3 {
-  margin-bottom: var(--space-20, 20px);
+  margin-bottom: var(--space-20);
   color: var(--color-secondary-dark);
   font-size: 1.25rem;
 }
@@ -153,7 +153,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-12);
-  margin-bottom: var(--space-20, 20px);
+  margin-bottom: var(--space-20);
 }
 
 .impact-stat {
@@ -161,13 +161,13 @@
   align-items: center;
   gap: var(--space-12);
   padding: var(--space-12);
-  background: #f9faf9;
+  background: var(--color-surface);
   border-radius: var(--space-8);
   transition: all 0.2s ease;
 }
 
 .impact-stat:hover {
-  background: #f6f8f6;
+  background: var(--color-surface-alt);
   transform: translateY(-2px);
 }
 
@@ -189,17 +189,17 @@
 
 .impact-stat__icon--success {
   background: rgba(39, 174, 96, 0.15);
-  color: #27ae60;
+  color: var(--color-primary-dark);
 }
 
 .impact-stat__icon--warning {
   background: rgba(241, 196, 15, 0.15);
-  color: #f1c40f;
+  color: var(--color-accent);
 }
 
 .impact-stat__icon--info {
   background: rgba(52, 152, 219, 0.15);
-  color: #3498db;
+  color: var(--color-info);
 }
 
 .impact-stat__content {
@@ -223,7 +223,7 @@
 
 .impact-progress {
   padding: var(--space-16);
-  background: linear-gradient(135deg, #f6f8f6 0%, #e8f5e9 100%);
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, var(--color-primary-soft) 100%);
   border-radius: var(--space-8);
   margin-bottom: var(--space-16);
 }
@@ -257,7 +257,7 @@
 
 .impact-progress__fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary) 0%, #27ae60 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border-radius: 4px;
   transition: width 0.6s ease;
 }
@@ -370,66 +370,8 @@
   text-align: center;
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  background: var(--color-gray-50);
-  color: var(--color-secondary);
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
 
 /* T19 - Andy Salcedo: Footer minimalista */
-.home-footer {
-  background: var(--color-secondary-dark);
-  color: rgba(255, 255, 255, 0.85);
-  padding: var(--space-32) 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.home-footer__content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-24);
-  flex-wrap: wrap;
-}
-
-.home-footer__brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-16);
-}
-
-.home-footer__logo {
-  height: 32px;
-  width: auto;
-  opacity: 0.95;
-}
-
-.home-footer__brand p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.home-footer__links {
-  display: flex;
-  gap: var(--space-24);
-  flex-wrap: wrap;
-}
-
-.home-footer__links a {
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s ease;
-}
-
-.home-footer__links a:hover {
-  color: var(--color-primary);
-}
-
 @media (max-width: 1024px) {
   .home-hero__grid {
     grid-template-columns: 1fr;
@@ -509,16 +451,4 @@
     height: 160px;
   }
 
-  .home-footer__content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .home-footer__brand {
-    flex-direction: column;
-  }
-
-  .home-footer__links {
-    justify-content: center;
-  }
 }

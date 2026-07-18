@@ -9,6 +9,7 @@ const MINKA_TRANSLATIONS = {
     nav_notifications: "Notificaciones",
     nav_profile: "Perfil",
     nav_logout: "Salir",
+    nav_login: "Ingresar",
 
     // Settings Page
     settings_title: "Configuración y Accesibilidad",
@@ -307,6 +308,7 @@ const MINKA_TRANSLATIONS = {
     nav_notifications: "Notifications",
     nav_profile: "Profile",
     nav_logout: "Logout",
+    nav_login: "Log in",
 
     // Settings Page
     settings_title: "Settings & Accessibility",
@@ -602,6 +604,7 @@ const MINKA_TRANSLATIONS = {
     nav_notifications: "Willaykuna",
     nav_profile: "Perfil",
     nav_logout: "Lluqsiy",
+    nav_login: "Yaykuy",
 
     // Settings Page
     settings_title: "Allichaykuna",

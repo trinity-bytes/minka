@@ -400,15 +400,11 @@ function attachRating() {
 }
 
 function openModal(modal) {
-  if (!modal) return;
-  modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("modal-open");
+  if (window.Modal) Modal.open(modal);
 }
 
 function closeModal(modal) {
-  if (!modal) return;
-  modal.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("modal-open");
+  if (window.Modal) Modal.close(modal);
 }
 
 // T31 - Location Sharing (HU45)
@@ -416,31 +412,23 @@ function attachLocationSharing() {
   if (!els.btnShareLocation) return;
 
   els.btnShareLocation.addEventListener("click", () => {
-    const duration = prompt(
-      "¿Por cuánto tiempo quieres compartir tu ubicación? (minutos)",
-      "15"
-    );
-    if (!duration) return;
+    Modal.prompt("¿Por cuánto tiempo quieres compartir tu ubicación?", {
+      title: "Compartir ubicación",
+      label: "Minutos",
+      value: "15",
+    }).then((duration) => {
+      if (!duration) return;
 
-    insertMessage(
-      `📍 Compartiendo ubicación en tiempo real por ${duration} min.`,
-      true
-    );
+      insertMessage(
+        `📍 Compartiendo ubicación en tiempo real por ${duration} min.`,
+        true
+      );
+    });
   });
 }
 
 function bindCloseTriggers() {
-  document.querySelectorAll("[data-close-modal]").forEach((trigger) => {
-    const modalId = trigger.getAttribute("data-close-modal");
-    const modal = modalId ? document.getElementById(modalId) : null;
-    trigger.addEventListener("click", () => closeModal(modal));
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      Object.values(modals).forEach((modal) => closeModal(modal));
-    }
-  });
+  // core/modal.js maneja data-close-modal, Escape y focus trap
 }
 
 function insertMessage(text, fromUser = false, image = null) {

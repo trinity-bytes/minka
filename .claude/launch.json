@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["--yes", "http-server", "-p", "4173", "-c-1", "."],
       "port": 4173
+    },
+    {
+      "name": "minka-static-alt",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "http-server", "-p", "4179", "-c-1", "."],
+      "port": 4179
     }
   ]
 }

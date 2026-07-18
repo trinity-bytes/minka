@@ -310,10 +310,11 @@ function setupOptOut() {
     MOCK_USER_DATA.optOutRanking = e.target.checked;
     persistGame();
     renderRanking();
-    alert(
+    Toast.show(
       e.target.checked
         ? "Te has ocultado del ranking público."
-        : "Ahora eres visible en el ranking."
+        : "Ahora eres visible en el ranking.",
+      "info"
     );
   });
 }
@@ -324,11 +325,11 @@ window.redeemReward = function (rewardId) {
   if (!reward) return;
 
   if (MOCK_USER_DATA.points >= reward.cost) {
-    if (
-      confirm(
-        `¿Estás seguro de canjear "${reward.name}" por ${reward.cost} puntos?`
-      )
-    ) {
+    Modal.confirm(
+      `¿Estás seguro de canjear "${reward.name}" por ${reward.cost} puntos?`,
+      { title: "Canjear premio", confirmText: "Canjear" }
+    ).then((ok) => {
+      if (!ok) return;
       // Deduct points
       MOCK_USER_DATA.points -= reward.cost;
 
@@ -356,9 +357,9 @@ window.redeemReward = function (rewardId) {
       renderRewards(); // Update button states
       renderHistory();
 
-      alert("¡Canje exitoso! Disfruta tu recompensa.");
-    }
+      Toast.show("¡Canje exitoso! Disfruta tu recompensa.", "success");
+    });
   } else {
-    alert("No tienes suficientes puntos.");
+    Toast.show("No tienes suficientes puntos.", "error");
   }
 };

@@ -26,12 +26,27 @@
   --color-white: #ffffff;
   --color-gray-50: #ecf0f1;
   --color-gray-100: #bdc3c7;
+  --color-gray-200: #d5dbdb;
   --color-gray-300: #95a5a6;
   --color-gray-400: #8e9aa0;
+  --color-gray-500: #95a5a6;
   --color-gray-600: #7f8c8d;
   --color-gray-700: #636e72;
   --color-gray-800: #2c3e50;
   --color-gray-900: #1a1a1a;
+
+  /* Surfaces & Text */
+  --color-bg: #f8f9fa;
+  --color-surface: #f9faf9;
+  --color-surface-alt: #f6f8f6;
+  --color-text: var(--color-secondary-dark);
+  --color-text-secondary: var(--color-gray-600);
+  --color-border: var(--color-gray-100);
+
+  /* Soft status tints */
+  --color-primary-soft: #e8f5e9;
+  --color-info-soft: #e3f2fd;
+  --color-warning-soft: #fff3e0;
 
   /* Font Families */
   --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -47,7 +62,9 @@
   --space-20: 20px;
   --space-24: 24px;
   --space-32: 32px;
+  --space-40: 40px;
   --space-48: 48px;
+  --space-56: 56px;
   --space-64: 64px;
 
   /* Shadows */
@@ -55,6 +72,13 @@
   --shadow-md: 0 4px 8px rgba(46, 204, 113, 0.15);
   --shadow-lg: 0 8px 16px rgba(46, 204, 113, 0.2);
   --shadow-xl: 0 12px 24px rgba(46, 204, 113, 0.25);
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-lift: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+  /* Z-index layers */
+  --z-overlay: 900;
+  --z-modal: 1000;
+  --z-toast: 1100;
 
   /* Border Radius */
   --radius-sm: 4px;
@@ -64,18 +88,16 @@
   --radius-full: 9999px;
 
   /* -------------------------------------------------------
-     Aliases for backward compatibility
-     (community.css, timeline.css, chat-improvements.css
-      use different variable naming conventions)
+     DEPRECATED — usar --color-* (aliases legacy, no añadir usos nuevos)
      ------------------------------------------------------- */
   --primary-color: var(--color-primary);
   --primary-dark: var(--color-primary-dark);
   --primary-light: var(--color-primary-light);
   --secondary-color: var(--color-secondary);
-  --bg-color: #f8f9fa;
-  --border-color: var(--color-gray-100);
-  --text-primary: var(--color-secondary-dark);
-  --text-secondary: var(--color-gray-600);
+  --bg-color: var(--color-bg);
+  --border-color: var(--color-border);
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
   --text-color: var(--color-gray-900);
   --warning-color: var(--color-warning);
 }
@@ -224,6 +246,10 @@ label {
 }
 
 /* === Utility Classes === */
+.is-hidden {
+  display: none !important;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

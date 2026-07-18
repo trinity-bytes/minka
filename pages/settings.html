@@ -7,6 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
     <title>Mink'a - Configuración y Accesibilidad</title>
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <link
@@ -25,11 +26,85 @@
     <script defer src="../assets/scripts/core/i18n.js"></script>
     <script src="../assets/scripts/core/session.js"></script>
     <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
     <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="settings-page">
-    <!-- Navegación generada por components.js -->
-    <header id="app-header" class="auth-header"></header>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
 
     <main class="settings-main">
       <div class="container">
@@ -78,7 +153,7 @@
                   </p>
                 </div>
                 <label class="switch">
-                  <input type="checkbox" id="high-contrast-toggle" />
+                  <input type="checkbox" role="switch" id="high-contrast-toggle" />
                   <span class="slider round"></span>
                 </label>
               </div>
@@ -109,7 +184,7 @@
                   </p>
                 </div>
                 <label class="switch">
-                  <input type="checkbox" id="low-data-toggle" />
+                  <input type="checkbox" role="switch" id="low-data-toggle" />
                   <span class="slider round"></span>
                 </label>
               </div>
@@ -148,7 +223,7 @@
                   <p>Muestra solo una ubicación aproximada en tu perfil.</p>
                 </div>
                 <label class="switch">
-                  <input type="checkbox" id="hide-district-toggle" />
+                  <input type="checkbox" role="switch" id="hide-district-toggle" />
                   <span class="slider round"></span>
                 </label>
               </div>
@@ -229,10 +304,18 @@
     </main>
 
     <!-- T29 - Lucero Pipa: Modal de Disponibilidad (HU26) -->
-    <div id="availability-modal" class="modal hidden">
-      <div class="modal-content modal-large">
-        <h3>Configurar Disponibilidad</h3>
-        <p>
+    <div id="availability-modal" class="modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="availability-title"
+      >
+        <h3 id="availability-title" class="modal__title">
+          Configurar Disponibilidad
+        </h3>
+        <p class="modal__subtitle">
           Selecciona los días y franjas horarias en las que puedes realizar
           intercambios.
         </p>
@@ -380,7 +463,7 @@
           </div>
         </div>
 
-        <div class="modal-actions">
+        <div class="modal__actions">
           <button class="btn btn-secondary" id="cancel-availability">
             Cancelar
           </button>
@@ -392,10 +475,18 @@
     </div>
 
     <!-- T28 - Reauth Modal -->
-    <div id="reauth-modal" class="modal hidden">
-      <div class="modal-content">
-        <h3>Confirmar Identidad</h3>
-        <p>Por seguridad, ingresa tu contraseña para continuar.</p>
+    <div id="reauth-modal" class="modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reauth-title"
+      >
+        <h3 id="reauth-title" class="modal__title">Confirmar Identidad</h3>
+        <p class="modal__subtitle">
+          Por seguridad, ingresa tu contraseña para continuar.
+        </p>
         <input
           type="password"
           id="reauth-password"
@@ -408,28 +499,28 @@
           role="status"
           aria-live="polite"
         ></p>
-        <div class="modal-actions">
+        <div class="modal__actions">
           <button class="btn btn-secondary" id="cancel-reauth">Cancelar</button>
           <button class="btn btn-primary" id="confirm-reauth">Confirmar</button>
         </div>
       </div>
     </div>
 
-    <footer class="home-footer">
-      <div class="container home-footer__content">
-        <div class="home-footer__brand">
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
           <img
             src="../assets/images/minka-logo-negativo-blanco.png"
             alt="Mink'a"
-            class="home-footer__logo"
+            class="app-footer__logo"
           />
           <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
         </div>
-        <div class="home-footer__links">
-          <a href="../index.html">Acerca de</a>
-          <a href="index.html#impacto">Impacto</a>
-          <a href="../index.html">Términos</a>
-          <a href="../index.html">Privacidad</a>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
         </div>
       </div>
     </footer>
