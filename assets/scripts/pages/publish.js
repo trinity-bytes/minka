@@ -100,6 +100,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let dynamicData = {};
   let uploadedImages = [];
 
+  // Contadores de caracteres (título y notas)
+  const bindCounter = (input, counterId, max) => {
+    const counter = document.getElementById(counterId);
+    if (!input || !counter) return;
+    const update = () => {
+      counter.textContent = `${input.value.length}/${max}`;
+    };
+    input.addEventListener("input", update);
+    update();
+  };
+  bindCounter(inputRefs.title, "title-counter", 80);
+  bindCounter(inputRefs.notes, "notes-counter", 300);
+
   fileInput.addEventListener("change", handleFiles);
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -165,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function validateForm() {
     let isValid = true;
+    let firstInvalid = null;
     const requiredFields = [
       "title",
       "category",
@@ -180,11 +194,19 @@ document.addEventListener("DOMContentLoaded", () => {
         errorEl.textContent = window.I18n
           ? window.I18n.t("publish.messages.required")
           : "Este campo es obligatorio.";
+        field.setAttribute("aria-invalid", "true");
+        if (!firstInvalid) firstInvalid = field;
         isValid = false;
       } else {
         errorEl.textContent = "";
+        field.setAttribute("aria-invalid", "false");
       }
     });
+
+    if (firstInvalid) {
+      firstInvalid.focus();
+      firstInvalid.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
 
     const photoError = document.getElementById("photo-error");
     if (fileInput.files.length === 0) {

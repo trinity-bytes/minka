@@ -95,6 +95,34 @@
   display: none;
 }
 
+/* Campo de contraseña con toggle de visibilidad */
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: var(--space-8);
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+}
+
+.password-toggle:hover,
+.password-toggle[aria-pressed="true"] {
+  color: var(--color-primary);
+}
+
 /* Indicador de fortaleza de contraseña */
 .password-strength {
   display: flex;

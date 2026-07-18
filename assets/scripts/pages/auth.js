@@ -367,45 +367,93 @@ const checkRegisterFormValidity = () => {
   submitBtn.disabled = !allValid;
 };
 
+// Toggle mostrar/ocultar contraseña
+document.addEventListener("click", (event) => {
+  const toggle = event.target.closest("[data-toggle-password]");
+  if (!toggle) return;
+  const input = document.getElementById(toggle.dataset.togglePassword);
+  if (!input) return;
+  const show = input.type === "password";
+  input.type = show ? "text" : "password";
+  toggle.setAttribute("aria-pressed", String(show));
+  toggle.setAttribute(
+    "aria-label",
+    show ? "Ocultar contraseña" : "Mostrar contraseña"
+  );
+});
+
+// Regla de error por campo — compartida entre submit y blur
+const computeFieldError = (input, form) => {
+  let errorMessage = "";
+
+  if (input.id === "register-email") {
+    errorMessage = validateEmailOrPhone(input);
+  } else if (input.type === "email") {
+    errorMessage = validateEmail(input);
+  }
+
+  if (input.type === "password" && input.id !== "register-confirm") {
+    errorMessage = validatePassword(input);
+  }
+
+  if (input.id === "register-confirm") {
+    const mainPass = form.querySelector("#register-password");
+    errorMessage = validateMatch(input, mainPass);
+  }
+
+  if (input.type === "text" && input.id === "register-name") {
+    if (!input.value.trim()) errorMessage = "El nombre es obligatorio";
+    else if (input.value.trim().length < 3)
+      errorMessage = "Mínimo 3 caracteres";
+  }
+
+  if (input.type === "checkbox" && input.hasAttribute("required")) {
+    if (!input.checked) errorMessage = "Debes aceptar los términos";
+  }
+
+  return errorMessage;
+};
+
 authForms.forEach((form) => {
+  // aria-describedby: cada input apunta a su nodo de error
+  form.querySelectorAll("input").forEach((input) => {
+    const errorNode = document.querySelector(`[data-error-for="${input.id}"]`);
+    if (errorNode) {
+      if (!errorNode.id) errorNode.id = `err-${input.id}`;
+      input.setAttribute("aria-describedby", errorNode.id);
+    }
+
+    // Validación inline: on-blur primero; luego on-input para limpiar
+    input.addEventListener("blur", () => {
+      input.dataset.touched = "1";
+      setFieldError(input, computeFieldError(input, form));
+    });
+    input.addEventListener("input", () => {
+      if (input.dataset.touched) {
+        setFieldError(input, computeFieldError(input, form));
+      }
+    });
+  });
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     let hasErrors = false;
 
     form.querySelectorAll("input").forEach((input) => {
-      let errorMessage = "";
-
-      if (input.id === "register-email") {
-        errorMessage = validateEmailOrPhone(input);
-      } else if (input.type === "email") {
-        errorMessage = validateEmail(input);
-      }
-
-      if (input.type === "password" && input.id !== "register-confirm") {
-        errorMessage = validatePassword(input);
-      }
-
-      if (input.id === "register-confirm") {
-        const mainPass = form.querySelector("#register-password");
-        errorMessage = validateMatch(input, mainPass);
-      }
-
-      if (input.type === "text" && input.id === "register-name") {
-        if (!input.value.trim()) errorMessage = "El nombre es obligatorio";
-        else if (input.value.trim().length < 3)
-          errorMessage = "Mínimo 3 caracteres";
-      }
-
-      if (input.type === "checkbox" && input.hasAttribute("required")) {
-        if (!input.checked) errorMessage = "Debes aceptar los términos";
-      }
-
+      const errorMessage = computeFieldError(input, form);
       setFieldError(input, errorMessage);
       if (errorMessage) hasErrors = true;
     });
 
     const formType = form.dataset.form;
-    if (hasErrors) return;
+    if (hasErrors) {
+      const firstInvalid = form.querySelector('[aria-invalid="true"]');
+      if (firstInvalid) {
+        firstInvalid.focus();
+        firstInvalid.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+      return;
+    }
 
     if (formType === "login") {
       // Verificar si la cuenta está bloqueada

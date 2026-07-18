@@ -157,10 +157,12 @@
                     type="text"
                     id="item-title"
                     name="title"
+                    maxlength="80"
                     placeholder="Ej. Bicicleta urbana vintage"
                     data-i18n-placeholder="publish.mainInfo.itemTitlePlaceholder"
                     required
                   />
+                  <p class="form__hint" id="title-counter" aria-live="polite">0/80</p>
                   <p class="form__error" data-error-for="item-title"></p>
                 </div>
 
@@ -464,9 +466,11 @@
                       id="item-notes"
                       name="notes"
                       rows="3"
+                      maxlength="300"
                       placeholder="Punto de referencia, seguridad, horarios exactos"
                       data-i18n-placeholder="publish.location.notesPlaceholder"
                     ></textarea>
+                    <p class="form__hint" id="notes-counter" aria-live="polite">0/300</p>
                   </div>
                 </div>
               </div>
