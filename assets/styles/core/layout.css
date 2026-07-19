@@ -76,6 +76,18 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not(.force-light) .auth-header {
+    background: rgba(23, 28, 36, 0.98);
+  }
+
+  /* El footer usa --color-secondary-dark como FONDO; en dark el token
+     pasa a claro, así que se fija un fondo oscuro explícito. */
+  :root:not(.force-light) .app-footer {
+    background: #10141a;
+  }
+}
+
 .auth-header__container {
   max-width: 1200px;
   margin: 0 auto;

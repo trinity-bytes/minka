@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="force-light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,8 +9,8 @@
     <link
       rel="preload"
       as="font"
-      type="font/ttf"
-      href="./assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf"
+      type="font/woff2"
+      href="./assets/fonts/Inter/Inter-Variable.woff2"
       crossorigin
     />
     <link rel="stylesheet" href="./assets/styles/core/base.css" />
@@ -259,9 +259,12 @@
                 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             "
           >
-            <iframe
-              src="https://www.youtube.com/embed/NzF1VfOuS4Y"
-              title="Video de presentación Mink'a"
+            <!-- Facade: el player de YouTube (~800KB) solo carga al hacer click -->
+            <button
+              type="button"
+              id="video-facade"
+              data-video-id="NzF1VfOuS4Y"
+              aria-label="Reproducir video de presentación Mink'a"
               style="
                 position: absolute;
                 top: 0;
@@ -269,19 +272,52 @@
                 width: 100%;
                 height: 100%;
                 border: 0;
+                cursor: pointer;
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                color: #ffffff;
               "
-              allow="
-                accelerometer;
-                autoplay;
-                clipboard-write;
-                encrypted-media;
-                gyroscope;
-                picture-in-picture;
-                web-share;
-              "
-              allowfullscreen
             >
-            </iframe>
+              <span
+                aria-hidden="true"
+                style="
+                  width: 72px;
+                  height: 72px;
+                  border-radius: 50%;
+                  background: #2ecc71;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 1.8rem;
+                "
+                >▶</span
+              >
+              <span style="font-weight: 600">
+                Ver video de presentación Mink'a
+              </span>
+            </button>
+            <script>
+              document
+                .getElementById("video-facade")
+                .addEventListener("click", function () {
+                  var iframe = document.createElement("iframe");
+                  iframe.src =
+                    "https://www.youtube.com/embed/" +
+                    this.dataset.videoId +
+                    "?autoplay=1";
+                  iframe.title = "Video de presentación Mink'a";
+                  iframe.style.cssText =
+                    "position:absolute;top:0;left:0;width:100%;height:100%;border:0;";
+                  iframe.allow =
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                  iframe.allowFullscreen = true;
+                  this.replaceWith(iframe);
+                });
+            </script>
           </div>
         </div>
       </section>
@@ -520,7 +556,7 @@
             </p>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Plataforma</h4>
+            <h3 class="footer__section-title">Plataforma</h3>
             <ul class="footer__links">
               <li>
                 <a href="#como-funciona" class="footer__link">Cómo Funciona</a>
@@ -531,7 +567,7 @@
             </ul>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Empresa</h4>
+            <h3 class="footer__section-title">Empresa</h3>
             <ul class="footer__links">
               <li>
                 <a href="pages/about.html" class="footer__link">Sobre Nosotros</a>
@@ -542,7 +578,7 @@
             </ul>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Legal</h4>
+            <h3 class="footer__section-title">Legal</h3>
             <ul class="footer__links">
               <li><a href="#" class="footer__link">Términos de Servicio</a></li>
               <li><a href="#" class="footer__link">Privacidad</a></li>

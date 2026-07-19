@@ -53,8 +53,8 @@
 }
 
 .btn-primary {
-  background: var(--color-primary);
-  color: var(--color-white);
+  background: var(--color-primary-ink);
+  color: #ffffff;
   box-shadow: var(--shadow-md);
 }
 
@@ -468,12 +468,22 @@
   padding: var(--space-16);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  /* visibility saca el contenido del orden de tabulación cuando está cerrado.
+     Al cerrar espera el fade (delay); al abrir cambia al instante para que
+     el focus síncrono de modal.js funcione. */
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s linear 0.2s;
 }
 
 .modal[aria-hidden="false"] {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s;
 }
 
 .modal__overlay {
@@ -727,7 +737,7 @@ textarea {
 .form__link {
   border: none;
   background: none;
-  color: var(--color-primary);
+  color: var(--color-primary-ink);
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;

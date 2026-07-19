@@ -342,6 +342,20 @@
           owner: { id: "vec-7", name: "Pedro Salas", location: "Jesús María", rating: 4.3 },
           publishedAt: new Date(now - 6 * day).toISOString(),
         },
+        {
+          ...base,
+          id: "itm-008",
+          title: "Novelas policiales clásicas",
+          category: "Libros",
+          description: "Pack de 5 novelas policiales en tapa blanda.",
+          tags: ["libros", "policial", "lectura"],
+          location: "Magdalena",
+          rating: 4.6,
+          distanceKm: 5,
+          images: ["../assets/images/items/set-libros.jpg"],
+          owner: { id: "vec-8", name: "Elena Vargas", location: "Magdalena", rating: 4.7 },
+          publishedAt: new Date(now - 4 * day).toISOString(),
+        },
       ];
       const existing = Store.getItems();
       const merged = [

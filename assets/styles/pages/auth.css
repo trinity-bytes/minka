@@ -79,7 +79,7 @@
 
 .modal__tab--active {
   background: var(--color-white);
-  color: var(--color-primary);
+  color: var(--color-primary-ink);
   box-shadow: var(--shadow-sm);
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -240,12 +240,12 @@
 }
 
 .btn-facebook {
-  background-color: #1877f2;
+  background-color: #166fe5;
   color: white;
 }
 
 .btn-facebook:hover {
-  background-color: #166fe5;
+  background-color: #1465d1;
 }
 
 .auth-divider {
@@ -270,7 +270,7 @@
 
 /* Estilos para enlaces legales */
 .form__checkbox a {
-  color: var(--color-primary);
+  color: var(--color-primary-ink);
   text-decoration: none;
 }
 

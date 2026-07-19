@@ -325,17 +325,20 @@ function setupShare(item) {
   if (!shareBtn) return;
   shareBtn.addEventListener("click", async () => {
     const url = location.href;
-    try {
-      if (navigator.share) {
+    if (navigator.share) {
+      try {
         await navigator.share({ title: item.title, url });
-      } else {
-        await navigator.clipboard.writeText(url);
-        Toast.show("Enlace copiado.", "success");
+        return;
+      } catch (error) {
+        if (error?.name === "AbortError") return; // el usuario canceló
+        // Web Share no disponible/permitido: caer a clipboard
       }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      Toast.show("Enlace copiado.", "success");
     } catch (error) {
-      if (error?.name !== "AbortError") {
-        Toast.show("No se pudo compartir el enlace.", "error");
-      }
+      Toast.show("No se pudo compartir el enlace.", "error");
     }
   });
 }
