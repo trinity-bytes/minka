@@ -3,28 +3,6 @@
   background-color: var(--color-bg);
 }
 
-.community-hero {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary),
-    var(--color-secondary)
-  );
-  color: white;
-  padding: 3rem 0;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.community-hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.community-hero p {
-  font-size: 1.2rem;
-  opacity: 0.9;
-}
-
 .challenges-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -33,7 +11,7 @@
 }
 
 .challenge-card {
-  background: white;
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -133,7 +111,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: white;
+  background: var(--color-surface);
   padding: 1rem;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);

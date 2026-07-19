@@ -3,8 +3,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   const demoUser = {
-    email: "lucero.pipa@minka.com",
-    password: "Minka123",
+    email: "demo@minka.com",
+    password: "demo1234",
     name: "Lucero Pipa",
     phone: "+51 987 654 321",
     location: "Lima, Perú",

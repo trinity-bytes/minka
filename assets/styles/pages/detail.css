@@ -11,7 +11,7 @@
 
 .detail-hero {
   padding: var(--space-32) 0;
-  background: linear-gradient(135deg, var(--color-surface-alt) 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, var(--color-bg) 100%);
   border-bottom: 1px solid var(--color-gray-50);
 }
 
@@ -46,12 +46,7 @@
   gap: var(--space-24);
 }
 
-.card {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-sm);
-}
+/* .card: identidad visual compartida en core/components.css */
 
 .card__header {
   padding: var(--space-16) var(--space-20) 0;

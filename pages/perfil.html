@@ -43,86 +43,7 @@
   </head>
   <body class="profile-page">
     <a href="#main" class="skip-link">Saltar al contenido</a>
-    <header id="app-header" class="auth-header">
-      <div class="auth-header__container">
-        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
-          <img
-            src="../assets/images/minka-logo.png"
-            alt="Mink'a"
-            class="logo-image"
-          />
-        </a>
-        <button
-          class="mobile-menu-toggle"
-          aria-label="Abrir menú"
-          aria-expanded="false"
-          aria-controls="app-nav"
-        >
-          <span class="hamburger-icon"><span></span><span></span><span></span></span>
-        </button>
-        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
-          <a href="home.html" class="auth-header__link"
-            ><i class="fa-solid fa-house nav-icon"></i
-            ><span data-i18n="nav_home">Inicio</span></a
-          >
-          <a href="busqueda.html" class="auth-header__link"
-            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
-            ><span data-i18n="nav_search">Buscar</span></a
-          >
-          <a href="publicar.html" class="auth-header__link"
-            ><i class="fa-solid fa-circle-plus nav-icon"></i
-            ><span data-i18n="nav_publish">Publicar</span></a
-          >
-          <a href="chat.html" class="auth-header__link" data-show="auth"
-            ><i class="fa-solid fa-comments nav-icon"></i
-            ><span data-i18n="nav_chats">Chats</span></a
-          >
-          <a href="comunidad.html" class="auth-header__link"
-            ><i class="fa-solid fa-users nav-icon"></i
-            ><span data-i18n="nav_community">Comunidad</span></a
-          >
-          <a
-            href="notificaciones.html"
-            class="auth-header__link"
-            data-show="auth"
-            ><i class="fa-solid fa-bell nav-icon"></i
-            ><span data-i18n="nav_notifications">Notificaciones</span>
-            <span
-              class="nav-badge"
-              data-unread-badge
-              aria-label="notificaciones no leídas"
-              >0</span
-            ></a
-          >
-          <a href="perfil.html" class="auth-header__link" data-show="auth"
-            ><i class="fa-solid fa-user nav-icon"></i
-            ><span data-i18n="nav_profile">Perfil</span></a
-          >
-          <a
-            href="auth.html"
-            class="auth-header__link"
-            data-action="logout"
-            data-show="auth"
-            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
-            ><span data-i18n="nav_logout">Salir</span></a
-          >
-          <a
-            href="auth.html"
-            class="auth-header__link is-hidden"
-            data-show="guest"
-            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
-            ><span data-i18n="nav_login">Ingresar</span></a
-          >
-        </nav>
-        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
-      </div>
-    </header>
-    <nav class="breadcrumb" aria-label="Migas de pan">
-      <ol class="container">
-        <li><a href="home.html" data-i18n="nav_home">Inicio</a></li>
-        <li aria-current="page"><span data-i18n="nav_profile">Perfil</span></li>
-      </ol>
-    </nav>
+    <header id="app-header" class="auth-header"></header>
 
 
     <main id="main" class="profile-page__main">
@@ -216,61 +137,49 @@
                     >
                   </button>
                   <!-- T24 - Lucero Pipa: Acceso a Gamificación -->
-                  <a
-                    href="gamification.html"
-                    class="btn btn-outline"
-                    style="
-                      text-decoration: none;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      gap: 0.5rem;
-                      color: var(--text-color);
-                    "
-                  >
-                    <i class="fas fa-trophy" style="color: #f1c40f"></i>
+                  <a href="gamification.html" class="profile-quicklink">
+                    <span
+                      class="profile-quicklink__icon profile-quicklink__icon--amber"
+                      aria-hidden="true"
+                      ><i class="fas fa-trophy"></i
+                    ></span>
                     <span data-i18n="profile.gamification"
                       >Eco-Puntos y Premios</span
                     >
+                    <i
+                      class="fas fa-arrow-right profile-quicklink__arrow"
+                      aria-hidden="true"
+                    ></i>
                   </a>
                   <!-- T26 - Miguel Sanca: Acceso a Dashboard -->
-                  <a
-                    href="dashboard.html"
-                    class="btn btn-outline"
-                    style="
-                      text-decoration: none;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      gap: 0.5rem;
-                      color: var(--text-color);
-                    "
-                  >
-                    <i class="fas fa-chart-pie" style="color: #3498db"></i>
+                  <a href="dashboard.html" class="profile-quicklink">
+                    <span
+                      class="profile-quicklink__icon profile-quicklink__icon--mint"
+                      aria-hidden="true"
+                      ><i class="fas fa-chart-pie"></i
+                    ></span>
                     <span data-i18n="profile.dashboard"
                       >Dashboard de Impacto</span
                     >
+                    <i
+                      class="fas fa-arrow-right profile-quicklink__arrow"
+                      aria-hidden="true"
+                    ></i>
                   </a>
                   <!-- T27 - Miguel Sanca: Acceso a Configuración -->
-                  <a
-                    href="settings.html"
-                    class="btn btn-outline"
-                    style="
-                      text-decoration: none;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      gap: 0.5rem;
-                      color: var(--text-color);
-                    "
-                  >
-                    <i
-                      class="fas fa-cog"
-                      style="color: var(--color-secondary)"
-                    ></i>
+                  <a href="settings.html" class="profile-quicklink">
+                    <span
+                      class="profile-quicklink__icon profile-quicklink__icon--terra"
+                      aria-hidden="true"
+                      ><i class="fas fa-cog"></i
+                    ></span>
                     <span data-i18n="profile.settings"
                       >Configuración y Accesibilidad</span
                     >
+                    <i
+                      class="fas fa-arrow-right profile-quicklink__arrow"
+                      aria-hidden="true"
+                    ></i>
                   </a>
                   <button
                     type="button"
@@ -302,46 +211,23 @@
               </section>
 
               <!-- T35 - Gestión de Reputación: Sección de Reseñas -->
-              <section
-                class="profile-reviews"
-                aria-labelledby="reviews-title"
-                style="margin-top: 2rem"
-              >
-                <div
-                  style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 1rem;
-                  "
-                >
+              <section class="profile-reviews" aria-labelledby="reviews-title">
+                <div class="profile-reviews__header">
                   <h3
                     id="reviews-title"
                     class="profile-items__title"
-                    style="margin-bottom: 0"
                     data-i18n="profile.reviews"
                   >
                     Reseñas y Reputación
                   </h3>
-                  <div
-                    class="reputation-score"
-                    style="display: flex; align-items: center; gap: 0.5rem"
-                  >
-                    <i class="fas fa-star" style="color: #f1c40f"></i>
-                    <span style="font-weight: bold; font-size: 1.1rem"
-                      >4.8</span
-                    >
-                    <span style="color: var(--text-light); font-size: 0.9rem"
-                      >(12 reseñas)</span
-                    >
+                  <div class="reputation-score">
+                    <i class="fas fa-star" aria-hidden="true"></i>
+                    <span class="reputation-score__value">4.8</span>
+                    <span class="reputation-score__count">(12 reseñas)</span>
                   </div>
                 </div>
 
-                <div
-                  id="reviews-list"
-                  class="reviews-list"
-                  style="display: flex; flex-direction: column; gap: 1rem"
-                >
+                <div id="reviews-list" class="reviews-list">
                   <!-- Las reseñas se cargarán dinámicamente -->
                 </div>
               </section>
@@ -616,18 +502,7 @@
             <label for="appeal-reason" data-i18n="profile.appealModal.reason"
               >Motivo de la apelación</label
             >
-            <select
-              id="appeal-reason"
-              class="form__input"
-              required
-              style="
-                width: 100%;
-                padding: 0.5rem;
-                margin-bottom: 1rem;
-                border: 1px solid var(--color-gray-200);
-                border-radius: 8px;
-              "
-            >
+            <select id="appeal-reason" class="form__input" required>
               <option value="" data-i18n="profile.appealModal.selectReason">
                 Selecciona un motivo
               </option>
@@ -665,12 +540,6 @@
               placeholder="Explica por qué esta reseña debería ser eliminada..."
               data-i18n-placeholder="profile.appealModal.detailsPlaceholder"
               required
-              style="
-                width: 100%;
-                padding: 0.5rem;
-                border: 1px solid var(--color-gray-200);
-                border-radius: 8px;
-              "
             ></textarea>
           </div>
           <div class="identity-actions">
@@ -686,24 +555,7 @@
       </div>
     </section>
 
-    <footer class="app-footer">
-      <div class="container app-footer__content">
-        <div class="app-footer__brand">
-          <img
-            src="../assets/images/minka-logo-negativo-blanco.png"
-            alt="Mink'a"
-            class="app-footer__logo"
-          />
-          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
-        </div>
-        <div class="app-footer__links">
-          <a href="about.html">Acerca de</a>
-          <a href="../index.html#impacto">Impacto</a>
-          <a href="about.html">Términos</a>
-          <a href="about.html">Privacidad</a>
-        </div>
-      </div>
-    </footer>
+    <footer id="app-footer" class="app-footer"></footer>
 
     <script src="../assets/scripts/core/notif-badge.js" defer></script>
     <script src="../assets/scripts/pages/profile.js" defer></script>

@@ -3,55 +3,71 @@
    Variables, Fonts, Reset, Typography, Utilities
    ============================================ */
 
-/* === Custom Properties / Design Tokens === */
+/* === Custom Properties / Design Tokens ===
+   Sistema "Trueque Editorial": papel crema, tinta verde,
+   serif editorial (Fraunces) y acentos ámbar/terracota,
+   heredado de la landing (landing.css) y calmado para uso en app. */
 :root {
+  /* Ink & Paper (base del sistema) */
+  --color-ink: #17301f;
+  --color-ink-2: #41564a;
+  --color-ink-deep: #112416;
+  --color-paper: #faf5ea;
+  --color-paper-2: #f2ead8;
+  --color-card: #fffdf6;
+
   /* Primary Colors */
-  --color-primary: #2ecc71;
-  --color-primary-dark: #27ae60;
-  --color-primary-darker: #229954;
-  --color-primary-ink: #1e8449; /* verde AA: ≥4.5:1 contra blanco */
-  --color-primary-light: rgba(46, 204, 113, 0.12);
+  --color-primary: #1e8449; /* verde tinta AA: ≥4.5:1 sobre claro */
+  --color-primary-dark: #166638;
+  --color-primary-darker: #0f4d29;
+  --color-primary-ink: #1e8449;
+  --color-primary-pop: #2ecc71; /* verde vivo: solo acentos, no texto */
+  --color-primary-light: rgba(30, 132, 73, 0.12);
 
   /* Secondary Colors */
-  --color-secondary: #34495e;
-  --color-secondary-dark: #2c3e50;
+  --color-secondary: var(--color-ink-2);
+  --color-secondary-dark: var(--color-ink-deep);
 
   /* Accent & Status */
-  --color-accent: #f1c40f;
-  --color-success: #27ae60;
-  --color-error: #e74c3c;
-  --color-warning: #f39c12;
-  --color-info: #3498db;
+  --color-accent: #f2b705;
+  --color-terra: #d95d39;
+  --color-success: #1e8449;
+  --color-error: #c0392b;
+  --color-warning: #b98a04; /* ámbar legible sobre claro */
+  --color-info: #2874a6;
 
-  /* Neutrals */
-  --color-white: #ffffff;
-  --color-gray-50: #ecf0f1;
-  --color-gray-100: #bdc3c7;
-  --color-gray-200: #d5dbdb;
-  --color-gray-300: #95a5a6;
-  --color-gray-400: #8e9aa0;
-  --color-gray-500: #95a5a6;
-  --color-gray-600: #5d6d7e; /* ≥4.5:1 sobre blanco (antes #7f8c8d, 3.95:1) */
-  --color-gray-700: #636e72;
-  --color-gray-800: #2c3e50;
-  --color-gray-900: #1a1a1a;
+  /* Neutrals (escala cálida entintada) */
+  --color-white: var(--color-card); /* superficie de tarjetas */
+  --color-gray-50: #f2edde;
+  --color-gray-100: #e0d9c6;
+  --color-gray-200: #cfc7b2;
+  --color-gray-300: #98a093;
+  --color-gray-400: #7d8a80;
+  --color-gray-500: #6d7c71;
+  --color-gray-600: #4c5f53; /* ≥4.5:1 sobre claro */
+  --color-gray-700: #3e5044;
+  --color-gray-800: #22392b;
+  --color-gray-900: var(--color-ink);
 
   /* Surfaces & Text */
-  --color-bg: #f8f9fa;
-  --color-surface: #f9faf9;
-  --color-surface-alt: #f6f8f6;
-  --color-text: var(--color-secondary-dark);
-  --color-text-secondary: var(--color-gray-600);
+  --color-bg: var(--color-paper);
+  --color-surface: var(--color-card);
+  --color-surface-alt: var(--color-paper-2);
+  --color-text: var(--color-ink);
+  --color-text-secondary: var(--color-ink-2);
   --color-border: var(--color-gray-100);
 
   /* Soft status tints */
-  --color-primary-soft: #e8f5e9;
-  --color-info-soft: #e3f2fd;
-  --color-warning-soft: #fff3e0;
+  --color-mint: #ddf0e2;
+  --color-primary-soft: var(--color-mint);
+  --color-info-soft: #ddebf5;
+  --color-warning-soft: #fcefc7;
+  --color-terra-soft: #fbe0d4;
 
   /* Font Families */
   --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-secondary: "Nunito", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
   --font-accent: "Pacifico", cursive;
 
   /* Spacing Scale */
@@ -68,24 +84,28 @@
   --space-56: 56px;
   --space-64: 64px;
 
-  /* Shadows */
-  --shadow-sm: 0 2px 4px rgba(46, 204, 113, 0.1);
-  --shadow-md: 0 4px 8px rgba(46, 204, 113, 0.15);
-  --shadow-lg: 0 8px 16px rgba(46, 204, 113, 0.2);
-  --shadow-xl: 0 12px 24px rgba(46, 204, 113, 0.25);
-  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-lift: 0 5px 15px rgba(0, 0, 0, 0.1);
+  /* Shadows (tinta suave; las duras offset son el sello editorial) */
+  --shadow-sm: 0 2px 4px rgba(23, 48, 31, 0.08);
+  --shadow-md: 0 4px 8px rgba(23, 48, 31, 0.1);
+  --shadow-lg: 0 8px 16px rgba(23, 48, 31, 0.12);
+  --shadow-xl: 0 12px 24px rgba(23, 48, 31, 0.14);
+  --shadow-soft: 0 2px 8px rgba(23, 48, 31, 0.06);
+  --shadow-lift: 0 5px 15px rgba(23, 48, 31, 0.12);
+  --shadow-hard-sm: 3px 3px 0 var(--color-ink);
+  --shadow-hard-md: 5px 5px 0 var(--color-ink);
+  --shadow-hard-lg: 8px 8px 0 var(--color-ink);
+  --border-ink: 2px solid var(--color-ink);
 
   /* Z-index layers */
   --z-overlay: 900;
   --z-modal: 1000;
   --z-toast: 1100;
 
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  /* Border Radius (generosos, orgánicos) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
   --radius-full: 9999px;
 
   /* -------------------------------------------------------
@@ -153,6 +173,23 @@
 }
 
 @font-face {
+  font-family: "Fraunces";
+  src: url("../../fonts/Fraunces/Fraunces-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("../../fonts/Fraunces/Fraunces-Italic-Variable.ttf")
+    format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Pacifico";
   src:
     local("Pacifico"),
@@ -186,8 +223,8 @@ body {
   font-family: var(--font-primary);
   font-size: 16px;
   line-height: 1.6;
-  color: var(--color-gray-900);
-  background-color: var(--color-white);
+  color: var(--color-text);
+  background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -200,7 +237,7 @@ img {
 
 /* === Links === */
 a {
-  color: var(--color-secondary-dark);
+  color: var(--color-ink);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -212,7 +249,7 @@ a:focus-visible {
 
 /* === Focus Styles === */
 :focus-visible {
-  outline: 3px solid rgba(46, 204, 113, 0.4);
+  outline: 3px solid rgba(30, 132, 73, 0.45);
   outline-offset: 2px;
 }
 
@@ -221,20 +258,21 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-secondary);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--color-secondary-dark);
+  font-family: var(--font-display);
+  font-weight: 640;
+  line-height: 1.15;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
 }
 
 h1 {
   font-size: 3rem;
-  font-weight: 800;
+  font-weight: 680;
   margin-bottom: var(--space-24);
 }
 
 h2 {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   margin-bottom: var(--space-16);
 }
 
@@ -245,13 +283,13 @@ h3 {
 
 p {
   font-size: 1rem;
-  color: var(--color-gray-600);
+  color: var(--color-text-secondary);
   margin-bottom: var(--space-16);
 }
 
 label {
   font-weight: 600;
-  color: var(--color-secondary-dark);
+  color: var(--color-ink);
   display: inline-block;
   margin-bottom: var(--space-8);
 }
@@ -287,40 +325,6 @@ label {
   }
 }
 
-/* === Dark mode automático (tokens) ===
-   Las páginas con diseño claro fijo (landing, about, auth) llevan
-   class="force-light" en <html> y quedan fuera del flip de tokens. */
-@media (prefers-color-scheme: dark) {
-  :root:not(.force-light) {
-    --color-bg: #12161c;
-    --color-surface: #171c24;
-    --color-surface-alt: #1b212b;
-    --color-white: #1e242e; /* superficie de tarjetas */
-    --color-text: #e8ecf1;
-    --color-text-secondary: #a8b3bd;
-    --color-border: #2c3642;
-    --color-gray-50: #232b36;
-    --color-gray-100: #33404d;
-    --color-gray-200: #3d4b5a;
-    --color-gray-300: #6b7a88;
-    --color-gray-400: #8494a2;
-    --color-gray-600: #9aa7b1;
-    --color-gray-700: #b3bec8;
-    --color-gray-800: #dfe6ec;
-    --color-gray-900: #eef2f6;
-    --color-secondary-dark: #dfe6ec;
-    --color-secondary: #c4cfd9;
-    --color-primary-light: rgba(46, 204, 113, 0.18);
-    --color-primary-soft: rgba(46, 204, 113, 0.15);
-    --color-info-soft: rgba(52, 152, 219, 0.16);
-    --color-warning-soft: rgba(243, 156, 18, 0.16);
-  }
-
-  :root:not(.force-light) img {
-    filter: brightness(0.92);
-  }
-}
-
 /* === Utility Classes === */
 .is-hidden {
   display: none !important;
@@ -341,4 +345,37 @@ label {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 40px;
+}
+
+/* === Scrollbar editorial (global, hereda en scrolls internos) === */
+/* Solo Firefox: en Chromium scrollbar-color anularía las reglas
+   ::-webkit-scrollbar de abajo, que dan el estilo completo. */
+@supports not selector(::-webkit-scrollbar) {
+  :root {
+    scrollbar-color: var(--color-primary) var(--color-paper-2);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-paper-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  /* borde del color del track: efecto "pill" flotante */
+  border: 3px solid var(--color-paper-2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-dark);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-paper-2);
 }

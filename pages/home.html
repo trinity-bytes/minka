@@ -38,80 +38,7 @@
   </head>
   <body class="home-page">
     <a href="#main" class="skip-link">Saltar al contenido</a>
-    <header id="app-header" class="auth-header">
-      <div class="auth-header__container">
-        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
-          <img
-            src="../assets/images/minka-logo.png"
-            alt="Mink'a"
-            class="logo-image"
-          />
-        </a>
-        <button
-          class="mobile-menu-toggle"
-          aria-label="Abrir menú"
-          aria-expanded="false"
-          aria-controls="app-nav"
-        >
-          <span class="hamburger-icon"><span></span><span></span><span></span></span>
-        </button>
-        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
-          <a href="home.html" class="auth-header__link"
-            ><i class="fa-solid fa-house nav-icon"></i
-            ><span data-i18n="nav_home">Inicio</span></a
-          >
-          <a href="busqueda.html" class="auth-header__link"
-            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
-            ><span data-i18n="nav_search">Buscar</span></a
-          >
-          <a href="publicar.html" class="auth-header__link"
-            ><i class="fa-solid fa-circle-plus nav-icon"></i
-            ><span data-i18n="nav_publish">Publicar</span></a
-          >
-          <a href="chat.html" class="auth-header__link" data-show="auth"
-            ><i class="fa-solid fa-comments nav-icon"></i
-            ><span data-i18n="nav_chats">Chats</span></a
-          >
-          <a href="comunidad.html" class="auth-header__link"
-            ><i class="fa-solid fa-users nav-icon"></i
-            ><span data-i18n="nav_community">Comunidad</span></a
-          >
-          <a
-            href="notificaciones.html"
-            class="auth-header__link"
-            data-show="auth"
-            ><i class="fa-solid fa-bell nav-icon"></i
-            ><span data-i18n="nav_notifications">Notificaciones</span>
-            <span
-              class="nav-badge"
-              data-unread-badge
-              aria-label="notificaciones no leídas"
-              >0</span
-            ></a
-          >
-          <a href="perfil.html" class="auth-header__link" data-show="auth"
-            ><i class="fa-solid fa-user nav-icon"></i
-            ><span data-i18n="nav_profile">Perfil</span></a
-          >
-          <a
-            href="auth.html"
-            class="auth-header__link"
-            data-action="logout"
-            data-show="auth"
-            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
-            ><span data-i18n="nav_logout">Salir</span></a
-          >
-          <a
-            href="auth.html"
-            class="auth-header__link is-hidden"
-            data-show="guest"
-            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
-            ><span data-i18n="nav_login">Ingresar</span></a
-          >
-        </nav>
-        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
-      </div>
-    </header>
+    <header id="app-header" class="auth-header"></header>
 
     <main id="main" class="home-main">
       <!-- T19 - Andy Salcedo: Hero bienvenida -->
@@ -180,6 +107,41 @@
                 <span data-i18n="home_publish_button">Publicar</span>
               </a>
             </div>
+            <nav class="home-cats" aria-label="Explorar por categoría">
+              <span class="home-cats__label" data-i18n="home_explore_label"
+                >Explora por categoría:</span
+              >
+              <a
+                class="home-cat-chip"
+                href="busqueda.html?category=Libros"
+                data-i18n="publish.mainInfo.categories.books"
+                >Libros</a
+              >
+              <a
+                class="home-cat-chip"
+                href="busqueda.html?category=Ropa%20y%20accesorios"
+                data-i18n="publish.mainInfo.categories.clothing"
+                >Ropa y accesorios</a
+              >
+              <a
+                class="home-cat-chip"
+                href="busqueda.html?category=Electr%C3%B3nica"
+                data-i18n="publish.mainInfo.categories.electronics"
+                >Electrónica</a
+              >
+              <a
+                class="home-cat-chip"
+                href="busqueda.html?category=Hogar"
+                data-i18n="publish.mainInfo.categories.home"
+                >Hogar</a
+              >
+              <a
+                class="home-cat-chip"
+                href="busqueda.html?category=Servicios"
+                data-i18n="publish.mainInfo.categories.services"
+                >Servicios</a
+              >
+            </nav>
           </div>
           <div class="home-hero__card" aria-label="Tu progreso">
             <h3 data-i18n="home_impact_title">Tu impacto</h3>
@@ -248,24 +210,12 @@
                 <div class="impact-progress__fill" style="width: 50%"></div>
               </div>
             </div>
-            <div
-              class="impact-links"
-              style="
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-                margin-top: 1rem;
-              "
-            >
+            <div class="impact-links">
               <a href="gamification.html" class="impact-link">
                 Ver mis Eco-Puntos y Premios
                 <i class="fas fa-arrow-right"></i>
               </a>
-              <a
-                href="dashboard.html"
-                class="impact-link"
-                style="color: var(--color-secondary)"
-              >
+              <a href="dashboard.html" class="impact-link">
                 Ver Dashboard de Impacto
                 <i class="fas fa-chart-bar"></i>
               </a>
@@ -274,40 +224,71 @@
         </div>
       </section>
 
+      <!-- Reto comunitario destacado (datos demo de comunidad) -->
+      <section class="home-challenge" aria-label="Reto comunitario destacado">
+        <div class="container">
+          <div class="home-challenge__band">
+            <span class="home-challenge__icon" aria-hidden="true"
+              ><i class="fas fa-book-open"></i
+            ></span>
+            <div class="home-challenge__text">
+              <h2 data-i18n="home_challenge_title">
+                Reto del mes: Semana del Libro
+              </h2>
+              <p data-i18n="home_challenge_text">
+                Tu distrito ya completó el 75% de la meta. Intercambia libros y
+                suma puntos.
+              </p>
+              <div
+                class="home-challenge__bar"
+                role="progressbar"
+                aria-valuenow="75"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label="Avance del reto"
+              >
+                <div class="home-challenge__fill" style="width: 75%"></div>
+              </div>
+            </div>
+            <a
+              href="comunidad.html"
+              class="btn btn-primary home-challenge__cta"
+              data-i18n="home_challenge_cta"
+              >Ver retos</a
+            >
+          </div>
+        </div>
+      </section>
+
       <!-- T19 - Andy Salcedo: Populares -->
       <section class="popular" aria-label="Publicaciones populares">
         <div class="container">
-          <div class="section-header">
-            <h2 class="section-header__title">Publicaciones populares</h2>
-            <p class="section-header__subtitle">
-              Basadas en reputación, cercanía y actividad reciente. Datos
-              simulados para la demo.
-            </p>
+          <div class="popular-head">
+            <div>
+              <h2 class="popular-head__title" data-i18n="home_popular_title">
+                Publicaciones populares
+              </h2>
+              <p
+                class="popular-head__subtitle"
+                data-i18n="home_popular_subtitle"
+              >
+                Basadas en reputación, cercanía y actividad reciente.
+              </p>
+            </div>
+            <a class="popular-head__all" href="busqueda.html"
+              ><span data-i18n="home_popular_all">Ver todas</span>
+              <i class="fas fa-arrow-right" aria-hidden="true"></i
+            ></a>
           </div>
-          <div class="popular-grid" id="popular-list"></div>
+          <div class="popular-viewport">
+            <div class="popular-grid" id="popular-list"></div>
+          </div>
         </div>
       </section>
     </main>
 
     <!-- T19 - Andy Salcedo: Footer minimalista -->
-    <footer class="app-footer">
-      <div class="container app-footer__content">
-        <div class="app-footer__brand">
-          <img
-            src="../assets/images/minka-logo-negativo-blanco.png"
-            alt="Mink'a"
-            class="app-footer__logo"
-          />
-          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
-        </div>
-        <div class="app-footer__links">
-          <a href="about.html">Acerca de</a>
-          <a href="../index.html#impacto">Impacto</a>
-          <a href="about.html">Términos</a>
-          <a href="about.html">Privacidad</a>
-        </div>
-      </div>
-    </footer>
+    <footer id="app-footer" class="app-footer"></footer>
 
     <script src="../assets/scripts/core/notif-badge.js" defer></script>
     <script src="../assets/scripts/pages/home.js"></script>

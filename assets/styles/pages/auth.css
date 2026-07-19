@@ -4,7 +4,7 @@
 }
 
 .auth-page {
-  background: linear-gradient(180deg, #ffffff 0%, var(--color-surface-alt) 100%);
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface-alt) 100%);
   min-height: 100dvh;
   color: var(--color-secondary-dark);
 }
@@ -229,13 +229,13 @@
 }
 
 .btn-google {
-  background-color: white;
+  background-color: var(--color-surface);
   color: #757575;
   border-color: #dadce0;
 }
 
 .btn-google:hover {
-  background-color: #f8f9fa;
+  background-color: var(--color-surface-alt);
   border-color: #d2e3fc;
 }
 

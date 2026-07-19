@@ -9,22 +9,12 @@
 }
 
 .search-hero {
-  padding: var(--space-48) 0 var(--space-24);
-  background: linear-gradient(135deg, var(--color-surface-alt) 0%, #ffffff 100%);
+  padding: 0 0 var(--space-24);
   border-bottom: 1px solid var(--color-gray-50);
 }
 
-.search-hero__content h1 {
-  margin-bottom: var(--space-12);
-}
-
-.search-hero__content p {
-  max-width: 720px;
-  color: var(--color-gray-600);
-}
-
 .search-bar {
-  margin-top: var(--space-16);
+  margin-top: var(--space-8);
   display: grid;
   grid-template-columns: 1fr auto auto auto;
   gap: var(--space-12);
@@ -76,7 +66,7 @@
 /* T30 - Andy Salcedo: Estilos para Búsquedas Guardadas */
 .saved-searches {
   margin-top: 1rem;
-  background: white;
+  background: var(--color-surface);
   padding: 1rem;
   border-radius: 8px;
   box-shadow: var(--shadow-sm);
