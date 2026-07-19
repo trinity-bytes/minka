@@ -90,6 +90,7 @@ renderConversation();
 renderTemplates();
 renderMeetings();
 attachComposer();
+attachMobileNav();
 attachLocationSharing(); // T31
 attachPhotoSharing(); // T34
 attachMute();
@@ -207,13 +208,15 @@ function renderConversation() {
   els.convMeta.innerHTML = `${thread.location} · <i class="fas fa-star"></i> ${thread.rating} · ${thread.distanceKm} km`;
 
   if (thread.muted) {
-    els.btnMute.innerHTML = '<i class="fa-solid fa-bell"></i> Activar';
-    els.btnMute.classList.add("btn-outline");
-    els.btnMute.classList.remove("btn-secondary");
+    els.btnMute.innerHTML = '<i class="fa-solid fa-bell"></i>';
+    els.btnMute.classList.add("is-muted");
+    els.btnMute.title = "Activar notificaciones";
+    els.btnMute.setAttribute("aria-label", "Activar notificaciones");
   } else {
-    els.btnMute.innerHTML = '<i class="fa-solid fa-bell-slash"></i> Silenciar';
-    els.btnMute.classList.remove("btn-outline");
-    els.btnMute.classList.add("btn-secondary");
+    els.btnMute.innerHTML = '<i class="fa-solid fa-bell-slash"></i>';
+    els.btnMute.classList.remove("is-muted");
+    els.btnMute.title = "Silenciar";
+    els.btnMute.setAttribute("aria-label", "Silenciar conversación");
   }
 
   els.messages.innerHTML = thread.messages
@@ -284,6 +287,31 @@ function attachComposer() {
     insertMessage(text, true);
     els.composerInput.value = "";
   });
+}
+
+// En móvil la lista y la conversación son dos pantallas: elegir un
+// hilo abre la conversación; el botón volver regresa a la lista.
+function attachMobileNav() {
+  const shell = document.querySelector(".chat-shell");
+  const btnBack = document.getElementById("btn-back");
+  if (!shell) return;
+
+  els.list.addEventListener("click", (e) => {
+    if (e.target.closest(".thread")) {
+      shell.classList.add("is-thread-open");
+    }
+  });
+
+  if (btnBack) {
+    btnBack.addEventListener("click", () => {
+      shell.classList.remove("is-thread-open");
+    });
+  }
+
+  // Handoff directo desde detalle (?thread=...): abrir la conversación
+  if (new URLSearchParams(window.location.search).get("thread")) {
+    shell.classList.add("is-thread-open");
+  }
 }
 
 function attachMute() {

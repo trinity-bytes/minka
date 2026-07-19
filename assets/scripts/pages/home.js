@@ -51,6 +51,7 @@ document.addEventListener("languageChanged", () => {
 });
 
 function renderEmptyState() {
+  popularListEl.classList.remove("is-carousel");
   popularListEl.innerHTML = `
     <div class="empty-state">
       <div class="empty-state__icon" aria-hidden="true">🌱</div>
@@ -67,6 +68,23 @@ function renderEmptyState() {
     Store.seedDemo();
     renderPopular();
     if (window.Toast) Toast.show("Datos de ejemplo cargados.", "success");
+  });
+}
+
+// Carrusel infinito: duplica el set de tarjetas para el bucle continuo del
+// marquee CSS. Los clones quedan fuera del árbol de accesibilidad y del tab.
+function setupCarousel(count) {
+  popularListEl.classList.remove("is-carousel");
+  if (count < 4) return; // con pocos items el grid estático se ve mejor
+  popularListEl.classList.add("is-carousel");
+  popularListEl.insertAdjacentHTML("beforeend", popularListEl.innerHTML);
+  const cards = popularListEl.querySelectorAll(".popular-card");
+  cards.forEach((card, i) => {
+    if (i < count) return;
+    card.setAttribute("aria-hidden", "true");
+    card
+      .querySelectorAll("a, button")
+      .forEach((el) => el.setAttribute("tabindex", "-1"));
   });
 }
 
@@ -98,10 +116,10 @@ function renderPopular() {
         <article class="popular-card is-entering" aria-label="${
           item.title
         }" onclick="window.location.href='detalle.html?id=${item.id}'">
-          <div style="position: relative;">
+          <div class="popular-card__media">
             <img src="${item.images ? item.images[0] : item.image}" alt="${
         item.title
-      }" loading="lazy" decoding="async" width="400" height="200" style="object-fit: cover; height: 200px; width: 100%; display: block;" />
+      }" loading="lazy" decoding="async" width="400" height="200" />
             <button class="fav-toggle" type="button" aria-pressed="${
               window.Store ? Store.isFavorite(item.id) : false
             }" aria-label="Marcar como favorito" onclick="event.stopPropagation(); window.toggleHomeFavorite('${
@@ -139,6 +157,8 @@ function renderPopular() {
       `
     )
     .join("");
+
+  setupCarousel(allItems.length);
 }
 
 // Escuchar cambios de idioma para re-renderizar las tarjetas

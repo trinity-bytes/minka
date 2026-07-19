@@ -1,25 +1,26 @@
-/* T19 - Andy Salcedo: Estilos de home/app */
+/* T19 - Andy Salcedo: Estilos de home/app
+   Rediseño "Trueque Editorial": hero de trabajo denso, tarjeta de impacto
+   entintada, reto comunitario y populares en tarjetas de tinta. */
 .home-page {
-  background: var(--color-surface);
+  background: var(--color-paper);
 }
-
-/* T19 - Andy Salcedo: Navbar de la aplicación - Moved to styles.css */
 
 .home-main {
-  padding-bottom: var(--space-64);
+  padding-bottom: 0;
 }
 
+/* === Hero de bienvenida (banda de trabajo, no decoración) === */
 .home-hero {
-  padding: var(--space-48) 0 var(--space-32);
-  background: linear-gradient(135deg, var(--color-surface-alt) 0%, #ffffff 100%);
-  border-bottom: 1px solid var(--color-gray-50);
+  padding: var(--space-32) 0;
+  background: var(--color-paper-2);
+  border-bottom: var(--border-ink);
 }
 
 .home-hero__grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: var(--space-32);
-  align-items: start;
+  align-items: center;
 }
 
 .home-hero__eyebrow {
@@ -27,21 +28,27 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  font-size: 0.82rem;
   margin-bottom: var(--space-8);
 }
 
-.home-hero__subtitle {
-  color: var(--color-gray-600);
-  max-width: 640px;
-  line-height: 1.6;
+.home-hero__content h1 {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  letter-spacing: -0.02em;
 }
 
-/* T19 - Andy Salcedo: Barra de búsqueda interactiva */
+.home-hero__subtitle {
+  color: var(--color-ink-2);
+  max-width: 560px;
+  line-height: 1.55;
+}
+
+/* Barra de búsqueda + publicar */
 .home-search {
-  margin-top: var(--space-24);
+  margin-top: var(--space-20);
   display: flex;
   gap: var(--space-12);
-  align-items: center;
+  align-items: stretch;
   max-width: 720px;
 }
 
@@ -49,23 +56,22 @@
   flex: 1;
   display: flex;
   align-items: center;
-  background: var(--color-white);
-  border: 2px solid var(--color-gray-100);
-  border-radius: 50px;
-  padding: 6px 8px 6px 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: var(--color-card);
+  border: var(--border-ink);
+  border-radius: var(--radius-full);
+  padding: 5px 6px 5px 18px;
+  box-shadow: var(--shadow-hard-sm);
+  transition: box-shadow 0.15s ease;
 }
 
 .home-search__form:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: 0 4px 16px rgba(46, 204, 113, 0.15);
+  box-shadow: var(--shadow-hard-md);
 }
 
 .home-search__icon {
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   flex-shrink: 0;
-  margin-right: 12px;
+  margin-right: 10px;
 }
 
 .home-search__input {
@@ -73,9 +79,9 @@
   border: none;
   outline: none;
   font-size: 1rem;
-  color: var(--color-secondary-dark);
+  color: var(--color-ink);
   background: transparent;
-  padding: 12px 8px;
+  padding: 10px 8px;
   min-width: 0;
 }
 
@@ -85,121 +91,149 @@
 
 .home-search__button {
   background: var(--color-primary);
-  color: var(--color-white);
-  border: none;
-  border-radius: 40px;
-  padding: 12px 28px;
-  font-weight: 600;
+  color: var(--color-card);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-full);
+  padding: 10px 24px;
+  font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.2s ease;
   flex-shrink: 0;
+  transition: background-color 0.15s ease;
 }
 
 .home-search__button:hover {
   background: var(--color-primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
-}
-
-.home-search__button:active {
-  transform: translateY(0);
 }
 
 .home-search__publish {
   display: inline-flex;
   align-items: center;
   gap: var(--space-8);
-  padding: 14px 24px;
-  background: var(--color-white);
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-  border-radius: 50px;
+  padding: 10px 22px;
+  background: var(--color-accent);
+  color: var(--color-ink);
+  border: var(--border-ink);
+  border-radius: var(--radius-full);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
-  transition: all 0.2s ease;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-hard-sm);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .home-search__publish:hover {
-  background: var(--color-primary);
-  color: var(--color-white);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(46, 204, 113, 0.3);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-md);
+  color: var(--color-ink);
 }
 
 .home-search__publish svg {
   flex-shrink: 0;
 }
 
+/* Chips de categorías */
+.home-cats {
+  margin-top: var(--space-16);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.home-cats__label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-ink-2);
+  margin-right: var(--space-4);
+}
+
+.home-cat-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.home-cat-chip:hover {
+  background: var(--color-mint);
+  transform: translateY(-2px);
+  color: var(--color-ink);
+}
+
+/* === Tarjeta de impacto === */
 .home-hero__card {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-md);
+  background: var(--color-card);
+  border: var(--border-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hard-md);
   padding: var(--space-24);
 }
 
 .home-hero__card h3 {
-  margin-bottom: var(--space-20);
-  color: var(--color-secondary-dark);
-  font-size: 1.25rem;
+  margin-bottom: var(--space-16);
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
 }
 
-/* T19 - Andy Salcedo: Panel de impacto y métricas */
 .impact-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-12);
-  margin-bottom: var(--space-20);
+  margin-bottom: var(--space-16);
 }
 
 .impact-stat {
   display: flex;
   align-items: center;
   gap: var(--space-12);
-  padding: var(--space-12);
-  background: var(--color-surface);
-  border-radius: var(--space-8);
-  transition: all 0.2s ease;
-}
-
-.impact-stat:hover {
-  background: var(--color-surface-alt);
-  transform: translateY(-2px);
+  padding: var(--space-10) var(--space-12);
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-md);
 }
 
 .impact-stat__icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  color: var(--color-ink);
 }
 
 .impact-stat__icon--primary {
-  background: rgba(46, 204, 113, 0.15);
-  color: var(--color-primary);
+  background: var(--color-mint);
 }
 
 .impact-stat__icon--success {
-  background: rgba(39, 174, 96, 0.15);
-  color: var(--color-primary-dark);
+  background: var(--color-mint);
 }
 
 .impact-stat__icon--warning {
-  background: rgba(241, 196, 15, 0.15);
-  color: var(--color-accent);
+  background: var(--color-warning-soft);
 }
 
 .impact-stat__icon--info {
-  background: rgba(52, 152, 219, 0.15);
-  color: var(--color-info);
+  background: var(--color-info-soft);
 }
 
 .impact-stat__content {
@@ -209,22 +243,24 @@
 }
 
 .impact-stat__value {
-  font-size: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--color-secondary-dark);
+  color: var(--color-ink);
   line-height: 1;
 }
 
 .impact-stat__label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--color-gray-600);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .impact-progress {
-  padding: var(--space-16);
-  background: linear-gradient(135deg, var(--color-surface-alt) 0%, var(--color-primary-soft) 100%);
-  border-radius: var(--space-8);
+  padding: var(--space-12) var(--space-16);
+  background: var(--color-mint);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-md);
   margin-bottom: var(--space-16);
 }
 
@@ -237,29 +273,43 @@
 
 .impact-progress__label {
   font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-secondary-dark);
+  font-weight: 700;
+  color: var(--color-ink);
 }
 
 .impact-progress__count {
   font-size: 0.85rem;
-  color: var(--color-gray-600);
-  font-weight: 600;
+  color: var(--color-ink-2);
+  font-weight: 700;
+  font-family: var(--font-display);
 }
 
 .impact-progress__bar {
   width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 4px;
+  height: 10px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .impact-progress__fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  border-radius: 4px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-primary),
+    var(--color-primary) 8px,
+    var(--color-primary-dark) 8px,
+    var(--color-primary-dark) 16px
+  );
+  border-radius: var(--radius-full);
   transition: width 0.6s ease;
+}
+
+.impact-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
 }
 
 .impact-link {
@@ -267,72 +317,229 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-8);
-  padding: var(--space-12);
-  background: transparent;
-  border: 2px solid var(--color-gray-100);
-  border-radius: var(--space-8);
-  color: var(--color-secondary);
+  padding: var(--space-10);
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .impact-link:hover {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-white);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-sm);
+  color: var(--color-ink);
 }
 
 .impact-link i {
   font-size: 0.85rem;
-  transition: transform 0.2s ease;
 }
 
-.impact-link:hover i {
-  transform: translateX(4px);
+/* === Banda de reto comunitario === */
+.home-challenge {
+  padding: var(--space-32) 0 0;
 }
 
+.home-challenge__band {
+  display: flex;
+  align-items: center;
+  gap: var(--space-20);
+  padding: var(--space-20) var(--space-24);
+  background: var(--color-mint);
+  border: var(--border-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.home-challenge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border: var(--border-ink);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-soft);
+  color: var(--color-ink);
+  font-size: 1.3rem;
+}
+
+.home-challenge__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-challenge__text h2 {
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-4);
+}
+
+.home-challenge__text p {
+  color: var(--color-ink-2);
+  font-size: 0.92rem;
+  margin-bottom: var(--space-8);
+}
+
+.home-challenge__bar {
+  max-width: 420px;
+  height: 10px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.home-challenge__fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-accent),
+    var(--color-accent) 8px,
+    var(--color-warning) 8px,
+    var(--color-warning) 16px
+  );
+}
+
+.home-challenge__cta {
+  flex-shrink: 0;
+}
+
+/* === Populares === */
 .popular {
-  padding: var(--space-48) 0;
+  padding: var(--space-32) 0 var(--space-48);
+}
+
+.popular-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-16);
+  margin-bottom: var(--space-20);
+}
+
+.popular-head__title {
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-4);
+}
+
+.popular-head__subtitle {
+  color: var(--color-gray-600);
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.popular-head__all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.popular-head__all:hover i {
+  transform: translateX(3px);
+}
+
+.popular-head__all i {
+  transition: transform 0.15s ease;
 }
 
 .popular-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-16);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-20);
 }
 
-/* T19 - Andy Salcedo: Tarjetas populares mejoradas */
+/* === Carrusel infinito (marquee) === */
+.popular-viewport {
+  overflow: hidden;
+  /* aire para el translate + sombra dura del hover sin recorte */
+  padding: var(--space-8) var(--space-4);
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 3%,
+    #000 97%,
+    transparent
+  );
+}
+
+.popular-grid.is-carousel {
+  display: flex;
+  width: max-content;
+  gap: var(--space-20);
+  animation: popular-marquee 45s linear infinite;
+}
+
+.popular-grid.is-carousel .popular-card {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.popular-grid.is-carousel:hover,
+.popular-grid.is-carousel:focus-within {
+  animation-play-state: paused;
+}
+
+/* -50% recorre un set completo; el medio gap corrige el desfase del gap
+   central entre set original y clon para un bucle sin salto. */
+@keyframes popular-marquee {
+  to {
+    transform: translateX(calc(-50% - var(--space-10)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popular-grid.is-carousel {
+    animation: none;
+  }
+
+  .popular-viewport {
+    overflow-x: auto;
+    mask-image: none;
+  }
+}
+
 .popular-card {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-12);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-card);
+  border: var(--border-ink);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
   cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .popular-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
-  border-color: var(--color-primary);
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-hard-md);
 }
 
+.popular-card__media {
+  position: relative;
+  border-bottom: 1.5px solid var(--color-ink);
+}
+
+.popular-card__media img,
 .popular-card img {
   width: 100%;
   height: 180px;
   object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.popular-card:hover img {
-  transform: scale(1.05);
+  display: block;
 }
 
 .popular-card__body {
@@ -343,16 +550,17 @@
 }
 
 .popular-card__title {
-  font-size: 1.1rem;
-  color: var(--color-secondary-dark);
+  font-size: 1.15rem;
+  color: var(--color-ink);
 }
 
 .popular-card__meta {
   display: flex;
   gap: var(--space-8);
   flex-wrap: wrap;
+  align-items: center;
   color: var(--color-gray-600);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .popular-card__footer {
@@ -370,8 +578,7 @@
   text-align: center;
 }
 
-
-/* T19 - Andy Salcedo: Footer minimalista */
+/* === Responsive === */
 @media (max-width: 1024px) {
   .home-hero__grid {
     grid-template-columns: 1fr;
@@ -384,7 +591,7 @@
   }
 
   .home-hero {
-    padding: var(--space-32) 0 var(--space-24);
+    padding: var(--space-24) 0;
   }
 
   .home-search {
@@ -409,11 +616,23 @@
     width: 100%;
     justify-content: center;
   }
+
+  .home-challenge__band {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-challenge__bar {
+    max-width: 100%;
+  }
+
+  .popular-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 480px) {
-  /* auth-header styles moved to styles.css */
-
   .home-search__form {
     padding: 4px 6px 4px 16px;
   }
@@ -432,14 +651,15 @@
   }
 
   .home-search__publish {
-    padding: 14px 18px;
+    padding: 12px 18px;
   }
+
   .impact-stats {
     grid-template-columns: 1fr;
   }
 
   .impact-stat__value {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
   .impact-progress__label,
@@ -447,8 +667,8 @@
     font-size: 0.8rem;
   }
 
+  .popular-card__media img,
   .popular-card img {
     height: 160px;
   }
-
 }

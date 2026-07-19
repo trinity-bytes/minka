@@ -189,11 +189,12 @@
     width: 280px;
     height: 100vh;
     height: 100dvh;
-    background: var(--color-white);
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    background: var(--color-bg);
+    border-left: 2px solid var(--color-ink);
+    box-shadow: -6px 0 24px rgba(23, 48, 31, 0.18);
     flex-direction: column;
     flex-wrap: nowrap;
-    padding: 80px 20px 24px;
+    padding: 72px 20px 24px;
     gap: 4px;
     transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 100;
@@ -205,6 +206,16 @@
     right: 0;
   }
 
+  /* En columna no aplican los margin auto ni los pill-outline desktop */
+  .auth-header__link:first-child,
+  .auth-header__link[data-show="guest"] {
+    margin-left: 0;
+  }
+
+  .auth-header__link[data-show="guest"] {
+    box-shadow: none;
+  }
+
   .auth-header__link {
     width: 100%;
     padding: 12px 16px;
@@ -213,13 +224,23 @@
     justify-content: flex-start;
   }
 
+  /* Salir anclado al fondo del drawer, separado del grupo */
+  .auth-header__link[data-action="logout"] {
+    margin-left: 0;
+    margin-top: auto;
+    border-top: 1px solid var(--color-gray-100);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    padding-top: var(--space-16);
+    box-shadow: none;
+  }
+
   .auth-header__link .nav-icon {
     display: inline-block;
   }
 
   .auth-header__link:hover,
   .auth-header__link[aria-current="page"] {
-    background: rgba(46, 204, 113, 0.08);
+    background: var(--color-mint);
   }
 
   .logo-image {

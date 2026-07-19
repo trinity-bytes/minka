@@ -60,12 +60,15 @@
 
 .btn-primary:hover {
   background: var(--color-primary-dark);
+  /* a:hover global gana en especificidad a .btn-primary: fijar color aquí */
+  color: #ffffff;
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
 }
 
 .btn-primary:active {
   background: var(--color-primary-darker);
+  color: #ffffff;
   transform: translateY(0);
 }
 
@@ -1079,49 +1082,117 @@ input:checked + .slider:before {
   gap: 0.5rem;
 }
 
-/* === High Contrast Mode === */
+/* === High Contrast Mode (base clara: texto negro sobre blanco,
+   bordes fuertes y verde oscuro AAA) === */
 body.high-contrast {
-  --color-primary: #00ff00;
-  --color-secondary: #ffffff;
-  --bg-color: #000000;
-  --text-color: #ffffff;
-  --color-gray-600: #dddddd;
-  background-color: #000000 !important;
-  color: #ffffff !important;
+  --color-primary: #14532d;
+  --color-primary-dark: #0e3d21;
+  --color-primary-ink: #14532d;
+  --color-text: #000000;
+  --color-text-secondary: #1a1a1a;
+  --color-gray-600: #1a1a1a;
+  --color-border: #000000;
+  background-color: #ffffff !important;
+  color: #000000 !important;
 }
 
 body.high-contrast .settings-card,
 body.high-contrast .auth-header,
 body.high-contrast .card,
 body.high-contrast .modal__content {
-  background-color: #1a1a1a !important;
-  border: 2px solid #ffffff;
-  color: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 2px solid #000000;
+  color: #000000 !important;
 }
 
 body.high-contrast a {
-  color: #ffff00 !important;
+  color: #00279c !important;
   text-decoration: underline;
 }
 
 body.high-contrast button.btn-primary {
-  background-color: #000000;
-  border: 2px solid #ffffff;
+  background-color: #14532d;
+  border: 2px solid #000000;
   color: #ffffff;
   font-weight: bold;
 }
 
 body.high-contrast .switch .slider {
-  background-color: #333;
-  border: 1px solid #fff;
+  background-color: #ffffff;
+  border: 2px solid #000000;
 }
 
 body.high-contrast input:checked + .slider {
-  background-color: #00ff00;
+  background-color: #14532d;
 }
 
 /* === Low Data Mode === */
 body.low-data img {
   filter: blur(2px);
   transition: none !important;
+}
+
+/* === Page head compacto ===
+   Reemplaza los heroes utilitarios: título en una línea + botón de info
+   que despliega la descripción solo a pedido del usuario. */
+.page-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  padding: var(--space-24) 0 var(--space-12);
+}
+
+.page-head__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.page-head__info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--color-ink);
+  border-radius: 50%;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.page-head__info-btn:hover,
+.page-head__info-btn[aria-expanded="true"] {
+  background: var(--color-mint);
+}
+
+.page-head__hint {
+  flex-basis: 100%;
+  margin: 0;
+  max-width: 65ch;
+  padding: var(--space-10) var(--space-16);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-md);
+  background: var(--color-mint);
+  color: var(--color-ink-2);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.page-head__hint[hidden] {
+  display: none;
+}
+
+/* === Tarjeta editorial compartida ===
+   Identidad visual única; el padding interno lo define cada página. */
+.card {
+  background: var(--color-card);
+  border: var(--border-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hard-sm);
 }

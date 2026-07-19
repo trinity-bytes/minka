@@ -316,7 +316,7 @@ function setupEventListeners() {
       const password = reauthPasswordInput.value;
       const reauthError = document.getElementById("reauth-error");
       const expected =
-        (window.Session && Session.getSession()?.password) || "Minka123";
+        (window.Session && Session.getSession()?.password) || "demo1234";
 
       if (!password) {
         if (reauthError) reauthError.textContent = "Ingresa tu contraseña.";

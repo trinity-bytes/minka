@@ -10,7 +10,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  background: white;
+  background: var(--color-surface);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
@@ -116,7 +116,7 @@
 
 .tab-content {
   display: none;
-  background: white;
+  background: var(--color-surface);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-soft);

@@ -51,6 +51,15 @@ const MINKA_TRANSLATIONS = {
     home_impact_savings: "Ahorro est.",
     home_impact_co2: "kg CO₂ ahorrado",
     home_impact_level: "Nivel: Eco-Guerrero",
+    home_explore_label: "Explora por categoría:",
+    home_challenge_title: "Reto del mes: Semana del Libro",
+    home_challenge_text:
+      "Tu distrito ya completó el 75% de la meta. Intercambia libros y suma puntos.",
+    home_challenge_cta: "Ver retos",
+    home_popular_title: "Publicaciones populares",
+    home_popular_subtitle:
+      "Basadas en reputación, cercanía y actividad reciente.",
+    home_popular_all: "Ver todas",
 
     // Cards
     card_view_similar: "Ver similar",
@@ -480,6 +489,14 @@ const MINKA_TRANSLATIONS = {
     home_impact_savings: "Est. Savings",
     home_impact_co2: "kg CO₂ saved",
     home_impact_level: "Level: Eco-Warrior",
+    home_explore_label: "Explore by category:",
+    home_challenge_title: "Challenge of the month: Book Week",
+    home_challenge_text:
+      "Your district has already completed 75% of the goal. Trade books and earn points.",
+    home_challenge_cta: "See challenges",
+    home_popular_title: "Popular listings",
+    home_popular_subtitle: "Based on reputation, proximity and recent activity.",
+    home_popular_all: "View all",
 
     // Cards
     card_view_similar: "View similar",
@@ -890,6 +907,14 @@ const MINKA_TRANSLATIONS = {
     home_impact_savings: "Qullqi Waqaychay",
     home_impact_co2: "kg CO₂ waqaychasqa",
     home_impact_level: "Nivel: Eco-Awqaq",
+    home_explore_label: "Categoriakama maskay:",
+    home_challenge_title: "Killa atipanakuy: Liwrukunapa Semanan",
+    home_challenge_text:
+      "Aylluykiqa 75% metatañan hunt'arqun. Liwrukunata chhalay, puntokunata huñuy.",
+    home_challenge_cta: "Atipanakuykunata qhaway",
+    home_popular_title: "Reqsisqa publicacionkuna",
+    home_popular_subtitle: "Reputacion, qayllakay, musuq ruwaykunamanta.",
+    home_popular_all: "Llapanta qhaway",
 
     // Cards
     card_view_similar: "Rikch'akuq",

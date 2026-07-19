@@ -10,7 +10,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(250, 245, 234, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 2px solid var(--color-gray-50);
   box-shadow: var(--shadow-sm);
@@ -67,25 +67,12 @@
    APP HEADER (Post-Login Navigation)
    ============================================= */
 .auth-header {
-  border-bottom: 1px solid var(--color-gray-50);
-  background: rgba(255, 255, 255, 0.98);
+  border-bottom: 2px solid var(--color-ink);
+  background: rgba(250, 245, 234, 0.97);
   backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.force-light) .auth-header {
-    background: rgba(23, 28, 36, 0.98);
-  }
-
-  /* El footer usa --color-secondary-dark como FONDO; en dark el token
-     pasa a claro, así que se fija un fondo oscuro explícito. */
-  :root:not(.force-light) .app-footer {
-    background: #10141a;
-  }
 }
 
 .auth-header__container {
@@ -94,7 +81,6 @@
   padding: var(--space-12) 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-16);
 }
 
@@ -107,18 +93,26 @@
 .auth-header__nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+
+/* Logo | espacio | links navegables | espacio | Salir:
+   los dos margin auto (primer link y Salir) reparten el hueco
+   sobrante y centran el grupo, con Salir anclado a la derecha. */
+.auth-header__link:first-child {
+  margin-left: auto;
 }
 
 .auth-header__link {
   position: relative;
   text-decoration: none;
-  color: var(--color-secondary);
+  color: var(--color-ink-2);
   font-weight: 600;
   font-size: 0.9rem;
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-full);
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -127,17 +121,40 @@
 }
 
 .auth-header__link:hover {
-  color: var(--color-primary);
-  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  background: var(--color-paper-2);
 }
 
 .auth-header__link[aria-current="page"],
 .auth-header__link--active {
-  color: var(--color-primary);
-  background: rgba(46, 204, 113, 0.12);
+  color: var(--color-ink);
+  background: var(--color-mint);
   font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  box-shadow: inset 0 0 0 1.5px var(--color-ink);
+}
+
+/* Salir: separado del grupo y con identidad propia (terracota) */
+.auth-header__link[data-action="logout"] {
+  margin-left: auto;
+  color: var(--color-terra);
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.auth-header__link[data-action="logout"]:hover {
+  color: var(--color-terra);
+  background: var(--color-terra-soft);
+}
+
+/* Ingresar (invitado) ocupa el lugar de Salir cuando no hay sesión */
+.auth-header__link[data-show="guest"] {
+  margin-left: auto;
+  color: var(--color-primary);
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.auth-header__link[data-show="guest"]:hover {
+  background: var(--color-mint);
+  color: var(--color-primary-dark);
 }
 
 /* Nav icon in links (visible mainly on mobile) */
@@ -221,10 +238,9 @@ body.mobile-menu-open {
    ============================================= */
 .app-footer {
   background: var(--color-secondary-dark);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-paper);
   padding: var(--space-32) 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: var(--space-48);
 }
 
 .app-footer__content {
@@ -259,14 +275,18 @@ body.mobile-menu-open {
 }
 
 .app-footer__links a {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-paper);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s ease;
 }
 
-.app-footer__links a:hover {
-  color: var(--color-primary);
+.app-footer__links a:hover,
+.app-footer__links a:focus-visible {
+  /* Sobre fondo tinta oscuro: ámbar y verde vivo, nunca verde tinta */
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* =============================================
@@ -276,7 +296,7 @@ body.mobile-menu-open {
 /* === Hero Section === */
 .hero {
   padding: var(--space-64) 0;
-  background: linear-gradient(135deg, #f6f8f6 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #f2ead8 0%, #faf5ea 100%);
 }
 
 .hero__grid {
@@ -381,7 +401,7 @@ body.mobile-menu-open {
 /* === Benefits Section === */
 .benefits {
   padding: var(--space-64) 0;
-  background: linear-gradient(180deg, #ffffff 0%, #f6f8f6 100%);
+  background: linear-gradient(180deg, #faf5ea 0%, #f2ead8 100%);
 }
 
 .benefits-grid {
@@ -679,7 +699,7 @@ body.mobile-menu-open {
    ============================================= */
 .profile {
   padding: var(--space-64) 0;
-  background: linear-gradient(180deg, #ffffff 0%, #f6f8f6 100%);
+  background: linear-gradient(180deg, #faf5ea 0%, #f2ead8 100%);
 }
 
 .profile__grid {
