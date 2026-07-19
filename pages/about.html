@@ -99,9 +99,12 @@
                 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             "
           >
-            <iframe
-              src="https://www.youtube.com/embed/--xiPEQ3y08"
-              title="Video Sobre Nosotros Mink'a"
+            <!-- Facade: el player de YouTube solo carga al hacer click -->
+            <button
+              type="button"
+              id="video-facade"
+              data-video-id="--xiPEQ3y08"
+              aria-label="Reproducir video Sobre Nosotros Mink'a"
               style="
                 position: absolute;
                 top: 0;
@@ -109,19 +112,50 @@
                 width: 100%;
                 height: 100%;
                 border: 0;
+                cursor: pointer;
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                color: #ffffff;
               "
-              allow="
-                accelerometer;
-                autoplay;
-                clipboard-write;
-                encrypted-media;
-                gyroscope;
-                picture-in-picture;
-                web-share;
-              "
-              allowfullscreen
             >
-            </iframe>
+              <span
+                aria-hidden="true"
+                style="
+                  width: 72px;
+                  height: 72px;
+                  border-radius: 50%;
+                  background: #2ecc71;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 1.8rem;
+                "
+                >▶</span
+              >
+              <span style="font-weight: 600">Ver video Sobre Nosotros</span>
+            </button>
+            <script>
+              document
+                .getElementById("video-facade")
+                .addEventListener("click", function () {
+                  var iframe = document.createElement("iframe");
+                  iframe.src =
+                    "https://www.youtube.com/embed/" +
+                    this.dataset.videoId +
+                    "?autoplay=1";
+                  iframe.title = "Video Sobre Nosotros Mink'a";
+                  iframe.style.cssText =
+                    "position:absolute;top:0;left:0;width:100%;height:100%;border:0;";
+                  iframe.allow =
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                  iframe.allowFullscreen = true;
+                  this.replaceWith(iframe);
+                });
+            </script>
           </div>
         </div>
       </section>
