@@ -121,8 +121,8 @@
     </header>
     <nav class="breadcrumb" aria-label="Migas de pan">
       <ol class="container">
-        <li><a href="home.html">Inicio</a></li>
-        <li><a href="busqueda.html">Búsqueda</a></li>
+        <li><a href="home.html" data-i18n="nav_home">Inicio</a></li>
+        <li><a href="busqueda.html" data-i18n="nav_search">Búsqueda</a></li>
       <li aria-current="page"><span id="breadcrumb-current">Detalle</span></li>
       </ol>
     </nav>
@@ -156,7 +156,7 @@
 
             <div class="card">
               <div class="card__header">
-                <h2>Descripción</h2>
+                <h2 data-i18n="detail_description">Descripción</h2>
               </div>
               <div class="card__body">
                 <p id="item-description">
@@ -169,7 +169,7 @@
 
             <div class="card seller-card">
               <div class="card__header">
-                <h3>Publicador</h3>
+                <h3 data-i18n="detail_publisher">Publicador</h3>
               </div>
               <div class="card__body seller">
                 <div class="seller__info">
@@ -180,7 +180,7 @@
                   >
                 </div>
                 <a class="btn btn-primary" href="perfil.html" id="owner-profile-link"
-                  >Ver perfil</a
+                   data-i18n="detail_view_profile">Ver perfil</a
                 >
               </div>
             </div>
@@ -207,7 +207,7 @@
 
             <div class="card qr-card" aria-label="Código QR de la publicación">
               <div class="card__header qr-card__header">
-                <h3>QR de intercambio</h3>
+                <h3 data-i18n="detail_qr_title">QR de intercambio</h3>
                 <span class="badge" id="qr-status">Pendiente</span>
               </div>
               <div class="qr-card__body">
@@ -229,10 +229,10 @@
                 ></canvas>
                 <p class="qr-code" id="qr-code-text">Qr generico</p>
                 <div class="qr-actions">
-                  <button class="btn btn-secondary" id="qr-download" disabled>
+                  <button class="btn btn-secondary" id="qr-download" disabled data-i18n="detail_qr_download">
                     Descargar
                   </button>
-                  <button class="btn btn-secondary" id="qr-share" disabled>
+                  <button class="btn btn-secondary" id="qr-share" disabled data-i18n="common_share">
                     Compartir
                   </button>
                   <!-- T33 - Miguel Sanca: Reemitir QR (HU39) -->
@@ -250,7 +250,7 @@
             <!-- T33 - Miguel Sanca: Historial de Trazabilidad (HU40) -->
             <div class="card">
               <div class="card__header">
-                <h3>Historial del Objeto</h3>
+                <h3 data-i18n="detail_timeline_title">Historial del Objeto</h3>
               </div>
               <div class="card__body">
                 <ul class="timeline" id="item-timeline">
@@ -261,10 +261,10 @@
 
             <div class="card">
               <div class="card__header">
-                <h3>Acciones</h3>
+                <h3 data-i18n="detail_actions_title">Acciones</h3>
               </div>
               <div class="card__body actions">
-                <a href="chat.html" class="btn btn-primary" id="action-contact">
+                <a href="chat.html" class="btn btn-primary" id="action-contact" data-i18n="detail_contact">
                   Contactar
                 </a>
                 <button class="btn btn-secondary" id="action-share">
@@ -272,31 +272,31 @@
                   Compartir
                 </button>
                 <!-- T33 - Miguel Sanca: Cierre Offline (HU41) -->
-                <button class="btn btn-primary" id="action-offline-close">
+                <button class="btn btn-primary" id="action-offline-close" data-i18n="detail_action_offline">
                   Cierre Offline (Código)
                 </button>
-                <button class="btn btn-secondary" id="action-edit">
+                <button class="btn btn-secondary" id="action-edit" data-i18n="detail_action_edit">
                   Editar publicación
                 </button>
-                <button class="btn btn-secondary" id="action-close">
+                <button class="btn btn-secondary" id="action-close" data-i18n="detail_action_close">
                   Cerrar publicación
                 </button>
-                <button class="btn btn-secondary" id="action-delete">
+                <button class="btn btn-secondary" id="action-delete" data-i18n="detail_action_delete">
                   Eliminar publicación
                 </button>
-                <button class="btn btn-secondary" id="action-pause">
+                <button class="btn btn-secondary" id="action-pause" data-i18n="detail_action_pause">
                   Pausar publicación
                 </button>
-                <button class="btn btn-secondary" id="action-reserve">
+                <button class="btn btn-secondary" id="action-reserve" data-i18n="detail_action_reserve">
                   Marcar como reservada
                 </button>
-                <button class="btn btn-secondary" id="action-activate">
+                <button class="btn btn-secondary" id="action-activate" data-i18n="detail_action_resume">
                   Reanudar publicación
                 </button>
-                <button class="btn btn-secondary" id="action-rate">
+                <button class="btn btn-secondary" id="action-rate" data-i18n="common_rate_title">
                   Calificar intercambio
                 </button>
-                <button class="btn btn-secondary" id="action-report">
+                <button class="btn btn-secondary" id="action-report" data-i18n="detail_action_report">
                   Reportar publicación
                 </button>
               </div>
@@ -313,7 +313,7 @@
         hidden
       >
         <div class="container">
-          <h2>Similares</h2>
+          <h2 data-i18n="detail_similar">Similares</h2>
           <div class="similar-grid" id="similar-grid"></div>
         </div>
       </section>
@@ -322,7 +322,7 @@
     <!-- Chunk 4.8: CTA fija en móvil -->
     <div class="sticky-cta" id="sticky-cta" hidden>
       <span class="sticky-cta__mode" id="sticky-cta-mode"></span>
-      <a href="chat.html" class="btn btn-primary" id="sticky-cta-contact">
+      <a href="chat.html" class="btn btn-primary" id="sticky-cta-contact" data-i18n="detail_contact">
         Contactar
       </a>
     </div>
@@ -331,7 +331,7 @@
       <div class="modal__overlay" data-close-modal="offline-modal"></div>
       <div class="modal__content" role="dialog" aria-modal="true">
         <div class="modal__header">
-          <h2>Cierre Offline</h2>
+          <h2 data-i18n="detail_offline_title">Cierre Offline</h2>
           <button
             class="modal__close"
             data-close-modal="offline-modal"
@@ -347,7 +347,7 @@
           </p>
           <form id="offline-form">
             <div class="form-group">
-              <label for="offline-code">Código de Intercambio</label>
+              <label for="offline-code" data-i18n="detail_offline_code">Código de Intercambio</label>
               <input
                 type="text"
                 id="offline-code"
@@ -370,10 +370,10 @@
                 type="button"
                 class="btn btn-secondary"
                 data-close-modal="offline-modal"
-              >
+               data-i18n="common_cancel">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" data-i18n="detail_offline_validate">
                 Validar y Cerrar
               </button>
             </div>
@@ -391,7 +391,7 @@
         aria-labelledby="rating-title"
       >
         <div class="modal__header">
-          <h3 id="rating-title">Calificar intercambio</h3>
+          <h3 id="rating-title" data-i18n="common_rate_title">Calificar intercambio</h3>
           <button
             class="modal__close"
             type="button"
@@ -454,7 +454,7 @@
               </button>
             </div>
             <label class="form-label" for="rating-comment"
-              >Comentario (opcional)</label
+               data-i18n="common_comment_opt">Comentario (opcional)</label
             >
             <textarea
               id="rating-comment"
@@ -471,10 +471,10 @@
                 type="button"
                 class="btn btn-secondary"
                 data-close-modal="rating-modal"
-              >
+               data-i18n="common_cancel">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" data-i18n="common_rate_send">
                 Enviar calificación
               </button>
             </div>
@@ -498,7 +498,7 @@
         aria-labelledby="report-title"
       >
         <div class="modal__header">
-          <h3 id="report-title">Reportar publicación</h3>
+          <h3 id="report-title" data-i18n="detail_action_report">Reportar publicación</h3>
           <button
             class="modal__close"
             type="button"
@@ -514,7 +514,7 @@
             reporte.
           </p>
           <form id="report-form" novalidate>
-            <label class="form-label" for="report-reason">Motivo</label>
+            <label class="form-label" for="report-reason" data-i18n="common_reason">Motivo</label>
             <select id="report-reason" name="report-reason" required>
               <option value="" disabled selected>Selecciona un motivo</option>
               <option value="spam">Spam o publicidad</option>
@@ -524,7 +524,7 @@
               <option value="otro">Otro</option>
             </select>
 
-            <label class="form-label" for="report-details">Detalles</label>
+            <label class="form-label" for="report-details" data-i18n="common_details">Detalles</label>
             <textarea
               id="report-details"
               name="report-details"
@@ -540,7 +540,7 @@
                 name="report-include-chat"
               />
               <label for="report-include-chat"
-                >Adjuntar referencia del chat (si aplica)</label
+                 data-i18n="detail_attach_chat">Adjuntar referencia del chat (si aplica)</label
               >
             </div>
 
@@ -549,10 +549,10 @@
                 type="button"
                 class="btn btn-secondary"
                 data-close-modal="report-modal"
-              >
+               data-i18n="common_cancel">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" data-i18n="common_report_send">
                 Enviar reporte
               </button>
             </div>
@@ -600,7 +600,7 @@
         aria-labelledby="close-reason-title"
       >
         <header class="modal__header">
-          <h3 id="close-reason-title">Cerrar Publicación</h3>
+          <h3 id="close-reason-title" data-i18n="detail_close_title">Cerrar Publicación</h3>
           <button
             class="modal__close"
             aria-label="Cerrar modal"
@@ -621,7 +621,7 @@
                 checked
               />
               <label for="reason-exchanged"
-                >¡Ya lo intercambié! (Trueque exitoso)</label
+                 data-i18n="detail_close_opt_exchanged">¡Ya lo intercambié! (Trueque exitoso)</label
               >
             </div>
             <div class="form-check">
@@ -631,17 +631,17 @@
                 name="close-reason"
                 value="other"
               />
-              <label for="reason-other">Ya no lo tengo / Otro motivo</label>
+              <label for="reason-other" data-i18n="detail_close_opt_other">Ya no lo tengo / Otro motivo</label>
             </div>
             <div class="modal__actions">
               <button
                 type="button"
                 class="btn btn-secondary"
                 data-close-modal="close-reason-modal"
-              >
+               data-i18n="common_cancel">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">Confirmar</button>
+              <button type="submit" class="btn btn-primary" data-i18n="common_confirm">Confirmar</button>
             </div>
           </form>
         </div>
@@ -658,7 +658,7 @@
         aria-labelledby="eco-title"
       >
         <header class="modal__header">
-          <h2 id="eco-title" class="modal__title">¡Trueque Exitoso!</h2>
+          <h2 id="eco-title" class="modal__title" data-i18n="detail_eco_title">¡Trueque Exitoso!</h2>
           <button
             class="modal__close"
             aria-label="Cerrar modal"
