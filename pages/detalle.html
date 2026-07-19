@@ -267,6 +267,10 @@
                 <a href="chat.html" class="btn btn-primary" id="action-contact">
                   Contactar
                 </a>
+                <button class="btn btn-secondary" id="action-share">
+                  <i class="fas fa-share-nodes" aria-hidden="true"></i>
+                  Compartir
+                </button>
                 <!-- T33 - Miguel Sanca: Cierre Offline (HU41) -->
                 <button class="btn btn-primary" id="action-offline-close">
                   Cierre Offline (Código)
@@ -300,7 +304,28 @@
           </aside>
         </div>
       </section>
+
+      <!-- Chunk 4.8: Similares de la misma categoría -->
+      <section
+        class="similar-section"
+        id="similar-section"
+        aria-label="Publicaciones similares"
+        hidden
+      >
+        <div class="container">
+          <h2>Similares</h2>
+          <div class="similar-grid" id="similar-grid"></div>
+        </div>
+      </section>
     </main>
+
+    <!-- Chunk 4.8: CTA fija en móvil -->
+    <div class="sticky-cta" id="sticky-cta" hidden>
+      <span class="sticky-cta__mode" id="sticky-cta-mode"></span>
+      <a href="chat.html" class="btn btn-primary" id="sticky-cta-contact">
+        Contactar
+      </a>
+    </div>
 
     <section class="modal" id="offline-modal" aria-hidden="true">
       <div class="modal__overlay" data-close-modal="offline-modal"></div>

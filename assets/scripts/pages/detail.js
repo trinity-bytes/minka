@@ -156,6 +156,9 @@ function init() {
       item.id
     )}&owner=${encodeURIComponent(ownerId)}`;
   }
+  setupStickyCta(item);
+  setupShare(item);
+  renderSimilar(item);
   const ownerLink = document.getElementById("owner-profile-link");
   if (ownerLink) {
     ownerLink.href = `perfil.html?user=${encodeURIComponent(ownerId)}`;
@@ -237,20 +240,138 @@ function renderDetail(item) {
   }
 
   if (Array.isArray(item.images) && item.images.length) {
-    mainImg.src = item.images[0];
-    thumbs.innerHTML = item.images
-      .map(
-        (src, idx) =>
-          `<img src="${src}" alt="Vista ${idx + 1}" data-src="${src}" />`
-      )
-      .join("");
+    setupGallery(item.images, item.title);
+  }
+}
 
-    thumbs.querySelectorAll("img").forEach((thumb) => {
-      thumb.addEventListener("click", () => {
-        mainImg.src = thumb.dataset.src;
-      });
+// Chunk 4.8: galería con thumbnails, teclado (←/→) y posición anunciada
+function setupGallery(images, title) {
+  let currentIdx = 0;
+  const gallery = document.getElementById("gallery");
+
+  function show(idx) {
+    currentIdx = (idx + images.length) % images.length;
+    mainImg.src = images[currentIdx];
+    mainImg.alt = `${title} — foto ${currentIdx + 1} de ${images.length}`;
+    mainImg.setAttribute(
+      "aria-label",
+      `Foto ${currentIdx + 1} de ${images.length}`
+    );
+    thumbs.querySelectorAll("img").forEach((t, i) => {
+      t.classList.toggle("is-active", i === currentIdx);
     });
   }
+
+  thumbs.innerHTML = images
+    .map(
+      (src, idx) =>
+        `<img src="${src}" alt="Vista ${idx + 1}" data-idx="${idx}" loading="lazy" decoding="async" />`
+    )
+    .join("");
+  // Con una sola foto no hay nada que navegar
+  thumbs.hidden = images.length < 2;
+
+  thumbs.querySelectorAll("img").forEach((thumb) => {
+    thumb.addEventListener("click", () => show(Number(thumb.dataset.idx)));
+  });
+
+  if (gallery && images.length > 1) {
+    gallery.setAttribute("tabindex", "0");
+    gallery.setAttribute(
+      "aria-label",
+      "Galería de fotos. Usa las flechas para navegar."
+    );
+    gallery.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        show(currentIdx + 1);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        show(currentIdx - 1);
+      }
+    });
+  }
+
+  show(0);
+}
+
+// Chunk 4.8: CTA fija en móvil, oculta cuando el CTA original es visible
+function setupStickyCta(item) {
+  const bar = document.getElementById("sticky-cta");
+  const barContact = document.getElementById("sticky-cta-contact");
+  const barMode = document.getElementById("sticky-cta-mode");
+  const originalCta = document.getElementById("action-contact");
+  if (!bar || !originalCta) return;
+
+  if (barContact) barContact.href = originalCta.href;
+  if (barMode) {
+    const modes = Array.isArray(item.mode) ? item.mode.join(" · ") : "";
+    barMode.textContent = modes || item.availability || "";
+  }
+
+  if (!("IntersectionObserver" in window)) return;
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      bar.hidden = entry.isIntersecting;
+    },
+    { threshold: 0.1 }
+  );
+  observer.observe(originalCta);
+}
+
+// Chunk 4.8: compartir con Web Share API o clipboard + toast
+function setupShare(item) {
+  const shareBtn = document.getElementById("action-share");
+  if (!shareBtn) return;
+  shareBtn.addEventListener("click", async () => {
+    const url = location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: item.title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        Toast.show("Enlace copiado.", "success");
+      }
+    } catch (error) {
+      if (error?.name !== "AbortError") {
+        Toast.show("No se pudo compartir el enlace.", "error");
+      }
+    }
+  });
+}
+
+// Chunk 4.8: hasta 3 similares de la misma categoría
+function renderSimilar(item) {
+  const section = document.getElementById("similar-section");
+  const grid = document.getElementById("similar-grid");
+  if (!section || !grid || !window.Store) return;
+
+  const similar = Store.getItems()
+    .filter((i) => i.id !== item.id && i.category === item.category)
+    .slice(0, 3);
+
+  if (!similar.length) {
+    section.hidden = true;
+    return;
+  }
+
+  section.hidden = false;
+  grid.innerHTML = similar
+    .map(
+      (s) => `
+      <a class="similar-card is-entering" href="detalle.html?id=${encodeURIComponent(
+        s.id
+      )}">
+        <img src="${
+          s.images?.[0] || "../assets/images/items/default.svg"
+        }" alt="${s.title}" loading="lazy" decoding="async" />
+        <div class="similar-card__body">
+          <h3>${s.title}</h3>
+          <span class="badge">${s.category}</span>
+        </div>
+      </a>`
+    )
+    .join("");
 }
 
 function bindActions() {
