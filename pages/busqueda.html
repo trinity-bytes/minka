@@ -12,8 +12,18 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
     />
     <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="../assets/styles/core/base.css" />
     <link rel="stylesheet" href="../assets/styles/core/components.css" />
     <link rel="stylesheet" href="../assets/styles/core/layout.css" />
@@ -31,6 +41,7 @@
     <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="search-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
     <header id="app-header" class="auth-header">
       <div class="auth-header__container">
         <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
@@ -106,7 +117,7 @@
       </div>
     </header>
 
-    <main class="search-main">
+    <main id="main" class="search-main">
       <section class="search-hero">
         <div class="container">
           <div class="search-hero__content">
@@ -125,6 +136,15 @@
               data-i18n="search_placeholder"
             />
             <datalist id="search-history-list"></datalist>
+            <button
+              type="button"
+              class="btn btn-outline btn-small"
+              id="clear-history-btn"
+              title="Borrar historial de búsqueda"
+              aria-label="Borrar historial de búsqueda"
+            >
+              <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
+            </button>
             <button
               type="button"
               class="btn btn-primary"
@@ -149,6 +169,7 @@
               aria-live="polite"
             ></span>
           </div>
+          <div id="active-filters" class="filter-chips" aria-label="Filtros activos"></div>
           <!-- T30 - Andy Salcedo: Lista de Búsquedas Guardadas (HU32) -->
           <div id="saved-searches-container" class="saved-searches hidden">
             <h3 data-i18n="search_saved_title">Búsquedas Guardadas</h3>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Estantería de pino">
+  <rect width="800" height="600" fill="#fff3e0"/>
+  <rect x="250" y="120" width="24" height="360" fill="#a9746e"/>
+  <rect x="526" y="120" width="24" height="360" fill="#a9746e"/>
+  <rect x="250" y="150" width="300" height="18" fill="#c98d5f"/>
+  <rect x="250" y="250" width="300" height="18" fill="#c98d5f"/>
+  <rect x="250" y="350" width="300" height="18" fill="#c98d5f"/>
+  <rect x="250" y="450" width="300" height="18" fill="#c98d5f"/>
+  <rect x="300" y="200" width="40" height="50" fill="#2ecc71"/>
+  <rect x="350" y="196" width="30" height="54" fill="#3498db"/>
+  <rect x="460" y="300" width="46" height="50" fill="#f1c40f"/>
+  <text x="400" y="540" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#8c6a00">Estantería de pino</text>
+</svg>

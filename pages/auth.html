@@ -2,7 +2,7 @@
 <!-- 
   Tarea: T28 - Responsable: Leonardo Chavez - Descripción: Login social, gestión de sesiones y seguridad avanzada.
 -->
-<html lang="es">
+<html lang="es" class="force-light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,13 +11,22 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
     />
     <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="../assets/styles/core/base.css" />
     <link rel="stylesheet" href="../assets/styles/core/components.css" />
     <link rel="stylesheet" href="../assets/styles/core/layout.css" />
     <link rel="stylesheet" href="../assets/styles/pages/auth.css" />
-    <link rel="stylesheet" href="../assets/styles/pages/auth-advanced.css" />
     <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
     <!-- Scripts core -->
     <script defer src="../assets/scripts/core/translations.js"></script>
@@ -27,6 +36,7 @@
     <script src="../assets/scripts/core/toast.js"></script>
   </head>
   <body class="auth-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
     <!-- T12 - Leonardo Chavez: Header simple para auth -->
     <header class="auth-header">
       <div class="auth-header__container">
@@ -40,7 +50,7 @@
       </div>
     </header>
 
-    <main class="auth-layout">
+    <main id="main" class="auth-layout">
       <section class="auth-hero">
         <div class="auth-hero__content">
           <h1 data-i18n="auth_title">Ingresa a Mink'a</h1>
@@ -145,6 +155,7 @@
                 id="login-email"
                 name="email"
                 required
+                autocomplete="email"
                 placeholder="tu@correo.com"
                 data-i18n="auth_placeholder_email"
               />
@@ -154,13 +165,25 @@
               <label for="login-password" data-i18n="auth_label_password"
                 >Contraseña</label
               >
-              <input
+              <div class="password-field">
+                <input
                 type="password"
                 id="login-password"
                 name="password"
                 required
                 minlength="8"
+                autocomplete="current-password"
               />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  aria-label="Mostrar contraseña"
+                  aria-pressed="false"
+                  data-toggle-password="login-password"
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                </div>
               <p class="form__error" data-error-for="login-password"></p>
             </div>
             <div class="form__row">
@@ -235,6 +258,7 @@
                 id="register-name"
                 name="name"
                 required
+                autocomplete="name"
                 minlength="3"
                 placeholder="Tu nombre"
                 data-i18n="auth_placeholder_name"
@@ -250,6 +274,8 @@
                 id="register-email"
                 name="email"
                 required
+                autocomplete="email"
+                inputmode="email"
                 placeholder="tu@correo.com o +51 987 654 321"
                 data-i18n="auth_placeholder_email_phone"
               />
@@ -259,13 +285,25 @@
               <label for="register-password" data-i18n="auth_label_password_min"
                 >Contraseña (mínimo 8 caracteres)</label
               >
-              <input
+              <div class="password-field">
+                <input
                 type="password"
                 id="register-password"
                 name="password"
                 required
                 minlength="8"
+                autocomplete="new-password"
               />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  aria-label="Mostrar contraseña"
+                  aria-pressed="false"
+                  data-toggle-password="register-password"
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                </div>
               <div class="password-strength" id="password-strength">
                 <div class="password-strength__bar">
                   <div class="password-strength__fill"></div>
@@ -284,6 +322,7 @@
                 name="confirm"
                 required
                 minlength="8"
+                autocomplete="new-password"
               />
               <p class="form__error" data-error-for="register-confirm"></p>
             </div>
@@ -321,6 +360,7 @@
               <input
                 type="email"
                 id="recovery-email"
+                autocomplete="email"
                 name="email"
                 required
                 placeholder="tu@correo.com"

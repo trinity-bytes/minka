@@ -227,6 +227,144 @@
     saveDashboard(data) {
       return write(KEYS.dashboard, data);
     },
+
+    // ── Datos demo (first-run) ─────────────────────────────
+    seedDemo() {
+      const now = Date.now();
+      const day = 24 * 60 * 60 * 1000;
+      const base = {
+        condition: "Buen estado",
+        availability: "Fines de semana",
+        status: "activo",
+        reserved: false,
+        mode: ["Recojo en punto acordado"],
+        notes: "",
+        dynamicData: {},
+        qrCode: null,
+      };
+      const demoItems = [
+        {
+          ...base,
+          id: "itm-001",
+          title: "Bicicleta urbana vintage",
+          category: "Otros",
+          description:
+            "Bicicleta clásica restaurada, lista para moverte por la ciudad.",
+          tags: ["movilidad", "urbano", "bicicleta"],
+          location: "Miraflores",
+          rating: 4.8,
+          distanceKm: 4,
+          images: ["../assets/images/items/bicicleta-vintage.jpg"],
+          owner: { id: "vec-1", name: "María Quispe", location: "Miraflores", rating: 4.8 },
+          publishedAt: new Date(now - 2 * day).toISOString(),
+        },
+        {
+          ...base,
+          id: "itm-002",
+          title: "Set de libros ciencia ficción",
+          category: "Libros",
+          description: "Colección de 8 novelas de ciencia ficción en buen estado.",
+          tags: ["libros", "sci-fi", "colección"],
+          location: "San Borja",
+          rating: 4.2,
+          distanceKm: 9,
+          images: ["../assets/images/items/set-libros.jpg"],
+          owner: { id: "vec-2", name: "Jorge Mamani", location: "San Borja", rating: 4.5 },
+          publishedAt: new Date(now - 5 * day).toISOString(),
+        },
+        {
+          ...base,
+          id: "itm-003",
+          title: "Laptop ligera i5",
+          category: "Electrónica",
+          description: "Laptop de trabajo, batería nueva, ideal para estudiar.",
+          tags: ["tech", "trabajo", "portátil"],
+          location: "Pueblo Libre",
+          rating: 4.9,
+          distanceKm: 18,
+          images: ["../assets/images/items/laptop-i5.svg"],
+          owner: { id: "vec-3", name: "Rosa Huamán", location: "Pueblo Libre", rating: 4.9 },
+          publishedAt: new Date(now - 1 * day).toISOString(),
+        },
+        {
+          ...base,
+          id: "itm-004",
+          title: "Mesa de centro reciclada",
+          category: "Hogar",
+          description: "Mesa de madera reciclada con acabado natural.",
+          tags: ["madera", "reciclado", "hogar"],
+          location: "Barranco",
+          rating: 4.1,
+          distanceKm: 6,
+          images: ["../assets/images/items/mesa-centro.jpg"],
+          owner: { id: "vec-4", name: "Luis Ccopa", location: "Barranco", rating: 4.2 },
+          publishedAt: new Date(now - 8 * day).toISOString(),
+        },
+        {
+          ...base,
+          id: "itm-005",
+          title: "Clases de guitarra",
+          category: "Servicios",
+          description: "Clases de guitarra a domicilio, nivel inicial e intermedio.",
+          tags: ["música", "clases", "servicio"],
+          location: "Surco",
+          rating: 4.5,
+          distanceKm: 12,
+          images: ["../assets/images/items/guitarra-acustica.jpg"],
+          owner: { id: "vec-5", name: "Ana Torres", location: "Surco", rating: 4.6 },
+          publishedAt: new Date(now - 3 * day).toISOString(),
+        },
+        {
+          ...base,
+          id: "itm-006",
+          title: "Abrigo de lana mujer M",
+          category: "Ropa y accesorios",
+          description: "Abrigo de lana talla M, poco uso, abriga muchísimo.",
+          tags: ["ropa", "abrigo", "mujer"],
+          location: "La Molina",
+          rating: 3.9,
+          distanceKm: 3,
+          images: ["../assets/images/items/abrigo-lana-mujer.jpg"],
+          owner: { id: "vec-6", name: "Carla Ríos", location: "La Molina", rating: 4.0 },
+          publishedAt: new Date(now - 12 * day).toISOString(),
+        },
+        {
+          ...base,
+          id: "itm-007",
+          title: "Estantería de pino",
+          category: "Muebles",
+          description: "Estantería de pino de 4 niveles, desarmable.",
+          tags: ["mueble", "estante", "pino"],
+          location: "Jesús María",
+          rating: 4.4,
+          distanceKm: 7,
+          images: ["../assets/images/items/estante-pino.svg"],
+          owner: { id: "vec-7", name: "Pedro Salas", location: "Jesús María", rating: 4.3 },
+          publishedAt: new Date(now - 6 * day).toISOString(),
+        },
+        {
+          ...base,
+          id: "itm-008",
+          title: "Novelas policiales clásicas",
+          category: "Libros",
+          description: "Pack de 5 novelas policiales en tapa blanda.",
+          tags: ["libros", "policial", "lectura"],
+          location: "Magdalena",
+          rating: 4.6,
+          distanceKm: 5,
+          images: ["../assets/images/items/set-libros.jpg"],
+          owner: { id: "vec-8", name: "Elena Vargas", location: "Magdalena", rating: 4.7 },
+          publishedAt: new Date(now - 4 * day).toISOString(),
+        },
+      ];
+      const existing = Store.getItems();
+      const merged = [
+        ...existing,
+        ...demoItems.filter((d) => !existing.some((e) => e.id === d.id)),
+      ];
+      write(KEYS.items, merged);
+      return demoItems.length;
+    },
   };
 
   window.Store = Store;

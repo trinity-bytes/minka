@@ -3,7 +3,7 @@
 .dashboard-main {
   padding: 2rem 0;
   background-color: var(--color-bg);
-  min-height: calc(100vh - 80px);
+  min-height: calc(100dvh - 80px);
 }
 
 .dashboard-header {

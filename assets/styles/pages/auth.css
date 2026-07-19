@@ -5,7 +5,7 @@
 
 .auth-page {
   background: linear-gradient(180deg, #ffffff 0%, var(--color-surface-alt) 100%);
-  min-height: 100vh;
+  min-height: 100dvh;
   color: var(--color-secondary-dark);
 }
 
@@ -79,8 +79,10 @@
 
 .modal__tab--active {
   background: var(--color-white);
-  color: var(--color-primary);
+  color: var(--color-primary-ink);
   box-shadow: var(--shadow-sm);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .auth-form {
@@ -91,6 +93,34 @@
 
 .auth-form.is-hidden {
   display: none;
+}
+
+/* Campo de contraseña con toggle de visibilidad */
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: var(--space-8);
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+}
+
+.password-toggle:hover,
+.password-toggle[aria-pressed="true"] {
+  color: var(--color-primary);
 }
 
 /* Indicador de fortaleza de contraseña */
@@ -210,12 +240,12 @@
 }
 
 .btn-facebook {
-  background-color: #1877f2;
+  background-color: #166fe5;
   color: white;
 }
 
 .btn-facebook:hover {
-  background-color: #166fe5;
+  background-color: #1465d1;
 }
 
 .auth-divider {
@@ -240,7 +270,7 @@
 
 /* Estilos para enlaces legales */
 .form__checkbox a {
-  color: var(--color-primary);
+  color: var(--color-primary-ink);
   text-decoration: none;
 }
 

@@ -1,11 +1,18 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="force-light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mink'a - Plataforma de Trueque para Economía Circular</title>
     <link rel="icon" type="image/x-icon" href="./favicon.ico" />
     <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="./assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="./assets/styles/core/base.css" />
     <link rel="stylesheet" href="./assets/styles/core/components.css" />
     <link rel="stylesheet" href="./assets/styles/core/layout.css" />
@@ -15,6 +22,7 @@
     <script defer src="./assets/scripts/core/i18n.js"></script>
   </head>
   <body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
     <!-- T02 & T09 - Ronel Rojas: Header y navegación accesible -->
     <header class="header">
       <div class="header__container">
@@ -49,7 +57,7 @@
         </button>
       </div>
     </header>
-    <main>
+    <main id="main">
       <!-- T01 - Andy Salcedo: Sección hero y CTA principal -->
       <section class="hero" id="inicio">
         <div class="container">
@@ -65,7 +73,9 @@
                 Intercambia objetos y servicios, ahorra dinero y construye una
                 comunidad más sostenible
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/481/481724.png"
+                  src="./assets/images/icons/leaf.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                   class="icon icon--inline"
                 />
@@ -82,7 +92,8 @@
             </div>
             <div class="hero__image">
               <img
-                src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800"
+                src="./assets/images/hero-comunidad.svg"
+                fetchpriority="high"
                 alt="Comunidad Mink'a intercambiando objetos"
               />
             </div>
@@ -103,7 +114,9 @@
             <div class="step-card">
               <div class="step-card__icon" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/679/679922.png"
+                  src="./assets/images/icons/publicar.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -116,7 +129,9 @@
             <div class="step-card">
               <div class="step-card__icon" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/2829/2829961.png"
+                  src="./assets/images/icons/conectar.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -129,7 +144,9 @@
             <div class="step-card">
               <div class="step-card__icon" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/2107/2107957.png"
+                  src="./assets/images/icons/intercambio.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -152,7 +169,9 @@
             <div class="benefit-card">
               <div class="benefit-card__icon" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png"
+                  src="./assets/images/icons/seguridad.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -165,7 +184,9 @@
             <div class="benefit-card">
               <div class="benefit-card__icon" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1077/1077976.png"
+                  src="./assets/images/icons/ahorro.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -178,7 +199,9 @@
             <div class="benefit-card">
               <div class="benefit-card__icon" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/535/535239.png"
+                  src="./assets/images/icons/impacto.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -191,7 +214,9 @@
             <div class="benefit-card">
               <div class="benefit-card__icon" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1250/1250689.png"
+                  src="./assets/images/icons/comunidad.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -234,9 +259,12 @@
                 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             "
           >
-            <iframe
-              src="https://www.youtube.com/embed/NzF1VfOuS4Y"
-              title="Video de presentación Mink'a"
+            <!-- Facade: el player de YouTube (~800KB) solo carga al hacer click -->
+            <button
+              type="button"
+              id="video-facade"
+              data-video-id="NzF1VfOuS4Y"
+              aria-label="Reproducir video de presentación Mink'a"
               style="
                 position: absolute;
                 top: 0;
@@ -244,19 +272,52 @@
                 width: 100%;
                 height: 100%;
                 border: 0;
+                cursor: pointer;
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                color: #ffffff;
               "
-              allow="
-                accelerometer;
-                autoplay;
-                clipboard-write;
-                encrypted-media;
-                gyroscope;
-                picture-in-picture;
-                web-share;
-              "
-              allowfullscreen
             >
-            </iframe>
+              <span
+                aria-hidden="true"
+                style="
+                  width: 72px;
+                  height: 72px;
+                  border-radius: 50%;
+                  background: #2ecc71;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 1.8rem;
+                "
+                >▶</span
+              >
+              <span style="font-weight: 600">
+                Ver video de presentación Mink'a
+              </span>
+            </button>
+            <script>
+              document
+                .getElementById("video-facade")
+                .addEventListener("click", function () {
+                  var iframe = document.createElement("iframe");
+                  iframe.src =
+                    "https://www.youtube.com/embed/" +
+                    this.dataset.videoId +
+                    "?autoplay=1";
+                  iframe.title = "Video de presentación Mink'a";
+                  iframe.style.cssText =
+                    "position:absolute;top:0;left:0;width:100%;height:100%;border:0;";
+                  iframe.allow =
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                  iframe.allowFullscreen = true;
+                  this.replaceWith(iframe);
+                });
+            </script>
           </div>
         </div>
       </section>
@@ -296,7 +357,9 @@
             <div class="testimonial-card">
               <div class="testimonial-card__header">
                 <img
-                  src="https://i.pravatar.cc/150?img=1"
+                  src="./assets/images/avatars/avatar-sofia.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt="Sofía Ramírez"
                   class="testimonial-card__avatar"
                 />
@@ -309,23 +372,33 @@
               </div>
               <div class="testimonial-card__rating" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -338,7 +411,9 @@
             <div class="testimonial-card">
               <div class="testimonial-card__header">
                 <img
-                  src="https://i.pravatar.cc/150?img=12"
+                  src="./assets/images/avatars/avatar-sofia.svg2"
+                  loading="lazy"
+                  decoding="async"
                   alt="Carlos Mendoza"
                   class="testimonial-card__avatar"
                 />
@@ -351,23 +426,33 @@
               </div>
               <div class="testimonial-card__rating" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -380,7 +465,9 @@
             <div class="testimonial-card">
               <div class="testimonial-card__header">
                 <img
-                  src="https://i.pravatar.cc/150?img=5"
+                  src="./assets/images/avatars/avatar-isabella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt="Isabella Torres"
                   class="testimonial-card__avatar"
                 />
@@ -391,23 +478,33 @@
               </div>
               <div class="testimonial-card__rating" aria-hidden="true">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
                   alt=""
                 />
               </div>
@@ -429,7 +526,9 @@
               Empieza a truequear y contribuye a una Lima más sostenible y
               conectada
               <img
-                src="https://cdn-icons-png.flaticon.com/512/481/481724.png"
+                src="./assets/images/icons/leaf.svg"
+                  loading="lazy"
+                  decoding="async"
                 alt=""
                 class="icon icon--inline"
               />
@@ -457,7 +556,7 @@
             </p>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Plataforma</h4>
+            <h3 class="footer__section-title">Plataforma</h3>
             <ul class="footer__links">
               <li>
                 <a href="#como-funciona" class="footer__link">Cómo Funciona</a>
@@ -468,7 +567,7 @@
             </ul>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Empresa</h4>
+            <h3 class="footer__section-title">Empresa</h3>
             <ul class="footer__links">
               <li>
                 <a href="pages/about.html" class="footer__link">Sobre Nosotros</a>
@@ -479,7 +578,7 @@
             </ul>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Legal</h4>
+            <h3 class="footer__section-title">Legal</h3>
             <ul class="footer__links">
               <li><a href="#" class="footer__link">Términos de Servicio</a></li>
               <li><a href="#" class="footer__link">Privacidad</a></li>

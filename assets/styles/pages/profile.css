@@ -1,11 +1,11 @@
-/* T13 - Lucero Pipa: Estilos especÃ­ficos de perfil */
+/* T13 - Lucero Pipa: Estilos específicos de perfil */
 :root {
   color-scheme: light;
 }
 
 .profile-page {
   background: var(--color-surface);
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .profile-page__main {

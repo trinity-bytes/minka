@@ -14,8 +14,18 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
     />
     <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="../assets/styles/core/base.css" />
     <link rel="stylesheet" href="../assets/styles/core/components.css" />
     <link rel="stylesheet" href="../assets/styles/core/layout.css" />
@@ -32,6 +42,7 @@
     <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="gamification-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
     <header id="app-header" class="auth-header">
       <div class="auth-header__container">
         <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
@@ -107,7 +118,7 @@
       </div>
     </header>
 
-    <main class="gamification-main">
+    <main id="main" class="gamification-main">
       <div class="container">
         <!-- T24 - Lucero Pipa: Sección de Resumen de Puntos -->
         <section class="gamification-header">

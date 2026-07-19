@@ -1,68 +1,6 @@
 // T15 - Andy Salcedo: Buscador con filtros simulados (categoría, reputación, distancia)
 // T30 - Andy Salcedo: Búsquedas guardadas y filtros avanzados
-const mockItems = [
-  {
-    id: "itm-001",
-    title: "Bicicleta urbana vintage",
-    category: "Electrónica",
-    tags: ["movilidad", "urbano", "bicicleta"],
-    rating: 4.8,
-    distanceKm: 4,
-    location: "Miraflores",
-    image: "../assets/images/items/bicicleta-vintage.jpg",
-  },
-  {
-    id: "itm-002",
-    title: "Set de libros ciencia ficción",
-    category: "Libros",
-    tags: ["libros", "sci-fi", "colección"],
-    rating: 4.2,
-    distanceKm: 9,
-    location: "San Borja",
-    image: "../assets/images/items/set-libros.jpg",
-  },
-  {
-    id: "itm-003",
-    title: "Laptop ligera i5",
-    category: "Electrónica",
-    tags: ["tech", "trabajo", "portátil"],
-    rating: 4.9,
-    distanceKm: 18,
-    location: "Pueblo Libre",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "itm-004",
-    title: "Mesa de centro reciclada",
-    category: "Hogar",
-    tags: ["madera", "reciclado", "hogar"],
-    rating: 4.1,
-    distanceKm: 6,
-    location: "Barranco",
-    image: "../assets/images/items/mesa-centro.jpg",
-  },
-  {
-    id: "itm-005",
-    title: "Clases de guitarra",
-    category: "Servicios",
-    tags: ["música", "clases", "servicio"],
-    rating: 4.5,
-    distanceKm: 12,
-    location: "Surco",
-    image: "../assets/images/items/guitarra-acustica.jpg",
-  },
-  {
-    id: "itm-006",
-    title: "Abrigo de lana mujer M",
-    category: "Ropa y accesorios",
-    tags: ["ropa", "abrigo", "mujer"],
-    rating: 3.9,
-    distanceKm: 3,
-    location: "La Molina",
-    image: "../assets/images/items/abrigo-lana-mujer.jpg",
-  },
-];
+// Los datos demo viven en Store.seedDemo(); la búsqueda lee solo Store.getItems().
 
 const state = {
   query: "",
@@ -116,6 +54,14 @@ function applyUrlParams() {
     state.category = category;
     el.category.value = category;
   }
+  // Filtros completos compartibles por URL (Chunk 4.7)
+  if (params.get("exclude")) state.exclude = params.get("exclude");
+  if (params.get("district")) state.userLocation = params.get("district");
+  if (params.get("rating")) state.minRating = Number(params.get("rating")) || 0;
+  if (params.get("distance"))
+    state.maxDistance = Number(params.get("distance")) || 15;
+  if (params.get("sort")) state.sort = params.get("sort");
+  if ([...params.keys()].length) syncUI();
 }
 
 function attachEvents() {
@@ -179,9 +125,28 @@ function attachEvents() {
   el.query.addEventListener("keyup", (e) => {
     if (e.key === "Enter") {
       state.query = el.query.value.trim().toLowerCase();
+      addToHistory(state.query);
       render();
       persist();
     }
+  });
+
+  // Debounce 300ms: filtra al tipear sin apretar el botón
+  let queryDebounce = null;
+  el.query.addEventListener("input", () => {
+    clearTimeout(queryDebounce);
+    queryDebounce = setTimeout(() => {
+      state.query = el.query.value.trim().toLowerCase();
+      render();
+      persist();
+    }, 300);
+  });
+
+  // Borrar historial de búsquedas recientes
+  document.getElementById("clear-history-btn")?.addEventListener("click", () => {
+    Store.saveSearchHistory([]);
+    loadSearchHistory();
+    if (window.Toast) Toast.show("Historial de búsqueda borrado.", "info");
   });
 
   el.category.addEventListener("change", () => {
@@ -232,6 +197,78 @@ function restoreFilters() {
 
 function persist() {
   Store.saveSearchFilters(state);
+  syncUrl();
+}
+
+// URLs compartibles: el estado completo de filtros vive en la query string
+function syncUrl() {
+  const params = new URLSearchParams();
+  if (state.query) params.set("q", state.query);
+  if (state.category) params.set("category", state.category);
+  if (state.exclude) params.set("exclude", state.exclude);
+  if (state.userLocation) params.set("district", state.userLocation);
+  if (state.minRating > 0) params.set("rating", state.minRating);
+  if (state.maxDistance !== 15) params.set("distance", state.maxDistance);
+  if (state.sort !== "relevance") params.set("sort", state.sort);
+  const qs = params.toString();
+  history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+}
+
+// Chips de filtros activos con quitar individual
+function renderChips() {
+  const container = document.getElementById("active-filters");
+  if (!container) return;
+  const chips = [];
+  if (state.query) chips.push({ key: "query", label: `"${state.query}"` });
+  if (state.category)
+    chips.push({ key: "category", label: `Categoría: ${state.category}` });
+  if (state.exclude)
+    chips.push({ key: "exclude", label: `Excluir: ${state.exclude}` });
+  if (state.userLocation)
+    chips.push({ key: "userLocation", label: `Distrito: ${state.userLocation}` });
+  if (state.minRating > 0)
+    chips.push({ key: "minRating", label: `★ ≥ ${state.minRating}` });
+  if (state.maxDistance !== 15)
+    chips.push({ key: "maxDistance", label: `≤ ${state.maxDistance} km` });
+  if (state.sort !== "relevance")
+    chips.push({ key: "sort", label: `Orden: ${state.sort}` });
+
+  container.innerHTML = chips
+    .map(
+      (chip) => `
+      <button class="filter-chip" type="button" data-chip="${chip.key}"
+        aria-label="Quitar filtro ${chip.label}">
+        ${chip.label} <span aria-hidden="true">×</span>
+      </button>`
+    )
+    .join("");
+
+  if (chips.length >= 2) {
+    container.innerHTML += `
+      <button class="filter-chip filter-chip--clear" type="button" data-chip="all">
+        Limpiar todo
+      </button>`;
+  }
+
+  container.querySelectorAll("[data-chip]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.chip;
+      const defaults = {
+        query: "",
+        category: "",
+        exclude: "",
+        userLocation: "",
+        minRating: 0,
+        maxDistance: 15,
+        sort: "relevance",
+      };
+      if (key === "all") Object.assign(state, defaults);
+      else state[key] = defaults[key];
+      syncUI();
+      render();
+      persist();
+    });
+  });
 }
 
 function syncUI() {
@@ -246,10 +283,39 @@ function syncUI() {
   el.sort.value = state.sort;
 }
 
+function renderEmptyCatalog() {
+  el.count.textContent = `0 ${
+    window.I18n ? window.I18n.t("search_results_count") : "resultados"
+  }`;
+  el.results.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-state__icon" aria-hidden="true">🔍</div>
+      <h3>Todavía no hay publicaciones</h3>
+      <p>Publica tu primer objeto o carga datos de ejemplo para explorar la demo.</p>
+      <div class="empty-state__actions">
+        <a class="btn btn-primary" href="publicar.html">Publicar mi primer objeto</a>
+        <button class="btn btn-secondary" type="button" id="seed-demo-btn">
+          Cargar datos de ejemplo
+        </button>
+      </div>
+    </div>`;
+  document.getElementById("seed-demo-btn")?.addEventListener("click", () => {
+    Store.seedDemo();
+    render();
+    if (window.Toast) Toast.show("Datos de ejemplo cargados.", "success");
+  });
+}
+
 function render() {
-  const localItems = Store.getItems();
-  const allItems = [...localItems, ...mockItems];
+  const allItems = Store.getItems();
   const favorites = getFavorites(); // T30
+
+  renderChips();
+
+  if (allItems.length === 0) {
+    renderEmptyCatalog();
+    return;
+  }
 
   const results = allItems
     .filter((item) => {
@@ -284,6 +350,25 @@ function render() {
   el.count.textContent = `${sorted.length} ${
     window.I18n ? window.I18n.t("search_results_count") : "resultados"
   }`;
+
+  if (sorted.length === 0) {
+    el.results.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state__icon" aria-hidden="true">🤷</div>
+        <h3>Sin resultados con estos filtros</h3>
+        <p>Prueba con otros términos o restablece los filtros.</p>
+        <div class="empty-state__actions">
+          <button class="btn btn-secondary" type="button" id="empty-reset-filters">
+            Restablecer filtros
+          </button>
+        </div>
+      </div>`;
+    document
+      .getElementById("empty-reset-filters")
+      ?.addEventListener("click", () => el.reset?.click());
+    return;
+  }
+
   el.results.innerHTML = sorted
     .map((item) => {
       const isFav = favorites.includes(item.id);
@@ -297,17 +382,19 @@ function render() {
       }
 
       return `
-        <article class="result-card" aria-label="${item.title}">
+        <article class="result-card is-entering" aria-label="${item.title}">
           <div style="position: relative;">
             <img src="${item.images ? item.images[0] : item.image}" alt="${
         item.title
-      }" class="result-card__img" loading="lazy" style="object-fit: cover;" />
+      }" class="result-card__img" loading="lazy" decoding="async" style="object-fit: cover;" />
             <button class="item-card__favorite ${
               isFav ? "active" : ""
-            }" onclick="toggleFavorite('${item.id}')" aria-label="${
+            }" aria-pressed="${isFav}" onclick="toggleFavorite('${
+        item.id
+      }')" aria-label="${
         isFav ? "Quitar de favoritos" : "Añadir a favoritos"
       }">
-              <i class="fas fa-heart"></i>
+              <i class="fas fa-heart" aria-hidden="true"></i>
             </button>
           </div>
           <div class="result-card__body">
@@ -485,7 +572,7 @@ function addToHistory(query) {
 
 function loadSearchHistory() {
   if (!el.historyList) return;
-  const history = Store.getSearchHistory();
+  const history = Store.getSearchHistory().slice(0, 5);
   el.historyList.innerHTML = history
     .map((term) => `<option value="${term}">`)
     .join("");

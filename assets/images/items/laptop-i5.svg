@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Laptop ligera i5">
+  <rect width="800" height="600" fill="#e3f2fd"/>
+  <rect x="220" y="170" width="360" height="230" rx="14" fill="#34495e"/>
+  <rect x="238" y="188" width="324" height="194" rx="6" fill="#eaf4fb"/>
+  <rect x="180" y="400" width="440" height="26" rx="13" fill="#2c3e50"/>
+  <rect x="360" y="400" width="80" height="10" rx="5" fill="#95a5a6"/>
+  <text x="400" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#34495e">Laptop ligera i5</text>
+</svg>

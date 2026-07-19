@@ -14,8 +14,18 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
     />
     <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="../assets/styles/core/base.css" />
     <link rel="stylesheet" href="../assets/styles/core/components.css" />
     <link rel="stylesheet" href="../assets/styles/core/layout.css" />
@@ -34,6 +44,7 @@
     <script src="../assets/scripts/core/guard.js"></script>
   </head>
   <body class="detail-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
     <header id="app-header" class="auth-header">
       <div class="auth-header__container">
         <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
@@ -117,7 +128,7 @@
     </nav>
 
 
-    <main class="detail-main">
+    <main id="main" class="detail-main">
       <section class="detail-hero">
         <div class="container">
           <p class="detail-hero__eyebrow">Publicación activa</p>
@@ -134,6 +145,8 @@
             <div class="gallery" id="gallery">
               <img
                 src="../assets/images/items/bicicleta-vintage.jpg"
+                  loading="lazy"
+                  decoding="async"
                 alt="Imagen principal"
                 class="gallery__main"
                 id="gallery-main"
@@ -254,6 +267,10 @@
                 <a href="chat.html" class="btn btn-primary" id="action-contact">
                   Contactar
                 </a>
+                <button class="btn btn-secondary" id="action-share">
+                  <i class="fas fa-share-nodes" aria-hidden="true"></i>
+                  Compartir
+                </button>
                 <!-- T33 - Miguel Sanca: Cierre Offline (HU41) -->
                 <button class="btn btn-primary" id="action-offline-close">
                   Cierre Offline (Código)
@@ -287,7 +304,28 @@
           </aside>
         </div>
       </section>
+
+      <!-- Chunk 4.8: Similares de la misma categoría -->
+      <section
+        class="similar-section"
+        id="similar-section"
+        aria-label="Publicaciones similares"
+        hidden
+      >
+        <div class="container">
+          <h2>Similares</h2>
+          <div class="similar-grid" id="similar-grid"></div>
+        </div>
+      </section>
     </main>
+
+    <!-- Chunk 4.8: CTA fija en móvil -->
+    <div class="sticky-cta" id="sticky-cta" hidden>
+      <span class="sticky-cta__mode" id="sticky-cta-mode"></span>
+      <a href="chat.html" class="btn btn-primary" id="sticky-cta-contact">
+        Contactar
+      </a>
+    </div>
 
     <section class="modal" id="offline-modal" aria-hidden="true">
       <div class="modal__overlay" data-close-modal="offline-modal"></div>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Comunidad Mink'a intercambiando objetos">
+  <rect width="800" height="600" fill="#f6f8f6"/>
+  <circle cx="400" cy="300" r="230" fill="#e8f5e9"/>
+  <circle cx="260" cy="280" r="46" fill="#34495e"/>
+  <path d="M190 420c0-44 30-72 70-72s70 28 70 72z" fill="#34495e"/>
+  <circle cx="540" cy="280" r="46" fill="#2ecc71"/>
+  <path d="M470 420c0-44 30-72 70-72s70 28 70 72z" fill="#2ecc71"/>
+  <rect x="360" y="300" width="80" height="60" rx="8" fill="#f1c40f"/>
+  <path d="M330 330h-40m40 0l-14-12m14 12l-14 12" stroke="#27ae60" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M470 330h40m-40 0l14-12m-14 12l14 12" stroke="#27ae60" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#34495e">Trueque con propósito</text>
+</svg>

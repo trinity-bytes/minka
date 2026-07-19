@@ -1,11 +1,18 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="force-light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sobre Nosotros - Mink'a</title>
     <link rel="icon" type="image/x-icon" href="../favicon.ico" />
     <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="../assets/styles/core/base.css" />
     <link rel="stylesheet" href="../assets/styles/core/components.css" />
     <link rel="stylesheet" href="../assets/styles/core/layout.css" />
@@ -15,6 +22,7 @@
     <script defer src="../assets/scripts/core/i18n.js"></script>
   </head>
   <body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
     <header class="header">
       <div class="header__container">
         <a href="../index.html" class="header__logo">
@@ -53,7 +61,7 @@
         </button>
       </div>
     </header>
-    <main>
+    <main id="main">
       <section class="hero" style="padding: 4rem 0; text-align: center">
         <div class="container">
           <h1 class="hero__title">
@@ -147,7 +155,7 @@
             </p>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Plataforma</h4>
+            <h3 class="footer__section-title">Plataforma</h3>
             <ul class="footer__links">
               <li>
                 <a href="index.html#como-funciona" class="footer__link"
@@ -168,7 +176,7 @@
             </ul>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Empresa</h4>
+            <h3 class="footer__section-title">Empresa</h3>
             <ul class="footer__links">
               <li>
                 <a href="about.html" class="footer__link">Sobre Nosotros</a>
@@ -179,7 +187,7 @@
             </ul>
           </div>
           <div class="footer__section">
-            <h4 class="footer__section-title">Legal</h4>
+            <h3 class="footer__section-title">Legal</h3>
             <ul class="footer__links">
               <li><a href="#" class="footer__link">Términos de Servicio</a></li>
               <li><a href="#" class="footer__link">Privacidad</a></li>
