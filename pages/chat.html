@@ -120,8 +120,8 @@
     </header>
     <nav class="breadcrumb" aria-label="Migas de pan">
       <ol class="container">
-        <li><a href="home.html">Inicio</a></li>
-        <li aria-current="page"><span>Chats</span></li>
+        <li><a href="home.html" data-i18n="nav_home">Inicio</a></li>
+        <li aria-current="page"><span data-i18n="nav_chats">Chats</span></li>
       </ol>
     </nav>
 
@@ -170,7 +170,7 @@
 
             <div class="meeting" aria-label="Puntos sugeridos">
               <div class="meeting__header">
-                <h4>Puntos de encuentro sugeridos</h4>
+                <h4 data-i18n="chat_meeting_title">Puntos de encuentro sugeridos</h4>
                 <p>Basado en cercanía.</p>
               </div>
               <div class="meeting__chips" id="meeting-list"></div>
@@ -211,7 +211,7 @@
                 autocomplete="off"
                 required
               />
-              <button type="submit" class="btn btn-primary">Enviar</button>
+              <button type="submit" class="btn btn-primary" data-i18n="common_send">Enviar</button>
             </form>
           </section>
         </div>
@@ -228,7 +228,7 @@
         aria-labelledby="report-title"
       >
         <div class="modal__header">
-          <h3 id="report-title">Reportar usuario</h3>
+          <h3 id="report-title" data-i18n="chat_report_title">Reportar usuario</h3>
           <button
             class="modal__close"
             type="button"
@@ -243,7 +243,7 @@
             Cuéntanos qué sucede con este usuario. Revisaremos tu reporte.
           </p>
           <form id="report-form" novalidate>
-            <label class="form-label" for="report-reason">Motivo</label>
+            <label class="form-label" for="report-reason" data-i18n="common_reason">Motivo</label>
             <select id="report-reason" name="report-reason" required>
               <option value="" disabled selected>Selecciona un motivo</option>
               <option value="spam">Spam o publicidad</option>
@@ -253,7 +253,7 @@
               <option value="otro">Otro</option>
             </select>
 
-            <label class="form-label" for="report-details">Detalles</label>
+            <label class="form-label" for="report-details" data-i18n="common_details">Detalles</label>
             <textarea
               id="report-details"
               name="report-details"
@@ -270,7 +270,7 @@
                 checked
               />
               <label for="report-include-chat"
-                >Adjuntar historial del chat</label
+                 data-i18n="chat_attach_history">Adjuntar historial del chat</label
               >
             </div>
 
@@ -279,10 +279,10 @@
                 type="button"
                 class="btn btn-secondary"
                 data-close-modal="report-modal"
-              >
+               data-i18n="common_cancel">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" data-i18n="common_report_send">
                 Enviar reporte
               </button>
             </div>
@@ -307,7 +307,7 @@
         aria-labelledby="rating-title"
       >
         <div class="modal__header">
-          <h3 id="rating-title">Calificar intercambio</h3>
+          <h3 id="rating-title" data-i18n="common_rate_title">Calificar intercambio</h3>
           <button
             class="modal__close"
             type="button"
@@ -370,7 +370,7 @@
               </button>
             </div>
             <label class="form-label" for="rating-comment"
-              >Comentario (opcional)</label
+               data-i18n="common_comment_opt">Comentario (opcional)</label
             >
             <textarea
               id="rating-comment"
@@ -387,10 +387,10 @@
                 type="button"
                 class="btn btn-secondary"
                 data-close-modal="rating-modal"
-              >
+               data-i18n="common_cancel">
                 Cancelar
               </button>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" data-i18n="common_rate_send">
                 Enviar calificación
               </button>
             </div>

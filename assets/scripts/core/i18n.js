@@ -5,13 +5,12 @@
 
 const I18n = {
   currentLang: "es",
+  missingKeys: [], // registro silencioso; log solo con minka_debug_i18n=1
 
   init: function () {
     // 1. Cargar preferencia guardada o detectar navegador
     const prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
     this.currentLang = prefs.language || "es";
-
-    console.log(`[I18n] Inicializando con idioma: ${this.currentLang}`);
 
     // 2. Aplicar idioma inicial
     this.applyLanguage(this.currentLang);
@@ -62,9 +61,7 @@ const I18n = {
 
     // 1. Elementos con data-i18n
     const elements = document.querySelectorAll("[data-i18n]");
-    console.log(
-      `[I18n] Aplicando traducciones a ${elements.length} elementos.`
-    );
+    this.missingKeys = [];
 
     elements.forEach((el) => {
       const key = el.getAttribute("data-i18n");
@@ -77,9 +74,16 @@ const I18n = {
           el.textContent = text;
         }
       } else {
-        console.warn(`[I18n] Falta traducción para: ${key} (${lang})`);
+        this.missingKeys.push(key);
       }
     });
+
+    if (
+      this.missingKeys.length &&
+      localStorage.getItem("minka_debug_i18n") === "1"
+    ) {
+      console.warn(`[I18n] Claves sin traducción (${lang}):`, this.missingKeys);
+    }
 
     // 2. Elementos con data-i18n-placeholder
     const placeholders = document.querySelectorAll("[data-i18n-placeholder]");

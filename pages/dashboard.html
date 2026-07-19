@@ -123,12 +123,12 @@
         <!-- T26 - Miguel Sanca: Encabezado del Dashboard -->
         <section class="dashboard-header">
           <div class="dashboard-title">
-            <h1>Dashboard de Impacto</h1>
+            <h1 data-i18n="dash_title">Dashboard de Impacto</h1>
             <p>Visualiza tu contribución ambiental y el ahorro generado.</p>
           </div>
           <div class="dashboard-actions">
             <div class="filter-group">
-              <label for="period-filter">Periodo:</label>
+              <label for="period-filter" data-i18n="dash_period">Periodo:</label>
               <select id="period-filter" class="form-select">
                 <option value="7">Últimos 7 días</option>
                 <option value="30" selected>Últimos 30 días</option>
@@ -157,7 +157,7 @@
               />
             </div>
             <div class="filter-group">
-              <label for="category-filter">Categoría:</label>
+              <label for="category-filter" data-i18n="dash_category">Categoría:</label>
               <select id="category-filter" class="form-select">
                 <option value="all">Todas</option>
               </select>
@@ -176,7 +176,7 @@
         >
           <div class="no-data-content">
             <i class="fas fa-leaf no-data-icon"></i>
-            <h3>Sin actividad registrada</h3>
+            <h3 data-i18n="dash_empty">Sin actividad registrada</h3>
             <p>
               No hay datos de impacto para el periodo y filtros seleccionados.
             </p>
@@ -219,13 +219,13 @@
         <!-- T26 - Miguel Sanca: Gráficas -->
         <section class="charts-grid" id="charts-section">
           <div class="chart-card">
-            <h3>Evolución de Impacto</h3>
+            <h3 data-i18n="dash_evolution">Evolución de Impacto</h3>
             <div class="chart-container">
               <canvas id="evolutionChart"></canvas>
             </div>
           </div>
           <div class="chart-card">
-            <h3>Impacto por Categoría</h3>
+            <h3 data-i18n="dash_by_category">Impacto por Categoría</h3>
             <div class="chart-container">
               <canvas id="categoryChart"></canvas>
             </div>
