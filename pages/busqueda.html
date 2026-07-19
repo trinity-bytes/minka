@@ -138,6 +138,15 @@
             <datalist id="search-history-list"></datalist>
             <button
               type="button"
+              class="btn btn-outline btn-small"
+              id="clear-history-btn"
+              title="Borrar historial de búsqueda"
+              aria-label="Borrar historial de búsqueda"
+            >
+              <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
               class="btn btn-primary"
               id="search-btn"
               data-i18n="search_btn"
@@ -160,6 +169,7 @@
               aria-live="polite"
             ></span>
           </div>
+          <div id="active-filters" class="filter-chips" aria-label="Filtros activos"></div>
           <!-- T30 - Andy Salcedo: Lista de Búsquedas Guardadas (HU32) -->
           <div id="saved-searches-container" class="saved-searches hidden">
             <h3 data-i18n="search_saved_title">Búsquedas Guardadas</h3>

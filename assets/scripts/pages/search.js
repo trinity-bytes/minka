@@ -54,6 +54,14 @@ function applyUrlParams() {
     state.category = category;
     el.category.value = category;
   }
+  // Filtros completos compartibles por URL (Chunk 4.7)
+  if (params.get("exclude")) state.exclude = params.get("exclude");
+  if (params.get("district")) state.userLocation = params.get("district");
+  if (params.get("rating")) state.minRating = Number(params.get("rating")) || 0;
+  if (params.get("distance"))
+    state.maxDistance = Number(params.get("distance")) || 15;
+  if (params.get("sort")) state.sort = params.get("sort");
+  if ([...params.keys()].length) syncUI();
 }
 
 function attachEvents() {
@@ -117,9 +125,28 @@ function attachEvents() {
   el.query.addEventListener("keyup", (e) => {
     if (e.key === "Enter") {
       state.query = el.query.value.trim().toLowerCase();
+      addToHistory(state.query);
       render();
       persist();
     }
+  });
+
+  // Debounce 300ms: filtra al tipear sin apretar el botón
+  let queryDebounce = null;
+  el.query.addEventListener("input", () => {
+    clearTimeout(queryDebounce);
+    queryDebounce = setTimeout(() => {
+      state.query = el.query.value.trim().toLowerCase();
+      render();
+      persist();
+    }, 300);
+  });
+
+  // Borrar historial de búsquedas recientes
+  document.getElementById("clear-history-btn")?.addEventListener("click", () => {
+    Store.saveSearchHistory([]);
+    loadSearchHistory();
+    if (window.Toast) Toast.show("Historial de búsqueda borrado.", "info");
   });
 
   el.category.addEventListener("change", () => {
@@ -170,6 +197,78 @@ function restoreFilters() {
 
 function persist() {
   Store.saveSearchFilters(state);
+  syncUrl();
+}
+
+// URLs compartibles: el estado completo de filtros vive en la query string
+function syncUrl() {
+  const params = new URLSearchParams();
+  if (state.query) params.set("q", state.query);
+  if (state.category) params.set("category", state.category);
+  if (state.exclude) params.set("exclude", state.exclude);
+  if (state.userLocation) params.set("district", state.userLocation);
+  if (state.minRating > 0) params.set("rating", state.minRating);
+  if (state.maxDistance !== 15) params.set("distance", state.maxDistance);
+  if (state.sort !== "relevance") params.set("sort", state.sort);
+  const qs = params.toString();
+  history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+}
+
+// Chips de filtros activos con quitar individual
+function renderChips() {
+  const container = document.getElementById("active-filters");
+  if (!container) return;
+  const chips = [];
+  if (state.query) chips.push({ key: "query", label: `"${state.query}"` });
+  if (state.category)
+    chips.push({ key: "category", label: `Categoría: ${state.category}` });
+  if (state.exclude)
+    chips.push({ key: "exclude", label: `Excluir: ${state.exclude}` });
+  if (state.userLocation)
+    chips.push({ key: "userLocation", label: `Distrito: ${state.userLocation}` });
+  if (state.minRating > 0)
+    chips.push({ key: "minRating", label: `★ ≥ ${state.minRating}` });
+  if (state.maxDistance !== 15)
+    chips.push({ key: "maxDistance", label: `≤ ${state.maxDistance} km` });
+  if (state.sort !== "relevance")
+    chips.push({ key: "sort", label: `Orden: ${state.sort}` });
+
+  container.innerHTML = chips
+    .map(
+      (chip) => `
+      <button class="filter-chip" type="button" data-chip="${chip.key}"
+        aria-label="Quitar filtro ${chip.label}">
+        ${chip.label} <span aria-hidden="true">×</span>
+      </button>`
+    )
+    .join("");
+
+  if (chips.length >= 2) {
+    container.innerHTML += `
+      <button class="filter-chip filter-chip--clear" type="button" data-chip="all">
+        Limpiar todo
+      </button>`;
+  }
+
+  container.querySelectorAll("[data-chip]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.chip;
+      const defaults = {
+        query: "",
+        category: "",
+        exclude: "",
+        userLocation: "",
+        minRating: 0,
+        maxDistance: 15,
+        sort: "relevance",
+      };
+      if (key === "all") Object.assign(state, defaults);
+      else state[key] = defaults[key];
+      syncUI();
+      render();
+      persist();
+    });
+  });
 }
 
 function syncUI() {
@@ -210,6 +309,8 @@ function renderEmptyCatalog() {
 function render() {
   const allItems = Store.getItems();
   const favorites = getFavorites(); // T30
+
+  renderChips();
 
   if (allItems.length === 0) {
     renderEmptyCatalog();
@@ -471,7 +572,7 @@ function addToHistory(query) {
 
 function loadSearchHistory() {
   if (!el.historyList) return;
-  const history = Store.getSearchHistory();
+  const history = Store.getSearchHistory().slice(0, 5);
   el.historyList.innerHTML = history
     .map((term) => `<option value="${term}">`)
     .join("");
