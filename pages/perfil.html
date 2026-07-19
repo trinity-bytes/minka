@@ -1,0 +1,711 @@
+<!doctype html>
+<!-- 
+  Tarea: T29 - Responsable: Lucero Pipa - Descripción: Configuración de privacidad, visibilidad y verificación de identidad.
+  Tarea: T35 - Responsable: Leonardo Chavez - Descripción: Gestión de reputación y apelación de reseñas.
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
+    <title>Mink'a - Perfil</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
+    />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/detail.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/profile.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
+    <!-- Scripts core -->
+    <script defer src="../assets/scripts/core/components.js"></script>
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
+    <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
+    <script src="../assets/scripts/core/guard.js"></script>
+  </head>
+  <body class="profile-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
+    <nav class="breadcrumb" aria-label="Migas de pan">
+      <ol class="container">
+        <li><a href="home.html" data-i18n="nav_home">Inicio</a></li>
+        <li aria-current="page"><span data-i18n="nav_profile">Perfil</span></li>
+      </ol>
+    </nav>
+
+
+    <main id="main" class="profile-page__main">
+      <section class="profile">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-header__title" data-i18n="profile.title">
+              Tu Perfil
+            </h2>
+            <p class="section-header__subtitle" data-i18n="profile.subtitle">
+              Completa tus datos, sube tu foto y verifica tu identidad para
+              aumentar la confianza.
+            </p>
+          </div>
+          <div class="profile__grid">
+            <div class="profile-left-column">
+              <article class="profile-card" aria-labelledby="perfil-resumen">
+                <div class="profile-card__header">
+                  <div class="profile-card__avatar">
+                    <img
+                      src="../assets/images/avatars/avatar-user.svg"
+                  loading="lazy"
+                  decoding="async"
+                      alt="Foto de perfil"
+                      id="profile-photo-preview"
+                    />
+                    <input
+                      type="file"
+                      id="profile-photo-input"
+                      accept="image/*"
+                      hidden
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-small"
+                      data-photo-upload
+                      data-i18n="profile.uploadPhoto"
+                    >
+                      Subir nueva foto
+                    </button>
+                  </div>
+                  <div class="profile-card__info">
+                    <h3 id="perfil-resumen">Usuario Demo</h3>
+                    <p class="profile-card__meta" id="perfil-email">
+                      demo@minka.com
+                    </p>
+                    <p class="profile-card__meta" id="perfil-telefono">
+                      +51 000 000 000
+                    </p>
+                    <p class="profile-card__meta" id="perfil-ubicacion">
+                      Lima, Perú
+                    </p>
+                    <span
+                      class="profile-card__badge"
+                      id="perfil-verificacion"
+                      data-i18n="profile.verificationPending"
+                      >Verificación pendiente</span
+                    >
+                  </div>
+                </div>
+                <div class="profile-progress" aria-label="Progreso de perfil">
+                  <div class="profile-progress__top">
+                    <span data-i18n="profile.completeProfile"
+                      >Completa tu perfil</span
+                    >
+                    <span id="profile-progress-value">60%</span>
+                  </div>
+                  <div
+                    class="profile-progress__bar"
+                    role="progressbar"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="60"
+                  >
+                    <div
+                      class="profile-progress__fill"
+                      style="width: 60%"
+                    ></div>
+                  </div>
+                </div>
+                <div class="profile-card__actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    id="btn-verify-identity"
+                    data-open-modal="identity"
+                  >
+                    <i class="fas fa-shield-alt"></i>
+                    <span data-i18n="profile.verifyIdentity"
+                      >Verificar identidad</span
+                    >
+                  </button>
+                  <!-- T24 - Lucero Pipa: Acceso a Gamificación -->
+                  <a
+                    href="gamification.html"
+                    class="btn btn-outline"
+                    style="
+                      text-decoration: none;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      gap: 0.5rem;
+                      color: var(--text-color);
+                    "
+                  >
+                    <i class="fas fa-trophy" style="color: #f1c40f"></i>
+                    <span data-i18n="profile.gamification"
+                      >Eco-Puntos y Premios</span
+                    >
+                  </a>
+                  <!-- T26 - Miguel Sanca: Acceso a Dashboard -->
+                  <a
+                    href="dashboard.html"
+                    class="btn btn-outline"
+                    style="
+                      text-decoration: none;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      gap: 0.5rem;
+                      color: var(--text-color);
+                    "
+                  >
+                    <i class="fas fa-chart-pie" style="color: #3498db"></i>
+                    <span data-i18n="profile.dashboard"
+                      >Dashboard de Impacto</span
+                    >
+                  </a>
+                  <!-- T27 - Miguel Sanca: Acceso a Configuración -->
+                  <a
+                    href="settings.html"
+                    class="btn btn-outline"
+                    style="
+                      text-decoration: none;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      gap: 0.5rem;
+                      color: var(--text-color);
+                    "
+                  >
+                    <i
+                      class="fas fa-cog"
+                      style="color: var(--color-secondary)"
+                    ></i>
+                    <span data-i18n="profile.settings"
+                      >Configuración y Accesibilidad</span
+                    >
+                  </a>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-save-profile
+                  >
+                    <i class="fas fa-save"></i>
+                    <span data-i18n="profile.updateProfile"
+                      >Actualizar perfil</span
+                    >
+                  </button>
+                </div>
+              </article>
+
+              <!-- T14 - Ronel Rojas: Listado de publicaciones del usuario -->
+              <section class="profile-items" aria-labelledby="my-items-title">
+                <h3
+                  id="my-items-title"
+                  class="profile-items__title"
+                  data-i18n="profile.myItems"
+                >
+                  Mis Publicaciones
+                </h3>
+                <div id="my-items-list" class="profile-items__list">
+                  <p class="form__hint" data-i18n="profile.noItems">
+                    No tienes publicaciones activas.
+                  </p>
+                </div>
+              </section>
+
+              <!-- T35 - Gestión de Reputación: Sección de Reseñas -->
+              <section
+                class="profile-reviews"
+                aria-labelledby="reviews-title"
+                style="margin-top: 2rem"
+              >
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1rem;
+                  "
+                >
+                  <h3
+                    id="reviews-title"
+                    class="profile-items__title"
+                    style="margin-bottom: 0"
+                    data-i18n="profile.reviews"
+                  >
+                    Reseñas y Reputación
+                  </h3>
+                  <div
+                    class="reputation-score"
+                    style="display: flex; align-items: center; gap: 0.5rem"
+                  >
+                    <i class="fas fa-star" style="color: #f1c40f"></i>
+                    <span style="font-weight: bold; font-size: 1.1rem"
+                      >4.8</span
+                    >
+                    <span style="color: var(--text-light); font-size: 0.9rem"
+                      >(12 reseñas)</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  id="reviews-list"
+                  class="reviews-list"
+                  style="display: flex; flex-direction: column; gap: 1rem"
+                >
+                  <!-- Las reseñas se cargarán dinámicamente -->
+                </div>
+              </section>
+            </div>
+
+            <form class="profile-form" id="profile-form" novalidate>
+              <div class="form__group">
+                <label for="profile-name" data-i18n="profile.form.name"
+                  >Nombre completo</label
+                >
+                <input
+                  type="text"
+                  id="profile-name"
+                  name="name"
+                  value="Usuario Demo"
+                  required
+                />
+                <p class="form__error" data-error-for="profile-name"></p>
+              </div>
+              <div class="form__group">
+                <label for="profile-email" data-i18n="profile.form.email"
+                  >Correo electrónico</label
+                >
+                <input
+                  type="email"
+                  id="profile-email"
+                  name="email"
+                  value="demo@minka.com"
+                  required
+                />
+                <p class="form__error" data-error-for="profile-email"></p>
+              </div>
+              <div class="form__group">
+                <label for="profile-phone" data-i18n="profile.form.phone"
+                  >Teléfono</label
+                >
+                <input
+                  type="tel"
+                  id="profile-phone"
+                  name="phone"
+                  value="+51 000 000 000"
+                  required
+                />
+                <p class="form__error" data-error-for="profile-phone"></p>
+              </div>
+              <div class="form__group">
+                <label for="profile-location"
+                  ><span data-i18n="profile.form.location"
+                    >Distrito / Ciudad</span
+                  >
+                  <span class="required">*</span></label
+                >
+                <input
+                  type="text"
+                  id="profile-location"
+                  name="location"
+                  placeholder="Ej: Miraflores, Lima"
+                  required
+                />
+                <p class="form__error" data-error-for="profile-location"></p>
+                <small
+                  class="form__hint"
+                  data-i18n="profile.form.locationRequired"
+                  >Campo obligatorio para guardar cambios</small
+                >
+              </div>
+              <div class="form__group">
+                <label for="profile-bio" data-i18n="profile.form.bio"
+                  >Descripción breve (opcional)</label
+                >
+                <textarea
+                  id="profile-bio"
+                  name="bio"
+                  rows="4"
+                  maxlength="150"
+                  placeholder="Cuenta algo sobre tus intereses de trueque (máximo 150 caracteres)"
+                  data-i18n-placeholder="profile.form.bioPlaceholder"
+                ></textarea>
+                <div class="form__char-count">
+                  <span id="bio-char-count">0</span> / 150
+                  <span data-i18n="profile.form.chars">caracteres</span>
+                </div>
+                <p class="form__error" data-error-for="profile-bio"></p>
+              </div>
+              <div class="profile-form__footer">
+                <small class="form__hint" data-i18n="profile.form.hint">
+                  <i class="fas fa-info-circle"></i>
+                  Los datos ayudan a mejorar tu reputación y coincidencias.
+                </small>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- T13 - Lucero Pipa: Modal de verificación de identidad (simulada) -->
+    <section
+      class="modal"
+      id="identity-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-labelledby="identity-modal-title"
+    >
+      <div class="modal__overlay" data-close-modal></div>
+      <div class="modal__content" role="document">
+        <button
+          class="modal__close"
+          type="button"
+          aria-label="Cerrar"
+          data-close-modal
+        >
+          x
+        </button>
+        <div class="modal__header">
+          <h3
+            class="modal__title"
+            id="identity-modal-title"
+            data-i18n="profile.identityModal.title"
+          >
+            Verificación de Identidad
+          </h3>
+          <p class="modal__subtitle" data-i18n="profile.identityModal.subtitle">
+            Elige el nivel de verificación que deseas obtener.
+          </p>
+        </div>
+
+        <!-- T29 - HU27: Niveles de Verificación -->
+        <div class="verification-tabs">
+          <button
+            class="modal__tab modal__tab--active"
+            data-verify-tab="basic"
+            data-i18n="profile.identityModal.basicTab"
+          >
+            Básico (Teléfono)
+          </button>
+          <button
+            class="modal__tab"
+            data-verify-tab="advanced"
+            data-i18n="profile.identityModal.advancedTab"
+          >
+            Avanzado (DNI + Selfie)
+          </button>
+        </div>
+
+        <!-- Nivel Básico -->
+        <div id="verify-basic" class="verify-section">
+          <div class="identity-steps">
+            <div class="identity-step">
+              <div class="identity-step__icon" aria-hidden="true">
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <div>
+                <h4
+                  class="identity-step__title"
+                  data-i18n="profile.identityModal.basic.title"
+                >
+                  Validar número celular
+                </h4>
+                <p
+                  class="identity-step__text"
+                  data-i18n="profile.identityModal.basic.text"
+                >
+                  Te enviaremos un código SMS para confirmar tu número.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="identity-actions">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-verify-action="basic"
+              data-i18n="profile.identityModal.basic.action"
+            >
+              Enviar SMS y Verificar
+            </button>
+          </div>
+        </div>
+
+        <!-- Nivel Avanzado -->
+        <div id="verify-advanced" class="verify-section hidden">
+          <div class="identity-steps">
+            <div class="identity-step">
+              <div class="identity-step__icon" aria-hidden="true">1</div>
+              <div>
+                <h4
+                  class="identity-step__title"
+                  data-i18n="profile.identityModal.advanced.step1Title"
+                >
+                  Selfie en vivo
+                </h4>
+                <p
+                  class="identity-step__text"
+                  data-i18n="profile.identityModal.advanced.step1Text"
+                >
+                  Activa tu cámara y asegura buena iluminación.
+                </p>
+              </div>
+            </div>
+            <div class="identity-step">
+              <div class="identity-step__icon" aria-hidden="true">2</div>
+              <div>
+                <h4
+                  class="identity-step__title"
+                  data-i18n="profile.identityModal.advanced.step2Title"
+                >
+                  Documento de identidad
+                </h4>
+                <p
+                  class="identity-step__text"
+                  data-i18n="profile.identityModal.advanced.step2Text"
+                >
+                  Toma foto del DNI/Pasaporte con datos legibles.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="identity-actions">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-verify-action="advanced"
+              data-i18n="profile.identityModal.advanced.action"
+            >
+              Simular selfie y DNI
+            </button>
+          </div>
+        </div>
+
+        <div class="identity-status">
+          <p class="form__error" data-identity-error></p>
+          <p class="form__success" data-identity-success hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- T35 - Modal de Apelación de Reseña -->
+    <section
+      class="modal"
+      id="appeal-modal"
+      hidden
+      role="dialog"
+      aria-labelledby="appeal-modal-title"
+    >
+      <div class="modal__overlay" data-close-appeal-modal></div>
+      <div class="modal__content" role="document">
+        <button
+          class="modal__close"
+          type="button"
+          aria-label="Cerrar"
+          data-close-appeal-modal
+        >
+          x
+        </button>
+        <div class="modal__header">
+          <h3
+            class="modal__title"
+            id="appeal-modal-title"
+            data-i18n="profile.appealModal.title"
+          >
+            Apelar Reseña
+          </h3>
+          <p class="modal__subtitle" data-i18n="profile.appealModal.subtitle">
+            Si consideras que esta reseña viola nuestras normas, puedes
+            solicitar una revisión.
+          </p>
+        </div>
+        <form id="appeal-form">
+          <input type="hidden" id="appeal-review-id" />
+          <div class="form__group">
+            <label for="appeal-reason" data-i18n="profile.appealModal.reason"
+              >Motivo de la apelación</label
+            >
+            <select
+              id="appeal-reason"
+              class="form__input"
+              required
+              style="
+                width: 100%;
+                padding: 0.5rem;
+                margin-bottom: 1rem;
+                border: 1px solid var(--color-gray-200);
+                border-radius: 8px;
+              "
+            >
+              <option value="" data-i18n="profile.appealModal.selectReason">
+                Selecciona un motivo
+              </option>
+              <option value="spam" data-i18n="profile.appealModal.reasons.spam">
+                Es spam o publicidad
+              </option>
+              <option
+                value="offensive"
+                data-i18n="profile.appealModal.reasons.offensive"
+              >
+                Contenido ofensivo o inapropiado
+              </option>
+              <option
+                value="irrelevant"
+                data-i18n="profile.appealModal.reasons.irrelevant"
+              >
+                No relevante para la transacción
+              </option>
+              <option
+                value="false"
+                data-i18n="profile.appealModal.reasons.false"
+              >
+                Información falsa
+              </option>
+            </select>
+          </div>
+          <div class="form__group">
+            <label for="appeal-details" data-i18n="profile.appealModal.details"
+              >Detalles adicionales</label
+            >
+            <textarea
+              id="appeal-details"
+              class="form__input"
+              rows="4"
+              placeholder="Explica por qué esta reseña debería ser eliminada..."
+              data-i18n-placeholder="profile.appealModal.detailsPlaceholder"
+              required
+              style="
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid var(--color-gray-200);
+                border-radius: 8px;
+              "
+            ></textarea>
+          </div>
+          <div class="identity-actions">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              data-i18n="profile.appealModal.action"
+            >
+              Enviar Apelación
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
+          <img
+            src="../assets/images/minka-logo-negativo-blanco.png"
+            alt="Mink'a"
+            class="app-footer__logo"
+          />
+          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+        </div>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/scripts/core/notif-badge.js" defer></script>
+    <script src="../assets/scripts/pages/profile.js" defer></script>
+  </body>
+</html>

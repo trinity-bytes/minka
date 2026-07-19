@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="es" class="force-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mink'a - Plataforma de Trueque para Economía Circular</title>
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="./assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="./assets/styles/core/base.css" />
+    <link rel="stylesheet" href="./assets/styles/core/components.css" />
+    <link rel="stylesheet" href="./assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="./assets/styles/core/responsive.css" />
+    <!-- Scripts core -->
+    <script defer src="./assets/scripts/core/translations.js"></script>
+    <script defer src="./assets/scripts/core/i18n.js"></script>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <!-- T02 & T09 - Ronel Rojas: Header y navegación accesible -->
+    <header class="header">
+      <div class="header__container">
+        <a href="#" class="header__logo">
+          <img
+            src="./assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <nav
+          class="header__nav"
+          id="menu-principal"
+          aria-label="Navegación Principal"
+        >
+          <a href="#como-funciona" class="header__nav-link">Cómo Funciona</a>
+          <a href="#beneficios" class="header__nav-link">Beneficios</a>
+          <a href="#impacto" class="header__nav-link">Impacto</a>
+          <a href="#testimonios" class="header__nav-link">Testimonios</a>
+        </nav>
+        <!-- T12 - Leonardo Chavez: CTA redirige a página de autenticación -->
+        <a href="pages/auth.html" class="btn btn-primary header__cta"
+          >Empezar Ahora</a
+        >
+        <button
+          class="header__menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="menu-principal"
+        >
+          ☰
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <!-- T01 - Andy Salcedo: Sección hero y CTA principal -->
+      <section class="hero" id="inicio">
+        <div class="container">
+          <div class="hero__grid">
+            <div class="hero__content">
+              <h1 class="hero__title">
+                ¡Bienvenido a <span class="hero__title-accent">Mink'a</span>!
+                <br />
+                Tu clóset es tesoro para otros
+              </h1>
+              <p class="hero__subtitle">
+                Únete a la plataforma de trueque que está transformando Lima.
+                Intercambia objetos y servicios, ahorra dinero y construye una
+                comunidad más sostenible
+                <img
+                  src="./assets/images/icons/leaf.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                  class="icon icon--inline"
+                />
+              </p>
+              <div class="hero__cta-group">
+                <!-- T12 - Leonardo Chavez: CTA redirige a página de autenticación -->
+                <a href="pages/auth.html" class="btn btn-primary btn-large"
+                  >Truequea Ahora y Suma Impacto</a
+                >
+                <a href="#como-funciona" class="btn btn-secondary btn-large"
+                  >Explorar Plataforma</a
+                >
+              </div>
+            </div>
+            <div class="hero__image">
+              <img
+                src="./assets/images/hero-comunidad.svg"
+                fetchpriority="high"
+                alt="Comunidad Mink'a intercambiando objetos"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- T03 - Miguel Sanca: Sección cómo funciona -->
+      <section id="como-funciona" class="how-it-works">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-header__title">Cómo Funciona Mink'a</h2>
+            <p class="section-header__subtitle">
+              Tres pasos simples para empezar a truequear y transformar tu
+              comunidad
+            </p>
+          </div>
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-card__icon" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/publicar.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <h3 class="step-card__title">1. Publica tu Oferta</h3>
+              <p class="step-card__description">
+                Sube fotos de objetos que ya no uses: ropa, libros, electrónica,
+                muebles. ¡Dale una segunda vida a tus cosas!
+              </p>
+            </div>
+            <div class="step-card">
+              <div class="step-card__icon" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/conectar.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <h3 class="step-card__title">2. Conecta con Vecinos</h3>
+              <p class="step-card__description">
+                Explora ofertas cerca de ti, chatea con otros usuarios y
+                encuentra el intercambio perfecto para ambos.
+              </p>
+            </div>
+            <div class="step-card">
+              <div class="step-card__icon" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/intercambio.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <h3 class="step-card__title">3. Intercambia y Celebra</h3>
+              <p class="step-card__description">
+                Coordina el encuentro, completa el trueque y gana puntos. ¡Así
+                cuidamos el planeta juntos!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- T04 - Lucero Pipa: Sección beneficios -->
+      <section id="beneficios" class="benefits">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-header__title">¿Por Qué Mink'a?</h2>
+          </div>
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-card__icon" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/seguridad.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <h3 class="benefit-card__title">Seguridad</h3>
+              <p class="benefit-card__description">
+                Verificación de usuarios, sistema de reputación y transacciones
+                protegidas.
+              </p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-card__icon" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/ahorro.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <h3 class="benefit-card__title">Ahorro Real</h3>
+              <p class="benefit-card__description">
+                Intercambia en lugar de comprar. Ahorra dinero mientras ayudas
+                al medio ambiente.
+              </p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-card__icon" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/impacto.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <h3 class="benefit-card__title">Impacto Ambiental</h3>
+              <p class="benefit-card__description">
+                Reduce desechos, promueve la reutilización y contribuye a la
+                economía circular.
+              </p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-card__icon" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/comunidad.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <h3 class="benefit-card__title">Comunidad</h3>
+              <p class="benefit-card__description">
+                Conoce vecinos, construye redes de confianza y fortalece tu
+                barrio.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nueva Sección: Video de Presentación del Producto -->
+      <section
+        id="conoce-mas"
+        class="product-video"
+        style="padding: 4rem 0; background-color: #f9fafb"
+      >
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-header__title">Descubre la Propuesta Mink'a</h2>
+            <p class="section-header__subtitle">
+              Mira cómo estamos transformando el intercambio y generando valor
+              para todos
+            </p>
+          </div>
+          <!-- Contenedor de video responsive -->
+          <div
+            style="
+              position: relative;
+              padding-bottom: 56.25%;
+              height: 0;
+              overflow: hidden;
+              max-width: 900px;
+              margin: 0 auto;
+              border-radius: 1rem;
+              box-shadow:
+                0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            "
+          >
+            <!-- Facade: el player de YouTube (~800KB) solo carga al hacer click -->
+            <button
+              type="button"
+              id="video-facade"
+              data-video-id="NzF1VfOuS4Y"
+              aria-label="Reproducir video de presentación Mink'a"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 0;
+                cursor: pointer;
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                color: #ffffff;
+              "
+            >
+              <span
+                aria-hidden="true"
+                style="
+                  width: 72px;
+                  height: 72px;
+                  border-radius: 50%;
+                  background: #2ecc71;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 1.8rem;
+                "
+                >▶</span
+              >
+              <span style="font-weight: 600">
+                Ver video de presentación Mink'a
+              </span>
+            </button>
+            <script>
+              document
+                .getElementById("video-facade")
+                .addEventListener("click", function () {
+                  var iframe = document.createElement("iframe");
+                  iframe.src =
+                    "https://www.youtube.com/embed/" +
+                    this.dataset.videoId +
+                    "?autoplay=1";
+                  iframe.title = "Video de presentación Mink'a";
+                  iframe.style.cssText =
+                    "position:absolute;top:0;left:0;width:100%;height:100%;border:0;";
+                  iframe.allow =
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                  iframe.allowFullscreen = true;
+                  this.replaceWith(iframe);
+                });
+            </script>
+          </div>
+        </div>
+      </section>
+
+      <!-- T06 - Miguel Sanca: Sección impacto -->
+      <section id="impacto" class="impact">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-header__title">Nuestro Impacto en Lima</h2>
+            <p class="section-header__subtitle">
+              Juntos estamos construyendo una ciudad más sostenible
+            </p>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card__number">1,250+</div>
+              <div class="stat-card__label">Trueques Completados</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number">500kg</div>
+              <div class="stat-card__label">Residuos Evitados</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__number">750+</div>
+              <div class="stat-card__label">Miembros Activos</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- T05 - Lucero Pipa: Sección testimonios -->
+      <section id="testimonios" class="testimonials">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-header__title">Lo Que Dice Nuestra Comunidad</h2>
+          </div>
+          <div class="testimonials-grid">
+            <div class="testimonial-card">
+              <div class="testimonial-card__header">
+                <img
+                  src="./assets/images/avatars/avatar-sofia.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Sofía Ramírez"
+                  class="testimonial-card__avatar"
+                />
+                <div>
+                  <div class="testimonial-card__name">Sofía Ramírez</div>
+                  <div class="testimonial-card__date">
+                    Miraflores • Nov 2023
+                  </div>
+                </div>
+              </div>
+              <div class="testimonial-card__rating" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <p class="testimonial-card__content">
+                "¡Mink'a ha transformado cómo adquiero cosas! Cambié mis
+                habilidades de fotografía por productos orgánicos. Es genial
+                conocer gente de mi barrio."
+              </p>
+            </div>
+            <div class="testimonial-card">
+              <div class="testimonial-card__header">
+                <img
+                  src="./assets/images/avatars/avatar-sofia.svg2"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Carlos Mendoza"
+                  class="testimonial-card__avatar"
+                />
+                <div>
+                  <div class="testimonial-card__name">Carlos Mendoza</div>
+                  <div class="testimonial-card__date">
+                    San Isidro • Oct 2023
+                  </div>
+                </div>
+              </div>
+              <div class="testimonial-card__rating" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <p class="testimonial-card__content">
+                "Intercambié servicios de diseño gráfico por desarrollo web.
+                Perfecto para pequeños negocios que quieren crecer sin gastar
+                tanto."
+              </p>
+            </div>
+            <div class="testimonial-card">
+              <div class="testimonial-card__header">
+                <img
+                  src="./assets/images/avatars/avatar-isabella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Isabella Torres"
+                  class="testimonial-card__avatar"
+                />
+                <div>
+                  <div class="testimonial-card__name">Isabella Torres</div>
+                  <div class="testimonial-card__date">Surco • Sep 2023</div>
+                </div>
+              </div>
+              <div class="testimonial-card__rating" aria-hidden="true">
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+                <img
+                  src="./assets/images/icons/estrella.svg"
+                  loading="lazy"
+                  decoding="async"
+                  alt=""
+                />
+              </div>
+              <p class="testimonial-card__content">
+                "Nuestro huerto comunitario cambió verduras por servicios de
+                carpintería. Mink'a ha fortalecido nuestra red local."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- T05 - Lucero Pipa: CTA final post testimonios -->
+      <section class="cta-final">
+        <div class="container">
+          <div class="cta-final__content">
+            <h2 class="cta-final__title">¡Únete a la Comunidad Mink'a Hoy!</h2>
+            <p class="cta-final__subtitle">
+              Empieza a truequear y contribuye a una Lima más sostenible y
+              conectada
+              <img
+                src="./assets/images/icons/leaf.svg"
+                  loading="lazy"
+                  decoding="async"
+                alt=""
+                class="icon icon--inline"
+              />
+            </p>
+            <a href="pages/auth.html" class="btn cta-final__button">Empezar Ahora</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- T07 - Jahat Trinidad: Footer institucional -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__content">
+          <div class="footer__brand">
+            <div class="footer__logo">
+              <img
+                src="./assets/images/minka-logo-negativo-blanco.png"
+                alt="Mink'a"
+                class="logo-image logo-image--footer"
+              />
+            </div>
+            <p class="footer__description">
+              Plataforma de trueque para economía circular. Construyendo una
+              Lima más sostenible, una transacción a la vez.
+            </p>
+          </div>
+          <div class="footer__section">
+            <h3 class="footer__section-title">Plataforma</h3>
+            <ul class="footer__links">
+              <li>
+                <a href="#como-funciona" class="footer__link">Cómo Funciona</a>
+              </li>
+              <li><a href="#beneficios" class="footer__link">Categorías</a></li>
+              <li><a href="#testimonios" class="footer__link">Comunidad</a></li>
+              <li><a href="#" class="footer__link">Blog</a></li>
+            </ul>
+          </div>
+          <div class="footer__section">
+            <h3 class="footer__section-title">Empresa</h3>
+            <ul class="footer__links">
+              <li>
+                <a href="pages/about.html" class="footer__link">Sobre Nosotros</a>
+              </li>
+              <li><a href="#" class="footer__link">Contacto</a></li>
+              <li><a href="#" class="footer__link">Prensa</a></li>
+              <li><a href="#" class="footer__link">Carreras</a></li>
+            </ul>
+          </div>
+          <div class="footer__section">
+            <h3 class="footer__section-title">Legal</h3>
+            <ul class="footer__links">
+              <li><a href="#" class="footer__link">Términos de Servicio</a></li>
+              <li><a href="#" class="footer__link">Privacidad</a></li>
+              <li><a href="#" class="footer__link">Cookies</a></li>
+              <li><a href="#" class="footer__link">Accesibilidad</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <p class="footer__copyright">
+            © 2025 Mink'a. Todos los derechos reservados.
+          </p>
+          <div class="footer__social">
+            <a href="#" class="footer__social-link" aria-label="Facebook">FB</a>
+            <a href="#" class="footer__social-link" aria-label="Instagram"
+              >IG</a
+            >
+            <a href="#" class="footer__social-link" aria-label="Twitter">TW</a>
+            <a href="#" class="footer__social-link" aria-label="LinkedIn">IN</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- T11 - Jahat Trinidad: accessibility improvements -->
+    <script src="./assets/scripts/core/main.js" defer></script>
+  </body>
+</html>

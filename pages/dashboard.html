@@ -1,0 +1,259 @@
+<!doctype html>
+<!-- 
+  Tarea: T26 - Responsable: Miguel Sanca - Descripción: Dashboard de impacto con gráficas y KPIs acumulados.
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
+    <title>Mink'a - Dashboard de Impacto</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
+    />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/dashboard.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Scripts core -->
+    <script defer src="../assets/scripts/core/components.js"></script>
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
+    <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
+    <script src="../assets/scripts/core/guard.js"></script>
+  </head>
+  <body class="dashboard-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
+
+    <main id="main" class="dashboard-main">
+      <div class="container">
+        <!-- T26 - Miguel Sanca: Encabezado del Dashboard -->
+        <section class="dashboard-header">
+          <div class="dashboard-title">
+            <h1 data-i18n="dash_title">Dashboard de Impacto</h1>
+            <p>Visualiza tu contribución ambiental y el ahorro generado.</p>
+          </div>
+          <div class="dashboard-actions">
+            <div class="filter-group">
+              <label for="period-filter" data-i18n="dash_period">Periodo:</label>
+              <select id="period-filter" class="form-select">
+                <option value="7">Últimos 7 días</option>
+                <option value="30" selected>Últimos 30 días</option>
+                <option value="90">Últimos 3 meses</option>
+                <option value="365">Último año</option>
+                <option value="custom">Personalizado</option>
+              </select>
+            </div>
+            <div
+              id="custom-date-group"
+              class="filter-group"
+              style="display: none"
+            >
+              <input
+                type="date"
+                id="start-date"
+                class="form-select"
+                aria-label="Fecha inicio"
+              />
+              <span style="color: var(--color-gray-600)">-</span>
+              <input
+                type="date"
+                id="end-date"
+                class="form-select"
+                aria-label="Fecha fin"
+              />
+            </div>
+            <div class="filter-group">
+              <label for="category-filter" data-i18n="dash_category">Categoría:</label>
+              <select id="category-filter" class="form-select">
+                <option value="all">Todas</option>
+              </select>
+            </div>
+            <button id="export-btn" class="btn btn-outline">
+              <i class="fas fa-download"></i> Exportar Reporte
+            </button>
+          </div>
+        </section>
+
+        <!-- T26 - Miguel Sanca: KPIs -->
+        <div
+          id="no-data-message"
+          class="no-data-container"
+          style="display: none"
+        >
+          <div class="no-data-content">
+            <i class="fas fa-leaf no-data-icon"></i>
+            <h3 data-i18n="dash_empty">Sin actividad registrada</h3>
+            <p>
+              No hay datos de impacto para el periodo y filtros seleccionados.
+            </p>
+          </div>
+        </div>
+
+        <section class="kpi-grid" id="kpi-section">
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-icon--co2">
+              <i class="fas fa-cloud"></i>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-value" id="kpi-co2">0</span>
+              <span class="kpi-unit">kg</span>
+              <span class="kpi-label">CO₂ Evitado</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-icon--water">
+              <i class="fas fa-tint"></i>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-value" id="kpi-water">0</span>
+              <span class="kpi-unit">L</span>
+              <span class="kpi-label">Agua Ahorrada</span>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon kpi-icon--objects">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-value" id="kpi-objects">0</span>
+              <span class="kpi-unit">u.</span>
+              <span class="kpi-label">Objetos Reusados</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- T26 - Miguel Sanca: Gráficas -->
+        <section class="charts-grid" id="charts-section">
+          <div class="chart-card">
+            <h3 data-i18n="dash_evolution">Evolución de Impacto</h3>
+            <div class="chart-container">
+              <canvas id="evolutionChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3 data-i18n="dash_by_category">Impacto por Categoría</h3>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
+          <img
+            src="../assets/images/minka-logo-negativo-blanco.png"
+            alt="Mink'a"
+            class="app-footer__logo"
+          />
+          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+        </div>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/scripts/core/notif-badge.js"></script>
+    <script src="../assets/scripts/pages/dashboard.js"></script>
+  </body>
+</html>

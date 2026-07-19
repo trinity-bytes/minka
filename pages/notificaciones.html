@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
+    <title>Mink'a - Notificaciones</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
+    />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/notifications.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
+    <!-- Scripts core -->
+    <script defer src="../assets/scripts/core/components.js"></script>
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
+    <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
+    <script src="../assets/scripts/core/guard.js"></script>
+  </head>
+  <body class="notifications-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
+
+    <main id="main" class="notifications-main">
+      <section class="notifications-hero">
+        <div class="container notifications-hero__grid">
+          <div>
+            <p class="notifications-hero__eyebrow" data-i18n="notif_eyebrow">
+              Centro de alertas
+            </p>
+            <h1 data-i18n="notif_title">Notificaciones y recordatorios</h1>
+            <p class="notifications-hero__subtitle" data-i18n="notif_subtitle">
+              Consulta avisos de mensajes, coincidencias y recordatorios de
+              entrega. Configura tus preferencias para recibir solo lo
+              necesario.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="notifications-layout"
+        aria-label="Centro de notificaciones"
+      >
+        <div class="container notifications-grid">
+          <section class="card feed-card" aria-label="Lista de notificaciones">
+            <div class="card__header feed-card__header">
+              <div class="feed-header__top">
+                <h2 data-i18n="notif_tray_title">Tu bandeja</h2>
+                <div class="feed-actions">
+                  <button
+                    class="btn btn-primary btn-sm"
+                    id="mark-all-read"
+                    type="button"
+                    data-i18n="notif_btn_mark_all"
+                  >
+                    Marcar todo
+                  </button>
+                  <button
+                    class="btn btn-secondary btn-sm"
+                    id="clear-read"
+                    type="button"
+                    data-i18n="notif_btn_clear_read"
+                  >
+                    Borrar leídas
+                  </button>
+                </div>
+              </div>
+              <div class="feed-filters">
+                <select id="filter-type">
+                  <option value="all" data-i18n="notif_filter_all">
+                    Todos los tipos
+                  </option>
+                  <option value="message" data-i18n="notif_filter_message">
+                    Mensajes
+                  </option>
+                  <option value="match" data-i18n="notif_filter_match">
+                    Coincidencias
+                  </option>
+                  <option value="reminder" data-i18n="notif_filter_reminder">
+                    Recordatorios
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div
+              class="card__body"
+              id="notifications-list"
+              aria-live="polite"
+            ></div>
+          </section>
+
+          <aside class="prefs">
+            <div
+              class="card prefs__card"
+              aria-label="Preferencias de notificación"
+            >
+              <div class="card__header">
+                <h3 data-i18n="notif_prefs_title">Preferencias</h3>
+              </div>
+              <div class="card__body">
+                <div class="pref-toggle">
+                  <label for="filter-unread" data-i18n="notif_pref_unread"
+                    >Solo no leídas</label
+                  >
+                  <input type="checkbox" id="filter-unread" checked />
+                </div>
+                <div class="pref-toggle">
+                  <label for="pref-messages" data-i18n="notif_pref_messages"
+                    >Mensajes y actividad de chat</label
+                  >
+                  <input type="checkbox" id="pref-messages" checked />
+                </div>
+                <div class="pref-toggle">
+                  <label for="pref-matches" data-i18n="notif_pref_matches"
+                    >Coincidencias y sugerencias</label
+                  >
+                  <input type="checkbox" id="pref-matches" checked />
+                </div>
+                <div class="pref-toggle">
+                  <label for="pref-reminders" data-i18n="notif_pref_reminders"
+                    >Recordatorios de encuentro</label
+                  >
+                  <input type="checkbox" id="pref-reminders" checked />
+                </div>
+                <div class="pref-toggle">
+                  <label for="pref-reviews" data-i18n="notif_pref_reviews"
+                    >Reseñas y reputación</label
+                  >
+                  <input type="checkbox" id="pref-reviews" />
+                </div>
+                <div class="pref-toggle">
+                  <label for="pref-news" data-i18n="notif_pref_news"
+                    >Novedades y tips</label
+                  >
+                  <input type="checkbox" id="pref-news" />
+                </div>
+                <div class="pref-select">
+                  <label for="pref-quiet" data-i18n="notif_pref_quiet"
+                    >Horario silencioso</label
+                  >
+                  <select id="pref-quiet">
+                    <option value="none" data-i18n="notif_quiet_none">
+                      Sin silencio
+                    </option>
+                    <option value="21-7">21:00 - 07:00</option>
+                    <option value="22-6">22:00 - 06:00</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card prefs__card" aria-label="Consejos de seguridad">
+              <div class="card__header">
+                <h3 data-i18n="notif_tips_title">Consejos rápidos</h3>
+              </div>
+              <div class="card__body tips">
+                <p data-i18n="notif_tip_1">
+                  • Confirma el punto de encuentro dentro del chat.
+                </p>
+                <p data-i18n="notif_tip_2">
+                  • Marca recordatorios para llegar a tiempo.
+                </p>
+                <p data-i18n="notif_tip_3">
+                  • Reporta actividad inusual desde la ficha de detalle.
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
+          <img
+            src="../assets/images/minka-logo-negativo-blanco.png"
+            alt="Mink'a"
+            class="app-footer__logo"
+          />
+          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+        </div>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/scripts/core/notif-badge.js"></script>
+    <script src="../assets/scripts/pages/notifications.js"></script>
+  </body>
+</html>

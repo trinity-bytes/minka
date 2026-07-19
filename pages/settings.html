@@ -1,0 +1,542 @@
+<!doctype html>
+<!-- 
+  Tarea: T27 - Responsable: Miguel Sanca - Descripción: Opciones de accesibilidad, alto contraste y selector de idioma.
+  Tarea: T29 - Responsable: Lucero Pipa - Descripción: Configuración de privacidad, visibilidad y verificación de identidad.
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
+    <title>Mink'a - Configuración y Accesibilidad</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
+    />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/settings.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
+    <!-- Scripts core -->
+    <script defer src="../assets/scripts/core/components.js"></script>
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
+    <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
+    <script src="../assets/scripts/core/guard.js"></script>
+  </head>
+  <body class="settings-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
+
+    <main id="main" class="settings-main">
+      <div class="container">
+        <section class="settings-header">
+          <h1 data-i18n="settings_title">Configuración y Accesibilidad</h1>
+          <p data-i18n="settings_subtitle">
+            Personaliza tu experiencia en Mink'a.
+          </p>
+        </section>
+
+        <div class="settings-grid">
+          <!-- T27 - Miguel Sanca: Preferencias de Idioma (HU49) -->
+          <section class="settings-card">
+            <div class="settings-card__header">
+              <div class="settings-icon"><i class="fas fa-language"></i></div>
+              <h2 data-i18n="language_title">Idioma</h2>
+            </div>
+            <div class="settings-card__body">
+              <p data-i18n="language_desc">
+                Selecciona el idioma de la interfaz.
+              </p>
+              <select
+                id="language-select"
+                class="form-select"
+                aria-label="Seleccionar idioma"
+              >
+                <option value="es">Español</option>
+                <option value="qu">Quechua</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- T27 - Miguel Sanca: Accesibilidad Visual (HU48) -->
+          <section class="settings-card">
+            <div class="settings-card__header">
+              <div class="settings-icon"><i class="fas fa-eye"></i></div>
+              <h2 data-i18n="visual_title">Accesibilidad Visual</h2>
+            </div>
+            <div class="settings-card__body">
+              <div class="setting-row">
+                <div class="setting-info">
+                  <strong data-i18n="contrast_label">Alto Contraste</strong>
+                  <p data-i18n="contrast_desc">
+                    Aumenta el contraste para mejorar la legibilidad.
+                  </p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" role="switch" id="high-contrast-toggle" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-info">
+                  <strong data-i18n="font_size_label">Tamaño de Fuente</strong>
+                  <p data-i18n="font_size_desc">Ajusta el tamaño del texto.</p>
+                </div>
+                <div class="font-controls">
+                  <button class="btn btn-outline btn-sm" id="font-decrease">
+                    A-
+                  </button>
+                  <button class="btn btn-outline btn-sm" id="font-reset">
+                    A
+                  </button>
+                  <button class="btn btn-outline btn-sm" id="font-increase">
+                    A+
+                  </button>
+                </div>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-info">
+                  <strong data-i18n="low_data_label">Modo Bajo Consumo</strong>
+                  <p data-i18n="low_data_desc">
+                    Reduce calidad de imágenes y desactiva animaciones.
+                  </p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" role="switch" id="low-data-toggle" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- T29 - Lucero Pipa: Privacidad y Disponibilidad (HU25, HU26) -->
+          <section class="settings-card">
+            <div class="settings-card__header">
+              <div class="settings-icon">
+                <i class="fas fa-user-shield"></i>
+              </div>
+              <h2 data-i18n="privacy_title">Privacidad y Disponibilidad</h2>
+            </div>
+            <div class="settings-card__body">
+              <div class="setting-row">
+                <div class="setting-info">
+                  <strong data-i18n="visibility_label"
+                    >Visibilidad del Perfil</strong
+                  >
+                  <p data-i18n="visibility_desc">
+                    Controla quién puede ver tu información.
+                  </p>
+                </div>
+                <select id="visibility-select" class="form-select">
+                  <option value="public">Público (Todos)</option>
+                  <option value="verified">Solo Verificados</option>
+                  <option value="private">Privado</option>
+                </select>
+              </div>
+
+              <!-- HU25: Ocultar distrito exacto -->
+              <div class="setting-row">
+                <div class="setting-info">
+                  <strong>Ocultar distrito exacto</strong>
+                  <p>Muestra solo una ubicación aproximada en tu perfil.</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" role="switch" id="hide-district-toggle" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="setting-row">
+                <button
+                  class="btn btn-outline btn-small"
+                  id="preview-profile-btn"
+                >
+                  <i class="fas fa-eye"></i> Ver cómo ven mi perfil otros
+                </button>
+              </div>
+
+              <div class="setting-divider"></div>
+
+              <!-- HU26: Disponibilidad Granular -->
+              <div class="setting-row">
+                <div class="setting-info">
+                  <strong data-i18n="availability_label"
+                    >Horario de Intercambio</strong
+                  >
+                  <p data-i18n="availability_desc">
+                    Define tus días y horas disponibles.
+                  </p>
+                </div>
+                <button class="btn btn-secondary" id="open-availability-modal">
+                  Configurar Horarios
+                </button>
+              </div>
+              <div id="availability-summary" class="availability-summary">
+                <!-- Resumen se llena con JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- T28 - Leonardo Chavez: Seguridad y Sesiones (HU23, HU24) -->
+          <section class="settings-card">
+            <div class="settings-card__header">
+              <div class="settings-icon"><i class="fas fa-lock"></i></div>
+              <h2 data-i18n="security_title">Seguridad</h2>
+            </div>
+            <div class="settings-card__body">
+              <div class="setting-row">
+                <div class="setting-info">
+                  <strong data-i18n="password_label">Contraseña</strong>
+                  <p data-i18n="password_desc">
+                    Cambia tu contraseña periódicamente.
+                  </p>
+                </div>
+                <button class="btn btn-outline" id="change-password-btn">
+                  Cambiar Contraseña
+                </button>
+              </div>
+
+              <div class="setting-divider"></div>
+
+              <h3>Sesiones Activas</h3>
+              <div id="sessions-list" class="sessions-list">
+                <!-- Se llena con JS -->
+              </div>
+              <button class="btn btn-text text-danger" id="logout-all-sessions">
+                Cerrar todas las demás sesiones
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="settings-actions">
+          <button
+            class="btn btn-primary btn-large"
+            id="save-settings"
+            data-i18n="save_btn"
+          >
+            Guardar Preferencias
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- T29 - Lucero Pipa: Modal de Disponibilidad (HU26) -->
+    <div id="availability-modal" class="modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="availability-title"
+      >
+        <h3 id="availability-title" class="modal__title">
+          Configurar Disponibilidad
+        </h3>
+        <p class="modal__subtitle">
+          Selecciona los días y franjas horarias en las que puedes realizar
+          intercambios.
+        </p>
+
+        <div class="availability-grid">
+          <!-- Lunes -->
+          <div class="day-row">
+            <label
+              ><input type="checkbox" name="day" value="Lunes" /> Lun</label
+            >
+            <div class="time-slots">
+              <label
+                ><input type="checkbox" name="time_Lunes" value="Mañana" />
+                Mañana</label
+              >
+              <label
+                ><input type="checkbox" name="time_Lunes" value="Tarde" />
+                Tarde</label
+              >
+              <label
+                ><input type="checkbox" name="time_Lunes" value="Noche" />
+                Noche</label
+              >
+            </div>
+          </div>
+          <!-- Martes -->
+          <div class="day-row">
+            <label
+              ><input type="checkbox" name="day" value="Martes" /> Mar</label
+            >
+            <div class="time-slots">
+              <label
+                ><input type="checkbox" name="time_Martes" value="Mañana" />
+                Mañana</label
+              >
+              <label
+                ><input type="checkbox" name="time_Martes" value="Tarde" />
+                Tarde</label
+              >
+              <label
+                ><input type="checkbox" name="time_Martes" value="Noche" />
+                Noche</label
+              >
+            </div>
+          </div>
+          <!-- Miércoles -->
+          <div class="day-row">
+            <label
+              ><input type="checkbox" name="day" value="Miércoles" /> Mié</label
+            >
+            <div class="time-slots">
+              <label
+                ><input type="checkbox" name="time_Miércoles" value="Mañana" />
+                Mañana</label
+              >
+              <label
+                ><input type="checkbox" name="time_Miércoles" value="Tarde" />
+                Tarde</label
+              >
+              <label
+                ><input type="checkbox" name="time_Miércoles" value="Noche" />
+                Noche</label
+              >
+            </div>
+          </div>
+          <!-- Jueves -->
+          <div class="day-row">
+            <label
+              ><input type="checkbox" name="day" value="Jueves" /> Jue</label
+            >
+            <div class="time-slots">
+              <label
+                ><input type="checkbox" name="time_Jueves" value="Mañana" />
+                Mañana</label
+              >
+              <label
+                ><input type="checkbox" name="time_Jueves" value="Tarde" />
+                Tarde</label
+              >
+              <label
+                ><input type="checkbox" name="time_Jueves" value="Noche" />
+                Noche</label
+              >
+            </div>
+          </div>
+          <!-- Viernes -->
+          <div class="day-row">
+            <label
+              ><input type="checkbox" name="day" value="Viernes" /> Vie</label
+            >
+            <div class="time-slots">
+              <label
+                ><input type="checkbox" name="time_Viernes" value="Mañana" />
+                Mañana</label
+              >
+              <label
+                ><input type="checkbox" name="time_Viernes" value="Tarde" />
+                Tarde</label
+              >
+              <label
+                ><input type="checkbox" name="time_Viernes" value="Noche" />
+                Noche</label
+              >
+            </div>
+          </div>
+          <!-- Sábado -->
+          <div class="day-row">
+            <label
+              ><input type="checkbox" name="day" value="Sábado" /> Sáb</label
+            >
+            <div class="time-slots">
+              <label
+                ><input type="checkbox" name="time_Sábado" value="Mañana" />
+                Mañana</label
+              >
+              <label
+                ><input type="checkbox" name="time_Sábado" value="Tarde" />
+                Tarde</label
+              >
+              <label
+                ><input type="checkbox" name="time_Sábado" value="Noche" />
+                Noche</label
+              >
+            </div>
+          </div>
+          <!-- Domingo -->
+          <div class="day-row">
+            <label
+              ><input type="checkbox" name="day" value="Domingo" /> Dom</label
+            >
+            <div class="time-slots">
+              <label
+                ><input type="checkbox" name="time_Domingo" value="Mañana" />
+                Mañana</label
+              >
+              <label
+                ><input type="checkbox" name="time_Domingo" value="Tarde" />
+                Tarde</label
+              >
+              <label
+                ><input type="checkbox" name="time_Domingo" value="Noche" />
+                Noche</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="modal__actions">
+          <button class="btn btn-secondary" id="cancel-availability">
+            Cancelar
+          </button>
+          <button class="btn btn-primary" id="save-availability">
+            Guardar Horarios
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- T28 - Reauth Modal -->
+    <div id="reauth-modal" class="modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reauth-title"
+      >
+        <h3 id="reauth-title" class="modal__title">Confirmar Identidad</h3>
+        <p class="modal__subtitle">
+          Por seguridad, ingresa tu contraseña para continuar.
+        </p>
+        <input
+          type="password"
+          id="reauth-password"
+          class="form-input"
+          placeholder="Contraseña"
+        />
+        <p
+          class="form__error"
+          id="reauth-error"
+          role="status"
+          aria-live="polite"
+        ></p>
+        <div class="modal__actions">
+          <button class="btn btn-secondary" id="cancel-reauth">Cancelar</button>
+          <button class="btn btn-primary" id="confirm-reauth">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
+          <img
+            src="../assets/images/minka-logo-negativo-blanco.png"
+            alt="Mink'a"
+            class="app-footer__logo"
+          />
+          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+        </div>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/scripts/core/notif-badge.js" defer></script>
+    <script src="../assets/scripts/pages/settings.js"></script>
+  </body>
+</html>

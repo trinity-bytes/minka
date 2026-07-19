@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es" class="force-light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sobre Nosotros - Mink'a</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
+    <!-- Scripts core -->
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <header class="header">
+      <div class="header__container">
+        <a href="../index.html" class="header__logo">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <nav
+          class="header__nav"
+          id="menu-principal"
+          aria-label="Navegación Principal"
+        >
+          <a href="index.html#como-funciona" class="header__nav-link"
+            >Cómo Funciona</a
+          >
+          <a href="index.html#beneficios" class="header__nav-link"
+            >Beneficios</a
+          >
+          <a href="index.html#impacto" class="header__nav-link">Impacto</a>
+          <a href="index.html#testimonios" class="header__nav-link"
+            >Testimonios</a
+          >
+        </nav>
+        <a href="auth.html" class="btn btn-primary header__cta"
+          >Empezar Ahora</a
+        >
+        <button
+          class="header__menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="menu-principal"
+        >
+          ☰
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero" style="padding: 4rem 0; text-align: center">
+        <div class="container">
+          <h1 class="hero__title">
+            Sobre <span class="hero__title-accent">Nosotros</span>
+          </h1>
+          <p class="hero__subtitle" style="max-width: 800px; margin: 0 auto">
+            Conoce al equipo apasionado que está trabajando para transformar la
+            economía de Lima a través del trueque y la colaboración comunitaria.
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="about-video"
+        style="padding: 4rem 0; background-color: #f9fafb"
+      >
+        <div class="container">
+          <div class="section-header">
+            <h2 class="section-header__title">Nuestra Historia y Equipo</h2>
+            <p class="section-header__subtitle">
+              Descubre quiénes somos y qué nos motiva
+            </p>
+          </div>
+          <div
+            style="
+              position: relative;
+              padding-bottom: 56.25%;
+              height: 0;
+              overflow: hidden;
+              max-width: 900px;
+              margin: 0 auto;
+              border-radius: 1rem;
+              box-shadow:
+                0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            "
+          >
+            <!-- Facade: el player de YouTube solo carga al hacer click -->
+            <button
+              type="button"
+              id="video-facade"
+              data-video-id="--xiPEQ3y08"
+              aria-label="Reproducir video Sobre Nosotros Mink'a"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 0;
+                cursor: pointer;
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                color: #ffffff;
+              "
+            >
+              <span
+                aria-hidden="true"
+                style="
+                  width: 72px;
+                  height: 72px;
+                  border-radius: 50%;
+                  background: #2ecc71;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 1.8rem;
+                "
+                >▶</span
+              >
+              <span style="font-weight: 600">Ver video Sobre Nosotros</span>
+            </button>
+            <script>
+              document
+                .getElementById("video-facade")
+                .addEventListener("click", function () {
+                  var iframe = document.createElement("iframe");
+                  iframe.src =
+                    "https://www.youtube.com/embed/" +
+                    this.dataset.videoId +
+                    "?autoplay=1";
+                  iframe.title = "Video Sobre Nosotros Mink'a";
+                  iframe.style.cssText =
+                    "position:absolute;top:0;left:0;width:100%;height:100%;border:0;";
+                  iframe.allow =
+                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                  iframe.allowFullscreen = true;
+                  this.replaceWith(iframe);
+                });
+            </script>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-final">
+        <div class="container">
+          <div class="cta-final__content">
+            <h2 class="cta-final__title">¿Listo para ser parte del cambio?</h2>
+            <p class="cta-final__subtitle">
+              Únete a nuestra comunidad y empieza a truequear hoy mismo.
+            </p>
+            <a href="auth.html" class="btn cta-final__button">Empezar Ahora</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__content">
+          <div class="footer__brand">
+            <div class="footer__logo">
+              <img
+                src="../assets/images/minka-logo-negativo-blanco.png"
+                alt="Mink'a"
+                class="logo-image logo-image--footer"
+              />
+            </div>
+            <p class="footer__description">
+              Plataforma de trueque para economía circular. Construyendo una
+              Lima más sostenible, una transacción a la vez.
+            </p>
+          </div>
+          <div class="footer__section">
+            <h3 class="footer__section-title">Plataforma</h3>
+            <ul class="footer__links">
+              <li>
+                <a href="index.html#como-funciona" class="footer__link"
+                  >Cómo Funciona</a
+                >
+              </li>
+              <li>
+                <a href="index.html#beneficios" class="footer__link"
+                  >Categorías</a
+                >
+              </li>
+              <li>
+                <a href="index.html#testimonios" class="footer__link"
+                  >Comunidad</a
+                >
+              </li>
+              <li><a href="#" class="footer__link">Blog</a></li>
+            </ul>
+          </div>
+          <div class="footer__section">
+            <h3 class="footer__section-title">Empresa</h3>
+            <ul class="footer__links">
+              <li>
+                <a href="about.html" class="footer__link">Sobre Nosotros</a>
+              </li>
+              <li><a href="#" class="footer__link">Contacto</a></li>
+              <li><a href="#" class="footer__link">Prensa</a></li>
+              <li><a href="#" class="footer__link">Carreras</a></li>
+            </ul>
+          </div>
+          <div class="footer__section">
+            <h3 class="footer__section-title">Legal</h3>
+            <ul class="footer__links">
+              <li><a href="#" class="footer__link">Términos de Servicio</a></li>
+              <li><a href="#" class="footer__link">Privacidad</a></li>
+              <li><a href="#" class="footer__link">Cookies</a></li>
+              <li><a href="#" class="footer__link">Accesibilidad</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <p class="footer__copyright">
+            © 2025 Mink'a. Todos los derechos reservados.
+          </p>
+          <div class="footer__social">
+            <a href="#" class="footer__social-link" aria-label="Facebook">FB</a>
+            <a href="#" class="footer__social-link" aria-label="Instagram"
+              >IG</a
+            >
+            <a href="#" class="footer__social-link" aria-label="Twitter">TW</a>
+            <a href="#" class="footer__social-link" aria-label="LinkedIn">IN</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="../assets/scripts/core/main.js" defer></script>
+  </body>
+</html>

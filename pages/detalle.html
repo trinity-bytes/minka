@@ -1,0 +1,789 @@
+<!doctype html>
+<!-- 
+  Tarea: T25 - Responsable: Ronel Rojas - Descripción: Cálculo y visualización de métricas ambientales (CO₂, agua) al cerrar trueques.
+  Tarea: T31 - Responsable: Andy Salcedo - Descripción: Compartir ubicación en tiempo real y cálculo de distancia.
+  Tarea: T33 - Responsable: Miguel Sanca - Descripción: Timeline del objeto, reemisión de QR y cierre offline.
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
+    <title>Mink'a - Detalle de publicación</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
+    />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/home.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/detail.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/timeline.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
+    <!-- Scripts core -->
+    <script defer src="../assets/scripts/core/components.js"></script>
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
+    <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
+    <script src="../assets/scripts/core/guard.js"></script>
+  </head>
+  <body class="detail-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
+    <nav class="breadcrumb" aria-label="Migas de pan">
+      <ol class="container">
+        <li><a href="home.html" data-i18n="nav_home">Inicio</a></li>
+        <li><a href="busqueda.html" data-i18n="nav_search">Búsqueda</a></li>
+      <li aria-current="page"><span id="breadcrumb-current">Detalle</span></li>
+      </ol>
+    </nav>
+
+
+    <main id="main" class="detail-main">
+      <section class="detail-hero">
+        <div class="container">
+          <p class="detail-hero__eyebrow">Publicación activa</p>
+          <h1 id="item-title">Título del ítem</h1>
+          <p class="detail-hero__meta" id="item-meta">
+            Categoría · Ubicación · Estado
+          </p>
+        </div>
+      </section>
+
+      <section class="detail-layout" aria-label="Ficha de publicación">
+        <div class="container detail-grid">
+          <div class="detail-left">
+            <div class="gallery" id="gallery">
+              <img
+                src="../assets/images/items/bicicleta-vintage.jpg"
+                  loading="lazy"
+                  decoding="async"
+                alt="Imagen principal"
+                class="gallery__main"
+                id="gallery-main"
+              />
+              <div class="gallery__thumbs" id="gallery-thumbs"></div>
+            </div>
+
+            <div class="card">
+              <div class="card__header">
+                <h2 data-i18n="detail_description">Descripción</h2>
+              </div>
+              <div class="card__body">
+                <p id="item-description">
+                  Descripción del objeto. Se actualizará con datos simulados en
+                  el script.
+                </p>
+                <div class="tag-list" id="item-tags"></div>
+              </div>
+            </div>
+
+            <div class="card seller-card">
+              <div class="card__header">
+                <h3 data-i18n="detail_publisher">Publicador</h3>
+              </div>
+              <div class="card__body seller">
+                <div class="seller__info">
+                  <strong id="seller-name">Usuario Demo</strong>
+                  <span id="seller-location">Lima, Perú</span>
+                  <span id="seller-rating"
+                    ><i class="fas fa-star"></i> 4.5</span
+                  >
+                </div>
+                <a class="btn btn-primary" href="perfil.html" id="owner-profile-link"
+                   data-i18n="detail_view_profile">Ver perfil</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <aside class="detail-right">
+            <div class="card">
+              <div class="card__body detail-info">
+                <div class="info-row">
+                  <span>Estado</span><strong id="item-condition">—</strong>
+                </div>
+                <div class="info-row">
+                  <span>Ubicación</span><strong id="item-location">—</strong>
+                </div>
+                <div class="info-row">
+                  <span>Disponibilidad</span
+                  ><strong id="item-availability">—</strong>
+                </div>
+                <div class="info-row">
+                  <span>Reputación</span><strong id="item-rating">—</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="card qr-card" aria-label="Código QR de la publicación">
+              <div class="card__header qr-card__header">
+                <h3 data-i18n="detail_qr_title">QR de intercambio</h3>
+                <span class="badge" id="qr-status">Pendiente</span>
+              </div>
+              <div class="qr-card__body">
+                <img
+                  id="qr-image"
+                  src="../assets/images/QR-generico.svg"
+                  alt="QR de la publicación"
+                  width="220"
+                  height="220"
+                  loading="lazy"
+                />
+                <canvas
+                  id="qr-canvas"
+                  width="220"
+                  height="220"
+                  aria-hidden="true"
+                  class="qr-canvas"
+                  style="display: none"
+                ></canvas>
+                <p class="qr-code" id="qr-code-text">Qr generico</p>
+                <div class="qr-actions">
+                  <button class="btn btn-secondary" id="qr-download" disabled data-i18n="detail_qr_download">
+                    Descargar
+                  </button>
+                  <button class="btn btn-secondary" id="qr-share" disabled data-i18n="common_share">
+                    Compartir
+                  </button>
+                  <!-- T33 - Miguel Sanca: Reemitir QR (HU39) -->
+                  <button
+                    class="btn btn-outline"
+                    id="qr-reissue"
+                    title="Reemitir QR perdido"
+                  >
+                    <i class="fas fa-sync-alt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- T33 - Miguel Sanca: Historial de Trazabilidad (HU40) -->
+            <div class="card">
+              <div class="card__header">
+                <h3 data-i18n="detail_timeline_title">Historial del Objeto</h3>
+              </div>
+              <div class="card__body">
+                <ul class="timeline" id="item-timeline">
+                  <!-- Injected by JS -->
+                </ul>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card__header">
+                <h3 data-i18n="detail_actions_title">Acciones</h3>
+              </div>
+              <div class="card__body actions">
+                <a href="chat.html" class="btn btn-primary" id="action-contact" data-i18n="detail_contact">
+                  Contactar
+                </a>
+                <button class="btn btn-secondary" id="action-share">
+                  <i class="fas fa-share-nodes" aria-hidden="true"></i>
+                  Compartir
+                </button>
+                <!-- T33 - Miguel Sanca: Cierre Offline (HU41) -->
+                <button class="btn btn-primary" id="action-offline-close" data-i18n="detail_action_offline">
+                  Cierre Offline (Código)
+                </button>
+                <button class="btn btn-secondary" id="action-edit" data-i18n="detail_action_edit">
+                  Editar publicación
+                </button>
+                <button class="btn btn-secondary" id="action-close" data-i18n="detail_action_close">
+                  Cerrar publicación
+                </button>
+                <button class="btn btn-secondary" id="action-delete" data-i18n="detail_action_delete">
+                  Eliminar publicación
+                </button>
+                <button class="btn btn-secondary" id="action-pause" data-i18n="detail_action_pause">
+                  Pausar publicación
+                </button>
+                <button class="btn btn-secondary" id="action-reserve" data-i18n="detail_action_reserve">
+                  Marcar como reservada
+                </button>
+                <button class="btn btn-secondary" id="action-activate" data-i18n="detail_action_resume">
+                  Reanudar publicación
+                </button>
+                <button class="btn btn-secondary" id="action-rate" data-i18n="common_rate_title">
+                  Calificar intercambio
+                </button>
+                <button class="btn btn-secondary" id="action-report" data-i18n="detail_action_report">
+                  Reportar publicación
+                </button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Chunk 4.8: Similares de la misma categoría -->
+      <section
+        class="similar-section"
+        id="similar-section"
+        aria-label="Publicaciones similares"
+        hidden
+      >
+        <div class="container">
+          <h2 data-i18n="detail_similar">Similares</h2>
+          <div class="similar-grid" id="similar-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Chunk 4.8: CTA fija en móvil -->
+    <div class="sticky-cta" id="sticky-cta" hidden>
+      <span class="sticky-cta__mode" id="sticky-cta-mode"></span>
+      <a href="chat.html" class="btn btn-primary" id="sticky-cta-contact" data-i18n="detail_contact">
+        Contactar
+      </a>
+    </div>
+
+    <section class="modal" id="offline-modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal="offline-modal"></div>
+      <div class="modal__content" role="dialog" aria-modal="true">
+        <div class="modal__header">
+          <h2 data-i18n="detail_offline_title">Cierre Offline</h2>
+          <button
+            class="modal__close"
+            data-close-modal="offline-modal"
+            aria-label="Cerrar"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal__body">
+          <p>
+            Ingresa el código alfanumérico proporcionado por la contraparte para
+            cerrar el intercambio sin conexión.
+          </p>
+          <form id="offline-form">
+            <div class="form-group">
+              <label for="offline-code" data-i18n="detail_offline_code">Código de Intercambio</label>
+              <input
+                type="text"
+                id="offline-code"
+                class="form-input"
+                placeholder="Ej. A1B2-C3D4"
+                required
+                minlength="8"
+                maxlength="10"
+                style="
+                  text-transform: uppercase;
+                  letter-spacing: 2px;
+                  text-align: center;
+                  font-size: 1.2rem;
+                "
+              />
+            </div>
+            <div id="offline-feedback" class="form-feedback"></div>
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-close-modal="offline-modal"
+               data-i18n="common_cancel">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" data-i18n="detail_offline_validate">
+                Validar y Cerrar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="modal" id="rating-modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal="rating-modal"></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="rating-title"
+      >
+        <div class="modal__header">
+          <h3 id="rating-title" data-i18n="common_rate_title">Calificar intercambio</h3>
+          <button
+            class="modal__close"
+            type="button"
+            data-close-modal="rating-modal"
+            aria-label="Cerrar modal"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal__body">
+          <p class="modal__subtitle">
+            Cuéntanos cómo fue el intercambio con
+            <strong id="rating-user">Usuario Demo</strong>.
+          </p>
+          <form id="rating-form" novalidate>
+            <div
+              class="rating-stars"
+              role="radiogroup"
+              aria-label="Selecciona la calificación"
+            >
+              <button
+                type="button"
+                class="rating-star"
+                data-value="1"
+                aria-label="1 estrella"
+              >
+                <i class="fa-solid fa-star"></i>
+              </button>
+              <button
+                type="button"
+                class="rating-star"
+                data-value="2"
+                aria-label="2 estrellas"
+              >
+                <i class="fa-solid fa-star"></i>
+              </button>
+              <button
+                type="button"
+                class="rating-star"
+                data-value="3"
+                aria-label="3 estrellas"
+              >
+                <i class="fa-solid fa-star"></i>
+              </button>
+              <button
+                type="button"
+                class="rating-star"
+                data-value="4"
+                aria-label="4 estrellas"
+              >
+                <i class="fa-solid fa-star"></i>
+              </button>
+              <button
+                type="button"
+                class="rating-star"
+                data-value="5"
+                aria-label="5 estrellas"
+              >
+                <i class="fa-solid fa-star"></i>
+              </button>
+            </div>
+            <label class="form-label" for="rating-comment"
+               data-i18n="common_comment_opt">Comentario (opcional)</label
+            >
+            <textarea
+              id="rating-comment"
+              name="rating-comment"
+              rows="3"
+              maxlength="240"
+              placeholder="¿Qué salió bien? ¿Hay algo a mejorar?"
+            ></textarea>
+            <p class="modal__hint">
+              Se publicará en el perfil después de ser revisado.
+            </p>
+            <div class="modal__actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-close-modal="rating-modal"
+               data-i18n="common_cancel">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" data-i18n="common_rate_send">
+                Enviar calificación
+              </button>
+            </div>
+            <p
+              class="form-feedback"
+              id="rating-feedback"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="modal" id="report-modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal="report-modal"></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-title"
+      >
+        <div class="modal__header">
+          <h3 id="report-title" data-i18n="detail_action_report">Reportar publicación</h3>
+          <button
+            class="modal__close"
+            type="button"
+            data-close-modal="report-modal"
+            aria-label="Cerrar modal"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="modal__body">
+          <p class="modal__subtitle">
+            Cuéntanos qué sucede con esta publicación o usuario. Revisaremos tu
+            reporte.
+          </p>
+          <form id="report-form" novalidate>
+            <label class="form-label" for="report-reason" data-i18n="common_reason">Motivo</label>
+            <select id="report-reason" name="report-reason" required>
+              <option value="" disabled selected>Selecciona un motivo</option>
+              <option value="spam">Spam o publicidad</option>
+              <option value="fraude">Sospecha de fraude</option>
+              <option value="contenido">Contenido inapropiado</option>
+              <option value="uso-indebido">Uso indebido de datos</option>
+              <option value="otro">Otro</option>
+            </select>
+
+            <label class="form-label" for="report-details" data-i18n="common_details">Detalles</label>
+            <textarea
+              id="report-details"
+              name="report-details"
+              rows="3"
+              maxlength="280"
+              placeholder="Incluye ejemplos o capturas."
+            ></textarea>
+
+            <div class="form-check">
+              <input
+                type="checkbox"
+                id="report-include-chat"
+                name="report-include-chat"
+              />
+              <label for="report-include-chat"
+                 data-i18n="detail_attach_chat">Adjuntar referencia del chat (si aplica)</label
+              >
+            </div>
+
+            <div class="modal__actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-close-modal="report-modal"
+               data-i18n="common_cancel">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" data-i18n="common_report_send">
+                Enviar reporte
+              </button>
+            </div>
+            <p
+              class="form-feedback"
+              id="report-feedback"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
+          <img
+            src="../assets/images/minka-logo-negativo-blanco.png"
+            alt="Mink'a"
+            class="app-footer__logo"
+          />
+          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+        </div>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/scripts/core/notif-badge.js" defer></script>
+    <!-- detail.js se carga al final del body -->
+
+
+    <!-- Modal de Motivo de Cierre -->
+    <section class="modal" id="close-reason-modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal="close-reason-modal"></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="close-reason-title"
+      >
+        <header class="modal__header">
+          <h3 id="close-reason-title" data-i18n="detail_close_title">Cerrar Publicación</h3>
+          <button
+            class="modal__close"
+            aria-label="Cerrar modal"
+            data-close-modal="close-reason-modal"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="modal__body">
+          <form id="close-reason-form">
+            <p>¿Por qué deseas cerrar esta publicación?</p>
+            <div class="form-check">
+              <input
+                type="radio"
+                id="reason-exchanged"
+                name="close-reason"
+                value="exchanged"
+                checked
+              />
+              <label for="reason-exchanged"
+                 data-i18n="detail_close_opt_exchanged">¡Ya lo intercambié! (Trueque exitoso)</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                type="radio"
+                id="reason-other"
+                name="close-reason"
+                value="other"
+              />
+              <label for="reason-other" data-i18n="detail_close_opt_other">Ya no lo tengo / Otro motivo</label>
+            </div>
+            <div class="modal__actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-close-modal="close-reason-modal"
+               data-i18n="common_cancel">
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" data-i18n="common_confirm">Confirmar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- T25 - Ronel Rojas: Modal de Métricas Ambientales -->
+    <section class="modal" id="eco-modal" aria-hidden="true">
+      <div class="modal__overlay" data-close-modal="eco-modal"></div>
+      <div
+        class="modal__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="eco-title"
+      >
+        <header class="modal__header">
+          <h2 id="eco-title" class="modal__title" data-i18n="detail_eco_title">¡Trueque Exitoso!</h2>
+          <button
+            class="modal__close"
+            aria-label="Cerrar modal"
+            data-close-modal="eco-modal"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="modal__body">
+          <p>
+            Gracias por darle una segunda vida a este objeto. Aquí está tu
+            impacto ambiental estimado:
+          </p>
+
+          <div
+            class="eco-receipt"
+            style="
+              display: flex;
+              gap: 1rem;
+              justify-content: center;
+              margin: 1.5rem 0;
+            "
+          >
+            <div
+              class="eco-metric"
+              style="
+                text-align: center;
+                padding: 1rem;
+                background: #f0fdf4;
+                border-radius: 8px;
+                flex: 1;
+              "
+            >
+              <div
+                class="eco-icon"
+                style="
+                  font-size: 2rem;
+                  color: var(--color-primary);
+                  margin-bottom: 0.5rem;
+                "
+              >
+                <i class="fas fa-cloud"></i>
+              </div>
+              <div class="eco-data">
+                <span
+                  class="eco-value"
+                  id="eco-co2"
+                  style="display: block; font-weight: 700; font-size: 1.2rem"
+                  >0 kg</span
+                >
+                <span class="eco-label" style="font-size: 0.9rem; color: #666"
+                  >CO₂ Evitado</span
+                >
+              </div>
+            </div>
+            <div
+              class="eco-metric"
+              style="
+                text-align: center;
+                padding: 1rem;
+                background: #eef2f7;
+                border-radius: 8px;
+                flex: 1;
+              "
+            >
+              <div
+                class="eco-icon"
+                style="font-size: 2rem; color: #3498db; margin-bottom: 0.5rem"
+              >
+                <i class="fas fa-tint"></i>
+              </div>
+              <div class="eco-data">
+                <span
+                  class="eco-value"
+                  id="eco-water"
+                  style="display: block; font-weight: 700; font-size: 1.2rem"
+                  >0 L</span
+                >
+                <span class="eco-label" style="font-size: 0.9rem; color: #666"
+                  >Agua Ahorrada</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="eco-comparison"
+            style="text-align: center; margin-bottom: 1rem; color: #2c3e50"
+          >
+            <p>
+              <i class="fas fa-chart-line"></i> Tu impacto es
+              <strong
+                id="eco-comparison-val"
+                style="color: var(--color-primary)"
+                >superior</strong
+              >
+              al promedio de tu barrio.
+            </p>
+          </div>
+
+          <div
+            class="eco-reference"
+            style="text-align: center; font-size: 0.8rem; color: #999"
+          >
+            <small>
+              * Cálculo basado en ciclo de vida promedio por categoría.
+              <a
+                href="#"
+                id="eco-methodology-link"
+                data-action="open-modal"
+                data-modal="eco-modal"
+                style="color: var(--color-primary)"
+                >Ver metodología</a
+              >.
+            </small>
+          </div>
+        </div>
+        <footer class="modal__footer">
+          <button class="btn btn-primary" data-close-modal="eco-modal">
+            Entendido
+          </button>
+        </footer>
+      </div>
+    </section>
+    <script src="../assets/scripts/core/constants.js"></script>
+    <script src="../assets/scripts/pages/detail.js"></script>
+  </body>
+</html>

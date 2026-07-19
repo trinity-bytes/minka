@@ -1,0 +1,275 @@
+/* T16 - Miguel Sanca: Estilos ficha de detalle */
+/* T18 - Leonardo Chavez: Estilos de modales de rating y reporte */
+/* T23 - Ronel Rojas: Variantes de badge para estados */
+.detail-page {
+  background: var(--color-surface);
+}
+
+.detail-main {
+  padding-bottom: var(--space-64);
+}
+
+.detail-hero {
+  padding: var(--space-32) 0;
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--color-gray-50);
+}
+
+.detail-hero__eyebrow {
+  color: var(--color-primary);
+  font-weight: 700;
+  margin-bottom: var(--space-8);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.detail-hero__meta {
+  color: var(--color-gray-600);
+  margin-top: var(--space-8);
+}
+
+.detail-layout {
+  padding: var(--space-32) 0;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: var(--space-24);
+  align-items: start;
+}
+
+.detail-left,
+.detail-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-50);
+  border-radius: var(--space-16);
+  box-shadow: var(--shadow-sm);
+}
+
+.card__header {
+  padding: var(--space-16) var(--space-20) 0;
+}
+
+.card__body {
+  padding: var(--space-16) var(--space-20) var(--space-20);
+}
+
+.gallery {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-50);
+  border-radius: var(--space-16);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-16);
+}
+
+.gallery__main {
+  width: 100%;
+  border-radius: var(--space-12);
+  object-fit: cover;
+  max-height: 420px;
+}
+
+.gallery__thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-12);
+  margin-top: var(--space-12);
+}
+
+.gallery__thumbs img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--space-10);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.gallery__thumbs img.is-active {
+  border-color: var(--color-primary);
+}
+
+.gallery:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--space-12);
+}
+
+/* Chunk 4.8: similares */
+.similar-section {
+  padding: var(--space-32) 0 var(--space-48);
+}
+
+.similar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-16);
+  margin-top: var(--space-16);
+}
+
+.similar-card {
+  display: block;
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-50);
+  border-radius: var(--space-12);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.similar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+
+.similar-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.similar-card__body {
+  padding: var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  align-items: flex-start;
+}
+
+.similar-card__body h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Chunk 4.8: CTA fija en móvil */
+.sticky-cta {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sticky-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-overlay);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+    padding: var(--space-12) var(--space-16);
+    background: var(--color-white);
+    border-top: 1px solid var(--color-gray-50);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .sticky-cta[hidden] {
+    display: none;
+  }
+
+  .sticky-cta__mode {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.gallery__thumbs img:hover {
+  border-color: var(--color-primary);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+}
+
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: var(--color-gray-700);
+}
+
+.info-row strong {
+  color: var(--color-secondary-dark);
+}
+
+.qr-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.qr-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16) var(--space-20) 48px;
+}
+
+.qr-canvas {
+  display: none;
+}
+
+.qr-actions {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.seller-card .seller {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.seller__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: var(--color-gray-700);
+}
+
+
+@media (max-width: 1024px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery__main {
+    max-height: 280px;
+  }
+}

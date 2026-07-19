@@ -1,0 +1,224 @@
+<!doctype html>
+<!-- 
+  Tarea: T24 
+  Responsable: Lucero Pipa 
+  Descripción: Implementación de sistema de puntos, ranking y catálogo de canjes. 
+-->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>document.documentElement.classList.add("js");</script>
+    <title>Mink'a - Eco-Puntos y Gamificación</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media=&#39;all&#39;"
+    />
+    <!-- Arquitectura CSS modular -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="../assets/fonts/Inter/Inter-Variable.woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="../assets/styles/core/base.css" />
+    <link rel="stylesheet" href="../assets/styles/core/components.css" />
+    <link rel="stylesheet" href="../assets/styles/core/layout.css" />
+    <link rel="stylesheet" href="../assets/styles/pages/gamification.css" />
+    <link rel="stylesheet" href="../assets/styles/core/responsive.css" />
+    <!-- Scripts core -->
+    <script defer src="../assets/scripts/core/components.js"></script>
+    <script defer src="../assets/scripts/core/translations.js"></script>
+    <script defer src="../assets/scripts/core/i18n.js"></script>
+    <script src="../assets/scripts/core/session.js"></script>
+    <script src="../assets/scripts/core/store.js"></script>
+    <script src="../assets/scripts/core/modal.js"></script>
+    <script src="../assets/scripts/core/toast.js"></script>
+    <script src="../assets/scripts/core/guard.js"></script>
+  </head>
+  <body class="gamification-page">
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <header id="app-header" class="auth-header">
+      <div class="auth-header__container">
+        <a href="home.html" class="auth-header__logo" aria-label="Ir a inicio">
+          <img
+            src="../assets/images/minka-logo.png"
+            alt="Mink'a"
+            class="logo-image"
+          />
+        </a>
+        <button
+          class="mobile-menu-toggle"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="app-nav"
+        >
+          <span class="hamburger-icon"><span></span><span></span><span></span></span>
+        </button>
+        <nav class="auth-header__nav" id="app-nav" aria-label="Navegación principal">
+          <a href="home.html" class="auth-header__link"
+            ><i class="fa-solid fa-house nav-icon"></i
+            ><span data-i18n="nav_home">Inicio</span></a
+          >
+          <a href="busqueda.html" class="auth-header__link"
+            ><i class="fa-solid fa-magnifying-glass nav-icon"></i
+            ><span data-i18n="nav_search">Buscar</span></a
+          >
+          <a href="publicar.html" class="auth-header__link"
+            ><i class="fa-solid fa-circle-plus nav-icon"></i
+            ><span data-i18n="nav_publish">Publicar</span></a
+          >
+          <a href="chat.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-comments nav-icon"></i
+            ><span data-i18n="nav_chats">Chats</span></a
+          >
+          <a href="comunidad.html" class="auth-header__link"
+            ><i class="fa-solid fa-users nav-icon"></i
+            ><span data-i18n="nav_community">Comunidad</span></a
+          >
+          <a
+            href="notificaciones.html"
+            class="auth-header__link"
+            data-show="auth"
+            ><i class="fa-solid fa-bell nav-icon"></i
+            ><span data-i18n="nav_notifications">Notificaciones</span>
+            <span
+              class="nav-badge"
+              data-unread-badge
+              aria-label="notificaciones no leídas"
+              >0</span
+            ></a
+          >
+          <a href="perfil.html" class="auth-header__link" data-show="auth"
+            ><i class="fa-solid fa-user nav-icon"></i
+            ><span data-i18n="nav_profile">Perfil</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link"
+            data-action="logout"
+            data-show="auth"
+            ><i class="fa-solid fa-right-from-bracket nav-icon"></i
+            ><span data-i18n="nav_logout">Salir</span></a
+          >
+          <a
+            href="auth.html"
+            class="auth-header__link is-hidden"
+            data-show="guest"
+            ><i class="fa-solid fa-right-to-bracket nav-icon"></i
+            ><span data-i18n="nav_login">Ingresar</span></a
+          >
+        </nav>
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+      </div>
+    </header>
+
+    <main id="main" class="gamification-main">
+      <div class="container">
+        <!-- T24 - Lucero Pipa: Sección de Resumen de Puntos -->
+        <section class="gamification-header">
+          <div class="points-summary">
+            <h1 data-i18n="gami_title">Mis Eco-Puntos</h1>
+            <div class="points-display">
+              <span class="points-value" id="user-points">0</span>
+              <span class="points-label">pts</span>
+            </div>
+            <p class="points-level">
+              Nivel: <span id="user-level">Novato</span>
+            </p>
+          </div>
+          <div class="badges-summary">
+            <h3 data-i18n="gami_badges">Mis Insignias</h3>
+            <div class="badges-grid" id="user-badges">
+              <!-- Badges will be injected here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- T24 - Lucero Pipa: Navegación de Pestañas -->
+        <div class="gamification-tabs">
+          <button class="tab-btn active" data-tab="earn" data-i18n="gami_tab_earn">Ganar Puntos</button>
+          <button class="tab-btn" data-tab="redeem" data-i18n="gami_tab_redeem">Canjear</button>
+          <button class="tab-btn" data-tab="ranking" data-i18n="gami_tab_ranking">Ranking</button>
+          <button class="tab-btn" data-tab="history" data-i18n="gami_tab_history">Historial</button>
+        </div>
+
+        <!-- T24 - Lucero Pipa: Contenido de Pestañas -->
+        <div class="tab-content active" id="earn">
+          <h2 data-i18n="gami_earn_title">¿Cómo ganar Eco-Puntos?</h2>
+          <div class="earn-table-container">
+            <table class="earn-table">
+              <thead>
+                <tr>
+                  <th data-i18n="gami_th_action">Acción</th>
+                  <th data-i18n="gami_th_points">Puntos</th>
+                  <th data-i18n="gami_th_freq">Frecuencia</th>
+                </tr>
+              </thead>
+              <tbody id="earn-actions-body">
+                <!-- Actions injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-content" id="redeem">
+          <h2 data-i18n="gami_rewards_title">Catálogo de Recompensas</h2>
+          <p>Canjea tus puntos por beneficios exclusivos.</p>
+          <div class="rewards-grid" id="rewards-catalog">
+            <!-- Rewards injected via JS -->
+          </div>
+        </div>
+
+        <div class="tab-content" id="ranking">
+          <div class="ranking-header">
+            <h2 data-i18n="gami_ranking_title">Ranking Barrial</h2>
+            <div class="ranking-controls">
+              <label>
+                <input type="checkbox" id="opt-out-ranking" /> No aparecer en
+                rankings públicos
+              </label>
+            </div>
+          </div>
+          <div class="ranking-list" id="ranking-list">
+            <!-- Ranking injected via JS -->
+          </div>
+        </div>
+
+        <div class="tab-content" id="history">
+          <h2 data-i18n="gami_history_title">Historial de Puntos</h2>
+          <ul class="history-list" id="points-history">
+            <!-- History injected via JS -->
+          </ul>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="container app-footer__content">
+        <div class="app-footer__brand">
+          <img
+            src="../assets/images/minka-logo-negativo-blanco.png"
+            alt="Mink'a"
+            class="app-footer__logo"
+          />
+          <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+        </div>
+        <div class="app-footer__links">
+          <a href="about.html">Acerca de</a>
+          <a href="../index.html#impacto">Impacto</a>
+          <a href="about.html">Términos</a>
+          <a href="about.html">Privacidad</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../assets/scripts/core/notif-badge.js"></script>
+    <script src="../assets/scripts/pages/gamification.js"></script>
+  </body>
+</html>
