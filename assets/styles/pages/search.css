@@ -1,7 +1,13 @@
 /* T15 - Andy Salcedo: Estilos de buscador y filtros */
 /* T30 - Andy Salcedo: Estilos de búsqueda avanzada */
+/* Rediseño "Trueque Editorial": papel, tinta, sombras duras. Mobile-first:
+   barra en una fila, filtros colapsables y resultados antes que el mapa. */
 .search-page {
-  background: var(--color-surface);
+  background: linear-gradient(
+    180deg,
+    var(--color-paper) 0%,
+    var(--color-paper-2) 100%
+  );
 }
 
 .search-main {
@@ -9,15 +15,73 @@
 }
 
 .search-hero {
-  padding: 0 0 var(--space-24);
-  border-bottom: 1px solid var(--color-gray-50);
+  padding: 0 0 var(--space-20);
 }
 
+/* === Barra de búsqueda: fila única también en mobile === */
 .search-bar {
   margin-top: var(--space-8);
   display: grid;
   grid-template-columns: 1fr auto auto auto;
-  gap: var(--space-12);
+  gap: var(--space-8);
+  align-items: stretch;
+}
+
+.search-bar input[type="search"] {
+  min-width: 0;
+  padding: var(--space-12) var(--space-16);
+  border: var(--border-ink);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  color: var(--color-ink);
+  transition: box-shadow 0.2s ease;
+}
+
+.search-bar input[type="search"]:focus {
+  outline: none;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+/* Botones de solo ícono: cuadrados, nunca a ancho completo */
+.search-bar #clear-history-btn,
+.search-bar #save-search-btn {
+  width: 46px;
+  padding: 0;
+  border: var(--border-ink);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  color: var(--color-ink);
+}
+
+.search-bar #clear-history-btn:hover,
+.search-bar #save-search-btn:hover {
+  background: var(--color-mint);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.search-bar #search-btn {
+  border-radius: var(--radius-full);
+}
+
+.search-bar .form__success:empty {
+  display: none;
+}
+
+.search-bar .form__success {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .search-bar {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .search-bar input[type="search"] {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Chips de filtros activos (Chunk 4.7) */
@@ -38,9 +102,9 @@
   gap: var(--space-4);
   padding: var(--space-4) var(--space-12);
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-primary);
-  background: var(--color-primary-light);
-  color: var(--color-primary-darker);
+  border: 1.5px solid var(--color-ink);
+  background: var(--color-mint);
+  color: var(--color-ink);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -49,27 +113,28 @@
 
 .filter-chip:hover {
   background: var(--color-primary);
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .filter-chip--clear {
-  border-color: var(--color-gray-100);
+  border-color: var(--color-gray-300);
   background: transparent;
-  color: var(--color-text-secondary);
+  color: var(--color-ink-2);
 }
 
 .filter-chip--clear:hover {
-  background: var(--color-gray-50);
-  color: var(--color-text);
+  background: var(--color-paper-2);
+  color: var(--color-ink);
 }
 
 /* T30 - Andy Salcedo: Estilos para Búsquedas Guardadas */
 .saved-searches {
-  margin-top: 1rem;
-  background: var(--color-surface);
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
+  margin-top: var(--space-16);
+  background: var(--color-card);
+  padding: var(--space-16);
+  border: var(--border-ink);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hard-sm);
 }
 
 .saved-searches.hidden {
@@ -78,8 +143,8 @@
 
 .saved-searches h3 {
   font-size: 1rem;
-  margin-bottom: 0.5rem;
-  color: var(--color-secondary);
+  margin-bottom: var(--space-8);
+  color: var(--color-ink);
 }
 
 .saved-searches ul {
@@ -87,24 +152,24 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-8);
 }
 
 .saved-search-tag {
-  background: var(--color-gray-50);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  background: var(--color-warning-soft);
+  padding: var(--space-4) var(--space-12);
+  border-radius: var(--radius-full);
   font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-8);
   cursor: pointer;
-  border: 1px solid var(--color-gray-100);
+  border: 1.5px dashed var(--color-ink);
 }
 
 .saved-search-tag:hover {
-  background: var(--color-primary-soft);
-  border-color: var(--color-primary);
+  background: var(--color-mint);
+  border-style: solid;
 }
 
 .saved-search-remove {
@@ -118,8 +183,8 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
+  background: rgba(255, 253, 246, 0.92);
+  border: 1.5px solid var(--color-ink);
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -127,7 +192,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 2;
   transition: transform 0.2s;
 }
@@ -137,32 +201,18 @@
 }
 
 .item-card__favorite.active i {
-  color: #e74c3c;
+  color: var(--color-terra);
   font-weight: 900;
 }
 
 .item-card__favorite i {
-  color: #bdc3c7;
+  color: var(--color-gray-300);
   font-size: 1.1rem;
 }
 
-.search-bar input[type="search"] {
-  padding: var(--space-12);
-  border-radius: var(--space-12);
-  border: 1px solid var(--color-gray-100);
-  background: var(--color-white);
-  font-family: var(--font-primary);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.search-bar input[type="search"]:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
-}
-
+/* === Layout de resultados === */
 .search-layout {
-  padding: var(--space-32) 0;
+  padding: var(--space-24) 0;
 }
 
 .search-grid {
@@ -171,33 +221,44 @@
   gap: var(--space-24);
 }
 
+/* === Filtros: herramienta secundaria, no protagonista ===
+   A propósito NO usa .filters el sello editorial de las tarjetas de
+   contenido (borde de tinta 2px + sombra dura): esto es una barra de
+   utilidad, debe pesar menos que Resultados. */
 .filters {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-20);
-  /* Horizontal layout */
+  background: var(--color-paper-2);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  padding: var(--space-8) var(--space-16);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-24);
+  gap: var(--space-16);
 }
 
 .filters__header {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  margin-bottom: 0;
+  align-items: center;
+  gap: var(--space-12);
   min-width: 100px;
-  border-right: 1px solid var(--color-gray-100);
-  padding-right: var(--space-24);
+  border-right: 1px solid var(--color-gray-200);
+  padding-right: var(--space-16);
+}
+
+.filters__header h2 {
+  font-family: var(--font-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-2);
+  margin: 0;
 }
 
 .filters__content {
   display: flex;
   flex: 1;
-  gap: var(--space-24);
+  gap: var(--space-16);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -210,74 +271,98 @@
   cursor: pointer;
   text-align: left;
   padding: 0;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+/* Toggle de filtros: solo existe en mobile con JS */
+.filters__toggle {
+  display: none;
+  align-items: center;
+  gap: var(--space-8);
+  border: 1px solid var(--color-gray-300);
+  background: var(--color-card);
+  color: var(--color-ink-2);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: var(--space-4) var(--space-10);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.filters__toggle-count[hidden] {
+  display: none;
+}
+
+.filters__toggle-count {
+  background: var(--color-accent);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-full);
+  min-width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.filters__toggle-chevron {
+  transition: transform 0.2s ease;
+  font-size: 0.8rem;
+}
+
+.filters__toggle[aria-expanded="true"] .filters__toggle-chevron {
+  transform: rotate(180deg);
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
+  min-width: 150px;
+}
+
+.filter-group__row {
+  display: flex;
   gap: var(--space-8);
-  margin-bottom: 0;
-  min-width: 180px;
 }
 
-.search-results-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: var(--space-24);
-  align-items: start;
-}
-
-@media (max-width: 1024px) {
-  .search-results-wrapper {
-    grid-template-columns: 1fr;
-  }
-
-  .map-panel {
-    order: -1; /* Map on top on tablet? Or bottom? Let's keep default (bottom) or maybe hide it? */
-    /* Keeping it at bottom for now */
-  }
-}
-
-@media (max-width: 768px) {
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filters__header {
-    flex-direction: row;
-    justify-content: space-between;
-    border-right: none;
-    padding-right: 0;
-    margin-bottom: var(--space-16);
-  }
-
-  .filters__content {
-    flex-direction: column;
-    gap: var(--space-16);
-  }
-
-  .filter-group {
-    width: 100%;
-  }
+.filter-group__row input {
+  flex: 1;
+  min-width: 0;
 }
 
 .filter-group label {
   font-weight: 600;
-  color: var(--color-secondary-dark);
+  color: var(--color-ink-2);
+  font-size: 0.8rem;
 }
 
 .filter-group select,
-.filter-group input[type="range"] {
+.filter-group input[type="range"],
+.filter-group input[type="text"] {
   width: 100%;
 }
 
-.filter-group select {
-  padding: var(--space-12);
-  border-radius: var(--space-10);
-  border: 1px solid var(--color-gray-100);
-  background: var(--color-white);
+.filter-group select,
+.filter-group input[type="text"] {
+  padding: var(--space-8) var(--space-10);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  color: var(--color-ink);
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+}
+
+.filter-group select:focus,
+.filter-group input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 132, 73, 0.15);
 }
 
 .filter-group input[type="range"] {
@@ -285,23 +370,44 @@
 }
 
 .filter-group__hint {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--color-gray-600);
 }
 
+/* === Resultados === */
+.search-results-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-24);
+  align-items: start;
+}
+
 .results {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-card);
+  border: var(--border-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hard-md);
   padding: var(--space-20);
 }
 
 .results__header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  gap: var(--space-12);
   margin-bottom: var(--space-16);
+}
+
+.results__header h2 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+}
+
+#results-count {
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .results__grid {
@@ -311,19 +417,25 @@
 }
 
 .result-card {
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-12);
+  border: var(--border-ink);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--color-white);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-card);
   display: flex;
   flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.result-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-sm);
 }
 
 .result-card__img {
   width: 100%;
   height: 160px;
   object-fit: cover;
+  border-bottom: 1.5px solid var(--color-ink);
 }
 
 .result-card__body {
@@ -335,7 +447,7 @@
 
 .result-card__title {
   font-size: 1.1rem;
-  color: var(--color-secondary-dark);
+  color: var(--color-ink);
 }
 
 .result-card__meta {
@@ -346,7 +458,6 @@
   color: var(--color-gray-600);
 }
 
-
 .result-card__tags {
   font-size: 0.9rem;
   color: var(--color-gray-600);
@@ -354,7 +465,7 @@
 }
 
 .star-rating {
-  color: var(--color-accent);
+  color: var(--color-warning);
 }
 
 .result-card__footer {
@@ -374,11 +485,12 @@
   text-align: center;
 }
 
+/* === Mapa === */
 .map-panel {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-card);
+  border: var(--border-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hard-sm);
   padding: var(--space-20);
   position: sticky;
   top: var(--space-24);
@@ -386,11 +498,14 @@
 
 .map-panel__header h3 {
   margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  color: var(--color-ink);
 }
 
 .map-panel__header p {
   margin: 0;
   color: var(--color-gray-600);
+  font-size: 0.9rem;
 }
 
 .map-panel__body {
@@ -399,12 +514,19 @@
 
 .map-panel__image {
   width: 100%;
-  border-radius: var(--space-12);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-md);
   object-fit: cover;
 }
 
+/* === Tablet y mobile === */
 @media (max-width: 1024px) {
   .search-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Resultados primero, mapa al final (orden natural del DOM) */
+  .search-results-wrapper {
     grid-template-columns: 1fr;
   }
 
@@ -412,14 +534,56 @@
   .map-panel {
     position: static;
   }
-
-  .search-bar {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: var(--space-8) var(--space-12);
+  }
+
+  .filters__header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-right: none;
+    padding-right: 0;
+  }
+
+  .filters__header h2 {
+    margin-right: auto;
+  }
+
+  html.js .filters__toggle {
+    display: inline-flex;
+  }
+
+  /* Colapsados por defecto en mobile (solo con JS activo) */
+  html.js .filters:not(.filters--open) .filters__content {
+    display: none;
+  }
+
+  .filters__content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-12);
+    padding-top: var(--space-12);
+    margin-top: var(--space-8);
+    border-top: 1px solid var(--color-gray-200);
+  }
+
+  .filter-group {
+    width: 100%;
+    min-width: 0;
+  }
+
   .results__grid {
     grid-template-columns: 1fr;
+  }
+
+  .results {
+    padding: var(--space-16);
   }
 }

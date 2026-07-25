@@ -1,52 +1,109 @@
-/* T12 - Leonardo Chavez: Estilos específicos de autenticación */
+/* T12 - Leonardo Chavez: Estilos específicos de autenticación
+   Rediseño "Trueque Editorial": papel crema, tinta verde, Fraunces,
+   bordes de tinta y sombras duras. Mobile-first. */
 :root {
   color-scheme: light;
 }
 
 .auth-page {
-  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface-alt) 100%);
+  background:
+    radial-gradient(
+      circle at 85% 8%,
+      rgba(242, 183, 5, 0.1),
+      transparent 40%
+    ),
+    linear-gradient(180deg, var(--color-paper) 0%, var(--color-paper-2) 100%);
   min-height: 100dvh;
-  color: var(--color-secondary-dark);
+  color: var(--color-ink);
 }
 
-
+/* === Layout: columna en mobile, dos columnas en desktop === */
 .auth-layout {
-  max-width: 1100px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: var(--space-32) 24px var(--space-48);
+  padding: var(--space-24) 16px var(--space-48);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-32);
+  grid-template-columns: 1fr;
+  gap: var(--space-24);
   align-items: start;
 }
 
+/* === Hero: texto editorial sobre el papel, sin caja === */
 .auth-hero__content {
-  background: var(--color-white);
-  padding: var(--space-32);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-50);
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-4) 0;
+}
+
+.auth-hero__content h1 {
+  font-family: var(--font-display);
+  font-weight: 750;
+  font-variation-settings:
+    "SOFT" 100,
+    "WONK" 1,
+    "opsz" 72;
+  font-size: clamp(2rem, 5vw + 0.5rem, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.auth-hero__note {
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.95rem;
+  max-width: 42ch;
 }
 
 .auth-hero__bullets {
-  list-style: disc;
-  padding-left: var(--space-24);
-  color: var(--color-gray-600);
+  list-style: none;
+  padding: 0;
+  margin: var(--space-8) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  color: var(--color-ink-2);
 }
 
-.auth-panel {
-  width: 100%;
+.auth-hero__bullets li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
 }
 
+.auth-hero__bullets li::before {
+  content: "✓";
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-full);
+  background: var(--color-mint);
+  color: var(--color-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* En mobile el hero se comprime: el formulario debe verse sin scroll */
+@media (max-width: 899px) {
+  .auth-hero__note,
+  .auth-hero__bullets {
+    display: none;
+  }
+}
+
+/* === Tarjeta principal: sello editorial === */
 .auth-card {
-  background: var(--color-white);
-  border-radius: var(--space-16);
-  padding: var(--space-32);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-gray-50);
+  background: var(--color-card);
+  border: var(--border-ink);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20) var(--space-16) var(--space-24);
+  box-shadow: var(--shadow-hard-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
@@ -54,37 +111,48 @@
 
 .auth-card__subtitle {
   margin: 0;
-  color: var(--color-gray-600);
+  color: var(--color-ink-2);
+  font-size: 0.9rem;
 }
 
+/* === Tabs: control segmentado de tinta, siempre en una fila === */
 .modal__tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-8);
-  background: var(--color-gray-50);
+  gap: var(--space-4);
+  background: var(--color-paper-2);
+  border: var(--border-ink);
   padding: var(--space-4);
-  border-radius: var(--space-12);
+  border-radius: var(--radius-full);
 }
 
 .modal__tab {
-  border: none;
+  border: 2px solid transparent;
   background: transparent;
-  padding: var(--space-12);
-  border-radius: var(--space-8);
+  padding: var(--space-8) var(--space-4);
+  border-radius: var(--radius-full);
   font-weight: 600;
-  color: var(--color-secondary);
+  font-size: 0.85rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--color-ink-2);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.modal__tab--active {
-  background: var(--color-white);
-  color: var(--color-primary-ink);
-  box-shadow: var(--shadow-sm);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+.modal__tab:hover {
+  color: var(--color-ink);
+  background: var(--color-card);
 }
 
+.modal__tab--active {
+  background: var(--color-mint);
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+/* === Formularios === */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -102,6 +170,7 @@
 
 .password-field input {
   padding-right: 44px;
+  width: 100%;
 }
 
 .password-toggle {
@@ -113,7 +182,7 @@
   background: transparent;
   color: var(--color-gray-600);
   cursor: pointer;
-  padding: var(--space-4);
+  padding: var(--space-8);
   border-radius: var(--radius-sm);
   display: inline-flex;
 }
@@ -121,6 +190,42 @@
 .password-toggle:hover,
 .password-toggle[aria-pressed="true"] {
   color: var(--color-primary);
+}
+
+/* Chip de usuario demo: sticker clickeable que autocompleta */
+.demo-chip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  border: 2px dashed var(--color-ink);
+  background: var(--color-warning-soft);
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transform: rotate(-1deg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.demo-chip:hover {
+  transform: rotate(0deg) translateY(-1px);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.demo-chip__tag {
+  background: var(--color-accent);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-full);
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* Indicador de fortaleza de contraseña */
@@ -147,15 +252,15 @@
 }
 
 .password-strength__fill.weak {
-  background: #e74c3c;
+  background: var(--color-error);
 }
 
 .password-strength__fill.medium {
-  background: #f39c12;
+  background: var(--color-warning);
 }
 
 .password-strength__fill.strong {
-  background: #27ae60;
+  background: var(--color-primary);
 }
 
 .password-strength__label {
@@ -165,22 +270,21 @@
 }
 
 .password-strength__label.weak {
-  color: #e74c3c;
+  color: var(--color-error);
 }
 
 .password-strength__label.medium {
-  color: #f39c12;
+  color: var(--color-warning);
 }
 
 .password-strength__label.strong {
   color: var(--color-primary-dark);
 }
 
-
 #otp-input {
   padding: var(--space-12);
-  border: 2px solid var(--color-gray-100);
-  border-radius: var(--space-8);
+  border: var(--border-ink);
+  border-radius: var(--radius-sm);
   font-size: 1.25rem;
   text-align: center;
   letter-spacing: 0.5rem;
@@ -190,70 +294,58 @@
 #otp-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
+  box-shadow: 0 0 0 3px rgba(30, 132, 73, 0.15);
 }
 
 #otp-error {
   min-height: 18px;
   font-size: 0.85rem;
-  color: #e74c3c;
+  color: var(--color-error);
   margin-top: var(--space-4);
 }
 
-/* T28 - Leonardo Chavez: Estilos para Social Login y Auth Avanzado */
-
+/* T28 - Leonardo Chavez: Social Login con sello editorial */
 .social-login {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-10);
 }
 
 .btn-social {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: var(--space-10);
   width: 100%;
-  padding: 0.75rem;
-  border-radius: 6px;
+  padding: var(--space-12);
+  border: var(--border-ink);
+  border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  border: 1px solid transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn-social:hover {
-  transform: translateY(-1px);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-hard-sm);
 }
 
 .btn-google {
-  background-color: var(--color-surface);
-  color: #757575;
-  border-color: #dadce0;
-}
-
-.btn-google:hover {
-  background-color: var(--color-surface-alt);
-  border-color: #d2e3fc;
+  background-color: var(--color-card);
+  color: var(--color-ink);
 }
 
 .btn-facebook {
   background-color: #166fe5;
-  color: white;
-}
-
-.btn-facebook:hover {
-  background-color: #1465d1;
+  color: #ffffff;
 }
 
 .auth-divider {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 1.5rem 0;
-  color: var(--color-gray-600);
+  color: var(--color-ink-2);
   font-size: 0.85rem;
 }
 
@@ -261,40 +353,52 @@
 .auth-divider::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid var(--color-gray-300);
+  border-bottom: 1.5px solid var(--color-gray-200);
 }
 
 .auth-divider span {
-  padding: 0 1rem;
+  padding: 0 var(--space-16);
 }
 
 /* Estilos para enlaces legales */
 .form__checkbox a {
   color: var(--color-primary-ink);
-  text-decoration: none;
-}
-
-.form__checkbox a:hover {
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-@media (max-width: 900px) {
+/* === Desktop: dos columnas, hero respirando sobre el papel === */
+@media (min-width: 900px) {
   .auth-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1.1fr;
+    gap: var(--space-48);
+    padding: var(--space-48) 24px var(--space-64);
+  }
+
+  .auth-hero {
+    position: sticky;
+    top: 96px;
+  }
+
+  .auth-hero__content {
+    gap: var(--space-16);
+    padding: var(--space-16) 0 0;
+  }
+
+  .auth-card {
+    padding: var(--space-32);
+  }
+
+  .modal__tab {
+    font-size: 0.95rem;
+    padding: var(--space-10) var(--space-8);
   }
 }
 
 @media (max-width: 600px) {
-  .auth-layout {
-    padding: var(--space-24) 16px;
-  }
-
-  .modal__tabs {
-    grid-template-columns: 1fr;
-  }
-
   .form__row {
     flex-direction: column;
     align-items: flex-start;
+    gap: var(--space-8);
   }
 }

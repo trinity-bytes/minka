@@ -54,7 +54,7 @@
       <section class="auth-hero">
         <div class="auth-hero__content">
           <h1 data-i18n="auth_title">Ingresa a Mink'a</h1>
-          <p>
+          <p class="auth-hero__note">
             <span data-i18n="auth_subtitle"
               >Usa el usuario demo para probar la plataforma:</span
             >
@@ -202,9 +202,10 @@
                 ¿Olvidaste tu contraseña?
               </button>
             </div>
-            <p class="form__hint">
-              Usuario demo: demo@minka.com · demo1234
-            </p>
+            <button type="button" class="demo-chip" data-demo-fill>
+              <span class="demo-chip__tag">Demo</span>
+              demo@minka.com · demo1234
+            </button>
             <button
               type="submit"
               class="btn btn-primary btn-large"

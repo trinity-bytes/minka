@@ -187,6 +187,14 @@ function attachEvents() {
     render();
     persist();
   });
+
+  // Toggle de filtros colapsables (solo visible en mobile)
+  const filtersPanel = document.querySelector(".filters");
+  const filtersToggle = document.getElementById("filters-toggle");
+  filtersToggle?.addEventListener("click", () => {
+    const open = filtersPanel.classList.toggle("filters--open");
+    filtersToggle.setAttribute("aria-expanded", String(open));
+  });
 }
 
 function restoreFilters() {
@@ -248,6 +256,12 @@ function renderChips() {
       <button class="filter-chip filter-chip--clear" type="button" data-chip="all">
         Limpiar todo
       </button>`;
+  }
+
+  const toggleCount = document.querySelector(".filters__toggle-count");
+  if (toggleCount) {
+    toggleCount.textContent = chips.length;
+    toggleCount.hidden = chips.length === 0;
   }
 
   container.querySelectorAll("[data-chip]").forEach((btn) => {
