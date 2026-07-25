@@ -1,25 +1,26 @@
 <!-- markdownlint-disable MD033 -->
 <h1 align="center">Mink’a Landing Page</h1>
 <p align="center">
-  <img src="public/assets/images/minka-logo.png" alt="Logotipo de Mink’a" width="160">
+  <img src="assets/images/minka-logo.png" alt="Logotipo de Mink’a" width="160">
 </p>
 <p align="center"><strong>Economía circular al alcance de tu comunidad</strong></p>
 <p align="center">
-  <a href="https://reflow-tech-upc.github.io/Minka-Landingpage" target="_blank">
+  <a href="https://trinity-bytes.github.io/minka/" target="_blank">
     <img src="https://img.shields.io/badge/Demo%20en%20vivo-00a86b?style=for-the-badge&logo=github&logoColor=white" alt="Abrir demo en vivo" />
   </a>
 </p>
 
 ## 🧭 Tabla de Contenidos
 
-- [Descripción del Proyecto](#descripcion-del-proyecto)
-- [Segmento Objetivo](#segmento-objetivo)
-- [Características Principales](#caracteristicas-principales)
-- [Arquitectura de la Landing](#arquitectura-de-la-landing)
-- [Tecnologías Utilizadas](#tecnologias-utilizadas)
-- [Guía de Uso y Desarrollo](#guia-de-uso-y-desarrollo)
-- [Autores](#autores)
-- [Acceso Rápido](#acceso-rapido)
+- [🧭 Tabla de Contenidos](#-tabla-de-contenidos)
+- [📌 Descripción del Proyecto](#-descripción-del-proyecto)
+- [🎯 Segmento Objetivo](#-segmento-objetivo)
+- [🌟 Características Principales](#-características-principales)
+- [🏗️ Arquitectura de la Landing](#️-arquitectura-de-la-landing)
+- [🚀 Tecnologías Utilizadas](#-tecnologías-utilizadas)
+- [🛠️ Guía de Uso y Desarrollo](#️-guía-de-uso-y-desarrollo)
+- [👥 Autores](#-autores)
+- [🔗 Acceso Rápido](#-acceso-rápido)
 
 <a id="descripcion-del-proyecto"></a>
 
@@ -98,7 +99,7 @@ public/
 
 ## 🔗 Acceso Rápido
 
-- Landing Page: [https://reflow-tech-upc.github.io/Minka-Landingpage](https://reflow-tech-upc.github.io/Minka-Landingpage)
-- Repositorio: [https://github.com/Reflow-Tech-UPC/Minka-Landingpage](https://github.com/Reflow-Tech-UPC/Minka-Landingpage)
+- Landing Page: [https://trinity-bytes.github.io/minka/](https://trinity-bytes.github.io/minka/)
+- Repositorio: [https://github.com/trinity-bytes/minka](https://github.com/trinity-bytes/minka)
 
 <p align="center">💚 Construido con dedicación para impulsar la colaboración y la sostenibilidad por el team Reflow Tech.</p>

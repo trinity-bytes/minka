@@ -69,6 +69,17 @@ const tabButtons = document.querySelectorAll("[data-tab-target]");
 const switchers = document.querySelectorAll("[data-switch-tab]");
 const authForms = document.querySelectorAll(".auth-form");
 
+// Chip demo: autocompleta las credenciales del usuario de prueba
+document.querySelectorAll("[data-demo-fill]").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    const emailInput = document.getElementById("login-email");
+    const passInput = document.getElementById("login-password");
+    if (emailInput) emailInput.value = demoUser.email;
+    if (passInput) passInput.value = demoUser.password;
+    emailInput?.focus();
+  });
+});
+
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phonePattern = /^\+?[0-9\s\-()]{9,15}$/;
 

@@ -130,9 +130,21 @@
               >
                 Limpiar
               </button>
+              <button
+                type="button"
+                class="filters__toggle"
+                id="filters-toggle"
+                aria-controls="filters-content"
+                aria-expanded="false"
+                aria-label="Mostrar u ocultar filtros"
+              >
+                <i class="fas fa-sliders" aria-hidden="true"></i>
+                <span class="filters__toggle-count" hidden></span>
+                <i class="fas fa-chevron-down filters__toggle-chevron" aria-hidden="true"></i>
+              </button>
             </div>
 
-            <div class="filters__content">
+            <div class="filters__content" id="filters-content">
               <div class="filter-group">
                 <label for="filter-category" data-i18n="search_filter_category"
                   >Categoría</label
@@ -229,12 +241,11 @@
                   data-i18n="search_filter_location"
                   >Tu Ubicación</label
                 >
-                <div style="display: flex; gap: 0.5rem">
+                <div class="filter-group__row">
                   <input
                     type="text"
                     id="filter-user-location"
                     placeholder="Ej. Miraflores"
-                    style="flex: 1"
                     data-i18n="search_location_placeholder"
                   />
                   <button
@@ -242,7 +253,6 @@
                     id="btn-get-location"
                     class="btn btn-outline"
                     title="Usar mi ubicación actual"
-                    style="padding: 0.5rem"
                   >
                     <i class="fa-solid fa-crosshairs"></i>
                   </button>
