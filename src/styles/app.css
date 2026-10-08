@@ -228,9 +228,31 @@
   color: var(--color-warning-ink);
 }
 
-.badge--info {
+.badge--info,
+.badge--message {
   background: color-mix(in srgb, var(--color-ink-2) 12%, transparent);
   color: var(--color-secondary-dark);
+}
+
+/* Notification feed badges (rendered by notifications.js) */
+.badge--neutral {
+  background: var(--color-gray-50);
+  color: var(--color-secondary);
+}
+
+.badge--match {
+  background: color-mix(in srgb, var(--color-primary-pop) 15%, transparent);
+  color: var(--color-secondary-dark);
+}
+
+.badge--reminder {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-warning-ink);
+}
+
+.badge--new {
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
+  color: var(--color-error-ink);
 }
 
 /* === Breadcrumb === */

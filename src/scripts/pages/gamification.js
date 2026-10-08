@@ -157,6 +157,19 @@ function initGamification() {
   renderHistory();
   setupTabs();
   setupOptOut();
+  setupRedeem();
+}
+
+// Redeem buttons are re-rendered on every change: one delegated listener
+// on the catalog instead of inline onclick handlers.
+function setupRedeem() {
+  const container = document.getElementById("rewards-catalog");
+  if (!container) return;
+  container.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-redeem]");
+    if (!btn || btn.disabled) return;
+    redeemReward(Number(btn.dataset.redeem));
+  });
 }
 
 function loadUserData() {
@@ -197,7 +210,7 @@ function renderEarnTable() {
     (item) => `
         <tr>
             <td>${item.action}</td>
-            <td style="color: var(--primary-color); font-weight: bold;">+${item.points}</td>
+            <td class="earn-table__points">+${item.points}</td>
             <td>${item.frequency}</td>
         </tr>
     `
@@ -218,8 +231,8 @@ function renderRewards() {
                 <h3>${reward.name}</h3>
                 <p>${reward.description}</p>
                 <div class="reward-cost">${reward.cost} pts</div>
-                <button class="btn-redeem" 
-                    onclick="redeemReward(${reward.id})" 
+                <button type="button" class="btn-redeem"
+                    data-redeem="${reward.id}"
                     ${!canAfford ? "disabled" : ""}>
                     ${canAfford ? "Canjear" : "Puntos insuficientes"}
                 </button>
@@ -234,15 +247,13 @@ function renderRanking() {
 
   if (MOCK_USER_DATA.optOutRanking) {
     container.innerHTML =
-      '<p style="text-align:center; padding: 2rem; color: #666;">Has decidido no participar en el ranking público.</p>';
+      '<p class="ranking-empty">Has decidido no participar en el ranking público.</p>';
     return;
   }
 
   container.innerHTML = RANKING_DATA.map(
     (user) => `
-        <div class="ranking-item ${user.isMe ? "highlight" : ""}" style="${
-      user.isMe ? "background-color: #f0fdf4;" : ""
-    }">
+        <div class="ranking-item ${user.isMe ? "highlight" : ""}">
             <div class="ranking-position">${user.position}</div>
             <div class="ranking-user">
                 <img src="${user.avatar}" alt="${
@@ -319,8 +330,7 @@ function setupOptOut() {
   });
 }
 
-// Global function for onclick
-window.redeemReward = function (rewardId) {
+function redeemReward(rewardId) {
   const reward = REWARDS.find((r) => r.id === rewardId);
   if (!reward) return;
 
@@ -366,4 +376,4 @@ window.redeemReward = function (rewardId) {
   } else {
     Toast.show("No tienes suficientes puntos.", "error");
   }
-};
+}

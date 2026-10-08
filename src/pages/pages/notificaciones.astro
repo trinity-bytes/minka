@@ -1,0 +1,121 @@
+---
+/**
+ * Notification center: feed with read/remove actions, type and unread
+ * filters, and notification preferences. Port of
+ * public/pages/notificaciones.html.
+ * T22 - Miguel Sanca: notification feed and preferences.
+ * Logic: src/scripts/pages/notifications.js (guarded: requires a session).
+ * It persists the feed through Store (`minka_notifications`) and fires
+ * `minka-feed-update`, which core/notif-badge.js listens to in order to
+ * refresh the header unread badge.
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import CardSection from "../../components/ui/CardSection.astro";
+import PageHead from "../../components/ui/PageHead.astro";
+import PrefToggle from "../../components/notifications/PrefToggle.astro";
+import "../../styles/pages/notifications.css";
+
+const TYPE_FILTERS = [
+  { value: "all", label: "Todos los tipos", key: "notif_filter_all" },
+  { value: "message", label: "Mensajes", key: "notif_filter_message" },
+  { value: "match", label: "Coincidencias", key: "notif_filter_match" },
+  { value: "reminder", label: "Recordatorios", key: "notif_filter_reminder" },
+];
+
+const PREFS = [
+  { id: "filter-unread", label: "Solo no leídas", key: "notif_pref_unread", checked: true },
+  { id: "pref-messages", label: "Mensajes y actividad de chat", key: "notif_pref_messages", checked: true },
+  { id: "pref-matches", label: "Coincidencias y sugerencias", key: "notif_pref_matches", checked: true },
+  { id: "pref-reminders", label: "Recordatorios de encuentro", key: "notif_pref_reminders", checked: true },
+  { id: "pref-reviews", label: "Reseñas y reputación", key: "notif_pref_reviews" },
+  { id: "pref-news", label: "Novedades y tips", key: "notif_pref_news" },
+];
+
+const TIPS = [
+  { text: "• Confirma el punto de encuentro dentro del chat.", key: "notif_tip_1" },
+  { text: "• Marca recordatorios para llegar a tiempo.", key: "notif_tip_2" },
+  { text: "• Reporta actividad inusual desde la ficha de detalle.", key: "notif_tip_3" },
+];
+---
+
+<AppLayout
+  title="Mink'a - Notificaciones"
+  description="Avisos de mensajes, coincidencias y recordatorios de entrega en Mink'a."
+  bodyClass="notifications-page"
+  mainClass="notifications-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <PageHead
+    title="Notificaciones y recordatorios"
+    titleKey="notif_title"
+    hint="Consulta avisos de mensajes, coincidencias y recordatorios de entrega. Configura tus preferencias para recibir solo lo necesario."
+    hintKey="notif_subtitle"
+  />
+
+  <section class="notifications-layout" aria-label="Centro de notificaciones">
+    <div class="container notifications-grid">
+      <Card as="section" class="feed-card" aria-label="Lista de notificaciones">
+        <div class="card__header feed-card__header">
+          <div class="feed-header__top">
+            <h2 data-i18n="notif_tray_title">Tu bandeja</h2>
+            <div class="feed-actions">
+              <Button appearance="flat" variant="primary" class="btn-sm" id="mark-all-read" data-i18n="notif_btn_mark_all">
+                Marcar todo
+              </Button>
+              <Button
+                appearance="flat"
+                variant="secondary"
+                class="btn-sm"
+                id="clear-read"
+                data-i18n="notif_btn_clear_read"
+              >
+                Borrar leídas
+              </Button>
+            </div>
+          </div>
+          <div class="feed-filters">
+            <select id="filter-type" aria-label="Filtrar por tipo">
+              {TYPE_FILTERS.map((f) => <option value={f.value} data-i18n={f.key}>{f.label}</option>)}
+            </select>
+          </div>
+        </div>
+        <div class="card__body" id="notifications-list" aria-live="polite"></div>
+      </Card>
+
+      <aside class="prefs">
+        <CardSection
+          class="prefs__card"
+          aria-label="Preferencias de notificación"
+          title="Preferencias"
+          titleKey="notif_prefs_title"
+        >
+          {PREFS.map((p) => <PrefToggle id={p.id} label={p.label} labelKey={p.key} checked={p.checked} />)}
+          <div class="pref-select">
+            <label for="pref-quiet" data-i18n="notif_pref_quiet">Horario silencioso</label>
+            <select id="pref-quiet">
+              <option value="none" data-i18n="notif_quiet_none">Sin silencio</option>
+              <option value="21-7">21:00 - 07:00</option>
+              <option value="22-6">22:00 - 06:00</option>
+            </select>
+          </div>
+        </CardSection>
+
+        <CardSection
+          class="prefs__card"
+          aria-label="Consejos de seguridad"
+          title="Consejos rápidos"
+          titleKey="notif_tips_title"
+          bodyClass="tips"
+        >
+          {TIPS.map((t) => <p data-i18n={t.key}>{t.text}</p>)}
+        </CardSection>
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    import "../../scripts/pages/notifications.js";
+  </script>
+</AppLayout>

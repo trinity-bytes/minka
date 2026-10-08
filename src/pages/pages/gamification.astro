@@ -1,0 +1,111 @@
+---
+/**
+ * Eco-points: points/level summary, badges, and tabs for earning actions,
+ * rewards catalog, neighborhood ranking and points history.
+ * Port of public/pages/gamification.html.
+ * T24 - Lucero Pipa: points system, ranking and rewards catalog.
+ * Logic: src/scripts/pages/gamification.js (guarded: requires a session);
+ * it renders badges, rows and cards as HTML strings, so their CSS is
+ * global (src/styles/pages/gamification.css).
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import "../../styles/pages/gamification.css";
+
+const TABS = [
+  { id: "earn", label: "Ganar Puntos", key: "gami_tab_earn", active: true },
+  { id: "redeem", label: "Canjear", key: "gami_tab_redeem" },
+  { id: "ranking", label: "Ranking", key: "gami_tab_ranking" },
+  { id: "history", label: "Historial", key: "gami_tab_history" },
+];
+---
+
+<AppLayout
+  title="Mink'a - Eco-Puntos y Gamificación"
+  description="Tus Eco-Puntos en Mink'a: insignias, ranking barrial y catálogo de canjes."
+  bodyClass="gamification-page"
+  mainClass="gamification-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <div class="container">
+    <!-- T24 - Lucero Pipa: Sección de Resumen de Puntos -->
+    <section class="gamification-header">
+      <div class="points-summary">
+        <h1 data-i18n="gami_title">Mis Eco-Puntos</h1>
+        <div class="points-display">
+          <span class="points-value" id="user-points">0</span>
+          <span class="points-label">pts</span>
+        </div>
+        <p class="points-level">Nivel: <span id="user-level">Novato</span></p>
+      </div>
+      <div class="badges-summary">
+        <h3 data-i18n="gami_badges">Mis Insignias</h3>
+        <div class="badges-grid" id="user-badges">
+          <!-- Badges rendered by gamification.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- T24 - Lucero Pipa: Navegación de Pestañas -->
+    <div class="gamification-tabs">
+      {
+        TABS.map((t) => (
+          <button type="button" class:list={["tab-btn", t.active && "active"]} data-tab={t.id} data-i18n={t.key}>
+            {t.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- T24 - Lucero Pipa: Contenido de Pestañas -->
+    <div class="tab-content active" id="earn">
+      <h2 data-i18n="gami_earn_title">¿Cómo ganar Eco-Puntos?</h2>
+      <div class="earn-table-container">
+        <table class="earn-table">
+          <thead>
+            <tr>
+              <th data-i18n="gami_th_action">Acción</th>
+              <th data-i18n="gami_th_points">Puntos</th>
+              <th data-i18n="gami_th_freq">Frecuencia</th>
+            </tr>
+          </thead>
+          <tbody id="earn-actions-body">
+            <!-- Rows rendered by gamification.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-content" id="redeem">
+      <h2 data-i18n="gami_rewards_title">Catálogo de Recompensas</h2>
+      <p>Canjea tus puntos por beneficios exclusivos.</p>
+      <div class="rewards-grid" id="rewards-catalog">
+        <!-- Rewards rendered by gamification.js -->
+      </div>
+    </div>
+
+    <div class="tab-content" id="ranking">
+      <div class="ranking-header">
+        <h2 data-i18n="gami_ranking_title">Ranking Barrial</h2>
+        <div class="ranking-controls">
+          <label>
+            <input type="checkbox" id="opt-out-ranking" /> No aparecer en rankings públicos
+          </label>
+        </div>
+      </div>
+      <div class="ranking-list" id="ranking-list">
+        <!-- Ranking rendered by gamification.js -->
+      </div>
+    </div>
+
+    <div class="tab-content" id="history">
+      <h2 data-i18n="gami_history_title">Historial de Puntos</h2>
+      <ul class="history-list" id="points-history">
+        <!-- History rendered by gamification.js -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    import "../../scripts/pages/gamification.js";
+  </script>
+</AppLayout>

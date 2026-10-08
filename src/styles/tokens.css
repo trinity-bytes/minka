@@ -36,6 +36,7 @@
   --color-terra-soft: #fbe0d4;
   --color-success: #1e8449;
   --color-error: #c0392b;
+  --color-error-ink: #a93226; /* red text on soft red (badges) */
   --color-warning: #b98a04; /* amber readable on light */
   --color-warning-ink: #8c6a00; /* amber text on soft amber (badges) */
   --color-info: #2874a6;
@@ -69,6 +70,7 @@
   --color-primary-soft: var(--color-mint);
   --color-info-soft: #ddebf5;
   --color-warning-soft: var(--color-accent-soft);
+  --color-success-soft: #f0fdf4; /* highlighted row (own ranking entry) */
 
   /* Font families */
   --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;

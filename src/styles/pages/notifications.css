@@ -18,12 +18,12 @@
   align-items: start;
 }
 
-.card {
-  /* Identidad visual compartida en core/components.css */
+/* Surface comes from ui/Card; this page only sets the inner padding. */
+.notifications-page .card {
   padding: var(--space-24);
 }
 
-.card__header {
+.notifications-page .card__header {
   margin-bottom: var(--space-16);
 }
 
@@ -82,7 +82,7 @@
 }
 
 .notification-item.is-unread {
-  border-color: rgba(46, 204, 113, 0.3);
+  border-color: color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
   box-shadow: var(--shadow-sm);
   font-weight: 600;
 }
@@ -191,5 +191,16 @@
 
   .notification-actions {
     justify-content: flex-start;
+  }
+
+  /* Folded from the legacy core/responsive.css */
+  .notification-item {
+    gap: var(--space-8);
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-item {
+    padding: var(--space-8);
   }
 }

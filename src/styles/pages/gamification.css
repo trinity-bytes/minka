@@ -77,7 +77,7 @@
 
 .badge-item.earned .badge-icon {
   background: var(--color-accent); /* Amarillo Energía */
-  color: white;
+  color: var(--color-on-primary);
 }
 
 .badge-name {
@@ -139,6 +139,11 @@
   border-bottom: 1px solid var(--color-gray-50);
 }
 
+.earn-table__points {
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
 .earn-table th {
   background-color: var(--color-surface);
   font-weight: 600;
@@ -182,7 +187,7 @@
 
 .btn-redeem {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-on-primary);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -226,6 +231,17 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+/* Own entry (formerly an inline style rendered by gamification.js) */
+.ranking-item.highlight {
+  background-color: var(--color-success-soft);
+}
+
+.ranking-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-gray-600);
 }
 
 .ranking-points {

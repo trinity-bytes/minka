@@ -177,8 +177,8 @@ function renderChallenges() {
 
   if (filtered.length === 0) {
     el.grid.innerHTML = `
-      <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 3rem;">
-        <i class="fas fa-map-marker-alt" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+      <div class="empty-state challenges-empty">
+        <i class="fas fa-map-marker-alt challenges-empty__icon" aria-hidden="true"></i>
         <h3>No hay retos activos en ${currentUser.district}</h3>
         <p>¡Prueba seleccionando otro distrito o vuelve pronto!</p>
       </div>
@@ -196,8 +196,8 @@ function renderChallenges() {
       <article class="challenge-card">
         <div class="challenge-card__header">
           <span class="challenge-card__badge">${challenge.district}</span>
-          <span style="font-size: 0.875rem; color: var(--text-secondary);">
-            <i class="far fa-clock"></i> Hasta ${new Date(
+          <span class="challenge-card__deadline">
+            <i class="far fa-clock" aria-hidden="true"></i> Hasta ${new Date(
               challenge.deadline
             ).toLocaleDateString()}
           </span>
@@ -224,7 +224,7 @@ function renderChallenges() {
             <div class="progress-bar">
               <div class="progress-fill collective" style="width: ${collectiveProgress}%"></div>
             </div>
-            <small style="color: var(--text-secondary); font-size: 0.75rem;">
+            <small class="challenge-card__count">
               ${challenge.collectiveCurrent} de ${
         challenge.collectiveGoal
       } intercambios

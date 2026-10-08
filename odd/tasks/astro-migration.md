@@ -33,7 +33,7 @@ Components remove duplication and give every page the same primitives; Astro kee
 - [x] T1 Scaffold Astro: package.json, astro.config (site/base), legacy pages moved under `public/` so everything keeps working, Pages workflow builds `dist/`, fix `.gitignore`, drop unused fonts from the deploy. Route: delegated (multi-file).
 - [x] T2 Unified tokens + shared components (BaseLayout, AppHeader/Footer server-rendered, Button, Card, Sticker, PageHead, Chip, Stat, Testimonial) and port the landing to `src/pages/index.astro` with visual parity. Route: delegated.
 - [x] T3 Port auth, busqueda, home. Route: delegated.
-- [ ] T4 Port detalle, publicar, dashboard. Route: delegated.
+- [x] T4 Port detalle, publicar, dashboard. Route: delegated.
 - [ ] T5 Port comunidad, notificaciones, gamification. Route: delegated.
 - [ ] T6 Port perfil, settings, chat, about. Route: delegated.
 - [ ] T7 Polish: images via astro:assets, Fraunces WOFF2, landing a11y (pausable rotating word, menu focus/Escape, invalid ARIA), real or disabled links, global high-contrast pref, empty/loading/error states, 404. Route: delegated.
@@ -52,6 +52,10 @@ Components remove duplication and give every page the same primitives; Astro kee
   - Added AppLayout + AuthHeader, src/styles/app.css, Font Awesome 6.7.2 via npm. Page scripts are ES modules in src/scripts/pages; core scripts remain classic in public/.
   - Fixed: search.js TDZ crash with saved district filter; Google button hover leak.
   - Carry-overs: landing `.container` padding changed slightly (unified scale); legacy home.css still linked by chat/detalle/publicar (likely droppable); filter-chip CSS duplicates Chip; "Limpiar" doesn't clear exclude/district (pre-existing).
+- 2026-10-07: T4 done in cdfeddd (delegated; ~2.4k added / 2.1k removed, mostly moved markup/CSS). Checks: build OK (parent spot check), `astro check` 0 errors, 50/50 URLs 200; flows traced in code. User browser check of detalle/publicar/dashboard passed (2026-10-07).
+  - Added ui/Modal, CardSection, Breadcrumb; chart.js 4.5.1 via npm; src/scripts/tokens.ts for canvas colors.
+  - Fixed: paused/reserved status shown as active on detalle (EN/ES status mismatch); breadcrumb alignment.
+  - Carry-overs: legacy detail.css only used by perfil, home.css only by chat (T6); Nunito only by about (drop after T6); publish form not cleared after submit; unescaped innerHTML of Store strings (pre-existing).
 
 ## Next step
-T4 (in progress, delegated).
+T5 (in progress, delegated).
