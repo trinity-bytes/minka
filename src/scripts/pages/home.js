@@ -1,4 +1,7 @@
 // T19 - Andy Salcedo: Home app — populares desde Store (seed demo en first-run)
+// ES module bundled by src/pages/pages/home.astro; relies on the legacy
+// globals Session, Store, Toast and I18n loaded as classic scripts by
+// AppLayout (core/guard.js redirects guests to auth before this runs).
 
 const userNameEl = document.getElementById("home-username");
 const popularListEl = document.getElementById("popular-list");
@@ -212,7 +215,7 @@ if (searchForm && searchInput) {
       e.preventDefault();
       searchInput.focus();
       searchInput.placeholder = "Por favor, ingresa un término de búsqueda";
-      searchInput.style.borderColor = "#e74c3c";
+      searchInput.style.borderColor = "var(--color-error)";
 
       setTimeout(() => {
         searchInput.style.borderColor = "";

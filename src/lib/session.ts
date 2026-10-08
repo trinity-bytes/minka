@@ -2,8 +2,9 @@
  * Read/clear helpers for the demo session. Mirrors the storage contract of
  * public/assets/scripts/core/session.js (key `minka_session` in local or
  * session storage) so ported and legacy pages share the same login state.
- * Writing sessions and inactivity handling stay in the legacy script until
- * the auth page is ported (T3).
+ * Writing sessions (auth page) and the inactivity guard still use the
+ * legacy global `Session` (loaded by AppLayout), because legacy pages share
+ * that script until T4-T6 port them.
  */
 export const SESSION_KEY = "minka_session";
 const LEGACY_DEMO_KEY = "minka-demo-session";

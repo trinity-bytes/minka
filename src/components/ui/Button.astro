@@ -5,7 +5,10 @@
  * appearance:
  *  - "sticker" (default): editorial look of the landing (ink border + hard
  *    offset shadow). Variants: paper | primary | ink.
- *  - "flat": legacy app look (.btn). Variants: primary | secondary | outline.
+ *  - "flat": legacy app look. Emits the global classes `btn btn-<variant>`
+ *    (+ btn-small / btn-large) from src/styles/app.css, so it only renders
+ *    styled on pages built on AppLayout. Variants: primary | secondary |
+ *    outline (paper = outline) | ink.
  */
 import type { HTMLAttributes } from "astro/types";
 
@@ -31,14 +34,29 @@ const {
   ...rest
 } = Astro.props;
 
-const classes = [
-  "btn",
-  `btn--${appearance}`,
-  `btn--${variant}`,
-  size !== "md" && `btn--${size}`,
-  loading && "is-loading",
-  className,
-];
+// Flat buttons emit the legacy app classes (btn-primary, btn-small, ...)
+// defined once in src/styles/app.css, which page scripts also use in the
+// markup they render. Flat therefore requires a page built on AppLayout.
+const FLAT_VARIANT: Record<Variant, string> = {
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  outline: "btn-outline",
+  paper: "btn-outline",
+  ink: "btn-ink",
+};
+const FLAT_SIZE = { sm: "btn-small", md: false, lg: "btn-large" } as const;
+
+const classes =
+  appearance === "flat"
+    ? ["btn", "btn--flat", FLAT_VARIANT[variant], FLAT_SIZE[size], loading && "is-loading", className]
+    : [
+        "btn",
+        `btn--${appearance}`,
+        `btn--${variant}`,
+        size !== "md" && `btn--${size}`,
+        loading && "is-loading",
+        className,
+      ];
 ---
 
 {
@@ -54,7 +72,10 @@ const classes = [
 }
 
 <style>
-  .btn {
+  /* Scoped rules target sticker buttons only: flat buttons are styled by the
+     global legacy classes in src/styles/app.css, and a scoped `.btn` rule
+     would out-rank them (e.g. .btn-small sizing). */
+  .btn--sticker {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -64,7 +85,7 @@ const classes = [
     cursor: pointer;
   }
 
-  .btn :global(i) {
+  .btn--sticker :global(i) {
     margin-right: var(--space-8);
   }
 
@@ -126,120 +147,28 @@ const classes = [
     font-size: 1.1rem;
   }
 
-  /* === Flat (app) === */
-  .btn--flat {
-    font-weight: 600;
-    padding: var(--space-12) var(--space-24);
-    border-radius: var(--radius-md);
-    border: none;
-    transition: all 0.2s ease;
-  }
-
-  .btn--flat:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-  }
-
-  .btn--flat.btn--primary {
-    background: var(--color-primary-ink);
-    color: var(--color-on-primary);
-    box-shadow: var(--shadow-md);
-  }
-
-  .btn--flat.btn--primary:hover {
-    background: var(--color-primary-dark);
-    color: var(--color-on-primary);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-
-  .btn--flat.btn--primary:active {
-    background: var(--color-primary-darker);
-    color: var(--color-on-primary);
-    transform: translateY(0);
-  }
-
-  .btn--flat.btn--secondary {
-    background: transparent;
-    color: var(--color-primary);
-    border: 2px solid var(--color-primary);
-  }
-
-  .btn--flat.btn--secondary:hover {
-    background: color-mix(in srgb, var(--color-primary-pop) 10%, transparent);
-  }
-
-  .btn--flat.btn--outline,
-  .btn--flat.btn--paper {
-    background: transparent;
-    color: var(--color-gray-700);
-    border: 1.5px solid var(--color-gray-300);
-  }
-
-  .btn--flat.btn--outline:hover,
-  .btn--flat.btn--paper:hover {
-    background: var(--color-gray-50);
-    border-color: var(--color-gray-400);
-    color: var(--color-gray-900);
-  }
-
-  .btn--flat.btn--ink {
-    background: var(--color-ink);
-    color: var(--color-paper);
-  }
-
-  .btn--flat.btn--sm {
-    padding: var(--space-8) var(--space-16);
-    font-size: 0.9rem;
-  }
-
-  .btn--flat.btn--lg {
-    padding: var(--space-16) var(--space-32);
-    font-size: 1.125rem;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .btn--flat:active {
-      transform: scale(0.98);
-    }
-  }
-
-  @media (hover: none) and (pointer: coarse) {
-    .btn--flat {
-      min-height: 44px;
-      min-width: 44px;
-    }
-  }
-
-  /* === Loading / disabled === */
-  .btn:disabled,
-  .btn.is-loading {
+  /* === Loading / disabled (sticker; flat lives in app.css) === */
+  .btn--sticker:disabled,
+  .btn--sticker.is-loading {
     opacity: 0.65;
     cursor: not-allowed;
     pointer-events: none;
   }
 
-  .btn.is-loading {
+  .btn--sticker.is-loading {
     position: relative;
     color: transparent !important;
   }
 
-  .btn.is-loading::after {
+  .btn--sticker.is-loading::after {
     content: "";
     position: absolute;
     width: 18px;
     height: 18px;
-    border: 2.5px solid color-mix(in srgb, var(--color-on-primary) 40%, transparent);
-    border-top-color: var(--color-on-primary);
+    border: 2.5px solid color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
+    border-top-color: var(--color-primary);
     border-radius: 50%;
     animation: btn-spin 0.7s linear infinite;
-  }
-
-  .btn--sticker.is-loading::after,
-  .btn--secondary.is-loading::after,
-  .btn--outline.is-loading::after {
-    border-color: color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
-    border-top-color: var(--color-primary);
   }
 
   @keyframes btn-spin {

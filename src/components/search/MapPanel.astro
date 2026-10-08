@@ -1,0 +1,21 @@
+---
+/**
+ * Reference map beside the search results (static demo image).
+ */
+import { asset } from "../../lib/url";
+---
+
+<aside class="map-panel" aria-label="Mapa de cercanía">
+  <div class="map-panel__header">
+    <h3>Mapa</h3>
+    <p>Se muestran los distritos de referencia según la distancia.</p>
+  </div>
+  <div class="map-panel__body">
+    <img
+      src={asset("images/mapa-ejemplo-minka.png")}
+      alt="Mapa referencial"
+      class="map-panel__image"
+      loading="lazy"
+    />
+  </div>
+</aside>

@@ -1,0 +1,191 @@
+---
+/**
+ * Auth page (login / register / recovery, simulated). Port of
+ * public/pages/auth.html. Logic: src/scripts/pages/auth.js.
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import AuthTabs, { type AuthTab } from "../../components/auth/AuthTabs.astro";
+import AuthField from "../../components/auth/AuthField.astro";
+import DemoChip from "../../components/auth/DemoChip.astro";
+import OtpModal from "../../components/auth/OtpModal.astro";
+import PasswordStrength from "../../components/auth/PasswordStrength.astro";
+import SocialLogin from "../../components/auth/SocialLogin.astro";
+import Button from "../../components/ui/Button.astro";
+import { url } from "../../lib/url";
+import "../../styles/pages/auth.css";
+
+const tabs: AuthTab[] = [
+  { target: "login", label: "Iniciar Sesión", i18n: "auth_tab_login" },
+  { target: "register", label: "Crear Cuenta", i18n: "auth_tab_register" },
+  { target: "recovery", label: "Recuperar", i18n: "auth_tab_recovery" },
+];
+---
+
+<AppLayout
+  title="Mink'a - Autenticación"
+  description="Ingresa a Mink'a o crea tu cuenta para empezar a intercambiar con tus vecinos."
+  bodyClass="auth-page"
+  mainClass="auth-layout"
+  chrome="auth"
+  scripts={["translations", "i18n", "session", "modal", "toast"]}
+>
+  <section class="auth-hero">
+    <div class="auth-hero__content">
+      <h1 data-i18n="auth_title">Ingresa a Mink'a</h1>
+      <p class="auth-hero__note">
+        <span data-i18n="auth_subtitle">Usa el usuario demo para probar la plataforma:</span>
+        <strong>demo@minka.com</strong> / <strong>demo1234</strong>.
+      </p>
+      <ul class="auth-hero__bullets">
+        <li data-i18n="auth_bullet_login">Inicio de sesión</li>
+        <li data-i18n="auth_bullet_register">Registro con validaciones</li>
+        <li data-i18n="auth_bullet_recovery">Recuperación de contraseña</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="auth-panel" aria-label="Autenticación">
+    <div class="auth-card" role="region" aria-live="polite">
+      <AuthTabs tabs={tabs} active="login" />
+      <p class="auth-card__subtitle" data-i18n="auth_card_subtitle">
+        Valida tus datos y te redirigiremos al perfil demo.
+      </p>
+
+      <form class="auth-form" data-form="login" novalidate aria-labelledby="auth-tab-login">
+        <SocialLogin mode="login" />
+        <AuthField
+          id="login-email"
+          name="email"
+          type="email"
+          label="Correo electrónico"
+          labelKey="auth_label_email"
+          autocomplete="email"
+          placeholder="tu@correo.com"
+          placeholderKey="auth_placeholder_email"
+          required
+        />
+        <AuthField
+          id="login-password"
+          name="password"
+          type="password"
+          label="Contraseña"
+          labelKey="auth_label_password"
+          autocomplete="current-password"
+          minlength={8}
+          required
+          toggle
+        />
+        <div class="form__row">
+          <label class="form__checkbox">
+            <input type="checkbox" name="remember" />
+            <span data-i18n="auth_checkbox_remember">Mantener sesión activa</span>
+          </label>
+          <button
+            type="button"
+            class="form__link"
+            data-switch-tab="recovery"
+            data-i18n="auth_link_forgot"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+        </div>
+        <DemoChip />
+        <Button type="submit" appearance="flat" variant="primary" size="lg" data-i18n="auth_btn_login">
+          Ingresar
+        </Button>
+      </form>
+
+      <form class="auth-form is-hidden" data-form="register" novalidate aria-labelledby="auth-tab-register">
+        <SocialLogin mode="register" />
+        <AuthField
+          id="register-name"
+          name="name"
+          label="Nombre completo"
+          labelKey="auth_label_name"
+          autocomplete="name"
+          minlength={3}
+          placeholder="Tu nombre"
+          placeholderKey="auth_placeholder_name"
+          required
+        />
+        <AuthField
+          id="register-email"
+          name="email"
+          label="Correo electrónico o teléfono"
+          labelKey="auth_label_email_phone"
+          autocomplete="email"
+          inputmode="email"
+          placeholder="tu@correo.com o +51 987 654 321"
+          placeholderKey="auth_placeholder_email_phone"
+          required
+        />
+        <AuthField
+          id="register-password"
+          name="password"
+          type="password"
+          label="Contraseña (mínimo 8 caracteres)"
+          labelKey="auth_label_password_min"
+          autocomplete="new-password"
+          minlength={8}
+          required
+          toggle
+        >
+          <PasswordStrength />
+        </AuthField>
+        <AuthField
+          id="register-confirm"
+          name="confirm"
+          type="password"
+          label="Confirmar contraseña"
+          labelKey="auth_label_confirm"
+          autocomplete="new-password"
+          minlength={8}
+          required
+        />
+        <label class="form__checkbox">
+          <input type="checkbox" name="terms" required />
+          <span>
+            <span data-i18n="auth_terms_accept">Acepto los</span>
+            <a href={url("pages/about.html")} data-i18n="auth_terms_link">Términos</a>
+            <span data-i18n="auth_terms_and">y la</span>
+            <a href={url("pages/about.html")} data-i18n="auth_privacy_link">Política de Privacidad</a>
+          </span>
+        </label>
+        <Button
+          type="submit"
+          appearance="flat"
+          variant="primary"
+          size="lg"
+          id="register-submit"
+          disabled
+          data-i18n="auth_btn_register"
+        >
+          Crear Cuenta
+        </Button>
+      </form>
+
+      <form class="auth-form is-hidden" data-form="recovery" novalidate aria-labelledby="auth-tab-recovery">
+        <AuthField
+          id="recovery-email"
+          name="email"
+          type="email"
+          label="Correo electrónico"
+          labelKey="auth_label_email"
+          autocomplete="email"
+          placeholder="tu@correo.com"
+          placeholderKey="auth_placeholder_email"
+          required
+        />
+        <Button type="submit" appearance="flat" variant="primary" size="lg" data-i18n="auth_btn_recovery">
+          Enviar instrucciones
+        </Button>
+      </form>
+    </div>
+  </section>
+
+  <OtpModal slot="after-main" />
+
+  <script>
+    import "../../scripts/pages/auth.js";
+  </script>
+</AppLayout>

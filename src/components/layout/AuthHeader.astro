@@ -1,0 +1,81 @@
+---
+/**
+ * Minimal logo-only header of the auth page (port of the static
+ * .auth-header in public/pages/auth.html + core/layout.css).
+ */
+import { asset, url } from "../../lib/url";
+---
+
+<header class="auth-header">
+  <div class="auth-header__container">
+    <a href={url()} class="auth-header__logo" aria-label="Mink'a, inicio">
+      <img src={asset("images/minka-logo.png")} alt="Mink'a" class="auth-header__logo-img" />
+    </a>
+  </div>
+</header>
+
+<style>
+  .auth-header {
+    border-bottom: var(--border-ink);
+    background: color-mix(in srgb, var(--color-paper) 97%, transparent);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .auth-header__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-12) 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+  }
+
+  .auth-header__logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .auth-header__logo-img {
+    display: block;
+    height: 48px;
+    width: auto;
+    aspect-ratio: 1041 / 405; /* reserve space: no CLS */
+  }
+
+  @media (max-width: 768px) {
+    .auth-header__container {
+      padding: var(--space-12) 16px;
+    }
+
+    .auth-header__logo-img {
+      height: 36px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .auth-header__container {
+      padding: var(--space-8) 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .auth-header__container {
+      padding: var(--space-8) 12px;
+    }
+
+    .auth-header__logo-img {
+      height: 30px;
+    }
+  }
+
+  @media print {
+    .auth-header {
+      display: none !important;
+    }
+  }
+</style>

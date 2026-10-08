@@ -1,0 +1,66 @@
+---
+/**
+ * Signed-in home: welcome hero with quick search and impact card, featured
+ * challenge and popular listings. Port of public/pages/home.html.
+ * Logic: src/scripts/pages/home.js (guarded: requires a session).
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import CategoryNav from "../../components/home/CategoryNav.astro";
+import ChallengeBand from "../../components/home/ChallengeBand.astro";
+import HomeSearch from "../../components/home/HomeSearch.astro";
+import ImpactCard from "../../components/home/ImpactCard.astro";
+import { url } from "../../lib/url";
+import "../../styles/pages/home.css";
+---
+
+<AppLayout
+  title="Mink'a - Home"
+  description="Tu inicio en Mink'a: busca trueques, publica objetos y sigue tu impacto."
+  bodyClass="home-page"
+  mainClass="home-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <!-- T19 - Andy Salcedo: Hero bienvenida -->
+  <section class="home-hero">
+    <div class="container home-hero__grid">
+      <div class="home-hero__content">
+        <p class="home-hero__eyebrow" data-i18n="home_welcome_eyebrow">Bienvenido de nuevo</p>
+        <h1 id="home-username" data-i18n="home_welcome_user">Hola, Mink'a user</h1>
+        <p class="home-hero__subtitle" data-i18n="home_welcome_subtitle">
+          Explora trueques populares, publica algo nuevo o revisa tus chats pendientes. Todo está
+          listo para que sigas sumando impacto.
+        </p>
+        <HomeSearch />
+        <CategoryNav />
+      </div>
+      <ImpactCard />
+    </div>
+  </section>
+
+  <ChallengeBand />
+
+  <!-- T19 - Andy Salcedo: Populares -->
+  <section class="popular" aria-label="Publicaciones populares">
+    <div class="container">
+      <div class="popular-head">
+        <div>
+          <h2 class="popular-head__title" data-i18n="home_popular_title">Publicaciones populares</h2>
+          <p class="popular-head__subtitle" data-i18n="home_popular_subtitle">
+            Basadas en reputación, cercanía y actividad reciente.
+          </p>
+        </div>
+        <a class="popular-head__all" href={url("pages/busqueda.html")}>
+          <span data-i18n="home_popular_all">Ver todas</span>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+      <div class="popular-viewport">
+        <div class="popular-grid" id="popular-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import "../../scripts/pages/home.js";
+  </script>
+</AppLayout>

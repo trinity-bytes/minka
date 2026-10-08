@@ -1,6 +1,37 @@
 // T15 - Andy Salcedo: Buscador con filtros simulados (categoría, reputación, distancia)
 // T30 - Andy Salcedo: Búsquedas guardadas y filtros avanzados
 // Los datos demo viven en Store.seedDemo(); la búsqueda lee solo Store.getItems().
+// ES module bundled by src/pages/pages/busqueda.astro; relies on the legacy
+// globals Store, Toast and I18n loaded as classic scripts by AppLayout.
+
+// T31 - Distritos de referencia. Declared before the initial render():
+// a restored district filter reads DISTRICT_KM during that first render,
+// which used to throw (temporal dead zone) when declared further down.
+const LIMA_DISTRICTS = [
+  "Miraflores",
+  "San Isidro",
+  "Barranco",
+  "Santiago de Surco",
+  "San Borja",
+  "Jesús María",
+  "Magdalena",
+  "La Molina",
+  "Surquillo",
+  "Lince",
+];
+
+const DISTRICT_KM = {
+  Miraflores: 0,
+  "San Isidro": 2,
+  Barranco: 3,
+  "Santiago de Surco": 6,
+  "San Borja": 4,
+  "Jesús María": 5,
+  Magdalena: 6,
+  "La Molina": 10,
+  Surquillo: 2,
+  Lince: 4,
+};
 
 const state = {
   query: "",
@@ -452,32 +483,7 @@ document.addEventListener("languageChanged", () => {
 });
 
 // T31 - Geocodificación inversa simulada: distrito determinista según coords
-const LIMA_DISTRICTS = [
-  "Miraflores",
-  "San Isidro",
-  "Barranco",
-  "Santiago de Surco",
-  "San Borja",
-  "Jesús María",
-  "Magdalena",
-  "La Molina",
-  "Surquillo",
-  "Lince",
-];
-
-const DISTRICT_KM = {
-  Miraflores: 0,
-  "San Isidro": 2,
-  Barranco: 3,
-  "Santiago de Surco": 6,
-  "San Borja": 4,
-  "Jesús María": 5,
-  Magdalena: 6,
-  "La Molina": 10,
-  Surquillo: 2,
-  Lince: 4,
-};
-
+// (LIMA_DISTRICTS / DISTRICT_KM are declared at the top of the module.)
 function mockReverseGeocode(lat, lng) {
   const idx = Math.abs(Math.round((lat + lng) * 100)) % LIMA_DISTRICTS.length;
   return `${LIMA_DISTRICTS[idx]}, Lima`;

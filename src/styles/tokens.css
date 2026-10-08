@@ -39,6 +39,9 @@
   --color-warning: #b98a04; /* amber readable on light */
   --color-info: #2874a6;
 
+  /* Third-party brand colors (social login buttons only) */
+  --color-brand-facebook: #166fe5;
+
   /* Neutrals (warm, ink-tinted scale) */
   --color-white: var(--color-card); /* card surface */
   --color-gray-50: #f2edde;
@@ -97,6 +100,7 @@
   --shadow-xl: 0 12px 24px rgba(23, 48, 31, 0.14);
   --shadow-soft: 0 2px 8px rgba(23, 48, 31, 0.06);
   --shadow-lift: 0 5px 15px rgba(23, 48, 31, 0.12);
+  --shadow-modal: 0 20px 70px rgba(0, 0, 0, 0.18);
   --shadow-hard-xs: 1px 1px 0 var(--color-ink);
   --shadow-hard-sm: 3px 3px 0 var(--color-ink);
   --shadow-hard-btn: 4px 4px 0 var(--color-ink);

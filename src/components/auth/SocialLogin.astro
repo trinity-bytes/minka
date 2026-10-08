@@ -1,0 +1,114 @@
+---
+/**
+ * Simulated social login buttons (Google / Facebook) plus the "or use your
+ * email" divider. Buttons carry `data-social-provider`; the click is
+ * handled in src/scripts/pages/auth.js (simulateSocialLogin).
+ */
+interface Props {
+  mode: "login" | "register";
+}
+
+const { mode } = Astro.props;
+
+const COPY = {
+  login: {
+    google: { key: "auth_social_google", label: "Continuar con Google" },
+    facebook: { key: "auth_social_facebook", label: "Continuar con Facebook" },
+    divider: { key: "auth_divider_email", label: "o ingresa con tu correo" },
+  },
+  register: {
+    google: { key: "auth_social_google_reg", label: "Registrarse con Google" },
+    facebook: { key: "auth_social_facebook_reg", label: "Registrarse con Facebook" },
+    divider: { key: "auth_divider_form", label: "o completa el formulario" },
+  },
+} as const;
+
+const copy = COPY[mode];
+---
+
+<div class="social-login">
+  <button type="button" class="btn-social btn-google" data-social-provider="Google">
+    <i class="fab fa-google"></i>
+    <span data-i18n={copy.google.key}>{copy.google.label}</span>
+  </button>
+  <button type="button" class="btn-social btn-facebook" data-social-provider="Facebook">
+    <i class="fab fa-facebook-f"></i>
+    <span data-i18n={copy.facebook.key}>{copy.facebook.label}</span>
+  </button>
+</div>
+<div class="auth-divider">
+  <span data-i18n={copy.divider.key}>{copy.divider.label}</span>
+</div>
+
+<style>
+  /* Resolved cascade of the legacy core/components.css + pages/auth.css */
+  .social-login {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-10);
+    width: 100%;
+    padding: var(--space-12);
+    border: var(--border-ink);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .btn-social:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  .btn-google {
+    background-color: var(--color-card);
+    color: var(--color-ink);
+  }
+
+  .btn-google:hover {
+    background-color: var(--color-paper);
+  }
+
+  .btn-facebook {
+    background-color: var(--color-brand-facebook);
+    color: var(--color-on-primary);
+  }
+
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: var(--color-ink-2);
+    font-size: 0.85rem;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1.5px solid var(--color-gray-200);
+  }
+
+  .auth-divider span {
+    padding: 0 var(--space-16);
+  }
+
+  @media (max-width: 480px) {
+    .btn-social {
+      padding: 0.6rem;
+      font-size: 0.85rem;
+    }
+  }
+</style>

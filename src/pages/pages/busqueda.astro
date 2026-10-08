@@ -1,0 +1,61 @@
+---
+/**
+ * Search page: query, filters, saved searches and results. Port of
+ * public/pages/busqueda.html. Logic: src/scripts/pages/search.js.
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import FiltersPanel from "../../components/search/FiltersPanel.astro";
+import MapPanel from "../../components/search/MapPanel.astro";
+import SearchBar from "../../components/search/SearchBar.astro";
+import Card from "../../components/ui/Card.astro";
+import PageHead from "../../components/ui/PageHead.astro";
+import "../../styles/pages/search.css";
+---
+
+<AppLayout
+  title="Mink'a - Búsqueda y filtros"
+  description="Busca trueques cerca de ti y filtra por categoría, reputación y cercanía."
+  bodyClass="search-page"
+  mainClass="search-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <section class="search-hero">
+    <PageHead
+      title="Busca y filtra trueques"
+      titleKey="search_hero_title"
+      hint="Filtra por categoría, reputación y cercanía."
+      hintKey="search_hero_subtitle"
+    />
+    <div class="container">
+      <SearchBar />
+      <div id="active-filters" class="filter-chips" aria-label="Filtros activos"></div>
+      <!-- T30 - Andy Salcedo: Lista de Búsquedas Guardadas (HU32) -->
+      <div id="saved-searches-container" class="saved-searches hidden">
+        <h3 data-i18n="search_saved_title">Búsquedas Guardadas</h3>
+        <ul id="saved-searches-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="search-layout" aria-label="Resultados de búsqueda">
+    <div class="container search-grid">
+      <FiltersPanel />
+
+      <div class="search-results-wrapper">
+        <Card as="section" class="results" shadow="md" aria-live="polite">
+          <div class="results__header">
+            <h2 data-i18n="search_results_title">Resultados</h2>
+            <p id="results-count">0 <span data-i18n="search_results_count">resultados</span></p>
+          </div>
+          <div class="results__grid" id="results-list"></div>
+        </Card>
+
+        <MapPanel />
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import "../../scripts/pages/search.js";
+  </script>
+</AppLayout>

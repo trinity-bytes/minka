@@ -1,5 +1,8 @@
 // T12 - Leonardo Chavez: Lógica de autenticación en página dedicada (simulada)
 // T28 - Leonardo Chavez: Login social y Auth Avanzado
+// ES module bundled by src/pages/pages/auth.astro. It still relies on the
+// legacy globals Session, Modal and Toast (public/assets/scripts/core),
+// loaded as classic scripts by AppLayout before this module runs.
 const demoUser = {
   email: "demo@minka.com",
   password: "demo1234",
@@ -570,7 +573,7 @@ authForms.forEach((form) => {
 switchAuthTab("login");
 
 // T28 - Leonardo Chavez: Simulación de Social Login (HU21)
-window.simulateSocialLogin = (provider) => {
+const simulateSocialLogin = (provider) => {
   Modal.confirm(`¿Deseas continuar usando tu cuenta de ${provider}?`, {
     title: "Inicio de sesión social",
     confirmText: "Continuar",
@@ -593,3 +596,9 @@ window.simulateSocialLogin = (provider) => {
     setTimeout(redirectAfterLogin, 900);
   });
 };
+
+document.querySelectorAll("[data-social-provider]").forEach((btn) => {
+  btn.addEventListener("click", () =>
+    simulateSocialLogin(btn.dataset.socialProvider)
+  );
+});

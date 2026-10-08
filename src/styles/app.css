@@ -1,0 +1,627 @@
+/* ============================================
+   MINK'A - App shell primitives (global, app pages only)
+   Ported from public/assets/styles/core/components.css and the app parts
+   of core/responsive.css. Imported by AppLayout, never by the landing.
+   Class names stay the legacy ones on purpose: page scripts render
+   markup as strings (`btn btn-primary`, `badge`, `empty-state`, ...), and
+   Button `appearance="flat"` emits the same classes, so both share one
+   definition. The legacy copy in public/ stays until T4-T6 port the rest.
+   ============================================ */
+
+/* === Responsive typography (app scale) === */
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 360px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* === Buttons (flat app look) === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: var(--space-12) var(--space-24);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn i {
+  margin-right: var(--space-8);
+}
+
+.btn-primary {
+  background: var(--color-primary-ink);
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  /* the global a:hover color would win over .btn-primary: pin it here */
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  background: var(--color-primary-darker);
+  color: var(--color-on-primary);
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+.btn-secondary:hover {
+  background: color-mix(in srgb, var(--color-primary-pop) 10%, transparent);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-gray-700);
+  border: 1.5px solid var(--color-gray-300);
+}
+
+.btn-outline:hover {
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-400);
+  color: var(--color-gray-900);
+}
+
+.btn-ink {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn-large {
+  padding: var(--space-16) var(--space-32);
+  font-size: 1.125rem;
+}
+
+.btn-small {
+  padding: var(--space-8) var(--space-16);
+  font-size: 0.9rem;
+}
+
+.btn:disabled,
+.btn.is-loading {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn.is-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.btn.is-loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid color-mix(in srgb, var(--color-on-primary) 40%, transparent);
+  border-top-color: var(--color-white);
+  border-radius: 50%;
+  animation: btn-spin 0.7s linear infinite;
+}
+
+.btn-secondary.is-loading::after,
+.btn-outline.is-loading::after {
+  border-color: color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
+  border-top-color: var(--color-primary);
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active {
+    transform: scale(0.98);
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    padding: var(--space-10) var(--space-16);
+    font-size: 0.9rem;
+  }
+
+  .btn-large {
+    padding: var(--space-12) var(--space-24);
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .btn {
+    padding: var(--space-8) var(--space-12);
+    font-size: 0.85rem;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* === Badge === */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-10);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* === Favorite (heart) on cards === */
+.fav-toggle {
+  position: absolute;
+  top: var(--space-8);
+  right: var(--space-8);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: color-mix(in srgb, var(--color-on-primary) 90%, transparent);
+  color: var(--color-gray-400);
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  transition: color 0.15s ease;
+}
+
+.fav-toggle[aria-pressed="true"] {
+  color: var(--color-error);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fav-toggle[aria-pressed="true"] {
+    animation: fav-pop 0.25s ease;
+  }
+
+  /* Subtle entrance for script-rendered cards */
+  .is-entering {
+    animation: card-enter 0.15s ease-out;
+  }
+}
+
+@keyframes fav-pop {
+  0% {
+    transform: scale(0.8);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* === Empty / error states === */
+.empty-state,
+.error-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-48) var(--space-24);
+  border: 1px dashed var(--color-gray-100);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.empty-state__icon,
+.error-state__icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-12);
+}
+
+.empty-state h3,
+.error-state h3 {
+  margin-bottom: var(--space-8);
+}
+
+.empty-state p,
+.error-state p {
+  margin-bottom: var(--space-24);
+}
+
+.empty-state__actions {
+  display: flex;
+  gap: var(--space-12);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* === Toast (container created by core/toast.js) === */
+.toast-container {
+  position: fixed;
+  bottom: var(--space-24);
+  right: var(--space-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  z-index: var(--z-toast);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-width: 240px;
+  max-width: 360px;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--space-10);
+  background: var(--color-secondary-dark);
+  color: var(--color-white);
+  box-shadow: var(--shadow-lift);
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast--success {
+  border-left: 4px solid var(--color-primary);
+}
+
+.toast--error {
+  border-left: 4px solid var(--color-error);
+}
+
+.toast--info {
+  border-left: 4px solid var(--color-info);
+}
+
+@media (max-width: 480px) {
+  .toast-container {
+    left: var(--space-16);
+    right: var(--space-16);
+    bottom: var(--space-16);
+  }
+}
+
+/* === Modal (driven by core/modal.js; also used for Modal.confirm) === */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16);
+  opacity: 0;
+  pointer-events: none;
+  /* visibility removes closed content from the tab order. Closing waits for
+     the fade; opening switches at once so modal.js can focus synchronously. */
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s linear 0.2s;
+}
+
+.modal[aria-hidden="false"] {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s;
+}
+
+.modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-scrim);
+  backdrop-filter: blur(2px);
+}
+
+.modal__content {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(100dvh - var(--space-32));
+  overflow-y: auto;
+  background: var(--color-white);
+  border-radius: var(--space-16);
+  box-shadow: var(--shadow-modal);
+  padding: var(--space-24);
+  border: 1px solid var(--color-gray-50);
+  z-index: 1;
+  transform: translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal[aria-hidden="false"] .modal__content {
+  transform: translateY(0);
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
+}
+
+.modal__header h2,
+.modal__header h3,
+.modal__title {
+  font-size: 1.25rem;
+  color: var(--color-secondary-dark);
+  margin: 0;
+}
+
+.modal__close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--color-gray-400);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.modal__close:hover {
+  background: var(--color-gray-50);
+  color: var(--color-error);
+}
+
+.modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.modal__body p {
+  margin: 0;
+}
+
+.modal__actions,
+.modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-12);
+  margin-top: var(--space-24);
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .modal__content {
+    padding: var(--space-24);
+    max-width: 100%;
+    margin: var(--space-16);
+    border-radius: var(--radius-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .modal__content {
+    padding: var(--space-16);
+    margin: var(--space-8);
+  }
+}
+
+/* === Form elements === */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: var(--space-12);
+  border: 1.5px solid var(--color-gray-100);
+  border-radius: var(--space-10);
+  font: inherit;
+  color: var(--color-gray-900);
+  background: var(--color-white);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-pop) 18%, transparent);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-gray-300);
+}
+
+/* The chevron is an SVG data URI: it cannot read CSS custom properties,
+   so its stroke stays a literal (legacy gray). */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237f8c8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* === Form helpers === */
+.form__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.form__group label {
+  font-weight: 600;
+  color: var(--color-secondary-dark);
+}
+
+.form__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.form__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: 0.95rem;
+  color: var(--color-secondary);
+}
+
+.form__checkbox input {
+  width: 18px;
+  height: 18px;
+}
+
+.form__link {
+  border: none;
+  background: none;
+  color: var(--color-primary-ink);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.form__error {
+  min-height: 18px;
+  font-size: 0.85rem;
+  color: var(--color-error);
+}
+
+.form__success {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.form__hint {
+  font-size: 0.9rem;
+  color: var(--color-gray-600);
+}
+
+@media (max-width: 768px) {
+  .form__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* === Print === */
+@media print {
+  .btn {
+    display: none !important;
+  }
+
+  body {
+    font-size: 12pt;
+    color: var(--color-ink);
+    background: var(--color-card);
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  a {
+    color: var(--color-ink);
+    text-decoration: underline;
+  }
+}

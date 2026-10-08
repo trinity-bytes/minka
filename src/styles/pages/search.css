@@ -2,6 +2,11 @@
 /* T30 - Andy Salcedo: Estilos de búsqueda avanzada */
 /* Rediseño "Trueque Editorial": papel, tinta, sombras duras. Mobile-first:
    barra en una fila, filtros colapsables y resultados antes que el mapa. */
+/* Global (not scoped) on purpose: src/scripts/pages/search.js renders the
+   result cards, filter chips and saved searches as HTML strings. The
+   legacy page also loaded pages/home.css, but none of its selectors match
+   this page, so nothing was carried over from it. `.results` surface
+   (border, radius, shadow) comes from the Card component. */
 .search-page {
   background: linear-gradient(
     180deg,
@@ -113,7 +118,7 @@
 
 .filter-chip:hover {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
 }
 
 .filter-chip--clear {
@@ -183,7 +188,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(255, 253, 246, 0.92);
+  background: color-mix(in srgb, var(--color-card) 92%, transparent);
   border: 1.5px solid var(--color-ink);
   border-radius: 50%;
   width: 32px;
@@ -362,7 +367,7 @@
 .filter-group input[type="text"]:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(30, 132, 73, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
 
 .filter-group input[type="range"] {
@@ -383,10 +388,6 @@
 }
 
 .results {
-  background: var(--color-card);
-  border: var(--border-ink);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-hard-md);
   padding: var(--space-20);
 }
 

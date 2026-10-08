@@ -1,0 +1,47 @@
+---
+/**
+ * Featured community challenge band (demo data from the community page).
+ */
+import Button from "../ui/Button.astro";
+import Card from "../ui/Card.astro";
+import { url } from "../../lib/url";
+
+interface Props {
+  progress?: number;
+}
+
+const { progress = 75 } = Astro.props;
+---
+
+<section class="home-challenge" aria-label="Reto comunitario destacado">
+  <div class="container">
+    <Card class="home-challenge__band" tone="mint">
+      <span class="home-challenge__icon" aria-hidden="true"><i class="fas fa-book-open"></i></span>
+      <div class="home-challenge__text">
+        <h2 data-i18n="home_challenge_title">Reto del mes: Semana del Libro</h2>
+        <p data-i18n="home_challenge_text">
+          Tu distrito ya completó el 75% de la meta. Intercambia libros y suma puntos.
+        </p>
+        <div
+          class="home-challenge__bar"
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-label="Avance del reto"
+        >
+          <div class="home-challenge__fill" style={`width: ${progress}%`}></div>
+        </div>
+      </div>
+      <Button
+        href={url("pages/comunidad.html")}
+        appearance="flat"
+        variant="primary"
+        class="home-challenge__cta"
+        data-i18n="home_challenge_cta"
+      >
+        Ver retos
+      </Button>
+    </Card>
+  </div>
+</section>

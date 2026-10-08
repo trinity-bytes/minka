@@ -1,0 +1,76 @@
+---
+/**
+ * Shell for ported app pages: BaseLayout + Font Awesome + the global app
+ * primitives (src/styles/app.css) + app chrome, and the legacy core
+ * scripts the page still relies on (IIFE globals: Session, Store, Modal,
+ * Toast, I18n, ...). Those scripts stay in public/ because not-yet-ported
+ * legacy pages load them too; they are emitted as classic scripts in the
+ * legacy order so the page's own module script (bundled by Astro, deferred)
+ * finds the globals ready. core/components.js is never loaded: AppHeader
+ * and AppFooter replace it.
+ */
+// BaseLayout first: its global CSS (tokens, reset, element typography) must
+// precede app.css, whose responsive element rules override it.
+import BaseLayout from "./BaseLayout.astro";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "../../styles/app.css";
+import AppHeader from "./AppHeader.astro";
+import AppFooter from "./AppFooter.astro";
+import AuthHeader from "./AuthHeader.astro";
+import { asset } from "../../lib/url";
+
+/** Legacy core scripts under public/assets/scripts/core. */
+export type LegacyScript =
+  | "translations"
+  | "i18n"
+  | "session"
+  | "store"
+  | "modal"
+  | "toast"
+  | "guard"
+  | "notif-badge";
+
+interface Props {
+  title: string;
+  description?: string;
+  bodyClass?: string;
+  mainClass?: string;
+  /** "app": full navigation; "auth": logo-only header (auth page). */
+  chrome?: "app" | "auth";
+  scripts?: LegacyScript[];
+}
+
+const { title, description, bodyClass, mainClass, chrome = "app", scripts = [] } = Astro.props;
+
+// Canonical load order (matches the legacy pages). `defer` scripts run
+// after parsing, before the page module and before DOMContentLoaded.
+const ORDER: { name: LegacyScript; defer: boolean }[] = [
+  { name: "translations", defer: true },
+  { name: "i18n", defer: true },
+  { name: "session", defer: false },
+  { name: "store", defer: false },
+  { name: "modal", defer: false },
+  { name: "toast", defer: false },
+  // Runs synchronously in <head>: redirects guests before the page renders.
+  { name: "guard", defer: false },
+  { name: "notif-badge", defer: true },
+];
+const legacy = ORDER.filter((s) => scripts.includes(s.name)).map((s) => ({
+  src: asset(`scripts/core/${s.name}.js`),
+  defer: s.defer,
+}));
+---
+
+<BaseLayout title={title} description={description} bodyClass={bodyClass} mainClass={mainClass}>
+  <Fragment slot="head">
+    {
+      legacy.map((s) =>
+        s.defer ? <script is:inline defer src={s.src} /> : <script is:inline src={s.src} />,
+      )
+    }
+  </Fragment>
+  {chrome === "auth" ? <AuthHeader slot="header" /> : <AppHeader slot="header" />}
+  <slot />
+  {chrome === "app" && <AppFooter slot="footer" />}
+  <slot name="after-main" slot="footer" />
+</BaseLayout>

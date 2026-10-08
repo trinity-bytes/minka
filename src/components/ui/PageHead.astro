@@ -9,11 +9,13 @@ interface Props {
   hint?: string;
   /** i18n key for the title (legacy I18n runtime). */
   titleKey?: string;
+  /** i18n key for the hint (legacy I18n runtime). */
+  hintKey?: string;
   hintId?: string;
   class?: string;
 }
 
-const { title, hint, titleKey, hintId = "page-info", class: className } = Astro.props;
+const { title, hint, titleKey, hintKey, hintId = "page-info", class: className } = Astro.props;
 ---
 
 <div class:list={["container", "page-head", className]}>
@@ -31,7 +33,7 @@ const { title, hint, titleKey, hintId = "page-info", class: className } = Astro.
         >
           <i class="fas fa-info" aria-hidden="true" />
         </button>
-        <p class="page-head__hint" id={hintId} hidden>
+        <p class="page-head__hint" id={hintId} hidden data-i18n={hintKey}>
           {hint}
         </p>
       </>

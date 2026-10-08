@@ -4,8 +4,7 @@
  * public/assets/scripts/core/components.js. `aria-current` comes from
  * Astro.url at build time. A small client script toggles auth/guest links
  * from the session, handles logout and drives the mobile drawer.
- * Icons use Font Awesome classes: the consuming page must load Font Awesome
- * (as the legacy app pages do).
+ * Icons use Font Awesome classes, loaded by AppLayout (npm package).
  */
 import { asset, isCurrent, url } from "../../lib/url";
 

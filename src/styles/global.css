@@ -151,15 +151,30 @@ label {
   border: 0;
 }
 
+/* One gutter scale for landing and app (reconciled in T3): the former
+   landing step (20px <=640) and the app steps (24/16/12px) are merged
+   into the app scale so headers and content stay aligned everywhere. */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 40px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1200px) {
   .container {
-    padding: 0 20px;
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 12px;
   }
 }
 
