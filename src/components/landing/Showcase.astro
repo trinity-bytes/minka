@@ -1,0 +1,182 @@
+---
+/** "La app por dentro": ink band with three browser-framed app screenshots. */
+import SectionHead from "../ui/SectionHead.astro";
+import Sticker from "../ui/Sticker.astro";
+import LandingSection from "./LandingSection.astro";
+import { asset } from "../../lib/url";
+
+const frames = [
+  {
+    position: "side-l",
+    sticker: { label: "Explora tu barrio", tone: "green", side: "l" },
+    url: "minka.pe/inicio",
+    image: "app-home.png",
+    alt: "Pantalla de inicio de la app Mink'a con publicaciones populares y buscador",
+  },
+  {
+    position: "main",
+    sticker: { label: "Tu impacto, en números", tone: "amber", side: "r" },
+    url: "minka.pe/impacto",
+    image: "app-dashboard.png",
+    alt: "Dashboard de impacto de Mink'a con CO₂ evitado, agua ahorrada y gráficos",
+  },
+  {
+    position: "side-r",
+    sticker: { label: "Negocia por chat", tone: "terra", side: "r" },
+    url: "minka.pe/chats",
+    image: "app-chat.png",
+    alt: "Chat de Mink'a para coordinar un trueque con puntos de encuentro sugeridos",
+  },
+] as const;
+---
+
+<LandingSection id="plataforma" band="ink" class="showcase">
+  <SectionHead
+    eyebrow="La app por dentro"
+    eyebrowTone="amber"
+    subtitle="Nada de maquetas: estas son las pantallas reales del prototipo que ya puedes probar."
+    inverse
+  >
+    Esto es <em>Mink'a</em> funcionando
+  </SectionHead>
+  <div class="frames">
+    {
+      frames.map((frame, i) => (
+        <figure
+          class:list={["frame", `frame--${frame.position}`]}
+          data-reveal
+          style={i ? `--reveal-delay: ${i * 120}ms` : undefined}
+        >
+          <Sticker tone={frame.sticker.tone} class={`frame__sticker frame__sticker--${frame.sticker.side}`}>
+            {frame.sticker.label}
+          </Sticker>
+          <div class="frame__bar" aria-hidden="true">
+            <span class="frame__dot frame__dot--r" />
+            <span class="frame__dot frame__dot--y" />
+            <span class="frame__dot frame__dot--g" />
+            <span class="frame__url">{frame.url}</span>
+          </div>
+          <img src={asset(`images/landing/${frame.image}`)} loading="lazy" decoding="async" alt={frame.alt} />
+        </figure>
+      ))
+    }
+  </div>
+</LandingSection>
+
+<style>
+  .frames {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 30px;
+    align-items: center;
+  }
+
+  .frame {
+    position: relative;
+    margin: 0;
+    background: var(--color-card);
+    border: var(--border-ink);
+    border-radius: var(--radius-frame);
+    box-shadow: var(--shadow-hard-dark);
+    overflow: hidden;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .frame:hover {
+    transform: rotate(0deg) scale(1.02) !important;
+    z-index: 3;
+  }
+
+  .frame--side-l {
+    transform: rotate(-3.5deg);
+  }
+
+  .frame--side-r {
+    transform: rotate(3.5deg);
+  }
+
+  .frame--main {
+    z-index: 2;
+  }
+
+  .frame__bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: var(--border-ink);
+    background: var(--color-paper);
+  }
+
+  .frame__dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: var(--border-ink);
+  }
+
+  .frame__dot--r {
+    background: var(--color-terra);
+  }
+
+  .frame__dot--y {
+    background: var(--color-accent);
+  }
+
+  .frame__dot--g {
+    background: var(--color-primary-pop);
+  }
+
+  .frame__url {
+    flex: 1;
+    margin-left: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-ink-2);
+    background: var(--color-card);
+    border: var(--border-ink-thin);
+    border-radius: var(--radius-full);
+    padding: 3px 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .frame .frame__sticker {
+    position: absolute;
+    top: 34px;
+    z-index: 2;
+  }
+
+  .frame .frame__sticker--l {
+    left: -10px;
+    --sticker-rotate: -6deg;
+  }
+
+  .frame .frame__sticker--r {
+    right: -10px;
+    --sticker-rotate: 5deg;
+  }
+
+  @media (max-width: 1024px) {
+    .frames {
+      grid-template-columns: 1fr;
+      max-width: 560px;
+      margin: 0 auto;
+      gap: 44px;
+    }
+
+    .frame--side-l,
+    .frame--side-r {
+      transform: rotate(-1.5deg);
+    }
+  }
+</style>

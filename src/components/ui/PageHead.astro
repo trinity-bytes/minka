@@ -1,0 +1,108 @@
+---
+/**
+ * Compact app page heading: one-line title plus an optional "i" button that
+ * reveals the page description on demand (port of .page-head + the
+ * data-info-toggle behavior in components.js).
+ */
+interface Props {
+  title: string;
+  hint?: string;
+  /** i18n key for the title (legacy I18n runtime). */
+  titleKey?: string;
+  hintId?: string;
+  class?: string;
+}
+
+const { title, hint, titleKey, hintId = "page-info", class: className } = Astro.props;
+---
+
+<div class:list={["container", "page-head", className]}>
+  <h1 class="page-head__title" data-i18n={titleKey}>{title}</h1>
+  {
+    hint && (
+      <>
+        <button
+          type="button"
+          class="page-head__info-btn"
+          data-info-toggle
+          aria-controls={hintId}
+          aria-expanded="false"
+          aria-label="Más información sobre esta página"
+        >
+          <i class="fas fa-info" aria-hidden="true" />
+        </button>
+        <p class="page-head__hint" id={hintId} hidden>
+          {hint}
+        </p>
+      </>
+    )
+  }
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".page-head [data-info-toggle]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = document.getElementById(btn.getAttribute("aria-controls") ?? "");
+      if (!target) return;
+      const show = target.hidden;
+      target.hidden = !show;
+      btn.setAttribute("aria-expanded", String(show));
+    });
+  });
+</script>
+
+<style>
+  .page-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-12);
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-12);
+  }
+
+  .page-head__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 1.9rem);
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    margin: 0;
+  }
+
+  .page-head__info-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: var(--border-ink-thin);
+    border-radius: 50%;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .page-head__info-btn:hover,
+  .page-head__info-btn[aria-expanded="true"] {
+    background: var(--color-mint);
+  }
+
+  .page-head__hint {
+    flex-basis: 100%;
+    margin: 0;
+    max-width: 65ch;
+    padding: var(--space-10) var(--space-16);
+    border: var(--border-ink-thin);
+    border-radius: var(--radius-md);
+    background: var(--color-mint);
+    color: var(--color-ink-2);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .page-head__hint[hidden] {
+    display: none;
+  }
+</style>

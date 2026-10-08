@@ -1,0 +1,89 @@
+---
+/** Final call to action on the amber band, with floating sparks. */
+import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
+import LandingSection from "./LandingSection.astro";
+import { url } from "../../lib/url";
+
+const sparks = [
+  { size: 34, mod: 1 },
+  { size: 24, mod: 2 },
+  { size: 18, mod: 3 },
+];
+---
+
+<LandingSection band="amber">
+  <Fragment slot="before">
+    {sparks.map((spark) => <Icon name="spark" size={spark.size} class={`cta__spark cta__spark--${spark.mod}`} />)}
+  </Fragment>
+  <h2 class="cta__title display" data-reveal>¿Listo para hacer <em>girar</em> tus cosas?</h2>
+  <p class="cta__subtitle" data-reveal>
+    Crea tu cuenta y empieza a intercambiar hoy. Tu próximo tesoro está a una cuadra de distancia.
+  </p>
+  <div data-reveal>
+    <Button href={url("pages/auth.html")} variant="ink">Crear mi cuenta</Button>
+  </div>
+  <p class="cta__small" data-reveal>Sin tarjeta ✶ Comunidad verificada ✶ Hecho en Lima</p>
+</LandingSection>
+
+<style>
+  .cta__title {
+    font-size: clamp(2.4rem, 5.6vw, 4.4rem);
+    margin-bottom: 22px;
+  }
+
+  .cta__subtitle {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: color-mix(in srgb, var(--color-ink) 78%, transparent);
+    max-width: 560px;
+    margin: 0 auto 38px;
+  }
+
+  .cta__small {
+    margin-top: 22px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  }
+
+  .cta__spark {
+    position: absolute;
+    color: var(--color-ink);
+    opacity: 0.85;
+  }
+
+  .cta__spark--1 {
+    left: 8%;
+    top: 22%;
+    animation: spark 5s ease-in-out infinite;
+  }
+
+  .cta__spark--2 {
+    right: 9%;
+    top: 30%;
+    animation: spark 5s ease-in-out 1.2s infinite;
+  }
+
+  .cta__spark--3 {
+    left: 14%;
+    bottom: 18%;
+    animation: spark 5s ease-in-out 2.4s infinite;
+  }
+
+  @keyframes spark {
+    0%,
+    100% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(24deg) scale(1.25);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta__spark {
+      animation: none !important;
+    }
+  }
+</style>

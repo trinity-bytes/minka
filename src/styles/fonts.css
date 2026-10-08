@@ -1,0 +1,78 @@
+/* ============================================
+   MINK'A - Font faces (single declaration)
+   Font files stay in public/assets/fonts so legacy pages and Astro pages
+   share one copy. Root-relative URLs into public/ are rewritten by Vite
+   with the configured base (/minka) at build time.
+   ============================================ */
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter"),
+    url("/assets/fonts/Inter/Inter-Variable.woff2") format("woff2"),
+    url("/assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter Italic"),
+    local("Inter-Italic"),
+    url("/assets/fonts/Inter/Inter-Italic-Variable.woff2") format("woff2"),
+    url("/assets/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src:
+    local("Nunito"),
+    url("/assets/fonts/Nunito/Nunito-Variable.woff2") format("woff2"),
+    url("/assets/fonts/Nunito/Nunito-VariableFont_wght.ttf") format("truetype");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src:
+    local("Nunito Italic"),
+    local("Nunito-Italic"),
+    url("/assets/fonts/Nunito/Nunito-Italic-Variable.woff2") format("woff2"),
+    url("/assets/fonts/Nunito/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces/Fraunces-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces/Fraunces-Italic-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pacifico";
+  src:
+    local("Pacifico"),
+    url("/assets/fonts/Pacifico/Pacifico-Regular.woff2") format("woff2"),
+    url("/assets/fonts/Pacifico/Pacifico-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

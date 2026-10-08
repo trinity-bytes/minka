@@ -1,0 +1,105 @@
+---
+/**
+ * App shell footer, server-rendered port of FOOTER_HTML in
+ * public/assets/scripts/core/components.js.
+ */
+import { asset, url } from "../../lib/url";
+
+const links = [
+  { href: url("pages/about.html"), label: "Acerca de" },
+  { href: `${url()}#impacto`, label: "Impacto" },
+  { href: url("pages/about.html"), label: "Términos" },
+  { href: url("pages/about.html"), label: "Privacidad" },
+];
+---
+
+<footer class="app-footer">
+  <div class="container app-footer__content">
+    <div class="app-footer__brand">
+      <img src={asset("images/minka-logo-negativo-blanco.png")} alt="Mink'a" class="app-footer__logo" />
+      <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+    </div>
+    <div class="app-footer__links">
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .app-footer {
+    background: var(--color-secondary-dark);
+    color: var(--color-paper);
+    padding: var(--space-32) 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-on-primary) 10%, transparent);
+  }
+
+  .app-footer__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-24);
+    flex-wrap: wrap;
+  }
+
+  .app-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-16);
+  }
+
+  .app-footer__logo {
+    height: 32px;
+    width: auto;
+    aspect-ratio: 1042 / 406;
+    opacity: 0.95;
+  }
+
+  .app-footer__brand p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: inherit;
+  }
+
+  .app-footer__links {
+    display: flex;
+    gap: var(--space-24);
+    flex-wrap: wrap;
+  }
+
+  .app-footer__links a {
+    color: var(--color-paper);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+  }
+
+  .app-footer__links a:hover,
+  .app-footer__links a:focus-visible {
+    /* On dark ink: amber, never ink green */
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (max-width: 480px) {
+    .app-footer__content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .app-footer__brand {
+      flex-direction: column;
+    }
+
+    .app-footer__links {
+      justify-content: center;
+      gap: var(--space-12);
+    }
+  }
+
+  @media print {
+    .app-footer {
+      display: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,226 @@
+---
+/**
+ * Landing footer: brand blurb, link columns, copyright and social links.
+ */
+import Icon, { type IconName } from "../ui/Icon.astro";
+import { asset, url } from "../../lib/url";
+
+interface FooterColumn {
+  title: string;
+  links: { href: string; label: string }[];
+}
+
+interface Props {
+  homeHref?: string;
+  columns?: FooterColumn[];
+}
+
+const {
+  homeHref = "#inicio",
+  columns = [
+    {
+      title: "Plataforma",
+      links: [
+        { href: "#como-funciona", label: "Cómo funciona" },
+        { href: "#beneficios", label: "Beneficios" },
+        { href: "#plataforma", label: "La app" },
+        { href: "#testimonios", label: "Comunidad" },
+      ],
+    },
+    {
+      title: "Empresa",
+      links: [
+        { href: url("pages/about.html"), label: "Sobre nosotros" },
+        { href: "#", label: "Contacto" },
+        { href: "#", label: "Prensa" },
+        { href: "#", label: "Carreras" },
+      ],
+    },
+    {
+      title: "Legal",
+      links: [
+        { href: "#", label: "Términos de servicio" },
+        { href: "#", label: "Privacidad" },
+        { href: "#", label: "Cookies" },
+        { href: "#", label: "Accesibilidad" },
+      ],
+    },
+  ],
+} = Astro.props;
+
+const social: { icon: IconName; label: string; href: string }[] = [
+  { icon: "facebook", label: "Facebook", href: "#" },
+  { icon: "instagram", label: "Instagram", href: "#" },
+  { icon: "x", label: "X (antes Twitter)", href: "#" },
+  { icon: "linkedin", label: "LinkedIn", href: "#" },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <a href={homeHref} class="site-footer__logo" aria-label="Mink'a, inicio">
+          <img src={asset("images/minka-logo-negativo-blanco.png")} alt="Mink'a" />
+        </a>
+        <p class="site-footer__desc">
+          Plataforma de trueque para economía circular. Construyendo una Lima más sostenible, un
+          intercambio a la vez.
+        </p>
+      </div>
+      {
+        columns.map((column) => (
+          <div>
+            <h3 class="site-footer__title">{column.title}</h3>
+            <ul class="site-footer__links">
+              {column.links.map((link) => (
+                <li>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+    <div class="site-footer__bottom">
+      <p class="site-footer__copy">© 2025 Mink'a. Todos los derechos reservados.</p>
+      <div class="site-footer__social">
+        {
+          social.map((item) => (
+            <a href={item.href} aria-label={item.label}>
+              <Icon name={item.icon} class="site-footer__icon" />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-ink-deep);
+    color: var(--color-paper);
+    padding: 80px 0 36px;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 44px;
+    padding-bottom: 52px;
+  }
+
+  .site-footer__logo img {
+    height: 54px;
+    width: auto;
+    display: block;
+    margin-bottom: 18px;
+  }
+
+  .site-footer__desc {
+    color: color-mix(in srgb, var(--color-paper) 65%, transparent);
+    font-size: 0.98rem;
+    max-width: 300px;
+    margin: 0;
+  }
+
+  .site-footer__title {
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary-pop);
+    margin: 0 0 18px;
+  }
+
+  .site-footer__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .site-footer__links a {
+    color: color-mix(in srgb, var(--color-paper) 72%, transparent);
+    font-size: 0.96rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .site-footer__links a:hover,
+  .site-footer__links a:focus-visible {
+    color: var(--color-primary-pop);
+  }
+
+  .site-footer__bottom {
+    border-top: 1px solid color-mix(in srgb, var(--color-paper) 14%, transparent);
+    padding-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .site-footer__copy {
+    margin: 0;
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--color-paper) 55%, transparent);
+  }
+
+  .site-footer__social {
+    display: flex;
+    gap: 12px;
+  }
+
+  .site-footer__social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1.5px solid color-mix(in srgb, var(--color-paper) 30%, transparent);
+    border-radius: 50%;
+    color: var(--color-paper);
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .site-footer__social a:hover,
+  .site-footer__social a:focus-visible {
+    background: var(--color-primary-pop);
+    border-color: var(--color-primary-pop);
+    color: var(--color-ink);
+    transform: translateY(-3px);
+  }
+
+  .site-footer__social .site-footer__icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 1024px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+      gap: 36px;
+    }
+
+    .site-footer__bottom {
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>

@@ -5,8 +5,9 @@
 
 /* === Custom Properties / Design Tokens ===
    Sistema "Trueque Editorial": papel crema, tinta verde,
-   serif editorial (Fraunces) y acentos ámbar/terracota,
-   heredado de la landing (landing.css) y calmado para uso en app. */
+   serif editorial (Fraunces) y acentos ámbar/terracota.
+   LEGACY: the single token source is now src/styles/tokens.css; this file
+   only serves public/pages until they are ported (T3-T6). */
 :root {
   /* Ink & Paper (base del sistema) */
   --color-ink: #17301f;

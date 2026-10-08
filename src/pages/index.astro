@@ -1,0 +1,94 @@
+---
+import BaseLayout from "../components/layout/BaseLayout.astro";
+import SiteFooter from "../components/layout/SiteFooter.astro";
+import SiteHeader from "../components/layout/SiteHeader.astro";
+import Benefits from "../components/landing/Benefits.astro";
+import FinalCta from "../components/landing/FinalCta.astro";
+import Hero from "../components/landing/Hero.astro";
+import HowItWorks from "../components/landing/HowItWorks.astro";
+import Impact from "../components/landing/Impact.astro";
+import Marquee from "../components/landing/Marquee.astro";
+import Showcase from "../components/landing/Showcase.astro";
+import Testimonials from "../components/landing/Testimonials.astro";
+import VideoSection from "../components/landing/VideoSection.astro";
+---
+
+<BaseLayout
+  title="Mink'a — Trueque local en Lima | Economía circular"
+  bodyClass="landing"
+  preloadFonts={["fraunces", "inter"]}
+>
+  <SiteHeader slot="header" />
+  <Hero />
+  <Marquee />
+  <HowItWorks />
+  <Benefits />
+  <Showcase />
+  <VideoSection />
+  <Impact />
+  <Testimonials />
+  <FinalCta />
+  <SiteFooter slot="footer" />
+</BaseLayout>
+
+<style is:global>
+  body.landing {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-primary);
+    overflow-x: clip;
+  }
+
+  body.landing ::selection {
+    background: var(--color-primary-pop);
+    color: var(--color-ink);
+  }
+
+  /* Live progress line along the scroll, no controls or extra noise. */
+  @supports (animation-timeline: scroll()) {
+    body.landing::before {
+      content: "";
+      position: fixed;
+      inset: 0 auto auto 0;
+      z-index: calc(var(--z-page-fx) + 100);
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(
+        90deg,
+        var(--color-primary-pop) 0 72%,
+        var(--color-accent) 72% 90%,
+        var(--color-terra) 90%
+      );
+      box-shadow: 0 1px 0 var(--color-ink);
+      pointer-events: none;
+      transform: scaleX(0);
+      transform-origin: left center;
+      animation: landing-scroll-progress linear both;
+      animation-timeline: scroll(root);
+    }
+
+    @keyframes landing-scroll-progress {
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  /* Paper grain over the whole page */
+  body.landing::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-page-fx);
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body.landing::before {
+      animation: none;
+      transform: none;
+    }
+  }
+</style>

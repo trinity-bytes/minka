@@ -1,0 +1,130 @@
+/* ============================================
+   MINK'A - Design tokens (single source of truth)
+   "Trueque Editorial": cream paper, green ink, editorial serif
+   (Fraunces), amber/terracotta accents, hard offset shadows.
+   Components must read colors, radii and shadows from here only.
+   Legacy pages under public/ still use public/assets/styles/core/base.css
+   until they are ported (T3-T6).
+   ============================================ */
+:root {
+  /* Ink & paper */
+  --color-ink: #17301f;
+  --color-ink-2: #41564a;
+  --color-ink-deep: #112416;
+  --color-paper: #faf5ea;
+  --color-paper-2: #f2ead8;
+  --color-card: #fffdf6;
+  --color-on-primary: #ffffff;
+  --color-scrim: rgba(0, 0, 0, 0.5); /* overlays behind drawers/modals */
+
+  /* Primary */
+  --color-primary: #1e8449; /* AA ink green: >=4.5:1 on light */
+  --color-primary-dark: #166638;
+  --color-primary-darker: #0f4d29;
+  --color-primary-ink: #1e8449;
+  --color-primary-pop: #2ecc71; /* vivid green: accents only, never text */
+  --color-primary-light: rgba(30, 132, 73, 0.12);
+
+  /* Secondary */
+  --color-secondary: var(--color-ink-2);
+  --color-secondary-dark: var(--color-ink-deep);
+
+  /* Accent & status */
+  --color-accent: #f2b705;
+  --color-accent-soft: #fcefc7;
+  --color-terra: #d95d39;
+  --color-terra-soft: #fbe0d4;
+  --color-success: #1e8449;
+  --color-error: #c0392b;
+  --color-warning: #b98a04; /* amber readable on light */
+  --color-info: #2874a6;
+
+  /* Neutrals (warm, ink-tinted scale) */
+  --color-white: var(--color-card); /* card surface */
+  --color-gray-50: #f2edde;
+  --color-gray-100: #e0d9c6;
+  --color-gray-200: #cfc7b2;
+  --color-gray-300: #98a093;
+  --color-gray-400: #7d8a80;
+  --color-gray-500: #6d7c71;
+  --color-gray-600: #4c5f53; /* >=4.5:1 on light */
+  --color-gray-700: #3e5044;
+  --color-gray-800: #22392b;
+  --color-gray-900: var(--color-ink);
+
+  /* Surfaces & text */
+  --color-bg: var(--color-paper);
+  --color-surface: var(--color-card);
+  --color-surface-alt: var(--color-paper-2);
+  --color-text: var(--color-ink);
+  --color-text-secondary: var(--color-ink-2);
+  --color-border: var(--color-gray-100);
+
+  /* Soft status tints */
+  --color-mint: #ddf0e2;
+  --color-primary-soft: var(--color-mint);
+  --color-info-soft: #ddebf5;
+  --color-warning-soft: var(--color-accent-soft);
+
+  /* Font families */
+  --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Nunito: still used by the legacy publish page (T4 decides its fate). */
+  --font-secondary: "Nunito", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-accent: "Pacifico", cursive;
+  /* Fraunces axes for the editorial display voice */
+  --font-display-axes: "SOFT" 100, "WONK" 1, "opsz" 144;
+  --font-display-axes-text: "SOFT" 100, "WONK" 0, "opsz" 40;
+
+  /* Spacing scale */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-56: 56px;
+  --space-64: 64px;
+
+  /* Shadows (soft ink; hard offsets are the editorial signature) */
+  --shadow-sm: 0 2px 4px rgba(23, 48, 31, 0.08);
+  --shadow-md: 0 4px 8px rgba(23, 48, 31, 0.1);
+  --shadow-lg: 0 8px 16px rgba(23, 48, 31, 0.12);
+  --shadow-xl: 0 12px 24px rgba(23, 48, 31, 0.14);
+  --shadow-soft: 0 2px 8px rgba(23, 48, 31, 0.06);
+  --shadow-lift: 0 5px 15px rgba(23, 48, 31, 0.12);
+  --shadow-hard-xs: 1px 1px 0 var(--color-ink);
+  --shadow-hard-sm: 3px 3px 0 var(--color-ink);
+  --shadow-hard-btn: 4px 4px 0 var(--color-ink);
+  --shadow-hard-md: 5px 5px 0 var(--color-ink);
+  --shadow-hard-btn-hover: 6px 6px 0 var(--color-ink);
+  --shadow-hard-lg: 8px 8px 0 var(--color-ink);
+  --shadow-hard-dark: 8px 8px 0 rgba(0, 0, 0, 0.35); /* hard shadow on ink */
+  --border-ink: 2px solid var(--color-ink);
+  --border-ink-thin: 1.5px solid var(--color-ink);
+
+  /* Z-index layers */
+  --z-header: 1000;
+  --z-overlay: 900;
+  --z-modal: 1000;
+  --z-toast: 1100;
+  --z-skip-link: 1200;
+  --z-page-fx: 3000; /* paper grain + scroll progress */
+
+  /* Border radius: one scale for landing and app.
+     The former landing --l-radius-sm/md/lg (12/18/26) map to md/lg/xl. */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-control: 10px; /* icon buttons, menu items */
+  --radius-md: 12px;
+  --radius-btn: 14px; /* editorial buttons */
+  --radius-frame: 16px; /* browser frames */
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-full: 9999px;
+  --radius-note: 6px 6px 22px 6px; /* paper note, folded corner */
+}

@@ -1,0 +1,240 @@
+---
+/**
+ * Landing header: fixed bar that turns into a floating pill on scroll, with
+ * in-page anchors and a mobile dropdown menu.
+ */
+import Button from "../ui/Button.astro";
+import { asset, url } from "../../lib/url";
+
+interface NavLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  links?: NavLink[];
+  ctaHref?: string;
+  ctaLabel?: string;
+  /** Logo target; defaults to the hero anchor. */
+  homeHref?: string;
+}
+
+const {
+  links = [
+    { href: "#como-funciona", label: "Cómo funciona" },
+    { href: "#beneficios", label: "Beneficios" },
+    { href: "#impacto", label: "Impacto" },
+    { href: "#testimonios", label: "Testimonios" },
+  ],
+  ctaHref = url("pages/auth.html"),
+  ctaLabel = "Empezar ahora",
+  homeHref = "#inicio",
+} = Astro.props;
+---
+
+<header class="site-header" data-site-header>
+  <div class="site-header__inner">
+    <a href={homeHref} class="site-header__logo" aria-label="Mink'a, inicio">
+      <img src={asset("images/minka-logo.png")} alt="Mink'a" />
+    </a>
+    <nav class="site-nav" id="menu-principal" aria-label="Navegación principal">
+      {links.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
+      <!-- Mobile-only CTA (inside the dropdown); the desktop one lives in actions. -->
+      <Button href={ctaHref} variant="primary" size="sm" class="site-header__cta site-header__cta--menu">
+        {ctaLabel}
+      </Button>
+    </nav>
+    <div class="site-header__actions">
+      <Button href={ctaHref} variant="primary" size="sm" class="site-header__cta site-header__cta--bar">
+        {ctaLabel}
+      </Button>
+      <button
+        type="button"
+        class="site-nav-toggle"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="menu-principal"
+      >
+        ☰
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-site-header]");
+  if (header) {
+    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const toggle = header.querySelector<HTMLButtonElement>(".site-nav-toggle");
+    const nav = header.querySelector<HTMLElement>(".site-nav");
+    if (toggle && nav) {
+      const setOpen = (open: boolean) => {
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+        nav.classList.toggle("is-open", open);
+      };
+      toggle.addEventListener("click", () => {
+        setOpen(toggle.getAttribute("aria-expanded") !== "true");
+      });
+      nav.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => setOpen(false));
+      });
+    }
+  }
+</script>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-header);
+  }
+
+  .site-header__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: color-mix(in srgb, var(--color-paper) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid transparent;
+    border-bottom-color: var(--color-ink);
+    transition:
+      margin 0.3s ease,
+      padding 0.3s ease,
+      border 0.3s ease,
+      border-radius 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .site-header.is-scrolled .site-header__inner {
+    margin: 12px auto 0;
+    max-width: 1080px;
+    padding: 10px 26px;
+    border: var(--border-ink);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  .site-header__logo img {
+    display: block;
+    height: 44px;
+    width: auto;
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .site-nav__link {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-ink-2);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s ease;
+  }
+
+  .site-nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: -5px;
+    height: 3px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-pop);
+    transition: right 0.25s ease;
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link:focus-visible {
+    color: var(--color-ink);
+  }
+
+  .site-nav__link:hover::after,
+  .site-nav__link:focus-visible::after {
+    right: 0;
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .site-nav-toggle {
+    display: none;
+    background: var(--color-card);
+    border: var(--border-ink);
+    border-radius: var(--radius-control);
+    box-shadow: var(--shadow-hard-sm);
+    font-size: 1.15rem;
+    line-height: 1;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--color-ink);
+  }
+
+  /* The CTA inside the nav only shows in the mobile dropdown. */
+  .site-header .site-header__cta--menu {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .site-nav {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 16px;
+      right: 16px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      background: var(--color-card);
+      border: var(--border-ink);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-hard-md);
+      padding: 14px;
+    }
+
+    .site-nav.is-open {
+      display: flex;
+    }
+
+    .site-nav__link {
+      padding: 10px 12px;
+      border-radius: var(--radius-control);
+    }
+
+    .site-nav__link:hover {
+      background: var(--color-mint);
+    }
+
+    .site-nav__link::after {
+      display: none;
+    }
+
+    .site-nav-toggle {
+      display: inline-flex;
+    }
+
+    .site-header .site-header__cta--bar {
+      display: none;
+    }
+
+    .site-header .site-header__cta--menu {
+      display: inline-flex;
+      margin-top: 8px;
+    }
+  }
+</style>
