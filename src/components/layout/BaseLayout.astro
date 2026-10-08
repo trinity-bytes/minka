@@ -76,6 +76,24 @@ const FONT_PRELOADS: Record<PreloadFont, { href: string; type: string }> = {
     <slot name="head" />
   </head>
   <body class={bodyClass}>
+    {
+      /* Saved accessibility preferences (settings page; same Store key and
+         values as the retired legacy core script), applied before first
+         paint on every page. Rules: body.high-contrast / body.low-data in
+         global.css. Kept comment-free below: inline code ships verbatim. */
+    }
+    <script is:inline>
+      try {
+        var prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
+        if (prefs.highContrast) document.body.classList.add("high-contrast");
+        if (prefs.lowData) document.body.classList.add("low-data");
+        var fontSize = { small: "14px", medium: "16px", large: "20px" }[prefs.fontSize];
+        if (fontSize) {
+          document.documentElement.style.fontSize = fontSize;
+          document.documentElement.setAttribute("data-font-size", prefs.fontSize);
+        }
+      } catch (e) {}
+    </script>
     <a href="#main" class="skip-link">Saltar al contenido</a>
     <slot name="header" />
     <main id="main" class={mainClass}>

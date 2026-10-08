@@ -1,8 +1,7 @@
 /* T19 - Andy Salcedo: Estilos de home/app
    Rediseño "Trueque Editorial": hero de trabajo denso, tarjeta de impacto
    entintada, reto comunitario y populares en tarjetas de tinta. */
-/* Astro port of public/assets/styles/pages/home.css (that copy stays while
-   legacy chat/detalle/publicar still link it). Global on purpose:
+/* Astro port of the legacy pages/home.css (retired in T6). Global on purpose:
    src/scripts/pages/home.js renders the popular cards as HTML strings. */
 .home-page {
   background: var(--color-paper);

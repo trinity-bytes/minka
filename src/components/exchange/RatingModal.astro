@@ -1,18 +1,25 @@
 ---
 /**
  * Rate the exchange (T18 - Leonardo Chavez). Star selection, validation and
- * feedback live in src/scripts/pages/detail.js (setupRatingModal).
+ * feedback live in the page script (detail.js setupRatingModal, chat.js
+ * attachRating), which also fills #rating-user with the partner's name.
  */
 import Button from "../ui/Button.astro";
 import Modal from "../ui/Modal.astro";
 
+interface Props {
+  /** Placeholder partner name shown until the script fills it. */
+  user?: string;
+}
+
+const { user = "Usuario Demo" } = Astro.props;
 const STARS = [1, 2, 3, 4, 5];
 ---
 
 <Modal id="rating-modal" title="Calificar intercambio" titleKey="common_rate_title" closeIcon="xmark">
   <p class="modal__subtitle">
     Cuéntanos cómo fue el intercambio con
-    <strong id="rating-user">Usuario Demo</strong>.
+    <strong id="rating-user">{user}</strong>.
   </p>
   <form id="rating-form" novalidate>
     <div class="rating-stars" role="radiogroup" aria-label="Selecciona la calificación">

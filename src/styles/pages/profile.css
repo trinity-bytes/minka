@@ -1,7 +1,24 @@
 /* T13 - Lucero Pipa: Estilos específicos de perfil
    Rediseño "Trueque Editorial": tarjetas de tinta, papel crema y acentos. */
+/* Global (not scoped) on purpose: src/scripts/pages/profile.js renders the
+   item and review cards as HTML strings. Port of the legacy
+   pages/profile.css plus the profile parts of core/components.css
+   (.section-header) and core/responsive.css. The legacy page also loaded
+   pages/detail.css; none of its selectors match this page. */
 :root {
   color-scheme: light;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--space-48);
+}
+
+.section-header__subtitle {
+  font-size: 1.125rem;
+  color: var(--color-gray-600);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .profile-page {
@@ -320,11 +337,6 @@
   color: var(--color-error);
 }
 
-.btn-small {
-  padding: var(--space-8) var(--space-16);
-  font-size: 0.9rem;
-}
-
 /* Banner de perfil público (solo lectura) */
 .profile-readonly-banner {
   max-width: 1200px;
@@ -468,6 +480,36 @@
 }
 
 /* === Modal de verificación de identidad === */
+/* Level tabs: the legacy sheets never styled .modal__tab nor hid
+   .verify-section.hidden, so both levels showed at once and the tabs
+   rendered as bare native buttons (bug fix). */
+.verification-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.modal__tab {
+  padding: var(--space-8) var(--space-12);
+  border: var(--border-ink-thin);
+  border-radius: var(--radius-full);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal__tab:hover,
+.modal__tab--active {
+  background: var(--color-mint);
+}
+
+.verify-section.hidden {
+  display: none;
+}
+
 .identity-steps {
   display: flex;
   flex-direction: column;
@@ -539,8 +581,31 @@
     align-items: flex-start;
   }
 
-  .form__row {
-    flex-direction: column;
-    align-items: flex-start;
+  .profile-card__avatar img {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-header {
+    margin-bottom: var(--space-32);
+  }
+
+  .profile-card,
+  .profile-form {
+    padding: var(--space-16);
+  }
+
+  .profile-card__avatar img {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+@media (max-width: 360px) {
+  .profile-card__avatar img {
+    width: 56px;
+    height: 56px;
   }
 }

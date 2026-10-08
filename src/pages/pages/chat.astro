@@ -1,0 +1,140 @@
+---
+/**
+ * Chat: thread list and the selected conversation (quick replies, meeting
+ * points, location and photo sharing, read receipts), plus report / rate
+ * modals. Port of public/pages/chat.html.
+ * T17 - Lucero Pipa: chat with templates and meeting points.
+ * T31 - Andy Salcedo: live location sharing (HU45).
+ * T34 - Ronel Rojas: watermarked photos and read receipts (HU43, HU44).
+ * Logic: src/scripts/pages/chat.js (guarded: requires a session). Handoff
+ * from detalle: `chat.html?thread=<itemId>&owner=<ownerId>`.
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import RatingModal from "../../components/exchange/RatingModal.astro";
+import ReportModal from "../../components/exchange/ReportModal.astro";
+import "../../styles/pages/chat.css";
+---
+
+<AppLayout
+  title="Mink'a - Chats"
+  description="Tus conversaciones de trueque en Mink'a."
+  bodyClass="chat-page"
+  mainClass="chat-main"
+  footer={false}
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <section class="container chat-shell" aria-label="Mensajes">
+    <aside class="threads" aria-label="Conversaciones">
+      <div class="threads__header">
+        <h2 data-i18n="nav_chats">Chats</h2>
+      </div>
+      <ul class="thread-list" id="thread-list"></ul>
+    </aside>
+
+    <section class="conversation" aria-label="Conversación seleccionada">
+      <header class="conversation__header">
+        <button
+          type="button"
+          class="icon-btn conversation__back"
+          id="btn-back"
+          aria-label="Volver a la lista de chats"
+        >
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <div class="conversation__info">
+          <p class="conversation__eyebrow" id="conv-item">Publicación</p>
+          <h3 id="conv-user">Usuario</h3>
+          <p class="conversation__meta" id="conv-meta">Ubicación · Reputación</p>
+        </div>
+        <div class="conversation__actions">
+          <button
+            class="icon-btn"
+            type="button"
+            id="btn-mute"
+            title="Silenciar"
+            aria-label="Silenciar conversación"
+          >
+            <i class="fa-solid fa-bell-slash"></i>
+          </button>
+          <button
+            class="icon-btn"
+            type="button"
+            id="btn-report"
+            title="Reportar"
+            aria-label="Reportar usuario"
+          >
+            <i class="fa-solid fa-flag" aria-hidden="true"></i>
+          </button>
+          <Button appearance="flat" variant="primary" class="btn-rate" id="btn-rate">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <span class="btn-rate__label">Calificar</span>
+          </Button>
+        </div>
+      </header>
+
+      <div class="messages" id="messages" aria-live="polite"></div>
+
+      <!-- T34 - Ronel Rojas: Indicador de tipeo (HU44) -->
+      <div id="typing-indicator" class="typing-indicator hidden">
+        <span>Escribiendo...</span>
+      </div>
+
+      <div class="conversation__extras">
+        <details class="meeting">
+          <summary>
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <span data-i18n="chat_meeting_title">Puntos de encuentro sugeridos</span>
+          </summary>
+          <div class="meeting__chips" id="meeting-list"></div>
+        </details>
+        <div class="templates" aria-label="Respuestas rápidas">
+          <div class="template-list" id="template-list"></div>
+        </div>
+      </div>
+
+      <form class="composer" id="composer" aria-label="Enviar mensaje">
+        <!-- T31 - Andy Salcedo: Compartir ubicación (HU45) -->
+        <button
+          type="button"
+          class="icon-btn"
+          id="btn-share-location"
+          title="Compartir ubicación en tiempo real"
+          aria-label="Compartir ubicación en tiempo real"
+        >
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        </button>
+        <!-- T34 - Ronel Rojas: Adjuntar foto (HU43) -->
+        <button
+          type="button"
+          class="icon-btn"
+          id="btn-attach-photo"
+          title="Adjuntar foto"
+          aria-label="Adjuntar foto"
+        >
+          <i class="fa-solid fa-camera" aria-hidden="true"></i>
+        </button>
+        <input type="file" id="file-input" accept="image/*" hidden />
+
+        <input
+          type="text"
+          id="composer-input"
+          placeholder="Escribe un mensaje"
+          aria-label="Escribe un mensaje"
+          autocomplete="off"
+          required
+        />
+        <Button appearance="flat" variant="primary" type="submit" data-i18n="common_send">Enviar</Button>
+      </form>
+    </section>
+  </section>
+
+  <Fragment slot="after-main">
+    <ReportModal subject="user" />
+    <RatingModal user="Usuario" />
+  </Fragment>
+
+  <script>
+    import "../../scripts/pages/chat.js";
+  </script>
+</AppLayout>

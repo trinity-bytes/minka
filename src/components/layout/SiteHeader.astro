@@ -1,7 +1,8 @@
 ---
 /**
  * Landing header: fixed bar that turns into a floating pill on scroll, with
- * in-page anchors and a mobile dropdown menu.
+ * in-page anchors and a mobile dropdown menu. Other public pages (about)
+ * pass `anchorBase={url()}` so the anchors point back to the landing.
  */
 import Button from "../ui/Button.astro";
 import { asset, url } from "../../lib/url";
@@ -17,6 +18,8 @@ interface Props {
   ctaLabel?: string;
   /** Logo target; defaults to the hero anchor. */
   homeHref?: string;
+  /** Prefix for `#anchor` links when rendered outside the landing. */
+  anchorBase?: string;
 }
 
 const {
@@ -28,8 +31,11 @@ const {
   ],
   ctaHref = url("pages/auth.html"),
   ctaLabel = "Empezar ahora",
-  homeHref = "#inicio",
+  anchorBase = "",
 } = Astro.props;
+const withBase = (href: string) => (href.startsWith("#") ? `${anchorBase}${href}` : href);
+const homeHref = withBase(Astro.props.homeHref ?? "#inicio");
+const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
 ---
 
 <header class="site-header" data-site-header>
@@ -38,7 +44,7 @@ const {
       <img src={asset("images/minka-logo.png")} alt="Mink'a" />
     </a>
     <nav class="site-nav" id="menu-principal" aria-label="Navegación principal">
-      {links.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
+      {navLinks.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
       <!-- Mobile-only CTA (inside the dropdown); the desktop one lives in actions. -->
       <Button href={ctaHref} variant="primary" size="sm" class="site-header__cta site-header__cta--menu">
         {ctaLabel}

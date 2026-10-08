@@ -3,11 +3,12 @@
  * Shell for ported app pages: BaseLayout + Font Awesome + the global app
  * primitives (src/styles/app.css) + app chrome, and the legacy core
  * scripts the page still relies on (IIFE globals: Session, Store, Modal,
- * Toast, I18n, ...). Those scripts stay in public/ because not-yet-ported
- * legacy pages load them too; they are emitted as classic scripts in the
- * legacy order so the page's own module script (bundled by Astro, deferred)
- * finds the globals ready. core/components.js is never loaded: AppHeader
- * and AppFooter replace it.
+ * Toast, I18n, ...). Those scripts stay in public/ as classic (non-module)
+ * scripts on purpose: guard.js must run synchronously in <head> to redirect
+ * guests before the page renders, and Astro-processed scripts are always
+ * deferred modules. They are emitted in the legacy order so the page's own
+ * module script (bundled by Astro, deferred) finds the globals ready.
+ * AppHeader and AppFooter replace the retired core/components.js.
  * Slots: default (inside <main>), `before-main` (between the header and
  * <main>, e.g. a breadcrumb) and `after-main` (after the footer: modals,
  * fixed bars).
@@ -40,10 +41,20 @@ interface Props {
   mainClass?: string;
   /** "app": full navigation; "auth": logo-only header (auth page). */
   chrome?: "app" | "auth";
+  /** Render AppFooter (app chrome only); full-height screens such as chat drop it. */
+  footer?: boolean;
   scripts?: LegacyScript[];
 }
 
-const { title, description, bodyClass, mainClass, chrome = "app", scripts = [] } = Astro.props;
+const {
+  title,
+  description,
+  bodyClass,
+  mainClass,
+  chrome = "app",
+  footer = true,
+  scripts = [],
+} = Astro.props;
 // A static element (not a ternary expression) so the `before-main` slot,
 // also forwarded into BaseLayout's `header` slot, is not dropped.
 const Header = chrome === "auth" ? AuthHeader : AppHeader;
@@ -78,6 +89,6 @@ const legacy = ORDER.filter((s) => scripts.includes(s.name)).map((s) => ({
   <Header slot="header" />
   <slot name="before-main" slot="header" />
   <slot />
-  {chrome === "app" && <AppFooter slot="footer" />}
+  {chrome === "app" && footer && <AppFooter slot="footer" />}
   <slot name="after-main" slot="footer" />
 </BaseLayout>

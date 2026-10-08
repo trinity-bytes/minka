@@ -217,6 +217,65 @@ label {
   }
 }
 
+/* === Accessibility preferences ===
+   Saved on the settings page (Store "minka_preferences") and applied to
+   <body> before first paint by the inline script in BaseLayout, so they
+   hold on every page. Ported from legacy core/components.css and
+   pages/settings.css. */
+
+/* High contrast: black text on white, strong borders, AAA dark green. */
+body.high-contrast {
+  --color-primary: var(--color-hc-primary);
+  --color-primary-dark: var(--color-hc-primary-dark);
+  --color-primary-ink: var(--color-hc-primary);
+  --color-text: var(--color-hc-ink);
+  --color-text-secondary: var(--color-hc-ink-2);
+  --color-gray-600: var(--color-hc-ink-2);
+  --color-border: var(--color-hc-ink);
+  background-color: var(--color-hc-paper) !important;
+  color: var(--color-hc-ink) !important;
+}
+
+body.high-contrast .settings-card,
+body.high-contrast .app-header,
+body.high-contrast .card,
+body.high-contrast .modal__content {
+  background-color: var(--color-hc-paper) !important;
+  border: 2px solid var(--color-hc-ink);
+  color: var(--color-hc-ink) !important;
+}
+
+body.high-contrast a {
+  color: var(--color-hc-link) !important;
+  text-decoration: underline;
+}
+
+body.high-contrast button.btn-primary {
+  background-color: var(--color-hc-primary);
+  border: 2px solid var(--color-hc-ink);
+  color: var(--color-hc-paper);
+  font-weight: bold;
+}
+
+body.high-contrast .switch .slider {
+  background-color: var(--color-hc-paper);
+  border: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast input:checked + .slider {
+  background-color: var(--color-hc-primary);
+}
+
+/* Low data: placeholder-quality images, no animations or transitions. */
+body.low-data img {
+  filter: blur(2px);
+}
+
+body.low-data * {
+  animation: none !important;
+  transition: none !important;
+}
+
 /* === Editorial scrollbar === */
 /* Firefox only: in Chromium scrollbar-color would override the
    ::-webkit-scrollbar rules below, which carry the full style. */

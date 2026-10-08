@@ -2,6 +2,9 @@
 // T31 - Andy Salcedo: Geolocalización en chat
 // T34 - Ronel Rojas: Mejoras de chat (fotos, lectura)
 // Persistencia centralizada en core/store.js (window.Store)
+// ES module (bundled by Astro, deferred): runs after the classic core
+// scripts, with the DOM parsed. Globals used: Store, Modal.
+import { token, withAlpha } from "../tokens";
 
 const threads = [
   {
@@ -555,7 +558,7 @@ function attachPhotoSharing() {
 
         // Add Watermark
         ctx.font = "bold 24px Arial";
-        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+        ctx.fillStyle = withAlpha(token("--color-on-primary"), 0.7);
         ctx.textAlign = "right";
         ctx.fillText(
           `Mink'a ID: ${currentThreadId}`,

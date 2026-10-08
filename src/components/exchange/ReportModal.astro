@@ -1,0 +1,94 @@
+---
+/**
+ * Report a listing or a chat partner (T18 - Leonardo Chavez). Validation and
+ * feedback live in the page script (detail.js setupReportModal, chat.js
+ * attachReport); both read the same ids.
+ * `subject` picks the copy: "listing" (detalle) or "user" (chat).
+ */
+import Button from "../ui/Button.astro";
+import Modal from "../ui/Modal.astro";
+
+interface Props {
+  subject?: "listing" | "user";
+}
+
+const { subject = "listing" } = Astro.props;
+
+const COPY = {
+  listing: {
+    title: "Reportar publicación",
+    titleKey: "detail_action_report",
+    subtitle: "Cuéntanos qué sucede con esta publicación o usuario. Revisaremos tu reporte.",
+    reasons: [
+      { value: "spam", label: "Spam o publicidad" },
+      { value: "fraude", label: "Sospecha de fraude" },
+      { value: "contenido", label: "Contenido inapropiado" },
+      { value: "uso-indebido", label: "Uso indebido de datos" },
+      { value: "otro", label: "Otro" },
+    ],
+    detailsPlaceholder: "Incluye ejemplos o capturas.",
+    attachLabel: "Adjuntar referencia del chat (si aplica)",
+    attachKey: "detail_attach_chat",
+    attachChecked: false,
+  },
+  user: {
+    title: "Reportar usuario",
+    titleKey: "chat_report_title",
+    subtitle: "Cuéntanos qué sucede con este usuario. Revisaremos tu reporte.",
+    reasons: [
+      { value: "spam", label: "Spam o publicidad" },
+      { value: "acoso", label: "Acoso o comportamiento ofensivo" },
+      { value: "fraude", label: "Intento de fraude" },
+      { value: "contenido", label: "Contenido inapropiado" },
+      { value: "otro", label: "Otro" },
+    ],
+    detailsPlaceholder: "Incluye detalles de lo sucedido.",
+    attachLabel: "Adjuntar historial del chat",
+    attachKey: "chat_attach_history",
+    attachChecked: true,
+  },
+} as const;
+
+const copy = COPY[subject];
+---
+
+<Modal id="report-modal" title={copy.title} titleKey={copy.titleKey} closeIcon="xmark">
+  <p class="modal__subtitle">{copy.subtitle}</p>
+  <form id="report-form" novalidate>
+    <label class="form-label" for="report-reason" data-i18n="common_reason">Motivo</label>
+    <select id="report-reason" name="report-reason" required>
+      <option value="" disabled selected>Selecciona un motivo</option>
+      {copy.reasons.map((r) => <option value={r.value}>{r.label}</option>)}
+    </select>
+
+    <label class="form-label" for="report-details" data-i18n="common_details">Detalles</label>
+    <textarea
+      id="report-details"
+      name="report-details"
+      rows="3"
+      maxlength="280"
+      placeholder={copy.detailsPlaceholder}></textarea>
+
+    <div class="form-check">
+      <input
+        type="checkbox"
+        id="report-include-chat"
+        name="report-include-chat"
+        checked={copy.attachChecked}
+      />
+      <label for="report-include-chat" data-i18n={copy.attachKey}>
+        {copy.attachLabel}
+      </label>
+    </div>
+
+    <div class="modal__actions">
+      <Button appearance="flat" variant="secondary" data-close-modal="report-modal" data-i18n="common_cancel">
+        Cancelar
+      </Button>
+      <Button appearance="flat" variant="primary" type="submit" data-i18n="common_report_send">
+        Enviar reporte
+      </Button>
+    </div>
+    <p class="form-feedback" id="report-feedback" role="status" aria-live="polite"></p>
+  </form>
+</Modal>

@@ -1,17 +1,17 @@
 /* Chat — layout editorial: el hilo de mensajes es el protagonista.
    Columna izquierda: lista de conversaciones. Columna derecha:
    header compacto / mensajes (flex 1) / extras plegables / composer. */
+/* Global (not scoped) on purpose: src/scripts/pages/chat.js renders the
+   threads, messages, templates and meeting chips as HTML strings. The page
+   renders no AppFooter (AppLayout footer={false}): in a messaging screen it
+   only takes useful height. The legacy page also loaded pages/home.css;
+   none of its selectors match. */
 .chat-page {
   background: var(--color-bg);
   height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-}
-
-/* En una pantalla de mensajería el footer solo resta altura útil */
-.chat-page .app-footer {
-  display: none;
 }
 
 .chat-main {
@@ -203,7 +203,7 @@
   border: 1.5px solid var(--color-ink);
   border-radius: 16px 16px 16px 4px;
   background: var(--color-surface);
-  box-shadow: 2px 2px 0 rgba(23, 48, 31, 0.18);
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--color-ink) 18%, transparent);
 }
 
 .message--me {
@@ -218,9 +218,39 @@
   margin-bottom: 2px;
 }
 
+/* T34 - Ronel Rojas: typing indicator, read receipts and photos (HU43/44),
+   merged from the legacy pages/chat-improvements.css patch. */
 .typing-indicator {
   flex-shrink: 0;
-  padding: 0 var(--space-16);
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.typing-indicator.hidden {
+  display: none;
+}
+
+.message__status {
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  color: var(--color-text-secondary);
+}
+
+.message__status.read {
+  color: var(--color-primary);
+}
+
+.message__image {
+  max-width: 200px;
+  border-radius: var(--radius-md);
+  margin-top: 0.5rem;
+  border: 1px solid var(--color-border);
+}
+
+.message--me .message__image {
+  border-color: var(--color-primary-light);
 }
 
 /* === Extras plegables: puntos de encuentro + respuestas rápidas === */
@@ -358,5 +388,10 @@
 
   .message {
     max-width: 85%;
+  }
+
+  /* Folded from the legacy core/responsive.css */
+  .chat-main {
+    min-height: 400px;
   }
 }

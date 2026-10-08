@@ -5,7 +5,7 @@
    Class names stay the legacy ones on purpose: page scripts render
    markup as strings (`btn btn-primary`, `badge`, `empty-state`, ...), and
    Button `appearance="flat"` emits the same classes, so both share one
-   definition. The legacy copy in public/ stays until T4-T6 port the rest.
+   definition. The legacy stylesheets were retired in T6.
    ============================================ */
 
 /* === Responsive typography (app scale) === */

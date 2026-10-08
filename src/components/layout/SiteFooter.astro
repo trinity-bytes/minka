@@ -1,22 +1,32 @@
 ---
 /**
  * Landing footer: brand blurb, link columns, copyright and social links.
+ * Entries without an `href` (no destination exists yet) render as plain
+ * text instead of dead `#` links. Other public pages (about) pass
+ * `anchorBase={url()}` so `#anchor` links point back to the landing.
  */
 import Icon, { type IconName } from "../ui/Icon.astro";
 import { asset, url } from "../../lib/url";
 
+interface FooterLink {
+  href?: string;
+  label: string;
+}
+
 interface FooterColumn {
   title: string;
-  links: { href: string; label: string }[];
+  links: FooterLink[];
 }
 
 interface Props {
   homeHref?: string;
   columns?: FooterColumn[];
+  /** Prefix for `#anchor` links when rendered outside the landing. */
+  anchorBase?: string;
 }
 
 const {
-  homeHref = "#inicio",
+  anchorBase = "",
   columns = [
     {
       title: "Plataforma",
@@ -31,28 +41,36 @@ const {
       title: "Empresa",
       links: [
         { href: url("pages/about.html"), label: "Sobre nosotros" },
-        { href: "#", label: "Contacto" },
-        { href: "#", label: "Prensa" },
-        { href: "#", label: "Carreras" },
+        { label: "Contacto" },
+        { label: "Prensa" },
+        { label: "Carreras" },
       ],
     },
     {
       title: "Legal",
       links: [
-        { href: "#", label: "Términos de servicio" },
-        { href: "#", label: "Privacidad" },
-        { href: "#", label: "Cookies" },
-        { href: "#", label: "Accesibilidad" },
+        { label: "Términos de servicio" },
+        { label: "Privacidad" },
+        { label: "Cookies" },
+        { label: "Accesibilidad" },
       ],
     },
   ],
 } = Astro.props;
 
-const social: { icon: IconName; label: string; href: string }[] = [
-  { icon: "facebook", label: "Facebook", href: "#" },
-  { icon: "instagram", label: "Instagram", href: "#" },
-  { icon: "x", label: "X (antes Twitter)", href: "#" },
-  { icon: "linkedin", label: "LinkedIn", href: "#" },
+const withBase = (href?: string) => (href?.startsWith("#") ? `${anchorBase}${href}` : href);
+const homeHref = withBase(Astro.props.homeHref ?? "#inicio");
+const footerColumns = columns.map((column) => ({
+  ...column,
+  links: column.links.map((link) => ({ ...link, href: withBase(link.href) })),
+}));
+
+// No official social accounts exist yet: icons render without a link.
+const social: { icon: IconName; label: string; href?: string }[] = [
+  { icon: "facebook", label: "Facebook" },
+  { icon: "instagram", label: "Instagram" },
+  { icon: "x", label: "X (antes Twitter)" },
+  { icon: "linkedin", label: "LinkedIn" },
 ];
 ---
 
@@ -69,14 +87,12 @@ const social: { icon: IconName; label: string; href: string }[] = [
         </p>
       </div>
       {
-        columns.map((column) => (
+        footerColumns.map((column) => (
           <div>
             <h3 class="site-footer__title">{column.title}</h3>
             <ul class="site-footer__links">
               {column.links.map((link) => (
-                <li>
-                  <a href={link.href}>{link.label}</a>
-                </li>
+                <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>
               ))}
             </ul>
           </div>
@@ -87,11 +103,17 @@ const social: { icon: IconName; label: string; href: string }[] = [
       <p class="site-footer__copy">© 2025 Mink'a. Todos los derechos reservados.</p>
       <div class="site-footer__social">
         {
-          social.map((item) => (
-            <a href={item.href} aria-label={item.label}>
-              <Icon name={item.icon} class="site-footer__icon" />
-            </a>
-          ))
+          social.map((item) =>
+            item.href ? (
+              <a href={item.href} aria-label={item.label} class="site-footer__social-item">
+                <Icon name={item.icon} class="site-footer__icon" />
+              </a>
+            ) : (
+              <span class="site-footer__social-item">
+                <Icon name={item.icon} label={item.label} class="site-footer__icon" />
+              </span>
+            ),
+          )
         }
       </div>
     </div>
@@ -145,7 +167,8 @@ const social: { icon: IconName; label: string; href: string }[] = [
     gap: 12px;
   }
 
-  .site-footer__links a {
+  .site-footer__links a,
+  .site-footer__links span {
     color: color-mix(in srgb, var(--color-paper) 72%, transparent);
     font-size: 0.96rem;
     text-decoration: none;
@@ -178,7 +201,7 @@ const social: { icon: IconName; label: string; href: string }[] = [
     gap: 12px;
   }
 
-  .site-footer__social a {
+  .site-footer__social-item {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -193,8 +216,8 @@ const social: { icon: IconName; label: string; href: string }[] = [
       transform 0.2s ease;
   }
 
-  .site-footer__social a:hover,
-  .site-footer__social a:focus-visible {
+  a.site-footer__social-item:hover,
+  a.site-footer__social-item:focus-visible {
     background: var(--color-primary-pop);
     border-color: var(--color-primary-pop);
     color: var(--color-ink);

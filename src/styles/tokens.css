@@ -3,8 +3,6 @@
    "Trueque Editorial": cream paper, green ink, editorial serif
    (Fraunces), amber/terracotta accents, hard offset shadows.
    Components must read colors, radii and shadows from here only.
-   Legacy pages under public/ still use public/assets/styles/core/base.css
-   until they are ported (T3-T6).
    ============================================ */
 :root {
   /* Ink & paper */
@@ -41,6 +39,15 @@
   --color-warning-ink: #8c6a00; /* amber text on soft amber (badges) */
   --color-info: #2874a6;
 
+  /* High-contrast mode (settings > Alto Contraste, body.high-contrast in
+     global.css): pure black on white, AAA dark green, saturated link blue. */
+  --color-hc-ink: #000000;
+  --color-hc-ink-2: #1a1a1a;
+  --color-hc-paper: #ffffff;
+  --color-hc-primary: #14532d;
+  --color-hc-primary-dark: #0e3d21;
+  --color-hc-link: #00279c;
+
   /* Third-party brand colors (social login buttons only) */
   --color-brand-facebook: #166fe5;
 
@@ -74,9 +81,6 @@
 
   /* Font families */
   --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  /* Nunito: only the legacy about page (core/layout.css footer titles)
-     still uses it; drop once T6 ports about. */
-  --font-secondary: "Nunito", "Helvetica Neue", Arial, sans-serif;
   --font-display: "Fraunces", Georgia, serif;
   --font-accent: "Pacifico", cursive;
   /* Fraunces axes for the editorial display voice */

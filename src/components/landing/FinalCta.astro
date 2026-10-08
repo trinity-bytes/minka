@@ -1,9 +1,28 @@
 ---
-/** Final call to action on the amber band, with floating sparks. */
+/**
+ * Final call to action on the amber band, with floating sparks. Defaults
+ * are the landing copy; default slot overrides the title (may contain
+ * <em>). `small` = "" hides the fine print.
+ */
 import Button from "../ui/Button.astro";
 import Icon from "../ui/Icon.astro";
 import LandingSection from "./LandingSection.astro";
 import { url } from "../../lib/url";
+
+interface Props {
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  small?: string;
+}
+
+const {
+  subtitle = "Crea tu cuenta y empieza a intercambiar hoy. Tu próximo tesoro está a una cuadra de distancia.",
+  ctaLabel = "Crear mi cuenta",
+  ctaHref = url("pages/auth.html"),
+  small = "Sin tarjeta ✶ Comunidad verificada ✶ Hecho en Lima",
+} = Astro.props;
+const hasTitle = Astro.slots.has("default");
 
 const sparks = [
   { size: 34, mod: 1 },
@@ -16,14 +35,14 @@ const sparks = [
   <Fragment slot="before">
     {sparks.map((spark) => <Icon name="spark" size={spark.size} class={`cta__spark cta__spark--${spark.mod}`} />)}
   </Fragment>
-  <h2 class="cta__title display" data-reveal>¿Listo para hacer <em>girar</em> tus cosas?</h2>
-  <p class="cta__subtitle" data-reveal>
-    Crea tu cuenta y empieza a intercambiar hoy. Tu próximo tesoro está a una cuadra de distancia.
-  </p>
+  <h2 class="cta__title display" data-reveal>
+    {hasTitle ? <slot /> : <Fragment>¿Listo para hacer <em>girar</em> tus cosas?</Fragment>}
+  </h2>
+  <p class="cta__subtitle" data-reveal>{subtitle}</p>
   <div data-reveal>
-    <Button href={url("pages/auth.html")} variant="ink">Crear mi cuenta</Button>
+    <Button href={ctaHref} variant="ink">{ctaLabel}</Button>
   </div>
-  <p class="cta__small" data-reveal>Sin tarjeta ✶ Comunidad verificada ✶ Hecho en Lima</p>
+  {small && <p class="cta__small" data-reveal>{small}</p>}
 </LandingSection>
 
 <style>
