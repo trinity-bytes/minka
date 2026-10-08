@@ -1,0 +1,94 @@
+---
+/**
+ * Dashboard KPI tile: tinted icon disc + value, unit and label. The value
+ * (#`valueId`) is animated by src/scripts/pages/dashboard.js.
+ */
+interface Props {
+  /** Color family of the icon disc. */
+  tone: "co2" | "water" | "objects";
+  /** Font Awesome solid icon name, e.g. "fa-cloud". */
+  icon: string;
+  valueId: string;
+  unit: string;
+  label: string;
+}
+
+const { tone, icon, valueId, unit, label } = Astro.props;
+---
+
+<div class="kpi-card">
+  <div class:list={["kpi-icon", `kpi-icon--${tone}`]}>
+    <i class:list={["fas", icon]} aria-hidden="true"></i>
+  </div>
+  <div class="kpi-content">
+    <span class="kpi-value" id={valueId}>0</span>
+    <span class="kpi-unit">{unit}</span>
+    <span class="kpi-label">{label}</span>
+  </div>
+</div>
+
+<style>
+  .kpi-card {
+    background: var(--color-surface);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: transform 0.2s;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .kpi-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+  }
+
+  .kpi-icon--co2 {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .kpi-icon--water {
+    background-color: var(--color-info-soft);
+    color: var(--color-info);
+  }
+
+  .kpi-icon--objects {
+    background-color: var(--color-warning-soft);
+    color: var(--color-warning);
+  }
+
+  .kpi-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    line-height: 1;
+  }
+
+  .kpi-unit {
+    font-size: 1rem;
+    color: var(--color-gray-600);
+    font-weight: 600;
+  }
+
+  .kpi-label {
+    font-size: 0.9rem;
+    color: var(--color-gray-600);
+    margin-top: 0.2rem;
+  }
+</style>

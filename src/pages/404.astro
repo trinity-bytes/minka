@@ -1,0 +1,83 @@
+---
+/**
+ * Not-found page. Emitted as dist/404.html, which GitHub Pages serves for
+ * any missing path of the project site. Uses the landing shell; header and
+ * footer anchors point back to the landing through `anchorBase`.
+ */
+import BaseLayout from "../components/layout/BaseLayout.astro";
+import SiteFooter from "../components/layout/SiteFooter.astro";
+import SiteHeader from "../components/layout/SiteHeader.astro";
+import Button from "../components/ui/Button.astro";
+import { url } from "../lib/url";
+
+const landing = url();
+---
+
+<BaseLayout
+  title="Página no encontrada - Mink'a"
+  description="La página que buscas no existe o cambió de lugar. Vuelve al inicio de Mink'a o busca trueques cerca de ti."
+  bodyClass="not-found-page"
+  preloadFonts={["fraunces", "inter"]}
+>
+  <meta slot="head" name="robots" content="noindex" />
+  <SiteHeader slot="header" anchorBase={landing} homeHref={landing} />
+
+  <section class="not-found">
+    <div class="container">
+      <p class="not-found__code" aria-hidden="true">404</p>
+      <h1 class="not-found__title display">Esta página <em>no existe</em></h1>
+      <p class="not-found__text">
+        Puede que el enlace esté roto o que la página haya cambiado de lugar. Sigue truequeando desde
+        aquí:
+      </p>
+      <div class="not-found__actions">
+        <Button href={landing} variant="primary">Volver al inicio</Button>
+        <Button href={url("pages/busqueda.html")}>Buscar trueques</Button>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" anchorBase={landing} />
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding: 170px 0 110px;
+    text-align: center;
+  }
+
+  .not-found__code {
+    margin: 0;
+    font-family: var(--font-display);
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(4rem, 12vw, 7rem);
+    line-height: 1;
+    color: var(--color-terra);
+  }
+
+  .not-found__title {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    margin: 12px 0 18px;
+  }
+
+  .not-found__text {
+    max-width: 34rem;
+    margin: 0 auto 32px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-ink-2);
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .not-found {
+      padding: 132px 0 80px;
+    }
+  }
+</style>

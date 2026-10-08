@@ -1,0 +1,28 @@
+---
+/**
+ * Live summary of the publish form. Each value (#summary-*) is updated by
+ * src/scripts/pages/publish.js (updateSummary).
+ */
+const ROWS = [
+  { id: "title", key: "publish.summary.itemTitle", label: "Título:", value: "—" },
+  { id: "category", key: "publish.summary.category", label: "Categoría:", value: "—" },
+  { id: "location", key: "publish.summary.location", label: "Ubicación:", value: "—" },
+  { id: "availability", key: "publish.summary.availability", label: "Disponibilidad:", value: "—" },
+  { id: "status", key: "publish.summary.status", label: "Estado:", value: "Activo" },
+  { id: "reserved", key: "publish.summary.reserved", label: "Reserva:", value: "No" },
+];
+---
+
+<div class="summary-card">
+  <h3 data-i18n="publish.summary.title">Resumen rápido</h3>
+  <ul class="summary-list">
+    {
+      ROWS.map((r) => (
+        <li>
+          <strong data-i18n={r.key}>{r.label}</strong> <span id={`summary-${r.id}`}>{r.value}</span>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="form__hint" data-i18n="publish.summary.qrHint">El QR se generará automáticamente al publicar.</p>
+</div>

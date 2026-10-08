@@ -1,0 +1,57 @@
+---
+/**
+ * Community challenges by district: progress, collective goal and rewards.
+ * Port of public/pages/comunidad.html.
+ * T32 - Lucero Pipa: community challenges, district progress and rewards.
+ * Logic: src/scripts/pages/community.js (guarded: requires a session); it
+ * renders the challenge cards as HTML strings, so their CSS is global
+ * (src/styles/pages/community.css).
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import PageHead from "../../components/ui/PageHead.astro";
+import "../../styles/pages/community.css";
+
+const DISTRICTS = [
+  "Miraflores",
+  "Barranco",
+  "San Isidro",
+  "Surco",
+  "San Borja",
+  "Jesús María",
+  "Magdalena",
+  "La Molina",
+  "Surquillo",
+  "Pueblo Libre",
+];
+---
+
+<AppLayout
+  title="Mink'a - Comunidad y Retos"
+  description="Retos comunitarios de Mink'a: colabora con tu distrito y gana recompensas."
+  bodyClass="community-page"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <PageHead
+    title="Retos Comunitarios"
+    titleKey="community_title"
+    hint="Colabora con tu distrito, cumple metas y gana recompensas exclusivas."
+  />
+
+  <div class="container">
+    <div class="district-selector">
+      <label for="district-select"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Viendo retos en:</label>
+      <select id="district-select">
+        {DISTRICTS.map((d) => <option value={d}>{d}</option>)}
+      </select>
+      <div id="user-district-display" class="form__hint"></div>
+    </div>
+
+    <div id="challenges-grid" class="challenges-grid">
+      <!-- Cards rendered by community.js -->
+    </div>
+  </div>
+
+  <script>
+    import "../../scripts/pages/community.js";
+  </script>
+</AppLayout>

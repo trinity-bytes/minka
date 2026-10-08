@@ -1,0 +1,45 @@
+---
+/**
+ * Why the owner closes the listing (T25 - Ronel Rojas). "exchanged" opens
+ * the eco metrics modal; handled in src/scripts/pages/detail.js.
+ */
+import Button from "../ui/Button.astro";
+import Modal from "../ui/Modal.astro";
+
+const REASONS = [
+  {
+    id: "reason-exchanged",
+    value: "exchanged",
+    key: "detail_close_opt_exchanged",
+    label: "¡Ya lo intercambié! (Trueque exitoso)",
+  },
+  {
+    id: "reason-other",
+    value: "other",
+    key: "detail_close_opt_other",
+    label: "Ya no lo tengo / Otro motivo",
+  },
+];
+---
+
+<Modal id="close-reason-modal" title="Cerrar Publicación" titleKey="detail_close_title">
+  <form id="close-reason-form">
+    <p>¿Por qué deseas cerrar esta publicación?</p>
+    {
+      REASONS.map((r, i) => (
+        <div class="form-check">
+          <input type="radio" id={r.id} name="close-reason" value={r.value} checked={i === 0} />
+          <label for={r.id} data-i18n={r.key}>
+            {r.label}
+          </label>
+        </div>
+      ))
+    }
+    <div class="modal__actions">
+      <Button appearance="flat" variant="secondary" data-close-modal="close-reason-modal" data-i18n="common_cancel">
+        Cancelar
+      </Button>
+      <Button appearance="flat" variant="primary" type="submit" data-i18n="common_confirm">Confirmar</Button>
+    </div>
+  </form>
+</Modal>

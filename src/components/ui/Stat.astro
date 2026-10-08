@@ -1,0 +1,132 @@
+---
+/**
+ * Big editorial number with label and handwritten note. The number counts up
+ * from 0 when it scrolls into view (instant with reduced motion). The visual
+ * number is aria-hidden; `srLabel` carries the accessible value.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  label: string;
+  note?: string;
+  /** Accessible reading of the value, e.g. "Más de 1,250". */
+  srLabel?: string;
+}
+
+const { value, prefix = "", suffix = "", label, note, srLabel, class: className, ...rest } =
+  Astro.props;
+const formatted = String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+---
+
+<div class:list={["stat", className]} {...rest}>
+  <div
+    class="stat__number"
+    data-count={value}
+    data-prefix={prefix || undefined}
+    data-suffix={suffix || undefined}
+    aria-hidden="true"
+  >
+    {prefix}0{suffix}
+  </div>
+  <span class="sr-only">{srLabel ?? `${prefix}${formatted}${suffix}`}</span>
+  <div class="stat__label">{label}</div>
+  {note && <div class="stat__note">{note}</div>}
+</div>
+
+<script>
+  import { onceVisible } from "../../scripts/reveal";
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const format = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  function animateCount(el: Element): void {
+    const target = parseInt(el.getAttribute("data-count") ?? "", 10) || 0;
+    const prefix = el.getAttribute("data-prefix") ?? "";
+    const suffix = el.getAttribute("data-suffix") ?? "";
+
+    if (reduceMotion) {
+      el.textContent = prefix + format(target) + suffix;
+      return;
+    }
+
+    const duration = 1600;
+    let start: number | null = null;
+    const step = (ts: number) => {
+      if (start === null) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress); // easeOutExpo
+      el.textContent = prefix + format(Math.round(target * eased)) + suffix;
+      if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  onceVisible(document.querySelectorAll(".stat__number[data-count]"), animateCount, {
+    threshold: 0.5,
+  });
+</script>
+
+<style>
+  .stat {
+    text-align: center;
+    position: relative;
+    padding: 10px 20px;
+  }
+
+  .stat + .stat::before {
+    content: "";
+    position: absolute;
+    left: -16px;
+    top: 15%;
+    bottom: 15%;
+    border-left: 3px dashed color-mix(in srgb, var(--color-ink) 25%, transparent);
+  }
+
+  .stat__number {
+    font-family: var(--font-display);
+    font-weight: 620;
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(3.2rem, 6.5vw, 5.2rem);
+    line-height: 1;
+    color: var(--color-ink);
+    position: relative;
+    display: inline-block;
+  }
+
+  .stat__number::after {
+    content: "";
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    bottom: 6%;
+    height: 0.28em;
+    background: var(--color-primary-pop);
+    opacity: 0.45;
+    z-index: -1;
+    border-radius: var(--radius-xs);
+    transform: rotate(-1deg);
+  }
+
+  .stat__label {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--color-ink);
+    margin-top: 14px;
+  }
+
+  .stat__note {
+    font-family: var(--font-accent);
+    color: var(--color-primary);
+    font-size: 1.05rem;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 1024px) {
+    .stat + .stat::before {
+      display: none;
+    }
+  }
+</style>

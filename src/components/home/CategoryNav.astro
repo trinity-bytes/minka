@@ -1,0 +1,24 @@
+---
+/**
+ * "Explore by category" chips linking to the search page pre-filtered.
+ */
+import { pickCategories } from "../../lib/categories";
+import { url } from "../../lib/url";
+
+const categories = pickCategories(["Libros", "Ropa y accesorios", "Electrónica", "Hogar", "Servicios"]);
+---
+
+<nav class="home-cats" aria-label="Explorar por categoría">
+  <span class="home-cats__label" data-i18n="home_explore_label">Explora por categoría:</span>
+  {
+    categories.map((category) => (
+      <a
+        class="home-cat-chip"
+        href={url(`pages/busqueda.html?category=${encodeURIComponent(category.value)}`)}
+        data-i18n={category.homeKey}
+      >
+        {category.label}
+      </a>
+    ))
+  }
+</nav>

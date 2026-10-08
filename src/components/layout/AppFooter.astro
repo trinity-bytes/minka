@@ -1,0 +1,109 @@
+---
+/**
+ * App shell footer, server-rendered port of FOOTER_HTML in
+ * public/assets/scripts/core/components.js.
+ */
+import { Image } from "astro:assets";
+import { url } from "../../lib/url";
+import logoNegative from "../../assets/images/minka-logo-negativo-blanco.png";
+
+// Links without a destination page yet render as plain text (as in SiteFooter).
+const links: { href?: string; label: string }[] = [
+  { href: url("pages/about.html"), label: "Acerca de" },
+  { href: `${url()}#impacto`, label: "Impacto" },
+  { label: "Términos" },
+  { label: "Privacidad" },
+];
+---
+
+<footer class="app-footer">
+  <div class="container app-footer__content">
+    <div class="app-footer__brand">
+      <Image src={logoNegative} width={82} densities={[1, 2]} alt="Mink'a" class="app-footer__logo" />
+      <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+    </div>
+    <div class="app-footer__links">
+      {links.map((link) => (link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>))}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .app-footer {
+    background: var(--color-secondary-dark);
+    color: var(--color-paper);
+    padding: var(--space-32) 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-on-primary) 10%, transparent);
+  }
+
+  .app-footer__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-24);
+    flex-wrap: wrap;
+  }
+
+  .app-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-16);
+  }
+
+  .app-footer__logo {
+    height: 32px;
+    width: auto;
+    aspect-ratio: 1042 / 406;
+    opacity: 0.95;
+  }
+
+  .app-footer__brand p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: inherit;
+  }
+
+  .app-footer__links {
+    display: flex;
+    gap: var(--space-24);
+    flex-wrap: wrap;
+  }
+
+  .app-footer__links a,
+  .app-footer__links span {
+    color: var(--color-paper);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+  }
+
+  .app-footer__links a:hover,
+  .app-footer__links a:focus-visible {
+    /* On dark ink: amber, never ink green */
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (max-width: 480px) {
+    .app-footer__content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .app-footer__brand {
+      flex-direction: column;
+    }
+
+    .app-footer__links {
+      justify-content: center;
+      gap: var(--space-12);
+    }
+  }
+
+  @media print {
+    .app-footer {
+      display: none !important;
+    }
+  }
+</style>

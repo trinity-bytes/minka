@@ -1,0 +1,86 @@
+---
+/**
+ * Editorial card surface: ink border, rounded corners, hard offset shadow.
+ * Inner padding/layout belongs to the consumer.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  as?: "div" | "article" | "section" | "li" | "figure";
+  tone?: "card" | "mint" | "accent-soft" | "paper";
+  radius?: "lg" | "xl";
+  shadow?: "sm" | "md" | "lg";
+  /** Lift on hover (translate + larger shadow). */
+  interactive?: boolean;
+}
+
+const {
+  as: Tag = "div",
+  tone = "card",
+  radius = "lg",
+  shadow = "sm",
+  interactive = false,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    "card",
+    `card--${tone}`,
+    `card--radius-${radius}`,
+    `card--shadow-${shadow}`,
+    interactive && "card--interactive",
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    position: relative;
+    margin: 0;
+    background: var(--color-card);
+    border: var(--border-ink);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  .card--mint {
+    background: var(--color-mint);
+  }
+
+  .card--accent-soft {
+    background: var(--color-accent-soft);
+  }
+
+  .card--paper {
+    background: var(--color-paper);
+  }
+
+  .card--radius-xl {
+    border-radius: var(--radius-xl);
+  }
+
+  .card--shadow-md {
+    box-shadow: var(--shadow-hard-md);
+  }
+
+  .card--shadow-lg {
+    box-shadow: var(--shadow-hard-lg);
+  }
+
+  .card--interactive {
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .card--interactive:hover {
+    transform: translate(-3px, -3px) rotate(var(--card-hover-rotate, 0deg));
+    box-shadow: var(--shadow-hard-lg);
+  }
+</style>

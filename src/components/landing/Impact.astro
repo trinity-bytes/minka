@@ -1,0 +1,44 @@
+---
+/** "Impacto real": three counting stats. */
+import SectionHead from "../ui/SectionHead.astro";
+import Stat from "../ui/Stat.astro";
+import LandingSection from "./LandingSection.astro";
+
+const stats = [
+  { value: 1250, suffix: "+", srLabel: "Más de 1,250", label: "Trueques completados", note: "¡y sumando!" },
+  { value: 500, suffix: " kg", srLabel: "500 kilogramos", label: "Residuos evitados", note: "que no llegaron al relleno" },
+  { value: 750, suffix: "+", srLabel: "Más de 750", label: "Miembros activos", note: "y creciendo cada semana" },
+];
+---
+
+<LandingSection id="impacto" folio="03" compactTop>
+  <SectionHead
+    eyebrow="Impacto real"
+    eyebrowTone="amber"
+    subtitle="Juntos estamos construyendo una ciudad más sostenible, un trueque a la vez."
+  >
+    Lima ya está <em>girando</em>
+  </SectionHead>
+  <div class="impact">
+    {
+      stats.map((stat, i) => (
+        <Stat {...stat} data-reveal style={i ? `--reveal-delay: ${i * 120}ms` : undefined} />
+      ))
+    }
+  </div>
+</LandingSection>
+
+<style>
+  .impact {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  @media (max-width: 1024px) {
+    .impact {
+      grid-template-columns: 1fr;
+      gap: 44px;
+    }
+  }
+</style>

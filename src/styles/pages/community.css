@@ -1,0 +1,196 @@
+/* T32 - Lucero Pipa: Estilos de comunidad y retos */
+.community-page {
+  background-color: var(--color-bg);
+}
+
+.challenges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+.challenge-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: transform 0.2s;
+  border: 1px solid var(--color-border);
+}
+
+.challenge-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.challenge-card__header {
+  padding: 1.5rem;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.challenge-card__badge {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.challenge-card__body {
+  padding: 1.5rem;
+}
+
+.challenge-card__title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.challenge-card__desc {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.progress-section {
+  margin-bottom: 1.5rem;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-secondary);
+}
+
+.progress-bar {
+  height: 10px;
+  background-color: var(--color-border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--color-primary);
+  transition: width 0.5s ease;
+}
+
+.progress-fill.collective {
+  background-color: var(--color-secondary);
+}
+
+.challenge-card__footer {
+  padding: 1rem 1.5rem;
+  background-color: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reward-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.district-selector {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--color-surface);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.district-selector select {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  flex: 1;
+  max-width: 300px;
+}
+
+/* Inline styles formerly rendered by community.js */
+.challenge-card__deadline {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.challenge-card__count {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.empty-state.challenges-empty {
+  padding: 3rem;
+}
+
+.challenges-empty__icon {
+  font-size: 3rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Folded from the legacy core/responsive.css */
+@media (max-width: 768px) {
+  .challenges-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .challenge-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .challenge-card__body {
+    padding: 1rem;
+  }
+
+  .challenge-card__footer {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .district-selector {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .district-selector select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .challenge-card__header {
+    padding: 1rem;
+  }
+
+  .challenge-card__footer {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .challenge-card:hover {
+    transform: none;
+  }
+}

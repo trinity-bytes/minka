@@ -1,0 +1,179 @@
+---
+/**
+ * Button / link-button. Renders <a> when `href` is set, <button> otherwise.
+ *
+ * appearance:
+ *  - "sticker" (default): editorial look of the landing (ink border + hard
+ *    offset shadow). Variants: paper | primary | ink.
+ *  - "flat": legacy app look. Emits the global classes `btn btn-<variant>`
+ *    (+ btn-small / btn-large) from src/styles/app.css, so it only renders
+ *    styled on pages built on AppLayout. Variants: primary | secondary |
+ *    outline (paper = outline) | ink.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+type Variant = "paper" | "primary" | "ink" | "secondary" | "outline";
+
+interface Props extends Omit<HTMLAttributes<"a"> & HTMLAttributes<"button">, "type"> {
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  variant?: Variant;
+  appearance?: "sticker" | "flat";
+  size?: "sm" | "md" | "lg";
+  loading?: boolean;
+}
+
+const {
+  href,
+  type = "button",
+  variant = "paper",
+  appearance = "sticker",
+  size = "md",
+  loading = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+// Flat buttons emit the legacy app classes (btn-primary, btn-small, ...)
+// defined once in src/styles/app.css, which page scripts also use in the
+// markup they render. Flat therefore requires a page built on AppLayout.
+const FLAT_VARIANT: Record<Variant, string> = {
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  outline: "btn-outline",
+  paper: "btn-outline",
+  ink: "btn-ink",
+};
+const FLAT_SIZE = { sm: "btn-small", md: false, lg: "btn-large" } as const;
+
+const classes =
+  appearance === "flat"
+    ? ["btn", "btn--flat", FLAT_VARIANT[variant], FLAT_SIZE[size], loading && "is-loading", className]
+    : [
+        "btn",
+        `btn--${appearance}`,
+        `btn--${variant}`,
+        size !== "md" && `btn--${size}`,
+        loading && "is-loading",
+        className,
+      ];
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class:list={classes} aria-busy={loading ? "true" : undefined} {...rest}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  /* Scoped rules target sticker buttons only: flat buttons are styled by the
+     global legacy classes in src/styles/app.css, and a scoped `.btn` rule
+     would out-rank them (e.g. .btn-small sizing). */
+  .btn--sticker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .btn--sticker :global(i) {
+    margin-right: var(--space-8);
+  }
+
+  /* === Sticker (editorial) === */
+  .btn--sticker {
+    gap: var(--space-10);
+    font-weight: 800;
+    color: var(--color-ink);
+    background: var(--color-card);
+    border: var(--border-ink);
+    border-radius: var(--radius-btn);
+    padding: 15px 28px;
+    box-shadow: var(--shadow-hard-btn);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      background-color 0.15s ease;
+  }
+
+  .btn--sticker:hover,
+  .btn--sticker:focus-visible {
+    /* paper variant inherits the global link hover color (legacy parity) */
+    color: var(--color-primary);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hard-btn-hover);
+  }
+
+  .btn--sticker:active {
+    transform: translate(2px, 2px);
+    box-shadow: var(--shadow-hard-xs);
+  }
+
+  .btn--sticker.btn--primary,
+  .btn--sticker.btn--primary:hover,
+  .btn--sticker.btn--primary:focus-visible {
+    background: var(--color-primary-pop);
+    color: var(--color-ink);
+  }
+
+  .btn--sticker.btn--ink {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn--sticker.btn--ink:hover,
+  .btn--sticker.btn--ink:focus-visible {
+    background: var(--color-ink-deep);
+    color: var(--color-paper);
+  }
+
+  .btn--sticker.btn--sm {
+    padding: var(--space-10) var(--space-20);
+    font-size: 0.92rem;
+    border-radius: var(--radius-md);
+  }
+
+  .btn--sticker.btn--lg {
+    padding: 18px 34px;
+    font-size: 1.1rem;
+  }
+
+  /* === Loading / disabled (sticker; flat lives in app.css) === */
+  .btn--sticker:disabled,
+  .btn--sticker.is-loading {
+    opacity: 0.65;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn--sticker.is-loading {
+    position: relative;
+    color: transparent !important;
+  }
+
+  .btn--sticker.is-loading::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: btn-spin 0.7s linear infinite;
+  }
+
+  @keyframes btn-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

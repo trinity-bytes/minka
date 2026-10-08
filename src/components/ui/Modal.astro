@@ -1,0 +1,53 @@
+---
+/**
+ * Dialog shell driven by the legacy core/modal.js (Modal.open/close, focus
+ * trap, Escape, and any [data-close-modal] click). Styling: `.modal*` in
+ * src/styles/app.css, so it requires a page built on AppLayout.
+ * Default slot: the dialog body. `footer` slot: optional .modal__footer.
+ */
+interface Props {
+  id: string;
+  title: string;
+  /** i18n key for the title (legacy I18n runtime). */
+  titleKey?: string;
+  /** Heading level of the title. */
+  level?: 2 | 3;
+  /** Close button glyph: "times" (×) or the Font Awesome "xmark" icon. */
+  closeIcon?: "times" | "xmark";
+  closeLabel?: string;
+}
+
+const {
+  id,
+  title,
+  titleKey,
+  level = 3,
+  closeIcon = "times",
+  closeLabel = "Cerrar modal",
+} = Astro.props;
+const Heading = `h${level}` as "h2" | "h3";
+const titleId = `${id}-title`;
+const hasFooter = Astro.slots.has("footer");
+---
+
+<section class="modal" id={id} aria-hidden="true">
+  <div class="modal__overlay" data-close-modal={id}></div>
+  <div class="modal__content" role="dialog" aria-modal="true" aria-labelledby={titleId}>
+    <header class="modal__header">
+      <Heading id={titleId} class="modal__title" data-i18n={titleKey}>{title}</Heading>
+      <button class="modal__close" type="button" data-close-modal={id} aria-label={closeLabel}>
+        {closeIcon === "xmark" ? <i class="fa-solid fa-xmark" aria-hidden="true" /> : "×"}
+      </button>
+    </header>
+    <div class="modal__body">
+      <slot />
+    </div>
+    {
+      hasFooter && (
+        <footer class="modal__footer">
+          <slot name="footer" />
+        </footer>
+      )
+    }
+  </div>
+</section>

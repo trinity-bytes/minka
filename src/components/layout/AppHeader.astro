@@ -1,0 +1,449 @@
+---
+/**
+ * App shell header, server-rendered port of the HEADER_HTML template in
+ * public/assets/scripts/core/components.js. `aria-current` comes from
+ * Astro.url at build time. A small client script toggles auth/guest links
+ * from the session, handles logout and drives the mobile drawer.
+ * Icons use Font Awesome classes, loaded by AppLayout (npm package).
+ */
+import { Image } from "astro:assets";
+import { isCurrent, url } from "../../lib/url";
+import logo from "../../assets/images/minka-logo.png";
+
+interface AppLink {
+  href: string;
+  icon: string;
+  label: string;
+  i18n: string;
+  show?: "auth" | "guest";
+  action?: "logout";
+  badge?: boolean;
+}
+
+const links: AppLink[] = [
+  { href: url("pages/home.html"), icon: "fa-house", label: "Inicio", i18n: "nav_home" },
+  { href: url("pages/busqueda.html"), icon: "fa-magnifying-glass", label: "Buscar", i18n: "nav_search" },
+  { href: url("pages/publicar.html"), icon: "fa-circle-plus", label: "Publicar", i18n: "nav_publish" },
+  { href: url("pages/chat.html"), icon: "fa-comments", label: "Chats", i18n: "nav_chats", show: "auth" },
+  { href: url("pages/comunidad.html"), icon: "fa-users", label: "Comunidad", i18n: "nav_community" },
+  {
+    href: url("pages/notificaciones.html"),
+    icon: "fa-bell",
+    label: "Notificaciones",
+    i18n: "nav_notifications",
+    show: "auth",
+    badge: true,
+  },
+  { href: url("pages/perfil.html"), icon: "fa-user", label: "Perfil", i18n: "nav_profile", show: "auth" },
+  {
+    href: url("pages/auth.html"),
+    icon: "fa-right-from-bracket",
+    label: "Salir",
+    i18n: "nav_logout",
+    show: "auth",
+    action: "logout",
+  },
+  { href: url("pages/auth.html"), icon: "fa-right-to-bracket", label: "Ingresar", i18n: "nav_login", show: "guest" },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<header class="app-header" data-app-header>
+  <div class="app-header__container">
+    <a href={url("pages/home.html")} class="app-header__logo" aria-label="Ir a inicio">
+      <Image src={logo} width={124} densities={[1, 2]} alt="Mink'a" class="app-header__logo-img" loading="eager" />
+    </a>
+    <button
+      type="button"
+      class="app-menu-toggle"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="app-nav"
+    >
+      <span class="app-menu-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    <nav class="app-header__nav" id="app-nav" aria-label="Navegación principal">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={["app-header__link", link.show === "guest" && "is-hidden"]}
+            data-show={link.show}
+            data-action={link.action}
+            aria-current={!link.action && isCurrent(link.href, pathname) ? "page" : undefined}
+          >
+            <i class={`fa-solid ${link.icon} app-header__icon`} aria-hidden="true" />
+            <span data-i18n={link.i18n}>{link.label}</span>
+            {link.badge && (
+              <span class="nav-badge" data-unread-badge aria-label="notificaciones no leídas">
+                0
+              </span>
+            )}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="app-nav-overlay" data-app-nav-overlay></div>
+  </div>
+</header>
+
+<script>
+  import { clearSession, isAuthenticated } from "../../lib/session";
+  import { url } from "../../lib/url";
+  import { createMenu } from "../../scripts/menu-disclosure";
+
+  const header = document.querySelector<HTMLElement>("[data-app-header]");
+  const nav = header?.querySelector<HTMLElement>("#app-nav");
+
+  if (header && nav) {
+    // Auth vs guest affordances
+    const authed = isAuthenticated();
+    header.querySelectorAll('[data-show="auth"]').forEach((el) => el.classList.toggle("is-hidden", !authed));
+    header.querySelectorAll('[data-show="guest"]').forEach((el) => el.classList.toggle("is-hidden", authed));
+
+    // Logout
+    nav.addEventListener("click", (e) => {
+      const target = e.target as Element | null;
+      if (!target?.closest("[data-action=logout]")) return;
+      e.preventDefault();
+      clearSession();
+      location.href = url("pages/auth.html");
+    });
+
+    // Mobile drawer
+    const toggle = header.querySelector<HTMLButtonElement>(".app-menu-toggle");
+    const overlay = header.querySelector<HTMLElement>("[data-app-nav-overlay]");
+
+    if (toggle) {
+      const menu = createMenu({
+        toggle,
+        panel: nav,
+        onChange: (open) => {
+          toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+          toggle.classList.toggle("is-active", open);
+          nav.classList.toggle("is-open", open);
+          overlay?.classList.toggle("is-visible", open);
+          document.body.classList.toggle("mobile-menu-open", open);
+        },
+      });
+      overlay?.addEventListener("click", () => menu.setOpen(false, { restoreFocus: true }));
+      nav
+        .querySelectorAll(".app-header__link")
+        .forEach((link) => link.addEventListener("click", () => menu.setOpen(false)));
+      // Crossing into the desktop layout removes the drawer: reset its state.
+      window.matchMedia("(min-width: 769px)").addEventListener("change", (e) => {
+        if (e.matches && menu.isOpen()) menu.setOpen(false);
+      });
+    }
+  }
+</script>
+
+<style>
+  .app-header {
+    border-bottom: var(--border-ink);
+    background: color-mix(in srgb, var(--color-paper) 97%, transparent);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .app-header__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-12) 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+  }
+
+  .app-header__logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .app-header__logo-img {
+    display: block;
+    height: 48px;
+    width: auto;
+    aspect-ratio: 1041 / 405; /* reserve space: no CLS */
+  }
+
+  .app-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1 1 auto;
+  }
+
+  /* Logo | links (centered by the two auto margins) | Salir/Ingresar */
+  .app-header__link:first-child {
+    margin-left: auto;
+  }
+
+  .app-header__link {
+    position: relative;
+    text-decoration: none;
+    color: var(--color-ink-2);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    border-radius: var(--radius-full);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .app-header__link:hover {
+    color: var(--color-ink);
+    background: var(--color-paper-2);
+  }
+
+  .app-header__link[aria-current="page"] {
+    color: var(--color-ink);
+    background: var(--color-mint);
+    font-weight: 700;
+    box-shadow: inset 0 0 0 1.5px var(--color-ink);
+  }
+
+  .app-header__link[data-action="logout"] {
+    margin-left: auto;
+    color: var(--color-terra);
+    box-shadow: inset 0 0 0 1.5px currentColor;
+  }
+
+  .app-header__link[data-action="logout"]:hover {
+    color: var(--color-terra);
+    background: var(--color-terra-soft);
+  }
+
+  .app-header__link[data-show="guest"] {
+    margin-left: auto;
+    color: var(--color-primary);
+    box-shadow: inset 0 0 0 1.5px currentColor;
+  }
+
+  .app-header__link[data-show="guest"]:hover {
+    background: var(--color-mint);
+    color: var(--color-primary-dark);
+  }
+
+  .app-header__icon {
+    display: none;
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+  }
+
+  .nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--space-20);
+    height: var(--space-20);
+    padding: 0 0.375rem;
+    background: var(--color-primary);
+    color: var(--color-white);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: var(--space-4);
+  }
+
+  .nav-badge:empty {
+    display: none;
+  }
+
+  /* === Mobile menu button === */
+  .app-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 200;
+    border-radius: var(--radius-md);
+    transition: background 0.2s ease;
+  }
+
+  .app-menu-toggle:hover {
+    background: var(--color-gray-50);
+  }
+
+  .app-menu-toggle__icon {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 22px;
+  }
+
+  .app-menu-toggle__icon span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--color-secondary-dark);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+  .app-menu-toggle.is-active .app-menu-toggle__icon span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .app-menu-toggle.is-active .app-menu-toggle__icon span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .app-menu-toggle.is-active .app-menu-toggle__icon span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
+  /* === Mobile nav overlay === */
+  .app-nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--color-scrim);
+    z-index: 90;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .app-nav-overlay.is-visible {
+    display: block;
+    opacity: 1;
+  }
+
+  :global(body.mobile-menu-open) {
+    overflow: hidden;
+  }
+
+  /* === Off-canvas drawer (only with JS; without it the nav stays inline) === */
+  @media (max-width: 768px) {
+    :global(html.js) .app-menu-toggle {
+      display: flex;
+    }
+
+    .app-header__container {
+      padding: var(--space-12) 16px;
+    }
+
+    :global(html.js) .app-header__nav {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--color-bg);
+      border-left: var(--border-ink);
+      box-shadow: -6px 0 24px color-mix(in srgb, var(--color-ink) 18%, transparent);
+      flex-direction: column;
+      flex-wrap: nowrap;
+      padding: 72px 20px 24px;
+      gap: 4px;
+      /* Hidden off-canvas links must not take focus; visibility flips after the slide-out. */
+      visibility: hidden;
+      transition:
+        right 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0s linear 0.3s;
+      z-index: 100;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    :global(html.js) .app-header__nav.is-open {
+      right: 0;
+      visibility: visible;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .app-header__link:first-child,
+    .app-header__link[data-show="guest"] {
+      margin-left: 0;
+    }
+
+    .app-header__link[data-show="guest"] {
+      box-shadow: none;
+    }
+
+    .app-header__link {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      justify-content: flex-start;
+    }
+
+    .app-header__link[data-action="logout"] {
+      margin-left: 0;
+      margin-top: auto;
+      border-top: 1px solid var(--color-gray-100);
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      padding-top: var(--space-16);
+      box-shadow: none;
+    }
+
+    .app-header__icon {
+      display: inline-block;
+    }
+
+    .app-header__link:hover,
+    .app-header__link[aria-current="page"] {
+      background: var(--color-mint);
+    }
+
+    .app-header__logo-img {
+      height: 36px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .app-header__container {
+      padding: var(--space-8) 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .app-header__container {
+      padding: var(--space-8) 12px;
+    }
+
+    .app-header__logo-img {
+      height: 30px;
+    }
+
+    :global(html.js) .app-header__nav {
+      width: 240px;
+      right: -260px;
+    }
+
+    .app-header__link {
+      font-size: 0.9rem;
+      padding: 10px 12px;
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .app-header__link {
+      min-height: 44px;
+    }
+
+    :global(html.js) .app-header__nav {
+      padding-top: 60px;
+    }
+  }
+
+  @media print {
+    .app-header {
+      display: none !important;
+    }
+  }
+</style>

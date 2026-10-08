@@ -1,0 +1,40 @@
+---
+/**
+ * Inline SVG icon set. Decorative by default (aria-hidden); pass `label` to
+ * expose it as an image with an accessible name. Paint uses currentColor so
+ * color comes from tokens in the consuming component.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+const ICONS = {
+  star: "M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17l-6.1 3.6 1.4-6.8L2.2 9.1l6.9-.8z",
+  spark: "M12 2c1.2 4.4 2.6 5.8 7 7-4.4 1.2-5.8 2.6-7 7-1.2-4.4-2.6-5.8-7-7 4.4-1.2 5.8-2.6 7-7z",
+  play: "M8 5v14l11-7z",
+  facebook:
+    "M13 22v-8h3l.5-4H13V7.5c0-1.1.3-1.5 1.6-1.5H17V2.2C16.4 2.1 15.3 2 14.1 2 11.1 2 9 3.7 9 6.9V10H6v4h3v8h4z",
+  instagram:
+    "M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.3 4 3.9 2.4 7.1 2.3c1.3-.1 1.7-.1 4.9-.1zm0 2c-3.1 0-3.5 0-4.8.1-2.3.1-3.3 1.2-3.4 3.4-.1 1.3-.1 1.7-.1 4.8s0 3.5.1 4.8c.1 2.2 1.2 3.3 3.4 3.4 1.3.1 1.7.1 4.8.1s3.5 0 4.8-.1c2.3-.1 3.3-1.2 3.4-3.4.1-1.3.1-1.7.1-4.8s0-3.5-.1-4.8c-.1-2.2-1.2-3.3-3.4-3.4-1.3-.1-1.7-.1-4.8-.1zm0 3.4a5.1 5.1 0 110 10.3 5.1 5.1 0 010-10.3zm0 8.5a3.3 3.3 0 100-6.7 3.3 3.3 0 000 6.7zm5.3-8.9a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z",
+  x: "M18.9 2H22l-6.8 7.8L23.3 22h-6.3l-4.9-6.4L6.5 22H3.4l7.3-8.3L3 2h6.4l4.4 5.9L18.9 2zm-1.1 18h1.7L7.6 3.9H5.7L17.8 20z",
+  linkedin:
+    "M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6h.1c.5-.9 1.7-1.9 3.4-1.9 3.6 0 4.3 2.4 4.3 5.5v6.3zM5.3 7.4a2.1 2.1 0 110-4.2 2.1 2.1 0 010 4.2zM7.1 20.5H3.5V9h3.6v11.5z",
+} as const;
+
+export type IconName = keyof typeof ICONS;
+
+interface Props extends Omit<HTMLAttributes<"svg">, "name"> {
+  name: IconName;
+  /** Rendered width/height in px; omit to size via CSS. */
+  size?: number;
+  /** Accessible name; when omitted the icon is hidden from AT. */
+  label?: string;
+}
+
+const { name, size, label, ...rest } = Astro.props;
+const a11y = label
+  ? { role: "img" as const, "aria-label": label }
+  : { "aria-hidden": "true" as const };
+---
+
+<svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" {...a11y} {...rest}>
+  <path d={ICONS[name]}></path>
+</svg>

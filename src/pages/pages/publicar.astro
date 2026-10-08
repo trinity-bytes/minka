@@ -1,0 +1,268 @@
+---
+/**
+ * Publish a listing: main info, location/delivery, photos and a live
+ * summary. Port of public/pages/publicar.html.
+ * T14 - Ronel Rojas: publish form, mock QR and local drafts.
+ * T23 - Ronel Rojas: states, reservation and per-category dynamic fields.
+ * Logic: src/scripts/pages/publish.js (guarded: requires a session).
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import CardSection from "../../components/ui/CardSection.astro";
+import PageHead from "../../components/ui/PageHead.astro";
+import Field from "../../components/publish/Field.astro";
+import PhotoUploader from "../../components/publish/PhotoUploader.astro";
+import SummaryCard from "../../components/publish/SummaryCard.astro";
+import { CATEGORIES } from "../../lib/categories";
+import "../../styles/pages/publish.css";
+
+interface Option {
+  value: string;
+  label: string;
+  key?: string;
+}
+
+const SELECT_PROMPT: Option = { value: "", label: "Selecciona una opción", key: "publish.mainInfo.selectOption" };
+
+const CATEGORY_OPTIONS: Option[] = [
+  SELECT_PROMPT,
+  ...CATEGORIES.map((c) => ({ value: c.value, label: c.label, key: c.homeKey })),
+];
+
+const CONDITION_OPTIONS: Option[] = [
+  SELECT_PROMPT,
+  { value: "Nuevo", label: "Nuevo", key: "publish.mainInfo.conditions.new" },
+  { value: "Como nuevo", label: "Como nuevo", key: "publish.mainInfo.conditions.likeNew" },
+  { value: "Buen estado", label: "Buen estado", key: "publish.mainInfo.conditions.good" },
+  { value: "Para reparar", label: "Para reparar", key: "publish.mainInfo.conditions.repair" },
+];
+
+const STATUS_OPTIONS: Option[] = [
+  { value: "active", label: "Activo", key: "publish.mainInfo.pubStatuses.active" },
+  { value: "paused", label: "Pausado", key: "publish.mainInfo.pubStatuses.paused" },
+  { value: "reserved", label: "Reservado", key: "publish.mainInfo.pubStatuses.reserved" },
+];
+
+const AVAILABILITY_OPTIONS: Option[] = [
+  SELECT_PROMPT,
+  { value: "Mañanas", label: "Mañanas", key: "publish.location.availabilities.mornings" },
+  { value: "Tardes", label: "Tardes", key: "publish.location.availabilities.afternoons" },
+  { value: "Noches", label: "Noches", key: "publish.location.availabilities.nights" },
+  { value: "Fines de semana", label: "Fines de semana", key: "publish.location.availabilities.weekends" },
+];
+
+const MODES = [
+  { value: "Recojo en persona", key: "publish.location.modalities.pickup", checked: true },
+  { value: "Envío coordinado", key: "publish.location.modalities.shipping", checked: false },
+];
+---
+
+<AppLayout
+  title="Mink'a - Publicar Objeto"
+  description="Publica un objeto para trueque en Mink'a: datos, fotos, ubicación y QR de intercambio."
+  bodyClass="publish-page"
+  mainClass="publish-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <!-- T14 - Ronel Rojas: Encabezado compacto de publicación -->
+  <PageHead
+    title="Publica un objeto"
+    titleKey="publish.title"
+    hint="Completa los datos, sube fotos y te generamos un QR único para compartir tu publicación."
+    hintKey="publish.subtitle"
+  />
+
+  <!-- T14 - Ronel Rojas: Formulario de publicación y QR -->
+  <section class="publish-layout" aria-label="Formulario de publicación">
+    <div class="container publish-grid">
+      <form id="publish-form" class="publish-form" novalidate>
+        <CardSection
+          class="publish-card"
+          level={2}
+          title="Información principal"
+          titleKey="publish.mainInfo.title"
+          subtitle="Define qué ofreces y en qué estado se encuentra."
+          subtitleKey="publish.mainInfo.subtitle"
+        >
+          <Field
+            for="item-title"
+            label="Título del objeto"
+            labelKey="publish.mainInfo.itemTitle"
+            hint="0/80"
+            hintId="title-counter"
+            error
+          >
+            <input
+              type="text"
+              id="item-title"
+              name="title"
+              maxlength="80"
+              placeholder="Ej. Bicicleta urbana vintage"
+              data-i18n-placeholder="publish.mainInfo.itemTitlePlaceholder"
+              required
+            />
+          </Field>
+
+          <div class="form__row">
+            <Field for="item-category" label="Categoría" labelKey="publish.mainInfo.category" error>
+              <select id="item-category" name="category" required>
+                {CATEGORY_OPTIONS.map((o) => <option value={o.value} data-i18n={o.key}>{o.label}</option>)}
+              </select>
+            </Field>
+            <Field for="item-condition" label="Estado" labelKey="publish.mainInfo.condition" error>
+              <select id="item-condition" name="condition" required>
+                {CONDITION_OPTIONS.map((o) => <option value={o.value} data-i18n={o.key}>{o.label}</option>)}
+              </select>
+            </Field>
+          </div>
+
+          <div class="form__row">
+            <Field
+              for="item-status"
+              label="Estado de la publicación"
+              labelKey="publish.mainInfo.pubStatus"
+              hint="Pausar oculta la publicación de búsquedas."
+              hintKey="publish.mainInfo.pauseHint"
+            >
+              <select id="item-status" name="status">
+                {STATUS_OPTIONS.map((o) => <option value={o.value} data-i18n={o.key}>{o.label}</option>)}
+              </select>
+            </Field>
+            <div class="form__group form__group--inline">
+              <label class="inline-label" for="item-reserved" data-i18n="publish.mainInfo.reserved">Reserva</label>
+              <label class="switch">
+                <input type="checkbox" role="switch" id="item-reserved" />
+                <span class="slider round"></span>
+              </label>
+              <p class="form__hint" data-i18n="publish.mainInfo.reservedHint">
+                Marca si ya tienes un interesado confirmado.
+              </p>
+            </div>
+          </div>
+
+          <!-- Campos dinámicos por categoría (publish.js) -->
+          <div class="form__group" id="dynamic-fields" aria-live="polite"></div>
+
+          <Field for="item-description" label="Descripción" labelKey="publish.mainInfo.description" error>
+            <textarea
+              id="item-description"
+              name="description"
+              rows="4"
+              placeholder="Cuenta detalles, medidas, funcionamiento y qué buscas a cambio"
+              data-i18n-placeholder="publish.mainInfo.descriptionPlaceholder"
+              required></textarea>
+          </Field>
+
+          <Field
+            for="item-tags"
+            label="Etiquetas"
+            labelKey="publish.mainInfo.tags"
+            hint="Separadas por coma · Mejora el hallazgo en búsquedas."
+            hintKey="publish.mainInfo.tagsHint"
+          >
+            <input
+              type="text"
+              id="item-tags"
+              name="tags"
+              placeholder="ej. urbano, mujer, talla M, poco uso"
+              data-i18n-placeholder="publish.mainInfo.tagsPlaceholder"
+            />
+          </Field>
+        </CardSection>
+
+        <CardSection
+          class="publish-card"
+          level={2}
+          title="Ubicación y entrega"
+          titleKey="publish.location.title"
+          subtitle="Indica dónde está el objeto y cómo prefieres el intercambio."
+          subtitleKey="publish.location.subtitle"
+        >
+          <div class="form__row">
+            <Field for="item-location" label="Distrito / Ciudad" labelKey="publish.location.district" error>
+              <input
+                type="text"
+                id="item-location"
+                name="location"
+                placeholder="Ej. Miraflores, Lima"
+                data-i18n-placeholder="publish.location.districtPlaceholder"
+                required
+              />
+            </Field>
+            <Field for="item-availability" label="Disponibilidad" labelKey="publish.location.availability" error>
+              <select id="item-availability" name="availability" required>
+                {AVAILABILITY_OPTIONS.map((o) => <option value={o.value} data-i18n={o.key}>{o.label}</option>)}
+              </select>
+            </Field>
+          </div>
+
+          <div class="form__row">
+            <Field label="Modalidad" labelKey="publish.location.modality">
+              <div class="mode-group" role="group" aria-label="Modalidad de entrega">
+                {
+                  MODES.map((m) => (
+                    <label class="mode-chip">
+                      <input type="checkbox" name="mode" value={m.value} checked={m.checked} />
+                      <span data-i18n={m.key}>{m.value}</span>
+                    </label>
+                  ))
+                }
+              </div>
+            </Field>
+            <Field
+              for="item-notes"
+              label="Notas para el encuentro"
+              labelKey="publish.location.notes"
+              hint="0/300"
+              hintId="notes-counter"
+            >
+              <textarea
+                id="item-notes"
+                name="notes"
+                rows="3"
+                maxlength="300"
+                placeholder="Punto de referencia, seguridad, horarios exactos"
+                data-i18n-placeholder="publish.location.notesPlaceholder"></textarea>
+            </Field>
+          </div>
+        </CardSection>
+
+        <CardSection
+          class="publish-card"
+          level={2}
+          title="Fotos del objeto"
+          titleKey="publish.photos.title"
+          subtitle="Sube hasta 5 fotos. Formatos JPG o PNG."
+          subtitleKey="publish.photos.subtitle"
+        >
+          <PhotoUploader />
+        </CardSection>
+
+        <div class="form__actions">
+          <Button appearance="flat" variant="secondary" id="save-draft" data-i18n="publish.actions.saveDraft">
+            Guardar borrador
+          </Button>
+          <Button
+            appearance="flat"
+            variant="primary"
+            size="lg"
+            type="submit"
+            id="generate-qr"
+            data-i18n="publish.actions.publish"
+          >
+            Publicar
+          </Button>
+        </div>
+        <p class="form__success" id="form-success" role="status" aria-live="polite"></p>
+      </form>
+
+      <aside class="publish-summary" aria-label="Resumen y QR">
+        <SummaryCard />
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    import "../../scripts/pages/publish.js";
+  </script>
+</AppLayout>

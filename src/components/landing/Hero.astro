@@ -1,0 +1,575 @@
+---
+/**
+ * Landing hero: rotating headline word with a hand-drawn circle, CTAs,
+ * social proof and the photo collage with stickers, note and orbit badge.
+ */
+import Button from "../ui/Button.astro";
+import Sticker from "../ui/Sticker.astro";
+import { Picture } from "astro:assets";
+import { url } from "../../lib/url";
+import bike from "../../assets/images/hero/bicicleta-vintage.jpg";
+import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
+import books from "../../assets/images/hero/set-libros.jpg";
+
+const words = ["ropa", "libros", "muebles", "servicios", "juguetes"];
+// Screen readers get the full sentence once; the animated word is decorative.
+const spokenTitle = `Intercambia ${words.slice(0, -1).join(", ")} o ${words.at(-1)} y haz que Lima gire.`;
+---
+
+<section class="hero" id="inicio">
+  <div class="container hero__grid">
+    <div class="hero__content">
+      <Sticker tone="green" data-reveal>✶ La comunidad de trueque de Lima</Sticker>
+      <h1 class="hero__title display" data-reveal>
+        <span class="sr-only">{spokenTitle}</span>
+        <span aria-hidden="true">Intercambia
+        <span class="hero__swap"
+          ><span class="hero__word" data-words={words.join(",")}>{words[0]}</span><svg
+            class="scribble scribble--circle draw"
+            viewBox="0 0 200 70"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              pathLength="100"
+              vector-effect="non-scaling-stroke"
+              d="M100,7 C148,5 193,15 195,33 C197,53 150,65 100,65 C50,65 5,53 7,33 C9,13 52,9 100,7 Z"
+            ></path></svg
+          ></span
+        ><br />
+        y haz que <em>Lima gire</em>.</span
+        >
+      </h1>
+      <button type="button" class="hero__pause" data-hero-pause aria-pressed="false" hidden>
+        <span aria-hidden="true" data-hero-pause-icon>❚❚</span>
+        <span data-hero-pause-label>Pausar animación</span>
+      </button>
+      <p class="hero__subtitle" data-reveal>
+        Publica lo que ya no usas, conecta con vecinos verificados e intercambia sin gastar un sol.
+        Ahorro real para ti, menos residuos para la ciudad.
+      </p>
+      <div class="hero__cta" data-reveal>
+        <Button href={url("pages/auth.html")} variant="primary">Empieza a truequear</Button>
+        <Button href="#como-funciona">Ver cómo funciona ↓</Button>
+      </div>
+      <p class="hero__proof" data-reveal>
+        <b>1,250+</b> trueques &nbsp;✶&nbsp; <b>750+</b> vecinos &nbsp;✶&nbsp; <b>500 kg</b> menos de
+        residuos
+      </p>
+    </div>
+
+    <div class="hero__collage">
+      <figure class="hero__photo hero__photo--main" data-reveal>
+        <Picture
+          src={bike}
+          formats={["avif", "webp"]}
+          widths={[400, 600, 800, 1000]}
+          sizes="(max-width: 640px) 72vw, 400px"
+          loading="eager"
+          fetchpriority="high"
+          alt="Bicicleta urbana vintage publicada para trueque en Mink'a"
+        />
+      </figure>
+      <figure class="hero__photo hero__photo--b" data-reveal>
+        <Picture
+          src={guitar}
+          formats={["avif", "webp"]}
+          widths={[240, 480]}
+          sizes="240px"
+          loading="lazy"
+          decoding="async"
+          alt="Guitarra acústica disponible para intercambio"
+        />
+      </figure>
+      <figure class="hero__photo hero__photo--c" data-reveal>
+        <Picture
+          src={books}
+          formats={["avif", "webp"]}
+          widths={[200, 400]}
+          sizes="200px"
+          loading="lazy"
+          decoding="async"
+          alt="Set de libros usados en buen estado"
+        />
+      </figure>
+      <Sticker tone="amber" class="hero__sticker hero__sticker--1">¡Sin dinero de por medio!</Sticker>
+      <Sticker tone="terra" class="hero__sticker hero__sticker--2">Directo con vecinos</Sticker>
+      <p class="hero__note">esto pudo ser tuyo →</p>
+      <svg class="scribble hero__arrow draw" viewBox="0 0 90 70" aria-hidden="true">
+        <path pathLength="100" d="M8,10 C30,50 55,55 78,46 M78,46 l-14,-3 M78,46 l-3,-13"></path>
+      </svg>
+      <svg class="orbit" viewBox="0 0 120 120" role="img" aria-label="Trueque local, economía circular">
+        <circle class="orbit__disc" cx="60" cy="60" r="56"></circle>
+        <g class="orbit__spin">
+          <defs>
+            <path id="orbit-path" d="M60,60 m-42,0 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0"></path>
+          </defs>
+          <text><textPath href="#orbit-path">TRUEQUE LOCAL ✶ ECONOMÍA CIRCULAR ✶ </textPath></text>
+        </g>
+        <path class="orbit__icon" d="M45,53 a17,17 0 0 1 27,-6"></path>
+        <path class="orbit__icon" d="M70,43 l3,7 -8,1"></path>
+        <path class="orbit__icon" d="M75,67 a17,17 0 0 1 -27,6"></path>
+        <path class="orbit__icon" d="M50,77 l-3,-7 8,-1"></path>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { onceVisible } from "../../scripts/reveal";
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Hand-drawn strokes draw themselves when they enter the viewport.
+  onceVisible(document.querySelectorAll(".hero .draw"), (el) => el.classList.add("is-drawn"), {
+    threshold: 0.4,
+    immediate: reduceMotion,
+  });
+
+  // Rotating headline word (decorative: the h1 carries an sr-only sentence).
+  // WCAG 2.2.2: a visible pause control; no rotation at all under reduced motion.
+  const wordEl = document.querySelector<HTMLElement>(".hero__word");
+  const pauseBtn = document.querySelector<HTMLButtonElement>("[data-hero-pause]");
+  const pauseIcon = pauseBtn?.querySelector<HTMLElement>("[data-hero-pause-icon]");
+  const pauseLabel = pauseBtn?.querySelector<HTMLElement>("[data-hero-pause-label]");
+  const words = (wordEl?.dataset.words ?? "")
+    .split(",")
+    .map((w) => w.trim())
+    .filter(Boolean);
+
+  if (wordEl && pauseBtn && words.length > 1) {
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let index = 0;
+    let timer: number | undefined;
+    let paused = false;
+
+    const show = (i: number) => {
+      index = i % words.length;
+      wordEl.textContent = words[index];
+    };
+    const tick = () => {
+      wordEl.classList.add("is-out");
+      window.setTimeout(() => {
+        show(index + 1);
+        wordEl.classList.remove("is-out");
+        wordEl.classList.add("is-in");
+        window.setTimeout(() => wordEl.classList.remove("is-in"), 340);
+      }, 280);
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const start = () => {
+      if (timer === undefined) timer = window.setInterval(tick, 2600);
+    };
+    const renderButton = () => {
+      pauseBtn.setAttribute("aria-pressed", String(paused));
+      if (pauseIcon) pauseIcon.textContent = paused ? "▶" : "❚❚";
+      if (pauseLabel) pauseLabel.textContent = paused ? "Reanudar animación" : "Pausar animación";
+    };
+    const sync = () => {
+      if (motionQuery.matches) {
+        stop();
+        show(0);
+        pauseBtn.hidden = true;
+        return;
+      }
+      pauseBtn.hidden = false;
+      if (paused) stop();
+      else start();
+      renderButton();
+    };
+
+    pauseBtn.addEventListener("click", () => {
+      paused = !paused;
+      sync();
+    });
+    motionQuery.addEventListener("change", sync);
+    sync();
+  }
+</script>
+
+<style>
+  .hero {
+    padding: 170px 0 90px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before,
+  .hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero::before {
+    width: 620px;
+    height: 620px;
+    right: -160px;
+    top: -120px;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--color-primary-pop) 22%, transparent),
+      transparent 70%
+    );
+  }
+
+  .hero::after {
+    width: 480px;
+    height: 480px;
+    left: -180px;
+    bottom: -220px;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--color-accent) 18%, transparent),
+      transparent 70%
+    );
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero__title {
+    font-size: clamp(2.9rem, 5.6vw, 4.6rem);
+    margin: 22px 0 24px;
+  }
+
+  .hero__swap {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .hero__word {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    color: var(--color-terra);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .hero__word.is-out {
+    animation: word-out 0.28s ease forwards;
+  }
+
+  .hero__word.is-in {
+    animation: word-in 0.32s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+  }
+
+  @keyframes word-out {
+    to {
+      transform: translateY(-0.55em) rotate(-4deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes word-in {
+    from {
+      transform: translateY(0.55em) rotate(4deg);
+      opacity: 0;
+    }
+  }
+
+  /* === Hand-drawn scribbles === */
+  .scribble {
+    position: absolute;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .scribble path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .scribble--circle {
+    inset: -0.32em -0.42em;
+    width: calc(100% + 0.84em);
+    height: calc(100% + 0.64em);
+    z-index: 0;
+  }
+
+  .scribble--circle path {
+    stroke: var(--color-primary-pop);
+    stroke-width: 5;
+  }
+
+  /* Self-drawing stroke (pathLength=100) */
+  .draw path {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+
+  .draw.is-drawn path {
+    animation: draw 1s ease forwards;
+  }
+
+  .draw.is-drawn path:nth-child(2) {
+    animation-delay: 0.35s;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Pause control for the rotating word (WCAG 2.2.2). */
+  .hero__pause {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: -10px 0 20px;
+    padding: 4px 12px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-ink-2);
+    background: transparent;
+    border: 1.5px solid currentColor;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+  }
+
+  .hero__pause[hidden] {
+    display: none;
+  }
+
+  .hero__pause:hover {
+    color: var(--color-ink);
+  }
+
+  .hero__pause:focus-visible {
+    outline: 3px solid var(--color-primary-pop);
+    outline-offset: 2px;
+  }
+
+  .hero__pause [aria-hidden="true"] {
+    font-size: 0.7rem;
+    letter-spacing: -0.1em;
+  }
+
+  .hero__subtitle {
+    font-size: 1.16rem;
+    line-height: 1.65;
+    color: var(--color-ink-2);
+    max-width: 34rem;
+    margin: 0 0 34px;
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .hero__proof {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-ink-2);
+    margin: 0;
+  }
+
+  .hero__proof b {
+    color: var(--color-primary);
+  }
+
+  /* === Collage === */
+  .hero__collage {
+    position: relative;
+    min-height: 520px;
+  }
+
+  .hero__photo {
+    position: absolute;
+    margin: 0;
+    background: var(--color-card);
+    border: var(--border-ink);
+    box-shadow: var(--shadow-hard-lg);
+    overflow: hidden;
+  }
+
+  .hero__photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__photo--main {
+    width: 74%;
+    aspect-ratio: 4 / 5;
+    right: 6%;
+    top: 0;
+    border-radius: var(--radius-full) var(--radius-full) var(--radius-xl) var(--radius-xl);
+    transform: rotate(1.5deg);
+  }
+
+  .hero__photo--b {
+    width: 42%;
+    aspect-ratio: 1;
+    left: 0;
+    bottom: 12%;
+    border-radius: var(--radius-lg);
+    transform: rotate(-5deg);
+  }
+
+  .hero__photo--c {
+    width: 34%;
+    aspect-ratio: 4 / 3;
+    left: 6%;
+    top: 4%;
+    border-radius: var(--radius-lg);
+    transform: rotate(4deg);
+  }
+
+  .hero__collage .hero__sticker {
+    position: absolute;
+  }
+
+  .hero__collage .hero__sticker--1 {
+    right: 0;
+    top: 18%;
+    --sticker-rotate: 6deg;
+  }
+
+  .hero__collage .hero__sticker--2 {
+    left: 2%;
+    bottom: 4%;
+    --sticker-rotate: -4deg;
+  }
+
+  /* Handwritten note + arrow */
+  .hero__note {
+    position: absolute;
+    right: 4%;
+    bottom: 6%;
+    font-family: var(--font-accent);
+    font-size: 1.15rem;
+    color: var(--color-ink);
+    transform: rotate(-5deg);
+  }
+
+  .hero__arrow {
+    right: 22%;
+    bottom: 12%;
+    width: 90px;
+    height: 70px;
+  }
+
+  .hero__arrow path {
+    stroke: var(--color-terra);
+    stroke-width: 4;
+  }
+
+  /* === Spinning orbit badge === */
+  .orbit {
+    position: absolute;
+    left: -8px;
+    top: 38%;
+    width: 128px;
+    height: 128px;
+    z-index: 2;
+  }
+
+  .orbit__spin {
+    animation: spin 18s linear infinite;
+    transform-origin: 60px 60px;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .orbit text {
+    font-family: var(--font-primary);
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    fill: var(--color-ink);
+  }
+
+  .orbit__disc {
+    fill: var(--color-accent);
+    stroke: var(--color-ink);
+    stroke-width: 2.5;
+  }
+
+  .orbit__icon {
+    stroke: var(--color-ink);
+    stroke-width: 5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (max-width: 1024px) {
+    .hero {
+      padding-top: 150px;
+    }
+
+    .hero__grid {
+      grid-template-columns: 1fr;
+      gap: 72px;
+    }
+
+    .hero__collage {
+      min-height: 480px;
+      max-width: 520px;
+      margin: 0 auto;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: 132px 0 64px;
+    }
+
+    .hero__title {
+      font-size: clamp(2.4rem, 11vw, 3rem);
+    }
+
+    .hero__collage {
+      min-height: 400px;
+    }
+
+    .orbit {
+      width: 100px;
+      height: 100px;
+      top: 30%;
+    }
+
+    .hero__note,
+    .hero__arrow {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orbit__spin,
+    .hero__word.is-out,
+    .hero__word.is-in {
+      animation: none !important;
+    }
+
+    .draw path {
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

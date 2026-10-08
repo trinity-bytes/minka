@@ -1,0 +1,42 @@
+---
+/**
+ * Titled card holding one Chart.js canvas (#`canvasId`), drawn by
+ * src/scripts/pages/dashboard.js. The container fixes the chart height.
+ */
+interface Props {
+  title: string;
+  /** i18n key for the title (legacy I18n runtime). */
+  titleKey?: string;
+  canvasId: string;
+}
+
+const { title, titleKey, canvasId } = Astro.props;
+---
+
+<div class="chart-card">
+  <h3 data-i18n={titleKey}>{title}</h3>
+  <div class="chart-container">
+    <canvas id={canvasId} role="img" aria-label={title}></canvas>
+  </div>
+</div>
+
+<style>
+  .chart-card {
+    background: var(--color-surface);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .chart-card h3 {
+    margin-bottom: 1.5rem;
+    color: var(--color-secondary);
+    font-size: 1.2rem;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+  }
+</style>

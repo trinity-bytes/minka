@@ -1,0 +1,42 @@
+---
+/**
+ * "Tu impacto" card of the home hero: stats, level progress and links to
+ * gamification and the impact dashboard.
+ */
+import Card from "../ui/Card.astro";
+import ImpactStat from "./ImpactStat.astro";
+import { url } from "../../lib/url";
+
+const stats = [
+  { icon: "fa-leaf", tone: "primary", value: "250", valueId: "eco-points", label: "Eco-puntos", labelKey: "home_impact_points" },
+  { icon: "fa-sync-alt", tone: "success", value: "8", valueId: "exchanges", label: "Intercambios", labelKey: "home_impact_exchanges" },
+  { icon: "fa-award", tone: "warning", value: "S/ 450", label: "Ahorro est.", labelKey: "home_impact_savings" },
+  { icon: "fa-cloud", tone: "info", value: "12.5", valueId: "co2-saved", label: "kg CO₂ ahorrado", labelKey: "home_impact_co2" },
+] as const;
+---
+
+<Card class="home-hero__card" shadow="md" aria-label="Tu progreso">
+  <h3 data-i18n="home_impact_title">Tu impacto</h3>
+  <div class="impact-stats">
+    {stats.map((stat) => <ImpactStat {...stat} />)}
+  </div>
+  <div class="impact-progress">
+    <div class="impact-progress__header">
+      <span class="impact-progress__label" data-i18n="home_impact_level">Nivel: Eco-Guerrero</span>
+      <span class="impact-progress__count">250 / 500 pts</span>
+    </div>
+    <div class="impact-progress__bar">
+      <div class="impact-progress__fill" style="width: 50%"></div>
+    </div>
+  </div>
+  <div class="impact-links">
+    <a href={url("pages/gamification.html")} class="impact-link">
+      Ver mis Eco-Puntos y Premios
+      <i class="fas fa-arrow-right"></i>
+    </a>
+    <a href={url("pages/dashboard.html")} class="impact-link">
+      Ver Dashboard de Impacto
+      <i class="fas fa-chart-bar"></i>
+    </a>
+  </div>
+</Card>

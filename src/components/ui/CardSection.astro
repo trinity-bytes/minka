@@ -1,0 +1,44 @@
+---
+/**
+ * Card with a heading block and a body: `.card__header` (title, optional
+ * subtitle, `header-extra` slot for badges) + `.card__body` (default slot).
+ * Surface comes from Card; header/body spacing belongs to the page CSS,
+ * which styles the global `card__header` / `card__body` classes.
+ */
+import type { HTMLAttributes } from "astro/types";
+import Card from "./Card.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  title: string;
+  /** i18n key for the title (legacy I18n runtime). */
+  titleKey?: string;
+  level?: 2 | 3;
+  subtitle?: string;
+  subtitleKey?: string;
+  headerClass?: string;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  titleKey,
+  level = 3,
+  subtitle,
+  subtitleKey,
+  headerClass,
+  bodyClass,
+  ...rest
+} = Astro.props;
+const Heading = `h${level}` as "h2" | "h3";
+---
+
+<Card {...rest}>
+  <div class:list={["card__header", headerClass]}>
+    <Heading data-i18n={titleKey}>{title}</Heading>
+    {subtitle && <p data-i18n={subtitleKey}>{subtitle}</p>}
+    <slot name="header-extra" />
+  </div>
+  <div class:list={["card__body", bodyClass]}>
+    <slot />
+  </div>
+</Card>

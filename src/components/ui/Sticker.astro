@@ -1,0 +1,60 @@
+---
+/**
+ * Tilted pill label with ink border and hard shadow. Consumers can position
+ * it with their own class and change the tilt through `--sticker-rotate`.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"span"> {
+  tone?: "paper" | "green" | "amber" | "terra";
+  /** Handwritten (Pacifico) variant. */
+  hand?: boolean;
+  as?: "span" | "p" | "div";
+}
+
+const { tone = "paper", hand = false, as: Tag = "span", class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={["sticker", `sticker--${tone}`, hand && "sticker--hand", className]} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .sticker {
+    display: inline-block;
+    font-family: var(--font-primary);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    background: var(--color-card);
+    border: var(--border-ink);
+    border-radius: var(--radius-full);
+    padding: 7px 16px;
+    box-shadow: var(--shadow-hard-sm);
+    transform: rotate(var(--sticker-rotate, -2deg));
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  .sticker--green {
+    background: var(--color-mint);
+  }
+
+  .sticker--amber {
+    background: var(--color-accent);
+  }
+
+  .sticker--terra {
+    background: var(--color-terra-soft);
+  }
+
+  .sticker--hand {
+    font-family: var(--font-accent);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 1rem;
+  }
+</style>

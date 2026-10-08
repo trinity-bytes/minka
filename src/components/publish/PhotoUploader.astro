@@ -1,0 +1,19 @@
+---
+/**
+ * Photo picker for the publish form: invisible file input over a dashed
+ * drop area, preview grid and error line. Previews, the 5-photo limit and
+ * validation live in src/scripts/pages/publish.js (#item-photos,
+ * #photo-preview, #photo-error).
+ */
+---
+
+<div class="upload-area">
+  <input type="file" id="item-photos" name="photos" accept="image/*" multiple aria-describedby="photo-help" />
+  <label for="item-photos" class="upload-area__label">
+    <span class="upload-area__title" data-i18n="publish.photos.dragDrop">Arrastra o selecciona fotos</span>
+    <span class="upload-area__hint" data-i18n="publish.photos.hint">Máximo 5 imágenes · 4MB c/u</span>
+  </label>
+  <p id="photo-help" class="form__hint" data-i18n="publish.photos.example">Las fotos son de ejemplo.</p>
+</div>
+<div class="preview-grid" id="photo-preview" aria-live="polite"></div>
+<p class="form__error" id="photo-error" role="status" aria-live="polite"></p>

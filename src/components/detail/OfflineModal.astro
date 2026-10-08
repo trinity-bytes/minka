@@ -1,0 +1,38 @@
+---
+/**
+ * Offline close with the counterpart's code (T33 - Miguel Sanca, HU41).
+ * Validation lives in src/scripts/pages/detail.js.
+ */
+import Button from "../ui/Button.astro";
+import Modal from "../ui/Modal.astro";
+---
+
+<Modal id="offline-modal" title="Cierre Offline" titleKey="detail_offline_title" level={2} closeLabel="Cerrar">
+  <p>
+    Ingresa el código alfanumérico proporcionado por la contraparte para cerrar el intercambio sin
+    conexión.
+  </p>
+  <form id="offline-form">
+    <div class="form-group">
+      <label for="offline-code" data-i18n="detail_offline_code">Código de Intercambio</label>
+      <input
+        type="text"
+        id="offline-code"
+        class="form-input offline-code-input"
+        placeholder="Ej. A1B2-C3D4"
+        required
+        minlength="8"
+        maxlength="10"
+      />
+    </div>
+    <div id="offline-feedback" class="form-feedback"></div>
+    <div class="form-actions">
+      <Button appearance="flat" variant="secondary" data-close-modal="offline-modal" data-i18n="common_cancel">
+        Cancelar
+      </Button>
+      <Button appearance="flat" variant="primary" type="submit" data-i18n="detail_offline_validate">
+        Validar y Cerrar
+      </Button>
+    </div>
+  </form>
+</Modal>

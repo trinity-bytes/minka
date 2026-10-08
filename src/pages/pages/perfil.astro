@@ -1,0 +1,378 @@
+---
+/**
+ * Profile: summary card with photo, completion progress and quick links;
+ * the user's listings and reviews; the editable profile form; identity
+ * verification and review-appeal modals. Port of public/pages/perfil.html.
+ * T13/T29 - Lucero Pipa: profile, simulated identity verification (HU27).
+ * T14 - Ronel Rojas: user's listings. T35 - Leonardo Chavez: reputation.
+ * Logic: src/scripts/pages/profile.js (guarded: requires a session);
+ * `?user=<id>` shows another user's public profile read-only.
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import Modal from "../../components/ui/Modal.astro";
+import { asset, url } from "../../lib/url";
+import "../../styles/pages/profile.css";
+
+const QUICKLINKS = [
+  {
+    href: url("pages/gamification.html"),
+    tone: "amber",
+    icon: "fa-trophy",
+    label: "Eco-Puntos y Premios",
+    i18n: "profile.gamification",
+  },
+  {
+    href: url("pages/dashboard.html"),
+    tone: "mint",
+    icon: "fa-chart-pie",
+    label: "Dashboard de Impacto",
+    i18n: "profile.dashboard",
+  },
+  {
+    href: url("pages/settings.html"),
+    tone: "terra",
+    icon: "fa-cog",
+    label: "Configuración y Accesibilidad",
+    i18n: "profile.settings",
+  },
+];
+
+const APPEAL_REASONS = [
+  { value: "spam", label: "Es spam o publicidad" },
+  { value: "offensive", label: "Contenido ofensivo o inapropiado" },
+  { value: "irrelevant", label: "No relevante para la transacción" },
+  { value: "false", label: "Información falsa" },
+];
+---
+
+<AppLayout
+  title="Mink'a - Perfil"
+  description="Tu perfil en Mink'a: datos, verificación de identidad, publicaciones y reputación."
+  bodyClass="profile-page"
+  mainClass="profile-page__main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <section class="profile">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-header__title" data-i18n="profile.title">Tu Perfil</h2>
+        <p class="section-header__subtitle" data-i18n="profile.subtitle">
+          Completa tus datos, sube tu foto y verifica tu identidad para aumentar la confianza.
+        </p>
+      </div>
+      <div class="profile__grid">
+        <div class="profile-left-column">
+          <article class="profile-card" aria-labelledby="perfil-resumen">
+            <div class="profile-card__header">
+              <div class="profile-card__avatar">
+                <img
+                  src={asset("images/avatars/avatar-user.svg")}
+                  loading="lazy"
+                  decoding="async"
+                  alt="Foto de perfil"
+                  id="profile-photo-preview"
+                />
+                <input type="file" id="profile-photo-input" accept="image/*" hidden />
+                <Button
+                  appearance="flat"
+                  variant="secondary"
+                  size="sm"
+                  data-photo-upload
+                  data-i18n="profile.uploadPhoto"
+                >
+                  Subir nueva foto
+                </Button>
+              </div>
+              <div class="profile-card__info">
+                <h3 id="perfil-resumen">Usuario Demo</h3>
+                <p class="profile-card__meta" id="perfil-email">demo@minka.com</p>
+                <p class="profile-card__meta" id="perfil-telefono">+51 000 000 000</p>
+                <p class="profile-card__meta" id="perfil-ubicacion">Lima, Perú</p>
+                <span
+                  class="profile-card__badge"
+                  id="perfil-verificacion"
+                  data-i18n="profile.verificationPending">Verificación pendiente</span
+                >
+              </div>
+            </div>
+            <div class="profile-progress" aria-label="Progreso de perfil">
+              <div class="profile-progress__top">
+                <span data-i18n="profile.completeProfile">Completa tu perfil</span>
+                <span id="profile-progress-value">60%</span>
+              </div>
+              <div
+                class="profile-progress__bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="60"
+              >
+                <div class="profile-progress__fill" style="width: 60%"></div>
+              </div>
+            </div>
+            <div class="profile-card__actions">
+              <Button
+                appearance="flat"
+                variant="outline"
+                id="btn-verify-identity"
+                data-open-modal="identity"
+              >
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                <span data-i18n="profile.verifyIdentity">Verificar identidad</span>
+              </Button>
+              <!-- T24 - Lucero Pipa: Gamificación / T26 - Miguel Sanca: Dashboard / T27: Configuración -->
+              {
+                QUICKLINKS.map((link) => (
+                  <a href={link.href} class="profile-quicklink">
+                    <span
+                      class={`profile-quicklink__icon profile-quicklink__icon--${link.tone}`}
+                      aria-hidden="true"
+                    >
+                      <i class={`fas ${link.icon}`} />
+                    </span>
+                    <span data-i18n={link.i18n}>{link.label}</span>
+                    <i class="fas fa-arrow-right profile-quicklink__arrow" aria-hidden="true" />
+                  </a>
+                ))
+              }
+              <Button appearance="flat" variant="primary" data-save-profile>
+                <i class="fas fa-save" aria-hidden="true"></i>
+                <span data-i18n="profile.updateProfile">Actualizar perfil</span>
+              </Button>
+            </div>
+          </article>
+
+          <!-- T14 - Ronel Rojas: Listado de publicaciones del usuario -->
+          <section class="profile-items" aria-labelledby="my-items-title">
+            <h3 id="my-items-title" class="profile-items__title" data-i18n="profile.myItems">
+              Mis Publicaciones
+            </h3>
+            <div id="my-items-list" class="profile-items__list">
+              <p class="form__hint" data-i18n="profile.noItems">No tienes publicaciones activas.</p>
+            </div>
+          </section>
+
+          <!-- T35 - Gestión de Reputación: Sección de Reseñas -->
+          <section class="profile-reviews" aria-labelledby="reviews-title">
+            <div class="profile-reviews__header">
+              <h3 id="reviews-title" class="profile-items__title" data-i18n="profile.reviews">
+                Reseñas y Reputación
+              </h3>
+              <div class="reputation-score">
+                <i class="fas fa-star" aria-hidden="true"></i>
+                <span class="reputation-score__value">4.8</span>
+                <span class="reputation-score__count">(12 reseñas)</span>
+              </div>
+            </div>
+            <div id="reviews-list" class="reviews-list"></div>
+          </section>
+        </div>
+
+        <form class="profile-form" id="profile-form" novalidate>
+          <div class="form__group">
+            <label for="profile-name" data-i18n="profile.form.name">Nombre completo</label>
+            <input type="text" id="profile-name" name="name" value="Usuario Demo" required />
+            <p class="form__error" data-error-for="profile-name"></p>
+          </div>
+          <div class="form__group">
+            <label for="profile-email" data-i18n="profile.form.email">Correo electrónico</label>
+            <input type="email" id="profile-email" name="email" value="demo@minka.com" required />
+            <p class="form__error" data-error-for="profile-email"></p>
+          </div>
+          <div class="form__group">
+            <label for="profile-phone" data-i18n="profile.form.phone">Teléfono</label>
+            <input type="tel" id="profile-phone" name="phone" value="+51 000 000 000" required />
+            <p class="form__error" data-error-for="profile-phone"></p>
+          </div>
+          <div class="form__group">
+            <label for="profile-location">
+              <span data-i18n="profile.form.location">Distrito / Ciudad</span>
+              <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="profile-location"
+              name="location"
+              placeholder="Ej: Miraflores, Lima"
+              required
+            />
+            <p class="form__error" data-error-for="profile-location"></p>
+            <small class="form__hint" data-i18n="profile.form.locationRequired">
+              Campo obligatorio para guardar cambios
+            </small>
+          </div>
+          <div class="form__group">
+            <label for="profile-bio" data-i18n="profile.form.bio">Descripción breve (opcional)</label>
+            <textarea
+              id="profile-bio"
+              name="bio"
+              rows="4"
+              maxlength="150"
+              placeholder="Cuenta algo sobre tus intereses de trueque (máximo 150 caracteres)"
+              data-i18n-placeholder="profile.form.bioPlaceholder"></textarea>
+            <div class="form__char-count">
+              <span id="bio-char-count">0</span>&nbsp;/ 150&nbsp;
+              <span data-i18n="profile.form.chars">caracteres</span>
+            </div>
+            <p class="form__error" data-error-for="profile-bio"></p>
+          </div>
+          <div class="profile-form__footer">
+            <small class="form__hint" data-i18n="profile.form.hint">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+              Los datos ayudan a mejorar tu reputación y coincidencias.
+            </small>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="after-main">
+    <!-- T13 - Lucero Pipa: Modal de verificación de identidad (simulada) -->
+    <Modal
+      id="identity-modal"
+      title="Verificación de Identidad"
+      titleKey="profile.identityModal.title"
+      closeLabel="Cerrar"
+    >
+      <p class="modal__subtitle" data-i18n="profile.identityModal.subtitle">
+        Elige el nivel de verificación que deseas obtener.
+      </p>
+
+      <!-- T29 - HU27: Niveles de Verificación -->
+      <div class="verification-tabs">
+        <button
+          type="button"
+          class="modal__tab modal__tab--active"
+          data-verify-tab="basic"
+          data-i18n="profile.identityModal.basicTab"
+        >
+          Básico (Teléfono)
+        </button>
+        <button
+          type="button"
+          class="modal__tab"
+          data-verify-tab="advanced"
+          data-i18n="profile.identityModal.advancedTab"
+        >
+          Avanzado (DNI + Selfie)
+        </button>
+      </div>
+
+      <!-- Nivel Básico -->
+      <div id="verify-basic" class="verify-section">
+        <div class="identity-steps">
+          <div class="identity-step">
+            <div class="identity-step__icon" aria-hidden="true">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div>
+              <h4 class="identity-step__title" data-i18n="profile.identityModal.basic.title">
+                Validar número celular
+              </h4>
+              <p class="identity-step__text" data-i18n="profile.identityModal.basic.text">
+                Te enviaremos un código SMS para confirmar tu número.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="identity-actions">
+          <Button
+            appearance="flat"
+            variant="primary"
+            data-verify-action="basic"
+            data-i18n="profile.identityModal.basic.action"
+          >
+            Enviar SMS y Verificar
+          </Button>
+        </div>
+      </div>
+
+      <!-- Nivel Avanzado -->
+      <div id="verify-advanced" class="verify-section hidden">
+        <div class="identity-steps">
+          <div class="identity-step">
+            <div class="identity-step__icon" aria-hidden="true">1</div>
+            <div>
+              <h4 class="identity-step__title" data-i18n="profile.identityModal.advanced.step1Title">
+                Selfie en vivo
+              </h4>
+              <p class="identity-step__text" data-i18n="profile.identityModal.advanced.step1Text">
+                Activa tu cámara y asegura buena iluminación.
+              </p>
+            </div>
+          </div>
+          <div class="identity-step">
+            <div class="identity-step__icon" aria-hidden="true">2</div>
+            <div>
+              <h4 class="identity-step__title" data-i18n="profile.identityModal.advanced.step2Title">
+                Documento de identidad
+              </h4>
+              <p class="identity-step__text" data-i18n="profile.identityModal.advanced.step2Text">
+                Toma foto del DNI/Pasaporte con datos legibles.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="identity-actions">
+          <Button
+            appearance="flat"
+            variant="primary"
+            data-verify-action="advanced"
+            data-i18n="profile.identityModal.advanced.action"
+          >
+            Simular selfie y DNI
+          </Button>
+        </div>
+      </div>
+
+      <div class="identity-status">
+        <p class="form__error" data-identity-error></p>
+        <p class="form__success" data-identity-success hidden></p>
+      </div>
+    </Modal>
+
+    <!-- T35 - Modal de Apelación de Reseña -->
+    <Modal id="appeal-modal" title="Apelar Reseña" titleKey="profile.appealModal.title" closeLabel="Cerrar">
+      <p class="modal__subtitle" data-i18n="profile.appealModal.subtitle">
+        Si consideras que esta reseña viola nuestras normas, puedes solicitar una revisión.
+      </p>
+      <form id="appeal-form">
+        <input type="hidden" id="appeal-review-id" />
+        <div class="form__group">
+          <label for="appeal-reason" data-i18n="profile.appealModal.reason">Motivo de la apelación</label>
+          <select id="appeal-reason" class="form__input" required>
+            <option value="" data-i18n="profile.appealModal.selectReason">Selecciona un motivo</option>
+            {
+              APPEAL_REASONS.map((r) => (
+                <option value={r.value} data-i18n={`profile.appealModal.reasons.${r.value}`}>
+                  {r.label}
+                </option>
+              ))
+            }
+          </select>
+        </div>
+        <div class="form__group">
+          <label for="appeal-details" data-i18n="profile.appealModal.details">Detalles adicionales</label>
+          <textarea
+            id="appeal-details"
+            class="form__input"
+            rows="4"
+            placeholder="Explica por qué esta reseña debería ser eliminada..."
+            data-i18n-placeholder="profile.appealModal.detailsPlaceholder"
+            required></textarea>
+        </div>
+        <div class="identity-actions">
+          <Button appearance="flat" variant="primary" type="submit" data-i18n="profile.appealModal.action">
+            Enviar Apelación
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  </Fragment>
+
+  <script>
+    import "../../scripts/pages/profile.js";
+  </script>
+</AppLayout>

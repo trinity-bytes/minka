@@ -1,0 +1,28 @@
+---
+/**
+ * <select> of item categories with a leading "no filter" option. Extra
+ * trailing options (e.g. favorites) go in the default slot.
+ */
+import type { Category } from "../../lib/categories";
+
+interface Props {
+  id: string;
+  categories: Category[];
+  emptyLabel: string;
+  emptyKey: string;
+}
+
+const { id, categories, emptyLabel, emptyKey } = Astro.props;
+---
+
+<select id={id}>
+  <option value="" data-i18n={emptyKey}>{emptyLabel}</option>
+  {
+    categories.map((category) => (
+      <option value={category.value} data-i18n={category.searchKey}>
+        {category.label}
+      </option>
+    ))
+  }
+  <slot />
+</select>

@@ -1,0 +1,133 @@
+---
+/**
+ * Testimonial as a taped paper note: star rating, quote and person.
+ * Consecutive notes get alternating tilts.
+ */
+import type { HTMLAttributes } from "astro/types";
+import Icon from "./Icon.astro";
+
+interface Props extends HTMLAttributes<"article"> {
+  quote: string;
+  name: string;
+  place: string;
+  /** Avatar URL (already base-aware). */
+  avatar: string;
+  rating?: number;
+}
+
+const { quote, name, place, avatar, rating = 5, class: className, ...rest } = Astro.props;
+const stars = Array.from({ length: rating });
+---
+
+<article class:list={["note", className]} {...rest}>
+  <div class="note__stars" role="img" aria-label={`${rating} de 5 estrellas`}>
+    {stars.map(() => <Icon name="star" class="note__star" />)}
+  </div>
+  <p class="note__quote">"{quote}"</p>
+  <div class="note__person">
+    <img src={avatar} loading="lazy" decoding="async" alt={name} class="note__avatar" />
+    <div>
+      <div class="note__name">{name}</div>
+      <div class="note__meta">{place}</div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .note {
+    position: relative;
+    background: var(--color-card);
+    border: var(--border-ink);
+    border-radius: var(--radius-note);
+    box-shadow: var(--shadow-hard-md);
+    padding: 40px 28px 28px;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .note:nth-child(1) {
+    transform: rotate(-1.6deg);
+  }
+
+  .note:nth-child(2) {
+    transform: rotate(1.1deg) translateY(14px);
+  }
+
+  .note:nth-child(3) {
+    transform: rotate(-0.7deg);
+  }
+
+  .note:hover {
+    transform: rotate(0deg) translate(-2px, -4px);
+    box-shadow: var(--shadow-hard-lg);
+    z-index: 2;
+  }
+
+  /* Tape strip */
+  .note::before {
+    content: "";
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    width: 96px;
+    height: 26px;
+    margin-left: -48px;
+    background: color-mix(in srgb, var(--color-accent) 55%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-ink) 18%, transparent);
+    transform: rotate(-2deg);
+  }
+
+  .note__stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
+  .note__stars .note__star {
+    width: 18px;
+    height: 18px;
+    fill: var(--color-accent);
+    stroke: var(--color-ink);
+    stroke-width: 1.4;
+  }
+
+  .note__quote {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings:
+      "SOFT" 60,
+      "WONK" 0,
+      "opsz" 24;
+    font-size: 1.12rem;
+    line-height: 1.55;
+    color: var(--color-ink);
+    margin: 0 0 22px;
+  }
+
+  .note__person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .note__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: var(--border-ink);
+    background: var(--color-mint);
+    object-fit: cover;
+  }
+
+  .note__name {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+  }
+
+  .note__meta {
+    font-size: 0.85rem;
+    color: var(--color-ink-2);
+  }
+</style>
