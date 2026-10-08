@@ -1,5 +1,12 @@
-/* T14 - Ronel Rojas: Estilos de publicación y QR */
-/* T23 - Ronel Rojas: Switch toggle y campos dinámicos */
+/* T14 - Ronel Rojas: Estilos de publicación */
+/* T23 - Ronel Rojas: Switch toggle (now in app.css) y campos dinámicos */
+/* Global (not scoped) on purpose: src/scripts/pages/publish.js renders the
+   dynamic fields and photo previews as HTML strings. Card surfaces come
+   from the Card component. Folds the publish overrides of the legacy
+   core/responsive.css. Dropped from the legacy sheet: the QR card rules
+   (the QR UI moved to the detail page long ago; nothing here renders it),
+   which were the last use of Nunito (--font-secondary) on this page. The
+   legacy page also loaded pages/home.css; none of its selectors match. */
 .publish-page {
   background: var(--color-surface);
 }
@@ -25,8 +32,7 @@
   gap: var(--space-24);
 }
 
-.card {
-  /* Identidad visual compartida en core/components.css */
+.publish-card {
   overflow: hidden;
 }
 
@@ -69,7 +75,7 @@
   padding: var(--space-12);
   border: 1px dashed var(--color-gray-100);
   border-radius: var(--space-12);
-  background: #fcfffc;
+  background: var(--color-card);
 }
 
 .form__hint--title {
@@ -78,13 +84,15 @@
   margin-bottom: var(--space-8);
 }
 
-.chip-group {
+/* === Delivery mode checkboxes (legacy .chip-group/.chip, renamed so they
+   cannot collide with the ui/Chip component) === */
+.mode-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
 }
 
-.chip {
+.mode-chip {
   display: flex;
   width: 100%;
   align-items: center;
@@ -100,7 +108,7 @@
   font-weight: 500;
 }
 
-.chip input {
+.mode-chip input {
   width: auto;
   padding: 0;
   margin: 0;
@@ -108,22 +116,23 @@
   flex-shrink: 0;
 }
 
-.chip span {
+.mode-chip span {
   flex: 1;
   white-space: nowrap;
 }
 
-.chip:hover {
+.mode-chip:hover {
   border-color: var(--color-primary);
   box-shadow: var(--shadow-md);
 }
 
+/* === Photos === */
 .upload-area {
   position: relative;
   border: 2px dashed var(--color-gray-100);
   border-radius: var(--space-16);
   padding: var(--space-24);
-  background: #fcfdfc;
+  background: var(--color-card);
   text-align: center;
 }
 
@@ -186,23 +195,22 @@
   align-items: center;
 }
 
+/* === Summary === */
 .publish-summary {
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
 }
 
-.summary-card,
-.qr-card {
+.summary-card {
   background: var(--color-white);
   border-radius: var(--space-16);
   border: 1px solid var(--color-gray-50);
   box-shadow: var(--shadow-sm);
-  padding: var(--space-20, 20px);
+  padding: var(--space-20);
 }
 
-.summary-card h3,
-.qr-card h3 {
+.summary-card h3 {
   margin-bottom: var(--space-8);
 }
 
@@ -218,32 +226,6 @@
   color: var(--color-secondary-dark);
 }
 
-.qr-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-12);
-}
-
-.qr-card__body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-12);
-}
-
-.qr-canvas {
-  display: none;
-}
-
-.qr-code {
-  font-family: var(--font-secondary);
-  letter-spacing: 0.5px;
-  color: var(--color-secondary);
-  word-break: break-word;
-  text-align: center;
-}
-
 @media (max-width: 1024px) {
   .publish-grid {
     grid-template-columns: 1fr;
@@ -254,7 +236,6 @@
     align-items: stretch;
   }
 
-  .qr-card,
   .summary-card {
     position: relative;
   }
@@ -265,4 +246,13 @@
     grid-template-columns: 1fr;
   }
 
+  .publish-form {
+    padding: var(--space-16);
+  }
+}
+
+@media (max-width: 480px) {
+  .publish-form {
+    padding: var(--space-12);
+  }
 }

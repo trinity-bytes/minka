@@ -3,6 +3,11 @@
 // T23 - Ronel Rojas: Gestión de estados de publicación
 // T25 - Ronel Rojas: Métricas Ambientales
 // T33 - Miguel Sanca: Trazabilidad Avanzada (Timeline)
+// ES module bundled by src/pages/pages/detalle.astro; relies on the legacy
+// globals Store, Modal and Toast loaded as classic scripts by AppLayout.
+import { ECO_FACTORS } from "../../lib/eco";
+import { token } from "../tokens";
+
 const mockDetail = {
   id: "itm-001",
   title: "Bicicleta urbana vintage",
@@ -66,10 +71,6 @@ const modals = {
   offline: document.getElementById("offline-modal"), // T33
   closeReason: document.getElementById("close-reason-modal"), // T25
 };
-
-// T25 - Ronel Rojas: Factores de impacto ambiental — fuente única en
-// core/constants.js (window.MINKA_CONSTANTS).
-const ECO_FACTORS = window.MINKA_CONSTANTS.ECO_FACTORS;
 
 const forms = {
   rating: document.getElementById("rating-form"),
@@ -175,9 +176,13 @@ function init() {
     setPlaceholderQr();
   }
 
-  // Restaurar estado persistido (pausado/reservado/etc.)
-  if (item.status && ["activo", "pausado", "reservado"].includes(item.status)) {
-    updateState(item.status);
+  // Restaurar estado persistido (pausado/reservado/etc.). publish.js stores
+  // the form values ("active"/"paused"/"reserved"); map them to the Spanish
+  // states used here and by the demo seed, or they were silently ignored.
+  const STATUS_ALIASES = { active: "activo", paused: "pausado", reserved: "reservado" };
+  const status = STATUS_ALIASES[item.status] || item.status;
+  if (status && ["activo", "pausado", "reservado"].includes(status)) {
+    updateState(status);
   }
 
   renderTimeline(); // T33
@@ -672,16 +677,23 @@ function drawPseudoQr(seedStr) {
     return Math.abs(rng);
   };
 
-  qrCtx.fillStyle = "#ffffff";
+  // Canvas cannot read CSS custom properties: resolve the tokens first.
+  const colors = {
+    paper: token("--color-on-primary"),
+    ink: token("--color-secondary-dark"),
+    accent: token("--color-primary-pop"),
+  };
+
+  qrCtx.fillStyle = colors.paper;
   qrCtx.fillRect(0, 0, qrCanvas.width, qrCanvas.height);
   for (let y = 0; y < size; y += 1) {
     for (let x = 0; x < size; x += 1) {
       const value = next();
       if (value % 3 === 0) {
-        qrCtx.fillStyle = "#2c3e50";
+        qrCtx.fillStyle = colors.ink;
         qrCtx.fillRect(x * cell, y * cell, cell, cell);
       } else if (value % 7 === 0) {
-        qrCtx.fillStyle = "#2ecc71";
+        qrCtx.fillStyle = colors.accent;
         qrCtx.fillRect(x * cell, y * cell, cell, cell);
       }
     }
@@ -820,9 +832,7 @@ function showEcoMetrics(category) {
   const comparisonEl = document.getElementById("eco-comparison-val");
   if (comparisonEl) {
     comparisonEl.textContent = isBetter ? "superior" : "similar";
-    comparisonEl.style.color = isBetter
-      ? "var(--color-primary)"
-      : "var(--color-secondary)";
+    comparisonEl.classList.toggle("is-similar", !isBetter);
   }
 
   openModal(modals.eco);

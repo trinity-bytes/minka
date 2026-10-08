@@ -1,0 +1,43 @@
+---
+/**
+ * Breadcrumb trail. The last item is the current page (aria-current); give
+ * it an `id` when a script updates its label. Styles: `.breadcrumb` in
+ * src/styles/app.css (AppLayout pages).
+ */
+interface Crumb {
+  label: string;
+  href?: string;
+  /** i18n key (legacy I18n runtime). */
+  key?: string;
+  id?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+const last = items.length - 1;
+---
+
+<nav class="breadcrumb" aria-label="Migas de pan">
+  <ol class="container">
+    {
+      items.map((item, i) =>
+        i === last ? (
+          <li aria-current="page">
+            <span id={item.id} data-i18n={item.key}>
+              {item.label}
+            </span>
+          </li>
+        ) : (
+          <li>
+            <a href={item.href} data-i18n={item.key}>
+              {item.label}
+            </a>
+          </li>
+        ),
+      )
+    }
+  </ol>
+</nav>

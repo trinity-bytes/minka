@@ -1,16 +1,17 @@
 // T14 - Ronel Rojas: Lógica de publicación, QR mock y borradores locales
 // T23 - Ronel Rojas: Estados, reservas y campos dinámicos por categoría
+// ES module bundled by src/pages/pages/publicar.astro; relies on the legacy
+// globals Store, Session, Toast and I18n loaded as classic scripts by
+// AppLayout. Module scripts run before DOMContentLoaded, so the listener
+// below still fires.
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("publish-form");
   const fileInput = document.getElementById("item-photos");
   const previewGrid = document.getElementById("photo-preview");
   const saveDraftBtn = document.getElementById("save-draft");
-  // const downloadBtn = document.getElementById("download-qr");
-  // const qrImage = document.getElementById("qr-image");
-  // const qrCanvas = document.getElementById("qr-canvas");
-  // const qrCtx = qrCanvas.getContext("2d");
-  // const qrText = document.getElementById("qr-code-text");
-  // const qrStatus = document.getElementById("qr-status");
+  // The QR UI lives on the detail page (src/scripts/pages/detail.js); this
+  // page only generates and stores the code. The commented-out legacy QR
+  // drawing code that used to sit here was removed in the Astro port.
   const successMsg = document.getElementById("form-success");
   const statusSelect = document.getElementById("item-status");
   const reservedToggle = document.getElementById("item-reserved");
@@ -142,16 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   });
 
-  /*
-  downloadBtn.addEventListener("click", () => {
-    if (!currentCode) return;
-    const link = document.createElement("a");
-    link.href = qrCanvas.toDataURL("image/png");
-    link.download = `${currentCode}.png`;
-    link.click();
-  });
-  */
-
   Object.values(inputRefs).forEach((input) => {
     input.addEventListener("input", updateSummary);
     if (input.tagName === "SELECT" || input.tagName === "TEXTAREA") {
@@ -173,7 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   hydrateDraft();
   updateSummary();
-  // setPlaceholderQr();
   renderDynamicFields(inputRefs.category.value);
 
   function validateForm() {
@@ -371,61 +361,12 @@ document.addEventListener("DOMContentLoaded", () => {
     currentCode = `MINKA-${Date.now()}-${Math.floor(
       Math.random() * 1e6
     ).toString(16)}`;
-    /*
-    qrText.textContent = currentCode;
-    qrStatus.textContent = "Generado";
-    qrStatus.style.background = "rgba(46, 204, 113, 0.15)";
-    drawPseudoQr(currentCode);
-    qrImage.src = qrCanvas.toDataURL("image/png");
-    downloadBtn.disabled = false;
-    */
     setSuccess(
       window.I18n
         ? window.I18n.t("publish.messages.published")
         : "QR generado y datos guardados localmente."
     );
   }
-
-  /*
-  function setPlaceholderQr() {
-    qrImage.src = "../assets/images/QR-generico.svg";
-    qrText.textContent = "Sin generar";
-    qrStatus.textContent = "Pendiente";
-    qrStatus.style.background = "rgba(46, 204, 113, 0.15)";
-    downloadBtn.disabled = true;
-  }
-
-  function drawPseudoQr(seedStr) {
-    const size = 25;
-    const cell = qrCanvas.width / size;
-    const seed = seedStr
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    let rng = seed;
-
-    const next = () => {
-      rng ^= rng << 13;
-      rng ^= rng >> 17;
-      rng ^= rng << 5;
-      return Math.abs(rng);
-    };
-
-    qrCtx.fillStyle = "#ffffff";
-    qrCtx.fillRect(0, 0, qrCanvas.width, qrCanvas.height);
-    for (let y = 0; y < size; y += 1) {
-      for (let x = 0; x < size; x += 1) {
-        const value = next();
-        if (value % 3 === 0) {
-          qrCtx.fillStyle = "#2c3e50";
-          qrCtx.fillRect(x * cell, y * cell, cell, cell);
-        } else if (value % 7 === 0) {
-          qrCtx.fillStyle = "#2ecc71";
-          qrCtx.fillRect(x * cell, y * cell, cell, cell);
-        }
-      }
-    }
-  }
-  */
 
   function updateSummary() {
     summaryFields.title.textContent = inputRefs.title.value.trim() || "—";
@@ -469,17 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dynInputs = dynamicFields.querySelectorAll("input[data-dynamic]");
     dynInputs.forEach((field) => {
-      // Assuming dynamic fields are required if they exist, based on validateForm logic
-      // validateForm checks: if (field.required && !field.value.trim())
-      // But in renderDynamicFields, inputs don't have 'required' attribute set explicitly in HTML string?
-      // Let's check renderDynamicFields in previous read_file output.
-      // It says: <input id="dynamic-${field.key}" data-dynamic="${field.key}" placeholder="${field.placeholder}" />
-      // It does NOT set required.
-      // But validateForm says: if (field.required && !field.value.trim())
-      // So maybe they are not required?
-      // Wait, validateForm has: if (field.required && !field.value.trim())
-      // If they are not required, this check passes.
-      // So I should check if they are required.
+      // renderDynamicFields marks every dynamic input as required.
       if (field.required && !field.value.trim()) isValid = false;
     });
 

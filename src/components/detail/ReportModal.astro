@@ -1,0 +1,54 @@
+---
+/**
+ * Report the listing (T18 - Leonardo Chavez). Validation and feedback live
+ * in src/scripts/pages/detail.js (setupReportModal).
+ */
+import Button from "../ui/Button.astro";
+import Modal from "../ui/Modal.astro";
+
+const REASONS = [
+  { value: "spam", label: "Spam o publicidad" },
+  { value: "fraude", label: "Sospecha de fraude" },
+  { value: "contenido", label: "Contenido inapropiado" },
+  { value: "uso-indebido", label: "Uso indebido de datos" },
+  { value: "otro", label: "Otro" },
+];
+---
+
+<Modal id="report-modal" title="Reportar publicación" titleKey="detail_action_report" closeIcon="xmark">
+  <p class="modal__subtitle">
+    Cuéntanos qué sucede con esta publicación o usuario. Revisaremos tu reporte.
+  </p>
+  <form id="report-form" novalidate>
+    <label class="form-label" for="report-reason" data-i18n="common_reason">Motivo</label>
+    <select id="report-reason" name="report-reason" required>
+      <option value="" disabled selected>Selecciona un motivo</option>
+      {REASONS.map((r) => <option value={r.value}>{r.label}</option>)}
+    </select>
+
+    <label class="form-label" for="report-details" data-i18n="common_details">Detalles</label>
+    <textarea
+      id="report-details"
+      name="report-details"
+      rows="3"
+      maxlength="280"
+      placeholder="Incluye ejemplos o capturas."></textarea>
+
+    <div class="form-check">
+      <input type="checkbox" id="report-include-chat" name="report-include-chat" />
+      <label for="report-include-chat" data-i18n="detail_attach_chat">
+        Adjuntar referencia del chat (si aplica)
+      </label>
+    </div>
+
+    <div class="modal__actions">
+      <Button appearance="flat" variant="secondary" data-close-modal="report-modal" data-i18n="common_cancel">
+        Cancelar
+      </Button>
+      <Button appearance="flat" variant="primary" type="submit" data-i18n="common_report_send">
+        Enviar reporte
+      </Button>
+    </div>
+    <p class="form-feedback" id="report-feedback" role="status" aria-live="polite"></p>
+  </form>
+</Modal>

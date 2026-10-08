@@ -1,0 +1,88 @@
+---
+/**
+ * Impact dashboard: period/category filters, KPI tiles and two Chart.js
+ * charts, with CSV export. Port of public/pages/dashboard.html.
+ * T26 - Miguel Sanca: impact dashboard with charts and cumulative KPIs.
+ * Logic: src/scripts/pages/dashboard.js (guarded: requires a session).
+ * Chart.js is bundled from npm (pinned) instead of an unpinned,
+ * render-blocking CDN script.
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import ChartCard from "../../components/dashboard/ChartCard.astro";
+import KpiTile from "../../components/dashboard/KpiTile.astro";
+import "../../styles/pages/dashboard.css";
+
+const PERIODS = [
+  { value: "7", label: "Últimos 7 días" },
+  { value: "30", label: "Últimos 30 días", selected: true },
+  { value: "90", label: "Últimos 3 meses" },
+  { value: "365", label: "Último año" },
+  { value: "custom", label: "Personalizado" },
+];
+---
+
+<AppLayout
+  title="Mink'a - Dashboard de Impacto"
+  description="Tu impacto en Mink'a: CO₂ evitado, agua ahorrada y objetos reusados."
+  bodyClass="dashboard-page"
+  mainClass="dashboard-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <div class="container">
+    <!-- T26 - Miguel Sanca: Encabezado del Dashboard -->
+    <section class="dashboard-header">
+      <div class="dashboard-title">
+        <h1 data-i18n="dash_title">Dashboard de Impacto</h1>
+        <p>Visualiza tu contribución ambiental y el ahorro generado.</p>
+      </div>
+      <div class="dashboard-actions">
+        <div class="filter-group">
+          <label for="period-filter" data-i18n="dash_period">Periodo:</label>
+          <select id="period-filter" class="form-select">
+            {PERIODS.map((p) => <option value={p.value} selected={p.selected}>{p.label}</option>)}
+          </select>
+        </div>
+        <div id="custom-date-group" class="filter-group" hidden>
+          <input type="date" id="start-date" class="form-select" aria-label="Fecha inicio" />
+          <span class="filter-group__sep" aria-hidden="true">-</span>
+          <input type="date" id="end-date" class="form-select" aria-label="Fecha fin" />
+        </div>
+        <div class="filter-group">
+          <label for="category-filter" data-i18n="dash_category">Categoría:</label>
+          <select id="category-filter" class="form-select">
+            <option value="all">Todas</option>
+          </select>
+        </div>
+        <Button appearance="flat" variant="outline" id="export-btn">
+          <i class="fas fa-download" aria-hidden="true"></i> Exportar Reporte
+        </Button>
+      </div>
+    </section>
+
+    <div id="no-data-message" class="no-data-container" hidden>
+      <div class="no-data-content">
+        <i class="fas fa-leaf no-data-icon" aria-hidden="true"></i>
+        <h3 data-i18n="dash_empty">Sin actividad registrada</h3>
+        <p>No hay datos de impacto para el periodo y filtros seleccionados.</p>
+      </div>
+    </div>
+
+    <!-- T26 - Miguel Sanca: KPIs -->
+    <section class="kpi-grid" id="kpi-section">
+      <KpiTile tone="co2" icon="fa-cloud" valueId="kpi-co2" unit="kg" label="CO₂ Evitado" />
+      <KpiTile tone="water" icon="fa-tint" valueId="kpi-water" unit="L" label="Agua Ahorrada" />
+      <KpiTile tone="objects" icon="fa-box-open" valueId="kpi-objects" unit="u." label="Objetos Reusados" />
+    </section>
+
+    <!-- T26 - Miguel Sanca: Gráficas -->
+    <section class="charts-grid" id="charts-section">
+      <ChartCard title="Evolución de Impacto" titleKey="dash_evolution" canvasId="evolutionChart" />
+      <ChartCard title="Impacto por Categoría" titleKey="dash_by_category" canvasId="categoryChart" />
+    </section>
+  </div>
+
+  <script>
+    import "../../scripts/pages/dashboard.js";
+  </script>
+</AppLayout>

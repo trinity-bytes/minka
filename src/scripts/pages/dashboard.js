@@ -1,7 +1,50 @@
 /**
  * T26 - Miguel Sanca: Lógica del Dashboard de Impacto
  * Maneja la visualización de KPIs, gráficas y filtros.
+ *
+ * ES module bundled by src/pages/pages/dashboard.astro; relies on the legacy
+ * global Store loaded as a classic script by AppLayout. Chart.js comes from
+ * npm; chart colors are read from the design tokens.
  */
+import {
+  BarController,
+  BarElement,
+  CategoryScale,
+  Chart,
+  Filler,
+  Legend,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip,
+} from "chart.js";
+import { token, withAlpha } from "../tokens";
+
+// Register only what the two charts use (line with fill, bars, legend,
+// tooltips) instead of chart.js/auto, to keep the bundle small.
+Chart.register(
+  BarController,
+  BarElement,
+  CategoryScale,
+  Filler,
+  Legend,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip,
+);
+
+// Canvas cannot read CSS custom properties: resolve the tokens per render.
+function chartColors() {
+  const co2 = token("--color-primary-pop");
+  return {
+    co2,
+    co2Fill: withAlpha(co2, 0.1),
+    water: token("--color-info"),
+  };
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   initDashboard();
@@ -90,7 +133,7 @@ function setupFilters() {
     periodSelect.addEventListener("change", (e) => {
       const isCustom = e.target.value === "custom";
       if (customDateGroup) {
-        customDateGroup.style.display = isCustom ? "flex" : "none";
+        customDateGroup.hidden = !isCustom;
       }
       updateDashboard();
     });
@@ -164,9 +207,9 @@ function toggleEmptyState(isEmpty) {
   const kpiSection = document.getElementById("kpi-section");
   const chartsSection = document.getElementById("charts-section");
 
-  if (noDataMsg) noDataMsg.style.display = isEmpty ? "flex" : "none";
-  if (kpiSection) kpiSection.style.display = isEmpty ? "none" : "grid";
-  if (chartsSection) chartsSection.style.display = isEmpty ? "none" : "grid";
+  if (noDataMsg) noDataMsg.hidden = !isEmpty;
+  if (kpiSection) kpiSection.hidden = isEmpty;
+  if (chartsSection) chartsSection.hidden = isEmpty;
 }
 
 function filterData(data, period, category) {
@@ -286,6 +329,7 @@ function updateEvolutionChart(data, days) {
     evolutionChart.destroy();
   }
 
+  const colors = chartColors();
   evolutionChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -294,8 +338,8 @@ function updateEvolutionChart(data, days) {
         {
           label: "CO₂ Evitado (kg)",
           data: values,
-          borderColor: "#2ECC71",
-          backgroundColor: "rgba(46, 204, 113, 0.1)",
+          borderColor: colors.co2,
+          backgroundColor: colors.co2Fill,
           tension: 0.4,
           fill: true,
         },
@@ -339,6 +383,7 @@ function updateCategoryChart(data) {
     categoryChart.destroy();
   }
 
+  const colors = chartColors();
   categoryChart = new Chart(ctx, {
     type: "bar",
     data: {
@@ -347,12 +392,12 @@ function updateCategoryChart(data) {
         {
           label: "CO₂ (kg)",
           data: co2Data,
-          backgroundColor: "#2ECC71",
+          backgroundColor: colors.co2,
         },
         {
           label: "Agua (L)",
           data: waterData,
-          backgroundColor: "#3498db",
+          backgroundColor: colors.water,
         },
       ],
     },

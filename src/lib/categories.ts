@@ -1,8 +1,9 @@
 /**
  * Item categories shown by the search filters and the home category chips.
- * `value` must match the canonical vocabulary of
- * public/assets/scripts/core/constants.js (items store `category` with it).
- * `searchKey` / `homeKey` are the i18n keys each page already used.
+ * `value` is the canonical category vocabulary: items store `category`
+ * with it, and ./eco.ts keys its impact factors by it.
+ * `searchKey` / `homeKey` are the i18n keys each page already used
+ * (`homeKey` is the publish form vocabulary, shared by the home chips).
  */
 export interface Category {
   value: string;
@@ -32,7 +33,12 @@ export const CATEGORIES: Category[] = [
     searchKey: "search_cat_services",
     homeKey: "publish.mainInfo.categories.services",
   },
-  { value: "Otros", label: "Otros", searchKey: "search_cat_others" },
+  {
+    value: "Otros",
+    label: "Otros",
+    searchKey: "search_cat_others",
+    homeKey: "publish.mainInfo.categories.others",
+  },
 ];
 
 /** Look up categories by value, keeping the requested order. */

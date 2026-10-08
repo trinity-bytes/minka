@@ -37,6 +37,7 @@
   --color-success: #1e8449;
   --color-error: #c0392b;
   --color-warning: #b98a04; /* amber readable on light */
+  --color-warning-ink: #8c6a00; /* amber text on soft amber (badges) */
   --color-info: #2874a6;
 
   /* Third-party brand colors (social login buttons only) */
@@ -71,7 +72,8 @@
 
   /* Font families */
   --font-primary: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  /* Nunito: still used by the legacy publish page (T4 decides its fate). */
+  /* Nunito: only the legacy about page (core/layout.css footer titles)
+     still uses it; drop once T6 ports about. */
   --font-secondary: "Nunito", "Helvetica Neue", Arial, sans-serif;
   --font-display: "Fraunces", Georgia, serif;
   --font-accent: "Pacifico", cursive;

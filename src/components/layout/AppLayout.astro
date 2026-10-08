@@ -8,6 +8,9 @@
  * legacy order so the page's own module script (bundled by Astro, deferred)
  * finds the globals ready. core/components.js is never loaded: AppHeader
  * and AppFooter replace it.
+ * Slots: default (inside <main>), `before-main` (between the header and
+ * <main>, e.g. a breadcrumb) and `after-main` (after the footer: modals,
+ * fixed bars).
  */
 // BaseLayout first: its global CSS (tokens, reset, element typography) must
 // precede app.css, whose responsive element rules override it.
@@ -41,6 +44,9 @@ interface Props {
 }
 
 const { title, description, bodyClass, mainClass, chrome = "app", scripts = [] } = Astro.props;
+// A static element (not a ternary expression) so the `before-main` slot,
+// also forwarded into BaseLayout's `header` slot, is not dropped.
+const Header = chrome === "auth" ? AuthHeader : AppHeader;
 
 // Canonical load order (matches the legacy pages). `defer` scripts run
 // after parsing, before the page module and before DOMContentLoaded.
@@ -69,7 +75,8 @@ const legacy = ORDER.filter((s) => scripts.includes(s.name)).map((s) => ({
       )
     }
   </Fragment>
-  {chrome === "auth" ? <AuthHeader slot="header" /> : <AppHeader slot="header" />}
+  <Header slot="header" />
+  <slot name="before-main" slot="header" />
   <slot />
   {chrome === "app" && <AppFooter slot="footer" />}
   <slot name="after-main" slot="footer" />

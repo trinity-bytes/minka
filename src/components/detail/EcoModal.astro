@@ -1,0 +1,56 @@
+---
+/**
+ * Environmental impact receipt shown when a trade closes (T25 - Ronel
+ * Rojas). Values (#eco-co2, #eco-water, #eco-comparison-val) are set by
+ * src/scripts/pages/detail.js from src/lib/eco.ts. Styles: .eco-* in
+ * src/styles/pages/detail.css (formerly inline styles).
+ */
+import Button from "../ui/Button.astro";
+import Modal from "../ui/Modal.astro";
+
+const METRICS = [
+  { tone: "co2", icon: "fa-cloud", id: "eco-co2", value: "0 kg", label: "CO₂ Evitado" },
+  { tone: "water", icon: "fa-tint", id: "eco-water", value: "0 L", label: "Agua Ahorrada" },
+];
+---
+
+<Modal id="eco-modal" title="¡Trueque Exitoso!" titleKey="detail_eco_title" level={2}>
+  <p>Gracias por darle una segunda vida a este objeto. Aquí está tu impacto ambiental estimado:</p>
+
+  <div class="eco-receipt">
+    {
+      METRICS.map((m) => (
+        <div class:list={["eco-metric", `eco-metric--${m.tone}`]}>
+          <div class="eco-icon">
+            <i class:list={["fas", m.icon]} aria-hidden="true" />
+          </div>
+          <div class="eco-data">
+            <span class="eco-value" id={m.id}>
+              {m.value}
+            </span>
+            <span class="eco-label">{m.label}</span>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="eco-comparison">
+    <p>
+      <i class="fas fa-chart-line" aria-hidden="true"></i> Tu impacto es
+      <strong id="eco-comparison-val" class="eco-comparison__value">superior</strong>
+      al promedio de tu barrio.
+    </p>
+  </div>
+
+  <div class="eco-reference">
+    <small>
+      * Cálculo basado en ciclo de vida promedio por categoría.
+      <a href="#" id="eco-methodology-link" data-action="open-modal" data-modal="eco-modal">
+        Ver metodología</a
+      >.
+    </small>
+  </div>
+
+  <Button slot="footer" appearance="flat" variant="primary" data-close-modal="eco-modal">Entendido</Button>
+</Modal>

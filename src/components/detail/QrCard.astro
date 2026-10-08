@@ -1,0 +1,42 @@
+---
+/**
+ * Exchange QR card: status badge, QR image (drawn on the hidden canvas by
+ * src/scripts/pages/detail.js), code text and download / share / reissue
+ * actions (T33 - Miguel Sanca: reissue, HU39).
+ */
+import Button from "../ui/Button.astro";
+import CardSection from "../ui/CardSection.astro";
+import { asset } from "../../lib/url";
+---
+
+<CardSection
+  class="qr-card"
+  aria-label="Código QR de la publicación"
+  title="QR de intercambio"
+  titleKey="detail_qr_title"
+  headerClass="qr-card__header"
+  bodyClass="qr-card__body"
+>
+  <span slot="header-extra" class="badge" id="qr-status">Pendiente</span>
+  <img
+    id="qr-image"
+    src={asset("images/QR-generico.svg")}
+    alt="QR de la publicación"
+    width="220"
+    height="220"
+    loading="lazy"
+  />
+  <canvas id="qr-canvas" width="220" height="220" aria-hidden="true" class="qr-canvas"></canvas>
+  <p class="qr-code" id="qr-code-text">Qr generico</p>
+  <div class="qr-actions">
+    <Button appearance="flat" variant="secondary" id="qr-download" disabled data-i18n="detail_qr_download">
+      Descargar
+    </Button>
+    <Button appearance="flat" variant="secondary" id="qr-share" disabled data-i18n="common_share">
+      Compartir
+    </Button>
+    <Button appearance="flat" variant="outline" id="qr-reissue" title="Reemitir QR perdido" aria-label="Reemitir QR perdido">
+      <i class="fas fa-sync-alt" aria-hidden="true"></i>
+    </Button>
+  </div>
+</CardSection>

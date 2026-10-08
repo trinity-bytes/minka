@@ -1,0 +1,52 @@
+---
+/**
+ * Rate the exchange (T18 - Leonardo Chavez). Star selection, validation and
+ * feedback live in src/scripts/pages/detail.js (setupRatingModal).
+ */
+import Button from "../ui/Button.astro";
+import Modal from "../ui/Modal.astro";
+
+const STARS = [1, 2, 3, 4, 5];
+---
+
+<Modal id="rating-modal" title="Calificar intercambio" titleKey="common_rate_title" closeIcon="xmark">
+  <p class="modal__subtitle">
+    Cuéntanos cómo fue el intercambio con
+    <strong id="rating-user">Usuario Demo</strong>.
+  </p>
+  <form id="rating-form" novalidate>
+    <div class="rating-stars" role="radiogroup" aria-label="Selecciona la calificación">
+      {
+        STARS.map((n) => (
+          <button
+            type="button"
+            class="rating-star"
+            data-value={n}
+            aria-label={`${n} ${n === 1 ? "estrella" : "estrellas"}`}
+          >
+            <i class="fa-solid fa-star" aria-hidden="true" />
+          </button>
+        ))
+      }
+    </div>
+    <label class="form-label" for="rating-comment" data-i18n="common_comment_opt">
+      Comentario (opcional)
+    </label>
+    <textarea
+      id="rating-comment"
+      name="rating-comment"
+      rows="3"
+      maxlength="240"
+      placeholder="¿Qué salió bien? ¿Hay algo a mejorar?"></textarea>
+    <p class="modal__hint">Se publicará en el perfil después de ser revisado.</p>
+    <div class="modal__actions">
+      <Button appearance="flat" variant="secondary" data-close-modal="rating-modal" data-i18n="common_cancel">
+        Cancelar
+      </Button>
+      <Button appearance="flat" variant="primary" type="submit" data-i18n="common_rate_send">
+        Enviar calificación
+      </Button>
+    </div>
+    <p class="form-feedback" id="rating-feedback" role="status" aria-live="polite"></p>
+  </form>
+</Modal>
