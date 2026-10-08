@@ -35,8 +35,8 @@ Components remove duplication and give every page the same primitives; Astro kee
 - [x] T3 Port auth, busqueda, home. Route: delegated.
 - [x] T4 Port detalle, publicar, dashboard. Route: delegated.
 - [x] T5 Port comunidad, notificaciones, gamification. Route: delegated.
-- [ ] T6 Port perfil, settings, chat, about. Route: delegated.
-- [ ] T7 Polish: images via astro:assets, Fraunces WOFF2, landing a11y (pausable rotating word, menu focus/Escape, invalid ARIA), real or disabled links, global high-contrast pref, empty/loading/error states, 404. Route: delegated.
+- [x] T6 Port perfil, settings, chat, about. Route: delegated.
+- [x] T7 Polish: images via astro:assets, Fraunces WOFF2, landing a11y (pausable rotating word, menu focus/Escape, invalid ARIA), real or disabled links, global high-contrast pref, empty/loading/error states, 404. Route: delegated.
 
 ## Acceptance criteria
 - `npm run build` succeeds and deploys to Pages.
@@ -59,6 +59,14 @@ Components remove duplication and give every page the same primitives; Astro kee
 - 2026-10-07: T5 done in efea179 (delegated; small diff, mostly moves). Checks: build OK (parent spot check), `astro check` 0 errors, 53/53 URLs 200; flows traced in code. User browser check of comunidad/notificaciones/gamification passed (2026-10-07).
   - Fixed: undefined `--text-secondary` / `--primary-color` vars (slight visual change: secondary gray text, green points), inline hex in ranking, inline onclick for redeem, small a11y.
   - Carry-overs (pre-existing): challenge deadline off by one day (UTC date parsing); gamification tabs lack tablist ARIA; dead `updateSummary` in notifications.js; badge variant colors approximated to tokens.
+- 2026-10-07: T6 done in cfc0f8a (delegated; ~1.3k added / 6.5k removed). Checks: build 14 pages OK (parent spot check), `astro check` 0 errors, 96/96 URLs 200, no legacy/CDN refs in dist. User browser check of perfil/settings/chat/about passed (2026-10-07).
+  - Legacy shell retired: public/pages, all legacy CSS, components.js, main.js, Nunito removed. public/ keeps fonts, images, favicon and 8 classic core scripts (guard must run sync in head).
+  - Accessibility prefs (`minka_preferences`) applied on every page pre-paint via BaseLayout inline script; HC/low-data CSS in global.css.
+  - Fixed: perfil identity tabs (never styled/hidden), about links, dead footer links → plain text, perfil char counter, settings switch labels.
+  - Visual changes: about now uses landing shell; modals on perfil/settings use ui/Modal with close button.
+  - Carry-overs for T7: AppFooter Términos/Privacidad both → about; console.log in profile.js; inline onclick in profile/settings rendered HTML; 5 unreferenced images in public/assets/images.
+- 2026-10-08: T7 done in aa1b738 (delegated; interrupted once by a rate limit and resumed; ~820 authored lines across 7 independent goals). Checks: build 15 pages OK (parent spot check), `astro check` 0 errors, 15/15 pages 200, 149/150 assets (1 crawler false positive), 0 literal colors, 0 onclick/console.log. dist 10.1M → 8.0M; LCP 690 KB JPG → AVIF 6–25 KB; Fraunces 360 KB → 195 KB WOFF2. Added @astrojs/sitemap ^3.7.4. User approved and requested the release (2026-10-08).
+  - Open (pre-existing / minor): hero images duplicated in public/items and src/assets/hero; saved-search tags not keyboard reachable; 34 astro check hints from legacy globals in page JS. Empty/loading/error state design moved to the visual-language feature (it is design work, not architecture).
 
 ## Next step
-T6 (in progress, delegated).
+Release 4.0.0 via gitflow (feature → develop → release/4.0.0 → main + tag). Then new feature: vivid organic visual language.
