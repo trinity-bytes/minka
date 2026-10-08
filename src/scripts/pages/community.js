@@ -1,6 +1,13 @@
 // T32 - Retos Comunitarios (HU38)
 // Estado persistido en Store: { challenges: [...], joined: [ids] }
 
+// "YYYY-MM-DD" as a local calendar date. `new Date("2025-12-15")` is parsed
+// as UTC midnight, which shows the previous day in UTC-5 (Lima).
+function parseLocalDate(value) {
+  const [year, month, day] = String(value).split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 const SEED_CHALLENGES = [
   {
     id: "ch-001",
@@ -197,9 +204,7 @@ function renderChallenges() {
         <div class="challenge-card__header">
           <span class="challenge-card__badge">${challenge.district}</span>
           <span class="challenge-card__deadline">
-            <i class="far fa-clock" aria-hidden="true"></i> Hasta ${new Date(
-              challenge.deadline
-            ).toLocaleDateString()}
+            <i class="far fa-clock" aria-hidden="true"></i> Hasta ${parseLocalDate(challenge.deadline).toLocaleDateString()}
           </span>
         </div>
         <div class="challenge-card__body">

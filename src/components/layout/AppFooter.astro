@@ -3,24 +3,27 @@
  * App shell footer, server-rendered port of FOOTER_HTML in
  * public/assets/scripts/core/components.js.
  */
-import { asset, url } from "../../lib/url";
+import { Image } from "astro:assets";
+import { url } from "../../lib/url";
+import logoNegative from "../../assets/images/minka-logo-negativo-blanco.png";
 
-const links = [
+// Links without a destination page yet render as plain text (as in SiteFooter).
+const links: { href?: string; label: string }[] = [
   { href: url("pages/about.html"), label: "Acerca de" },
   { href: `${url()}#impacto`, label: "Impacto" },
-  { href: url("pages/about.html"), label: "Términos" },
-  { href: url("pages/about.html"), label: "Privacidad" },
+  { label: "Términos" },
+  { label: "Privacidad" },
 ];
 ---
 
 <footer class="app-footer">
   <div class="container app-footer__content">
     <div class="app-footer__brand">
-      <img src={asset("images/minka-logo-negativo-blanco.png")} alt="Mink'a" class="app-footer__logo" />
+      <Image src={logoNegative} width={82} densities={[1, 2]} alt="Mink'a" class="app-footer__logo" />
       <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
     </div>
     <div class="app-footer__links">
-      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+      {links.map((link) => (link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>))}
     </div>
   </div>
 </footer>
@@ -66,7 +69,8 @@ const links = [
     flex-wrap: wrap;
   }
 
-  .app-footer__links a {
+  .app-footer__links a,
+  .app-footer__links span {
     color: var(--color-paper);
     text-decoration: none;
     font-size: 0.9rem;

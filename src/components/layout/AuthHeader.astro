@@ -3,13 +3,15 @@
  * Minimal logo-only header of the auth page (port of the static
  * .auth-header in public/pages/auth.html + core/layout.css).
  */
-import { asset, url } from "../../lib/url";
+import { Image } from "astro:assets";
+import { url } from "../../lib/url";
+import logo from "../../assets/images/minka-logo.png";
 ---
 
 <header class="auth-header">
   <div class="auth-header__container">
     <a href={url()} class="auth-header__logo" aria-label="Mink'a, inicio">
-      <img src={asset("images/minka-logo.png")} alt="Mink'a" class="auth-header__logo-img" />
+      <Image src={logo} width={124} densities={[1, 2]} alt="Mink'a" class="auth-header__logo-img" loading="eager" />
     </a>
   </div>
 </header>

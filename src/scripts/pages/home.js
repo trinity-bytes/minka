@@ -103,7 +103,7 @@ function renderPopular() {
         <div class="error-state__icon" aria-hidden="true">⚠️</div>
         <h3>Error al cargar</h3>
         <p>No pudimos leer las publicaciones.</p>
-        <button class="btn btn-secondary" type="button" onclick="location.reload()">Reintentar</button>
+        <button class="btn btn-secondary" type="button" data-reload>Reintentar</button>
       </div>`;
     return;
   }
@@ -118,16 +118,14 @@ function renderPopular() {
       (item) => `
         <article class="popular-card is-entering" aria-label="${
           item.title
-        }" onclick="window.location.href='detalle.html?id=${item.id}'">
+        }" data-item-id="${item.id}">
           <div class="popular-card__media">
             <img src="${item.images ? item.images[0] : item.image}" alt="${
         item.title
       }" loading="lazy" decoding="async" width="400" height="200" />
             <button class="fav-toggle" type="button" aria-pressed="${
               window.Store ? Store.isFavorite(item.id) : false
-            }" aria-label="Marcar como favorito" onclick="event.stopPropagation(); window.toggleHomeFavorite('${
-        item.id
-      }', this)">
+            }" aria-label="Marcar como favorito" data-fav-id="${item.id}">
               <i class="fas fa-heart" aria-hidden="true"></i>
             </button>
           </div>
@@ -146,12 +144,12 @@ function renderPopular() {
             <div class="popular-card__footer">
               <a class="btn btn-secondary" href="busqueda.html?category=${encodeURIComponent(
                 item.category
-              )}" onclick="event.stopPropagation()">${
+              )}">${
         window.I18n ? window.I18n.t("card_view_similar") : "Ver similar"
       }</a>
               <a class="btn btn-primary" href="detalle.html?id=${
                 item.id
-              }" onclick="event.stopPropagation()">${
+              }">${
         window.I18n ? window.I18n.t("card_view_detail") : "Ver detalle"
       }</a>
             </div>
@@ -169,8 +167,25 @@ document.addEventListener("languageChanged", () => {
   renderPopular();
 });
 
+// Cards are rendered via innerHTML: one delegated listener handles retry,
+// favorites (without navigating), inner links and whole-card navigation.
+popularListEl?.addEventListener("click", (e) => {
+  if (e.target.closest("[data-reload]")) {
+    location.reload();
+    return;
+  }
+  const favBtn = e.target.closest("[data-fav-id]");
+  if (favBtn) {
+    toggleHomeFavorite(favBtn.dataset.favId, favBtn);
+    return;
+  }
+  if (e.target.closest("a")) return;
+  const card = e.target.closest("[data-item-id]");
+  if (card) window.location.href = `detalle.html?id=${encodeURIComponent(card.dataset.itemId)}`;
+});
+
 // Favorito persistido desde la card (sin navegar)
-window.toggleHomeFavorite = (id, btn) => {
+function toggleHomeFavorite(id, btn) {
   if (!window.Store) return;
   Store.toggleFavorite(id);
   btn.setAttribute("aria-pressed", String(Store.isFavorite(id)));
@@ -178,7 +193,7 @@ window.toggleHomeFavorite = (id, btn) => {
     "aria-label",
     Store.isFavorite(id) ? "Quitar de favoritos" : "Marcar como favorito"
   );
-};
+}
 
 // T19 - Andy Salcedo: Mejorar interactividad de búsqueda
 const searchForm = document.querySelector(".home-search__form");

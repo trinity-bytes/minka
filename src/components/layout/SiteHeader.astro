@@ -5,7 +5,9 @@
  * pass `anchorBase={url()}` so the anchors point back to the landing.
  */
 import Button from "../ui/Button.astro";
-import { asset, url } from "../../lib/url";
+import { Image } from "astro:assets";
+import { url } from "../../lib/url";
+import logo from "../../assets/images/minka-logo.png";
 
 interface NavLink {
   href: string;
@@ -41,7 +43,7 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
 <header class="site-header" data-site-header>
   <div class="site-header__inner">
     <a href={homeHref} class="site-header__logo" aria-label="Mink'a, inicio">
-      <img src={asset("images/minka-logo.png")} alt="Mink'a" />
+      <Image src={logo} width={114} densities={[1, 2]} alt="Mink'a" loading="eager" />
     </a>
     <nav class="site-nav" id="menu-principal" aria-label="Navegación principal">
       {navLinks.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
@@ -68,6 +70,8 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
 </header>
 
 <script>
+  import { createMenu } from "../../scripts/menu-disclosure";
+
   const header = document.querySelector<HTMLElement>("[data-site-header]");
   if (header) {
     const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 40);
@@ -77,16 +81,20 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     const toggle = header.querySelector<HTMLButtonElement>(".site-nav-toggle");
     const nav = header.querySelector<HTMLElement>(".site-nav");
     if (toggle && nav) {
-      const setOpen = (open: boolean) => {
-        toggle.setAttribute("aria-expanded", String(open));
-        toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
-        nav.classList.toggle("is-open", open);
-      };
-      toggle.addEventListener("click", () => {
-        setOpen(toggle.getAttribute("aria-expanded") !== "true");
+      const menu = createMenu({
+        toggle,
+        panel: nav,
+        onChange: (open) => {
+          toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+          nav.classList.toggle("is-open", open);
+        },
       });
       nav.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => setOpen(false));
+        link.addEventListener("click", () => menu.setOpen(false));
+      });
+      // Crossing into the desktop layout hides the toggle: reset the menu.
+      window.matchMedia("(min-width: 861px)").addEventListener("change", (e) => {
+        if (e.matches && menu.isOpen()) menu.setOpen(false);
       });
     }
   }

@@ -40,6 +40,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalOpeners = document.querySelectorAll("[data-open-modal]");
   const modalClosers = document.querySelectorAll("[data-close-modal]");
   const myItemsList = document.getElementById("my-items-list");
+  // Item cards are rendered via innerHTML: one delegated listener opens the
+  // detail page on click or Enter (cards carry role="link" + tabindex).
+  const openItemCard = (e) => {
+    const card = e.target.closest("[data-item-id]");
+    if (!card) return;
+    if (e.type === "keydown" && e.key !== "Enter") return;
+    window.location.href = `detalle.html?id=${encodeURIComponent(card.dataset.itemId)}`;
+  };
+  myItemsList?.addEventListener("click", openItemCard);
+  myItemsList?.addEventListener("keydown", openItemCard);
   let viewedUserId = null; // seteado en init() si llega ?user=
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -134,9 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ? window.I18n.t(statusKey)
           : item.status || "Activo";
         return `
-    <div class="profile-item-card" onclick="window.location.href='detalle.html?id=${
-      item.id
-    }'">
+    <div class="profile-item-card" role="link" tabindex="0" data-item-id="${item.id}">
       <img src="${
         item.images ? item.images[0] : "../assets/images/items/default.svg"
       }" alt="${item.title}" />
@@ -177,32 +185,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle Verification Actions
     const verifyButtons = document.querySelectorAll("[data-verify-action]");
-    console.log("Found", verifyButtons.length, "verification buttons");
 
     verifyButtons.forEach((btn) => {
-      console.log(
-        "Setting up listener for button:",
-        btn.dataset.verifyAction,
-        btn
-      );
       btn.addEventListener("click", (e) => {
         e.preventDefault(); // Prevent any default action
         e.stopPropagation(); // Stop event bubbling
         const level = e.currentTarget.dataset.verifyAction; // Use currentTarget to ensure we get the button
-        console.log("Button clicked! Level:", level);
         handleVerification(level, e.currentTarget);
       });
     });
   }
 
   function handleVerification(level, btnElement) {
-    console.log(
-      "handleVerification called with level:",
-      level,
-      "button:",
-      btnElement
-    );
-
     if (!identitySuccess || !identityError) {
       console.error("Missing identitySuccess or identityError elements");
       return;
@@ -223,20 +217,10 @@ document.addEventListener("DOMContentLoaded", () => {
       ? window.I18n.t("profile.identityModal.processing")
       : "Procesando...";
 
-    console.log(
-      "Changing button text from:",
-      originalText,
-      "to:",
-      processingText
-    );
     btn.textContent = processingText;
     btn.disabled = true;
 
     setTimeout(() => {
-      console.log(
-        "Verification completed, restoring button text to:",
-        originalText
-      );
       btn.textContent = originalText;
       btn.disabled = false;
 
@@ -249,7 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
         identitySuccess.textContent = window.I18n
           ? window.I18n.t("profile.identityModal.successBasic")
           : "✓ Teléfono verificado. Insignia 'Brote Verificado' otorgada.";
-        console.log("Basic verification completed");
       } else if (level === "advanced") {
         // HU27: Advanced <= 24 hours (Simulated instant for demo)
         profileState.verified = true;
@@ -259,7 +242,6 @@ document.addEventListener("DOMContentLoaded", () => {
         identitySuccess.textContent = window.I18n
           ? window.I18n.t("profile.identityModal.successAdvanced")
           : "✓ Documentos enviados. Insignia 'Raíz Verificada' otorgada.";
-        console.log("Advanced verification completed");
       }
 
       identitySuccess.hidden = false;
@@ -680,7 +662,7 @@ document.addEventListener("DOMContentLoaded", () => {
         review.canAppeal
           ? `
         <div class="review-actions">
-          <button class="btn-appeal" onclick="openAppealModal(${review.id})">
+          <button type="button" class="btn-appeal" data-appeal-review="${review.id}">
             <i class="fas fa-flag"></i> ${
               window.I18n
                 ? window.I18n.t("profile.messages.appealAction")
@@ -742,5 +724,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inicializar reseñas
   renderReviews();
 
-  window.openAppealModal = openAppealModal;
+  reviewsList?.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-appeal-review]");
+    if (btn) openAppealModal(Number(btn.dataset.appealReview));
+  });
 });

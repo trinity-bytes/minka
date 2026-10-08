@@ -6,7 +6,9 @@
  * `anchorBase={url()}` so `#anchor` links point back to the landing.
  */
 import Icon, { type IconName } from "../ui/Icon.astro";
-import { asset, url } from "../../lib/url";
+import { Image } from "astro:assets";
+import { url } from "../../lib/url";
+import logoNegative from "../../assets/images/minka-logo-negativo-blanco.png";
 
 interface FooterLink {
   href?: string;
@@ -79,7 +81,7 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     <div class="site-footer__grid">
       <div>
         <a href={homeHref} class="site-footer__logo" aria-label="Mink'a, inicio">
-          <img src={asset("images/minka-logo-negativo-blanco.png")} alt="Mink'a" />
+          <Image src={logoNegative} width={139} densities={[1, 2]} alt="Mink'a" />
         </a>
         <p class="site-footer__desc">
           Plataforma de trueque para economía circular. Construyendo una Lima más sostenible, un

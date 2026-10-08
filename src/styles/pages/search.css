@@ -515,6 +515,7 @@
 
 .map-panel__image {
   width: 100%;
+  height: auto;
   border: 1.5px solid var(--color-ink);
   border-radius: var(--radius-md);
   object-fit: cover;

@@ -84,12 +84,6 @@
     filterType: document.getElementById("filter-type"),
     markAll: document.getElementById("mark-all-read"),
     clearRead: document.getElementById("clear-read"),
-    summary: {
-      unread: document.getElementById("summary-unread"),
-      messages: document.getElementById("summary-messages"),
-      matches: document.getElementById("summary-matches"),
-      reminders: document.getElementById("summary-reminders"),
-    },
     prefs: {
       messages: document.getElementById("pref-messages"),
       matches: document.getElementById("pref-matches"),
@@ -111,7 +105,6 @@
     saveFeed();
     renderFeed();
     applyPrefsToUI();
-    updateSummary();
     bindEvents();
   }
   if (document.readyState === "loading") {
@@ -152,7 +145,6 @@
 
     if (!filtered.length) {
       ui.list.innerHTML = `<p class="empty">${I18n.t("notif_empty")}</p>`;
-      updateSummary();
       return;
     }
 
@@ -211,8 +203,6 @@
         window.location.href = node.dataset.href;
       });
     });
-
-    updateSummary();
   }
 
   function handleAction(button) {
@@ -312,16 +302,4 @@
     });
   }
 
-  function updateSummary() {
-    if (!ui.summary || !ui.summary.unread) return;
-    const unread = feed.filter((n) => n.unread).length;
-    const messages = feed.filter((n) => n.type === "message").length;
-    const matches = feed.filter((n) => n.type === "match").length;
-    const reminders = feed.filter((n) => n.type === "reminder").length;
-
-    ui.summary.unread.textContent = unread;
-    ui.summary.messages.textContent = messages;
-    ui.summary.matches.textContent = matches;
-    ui.summary.reminders.textContent = reminders;
-  }
 })();

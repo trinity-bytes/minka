@@ -3,28 +3,31 @@
 import SectionHead from "../ui/SectionHead.astro";
 import Sticker from "../ui/Sticker.astro";
 import LandingSection from "./LandingSection.astro";
-import { asset } from "../../lib/url";
+import { Picture } from "astro:assets";
+import appHome from "../../assets/images/landing/app-home.png";
+import appDashboard from "../../assets/images/landing/app-dashboard.png";
+import appChat from "../../assets/images/landing/app-chat.png";
 
 const frames = [
   {
     position: "side-l",
     sticker: { label: "Explora tu barrio", tone: "green", side: "l" },
     url: "minka.pe/inicio",
-    image: "app-home.png",
+    image: appHome,
     alt: "Pantalla de inicio de la app Mink'a con publicaciones populares y buscador",
   },
   {
     position: "main",
     sticker: { label: "Tu impacto, en números", tone: "amber", side: "r" },
     url: "minka.pe/impacto",
-    image: "app-dashboard.png",
+    image: appDashboard,
     alt: "Dashboard de impacto de Mink'a con CO₂ evitado, agua ahorrada y gráficos",
   },
   {
     position: "side-r",
     sticker: { label: "Negocia por chat", tone: "terra", side: "r" },
     url: "minka.pe/chats",
-    image: "app-chat.png",
+    image: appChat,
     alt: "Chat de Mink'a para coordinar un trueque con puntos de encuentro sugeridos",
   },
 ] as const;
@@ -56,7 +59,15 @@ const frames = [
             <span class="frame__dot frame__dot--g" />
             <span class="frame__url">{frame.url}</span>
           </div>
-          <img src={asset(`images/landing/${frame.image}`)} loading="lazy" decoding="async" alt={frame.alt} />
+          <Picture
+            src={frame.image}
+            formats={["avif", "webp"]}
+            widths={[360, 540, 720, 1080]}
+            sizes="(max-width: 860px) 92vw, 480px"
+            loading="lazy"
+            decoding="async"
+            alt={frame.alt}
+          />
         </figure>
       ))
     }

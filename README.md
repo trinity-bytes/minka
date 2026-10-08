@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 -->
 <h1 align="center">Mink’a Landing Page</h1>
 <p align="center">
-  <img src="public/assets/images/minka-logo.png" alt="Logotipo de Mink’a" width="160">
+  <img src="src/assets/images/minka-logo.png" alt="Logotipo de Mink’a" width="160">
 </p>
 <p align="center"><strong>Economía circular al alcance de tu comunidad</strong></p>
 <p align="center">
@@ -56,16 +56,35 @@ Mink’a es una plataforma digital orientada a la economía circular y el truequ
 ## 🏗️ Arquitectura de la Landing
 
 ```text
-astro.config.mjs        # Configuración de Astro (salida estática, base /minka)
-src/                    # Páginas y componentes Astro (migración en curso)
-public/                 # Sitio heredado, servido sin cambios
-├── index.html          # Landing principal
-├── pages/              # Páginas de la app (auth, busqueda, home, ...)
+astro.config.mjs              # Salida estática, base /minka, build.format "file", sitemap
+src/
+├── pages/                    # Rutas: index.astro (landing), 404.astro y pages/*.astro
+│                             # (auth, busqueda, home, detalle, publicar, dashboard, comunidad,
+│                             #  notificaciones, gamification, perfil, settings, chat, about)
+├── components/
+│   ├── layout/               # BaseLayout, AppLayout, SiteHeader/Footer, AppHeader/Footer, AuthHeader
+│   ├── ui/                   # Primitivas compartidas: Button, Card, Chip, Modal, PageHead, Stat, ...
+│   └── landing/ auth/ search/ home/ detail/ publish/ dashboard/
+│       exchange/ notifications/   # Componentes por área
+├── assets/images/            # Imágenes optimizadas con astro:assets (AVIF/WebP + srcset)
+├── styles/
+│   ├── tokens.css            # Única fuente de design tokens
+│   ├── fonts.css             # @font-face (WOFF2)
+│   ├── global.css            # Base, utilidades y preferencias de accesibilidad
+│   ├── app.css               # Estilos compartidos del shell de la app
+│   └── pages/                # Estilos por página
+├── scripts/
+│   ├── pages/                # Comportamiento por página (módulos ES)
+│   ├── menu-disclosure.ts    # Menú móvil accesible (Escape, foco, focus trap)
+│   ├── reveal.ts             # Animaciones de aparición
+│   └── tokens.ts             # Colores de tokens para canvas (Chart.js)
+└── lib/                      # Utilidades TS: url/asset con base, sesión, categorías, eco
+public/                       # Copiado tal cual a dist/
+├── favicon.ico
 └── assets/
-    ├── styles/{core,pages}/   # Estilos globales y por página
-    ├── scripts/{core,pages}/  # Comportamientos interactivos
-    ├── images/
-    └── fonts/
+    ├── fonts/                # Inter y Fraunces (variables), Pacifico; todo en WOFF2
+    ├── images/               # Imágenes con URL estable usadas desde JS (items, avatares, íconos, QR)
+    └── scripts/core/         # Scripts clásicos compartidos (store, session, guard, i18n, toast, modal)
 ```
 
 <a id="tecnologias-utilizadas"></a>
@@ -85,7 +104,10 @@ public/                 # Sitio heredado, servido sin cambios
 
 1. **Clona el repositorio:** `git clone https://github.com/Reflow-Tech-UPC/Minka-Landingpage.git`
 2. **Instala dependencias:** requiere Node 24 (ver `.nvmrc`); ejecuta `npm install`.
-3. **Ejecuta en local:** `npm run dev` y abre `http://localhost:4321/minka/index.html`. Para validar el build: `npm run build && npm run preview`. Para revisar tipos: `npm run check`.
+3. **Ejecuta en local:** `npm run dev` y abre `http://localhost:4321/minka/`.
+   - `npm run build`: genera el sitio estático en `dist/` (incluye `404.html` y `sitemap-index.xml`).
+   - `npm run preview`: sirve `dist/` para validar el build.
+   - `npm run check`: revisa tipos y plantillas con `astro check`.
 4. **Crea una rama de trabajo:** `git checkout -b feature/nueva-seccion`
 5. **Haz commit con convenciones claras** (ej. `feat: agrega sección de preguntas frecuentes`).
 6. **Publica en GitHub Pages:** al fusionar con la rama principal, el workflow ejecuta `npm ci && npm run build` y publica `dist/` en GitHub Pages.

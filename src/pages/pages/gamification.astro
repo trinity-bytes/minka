@@ -46,10 +46,20 @@ const TABS = [
     </section>
 
     <!-- T24 - Lucero Pipa: Navegación de Pestañas -->
-    <div class="gamification-tabs">
+    <div class="gamification-tabs" role="tablist" aria-label="Secciones de Eco-Puntos">
       {
         TABS.map((t) => (
-          <button type="button" class:list={["tab-btn", t.active && "active"]} data-tab={t.id} data-i18n={t.key}>
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${t.id}`}
+            aria-selected={t.active ? "true" : "false"}
+            aria-controls={t.id}
+            tabindex={t.active ? 0 : -1}
+            class:list={["tab-btn", t.active && "active"]}
+            data-tab={t.id}
+            data-i18n={t.key}
+          >
             {t.label}
           </button>
         ))
@@ -57,7 +67,7 @@ const TABS = [
     </div>
 
     <!-- T24 - Lucero Pipa: Contenido de Pestañas -->
-    <div class="tab-content active" id="earn">
+    <div class="tab-content active" id="earn" role="tabpanel" aria-labelledby="tab-earn" tabindex="0">
       <h2 data-i18n="gami_earn_title">¿Cómo ganar Eco-Puntos?</h2>
       <div class="earn-table-container">
         <table class="earn-table">
@@ -75,7 +85,7 @@ const TABS = [
       </div>
     </div>
 
-    <div class="tab-content" id="redeem">
+    <div class="tab-content" id="redeem" role="tabpanel" aria-labelledby="tab-redeem" tabindex="0">
       <h2 data-i18n="gami_rewards_title">Catálogo de Recompensas</h2>
       <p>Canjea tus puntos por beneficios exclusivos.</p>
       <div class="rewards-grid" id="rewards-catalog">
@@ -83,7 +93,7 @@ const TABS = [
       </div>
     </div>
 
-    <div class="tab-content" id="ranking">
+    <div class="tab-content" id="ranking" role="tabpanel" aria-labelledby="tab-ranking" tabindex="0">
       <div class="ranking-header">
         <h2 data-i18n="gami_ranking_title">Ranking Barrial</h2>
         <div class="ranking-controls">
@@ -97,7 +107,7 @@ const TABS = [
       </div>
     </div>
 
-    <div class="tab-content" id="history">
+    <div class="tab-content" id="history" role="tabpanel" aria-labelledby="tab-history" tabindex="0">
       <h2 data-i18n="gami_history_title">Historial de Puntos</h2>
       <ul class="history-list" id="points-history">
         <!-- History rendered by gamification.js -->

@@ -2,7 +2,8 @@
 /**
  * Reference map beside the search results (static demo image).
  */
-import { asset } from "../../lib/url";
+import { Picture } from "astro:assets";
+import map from "../../assets/images/mapa-ejemplo-minka.png";
 ---
 
 <aside class="map-panel" aria-label="Mapa de cercanía">
@@ -11,8 +12,11 @@ import { asset } from "../../lib/url";
     <p>Se muestran los distritos de referencia según la distancia.</p>
   </div>
   <div class="map-panel__body">
-    <img
-      src={asset("images/mapa-ejemplo-minka.png")}
+    <Picture
+      src={map}
+      formats={["avif", "webp"]}
+      widths={[400, 640, 1000]}
+      sizes="(max-width: 1024px) 100vw, 400px"
       alt="Mapa referencial"
       class="map-panel__image"
       loading="lazy"

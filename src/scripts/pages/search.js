@@ -33,7 +33,7 @@ const DISTRICT_KM = {
   Lince: 4,
 };
 
-const state = {
+const DEFAULT_FILTERS = Object.freeze({
   query: "",
   category: "",
   exclude: "", // T30 - Exclusiones
@@ -41,7 +41,9 @@ const state = {
   minRating: 0,
   maxDistance: 15,
   sort: "relevance",
-};
+});
+
+const state = { ...DEFAULT_FILTERS };
 
 const el = {
   results: document.getElementById("results-list"),
@@ -208,15 +210,27 @@ function attachEvents() {
     persist();
   });
 
+  // "Limpiar" resets every filter, including exclusions and district.
   el.reset.addEventListener("click", () => {
-    state.query = "";
-    state.category = "";
-    state.minRating = 0;
-    state.maxDistance = 15;
-    state.sort = "relevance";
+    Object.assign(state, DEFAULT_FILTERS);
     syncUI();
     render();
     persist();
+  });
+
+  // Rendered via innerHTML: delegated listeners for favorites and saved searches.
+  el.results.addEventListener("click", (e) => {
+    const favBtn = e.target.closest("[data-fav-id]");
+    if (favBtn) toggleFavorite(favBtn.dataset.favId);
+  });
+  el.savedSearchesList?.addEventListener("click", (e) => {
+    const remove = e.target.closest("[data-remove-saved-search]");
+    if (remove) {
+      removeSavedSearch(Number(remove.dataset.removeSavedSearch));
+      return;
+    }
+    const tag = e.target.closest("[data-saved-search]");
+    if (tag) applySavedSearch(Number(tag.dataset.savedSearch));
   });
 
   // Toggle de filtros colapsables (solo visible en mobile)
@@ -298,17 +312,8 @@ function renderChips() {
   container.querySelectorAll("[data-chip]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const key = btn.dataset.chip;
-      const defaults = {
-        query: "",
-        category: "",
-        exclude: "",
-        userLocation: "",
-        minRating: 0,
-        maxDistance: 15,
-        sort: "relevance",
-      };
-      if (key === "all") Object.assign(state, defaults);
-      else state[key] = defaults[key];
+      if (key === "all") Object.assign(state, DEFAULT_FILTERS);
+      else state[key] = DEFAULT_FILTERS[key];
       syncUI();
       render();
       persist();
@@ -434,9 +439,7 @@ function render() {
       }" class="result-card__img" loading="lazy" decoding="async" style="object-fit: cover;" />
             <button class="item-card__favorite ${
               isFav ? "active" : ""
-            }" aria-pressed="${isFav}" onclick="toggleFavorite('${
-        item.id
-      }')" aria-label="${
+            }" aria-pressed="${isFav}" data-fav-id="${item.id}" aria-label="${
         isFav ? "Quitar de favoritos" : "Añadir a favoritos"
       }">
               <i class="fas fa-heart" aria-hidden="true"></i>
@@ -499,10 +502,10 @@ function getFavorites() {
   return Store.getFavorites();
 }
 
-window.toggleFavorite = (id) => {
+function toggleFavorite(id) {
   Store.toggleFavorite(id);
   render();
-};
+}
 
 // T30 - Funciones de Búsquedas Guardadas (HU32)
 function saveCurrentSearch() {
@@ -548,18 +551,16 @@ function loadSavedSearches() {
   el.savedSearchesList.innerHTML = searches
     .map(
       (s) => `
-    <li class="saved-search-tag" onclick="applySavedSearch(${s.id})">
+    <li class="saved-search-tag" data-saved-search="${s.id}">
       <span>${s.query || "Todo"} ${s.category ? `(${s.category})` : ""}</span>
-      <span class="saved-search-remove" onclick="removeSavedSearch(event, ${
-        s.id
-      })">&times;</span>
+      <span class="saved-search-remove" data-remove-saved-search="${s.id}">&times;</span>
     </li>
   `
     )
     .join("");
 }
 
-window.applySavedSearch = (id) => {
+function applySavedSearch(id) {
   const searches = Store.getSavedSearches();
   const search = searches.find((s) => s.id === id);
   if (search) {
@@ -569,14 +570,13 @@ window.applySavedSearch = (id) => {
     syncUI();
     render();
   }
-};
+}
 
-window.removeSavedSearch = (e, id) => {
-  e.stopPropagation();
+function removeSavedSearch(id) {
   const filtered = Store.getSavedSearches().filter((s) => s.id !== id);
   Store.saveSearches(filtered);
   loadSavedSearches();
-};
+}
 
 // T30 - Historial y Sugerencias (HU35)
 function addToHistory(query) {

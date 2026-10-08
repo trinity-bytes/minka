@@ -6,7 +6,9 @@
  * from the session, handles logout and drives the mobile drawer.
  * Icons use Font Awesome classes, loaded by AppLayout (npm package).
  */
-import { asset, isCurrent, url } from "../../lib/url";
+import { Image } from "astro:assets";
+import { isCurrent, url } from "../../lib/url";
+import logo from "../../assets/images/minka-logo.png";
 
 interface AppLink {
   href: string;
@@ -50,7 +52,7 @@ const pathname = Astro.url.pathname;
 <header class="app-header" data-app-header>
   <div class="app-header__container">
     <a href={url("pages/home.html")} class="app-header__logo" aria-label="Ir a inicio">
-      <img src={asset("images/minka-logo.png")} alt="Mink'a" class="app-header__logo-img" />
+      <Image src={logo} width={124} densities={[1, 2]} alt="Mink'a" class="app-header__logo-img" loading="eager" />
     </a>
     <button
       type="button"
@@ -89,6 +91,7 @@ const pathname = Astro.url.pathname;
 <script>
   import { clearSession, isAuthenticated } from "../../lib/session";
   import { url } from "../../lib/url";
+  import { createMenu } from "../../scripts/menu-disclosure";
 
   const header = document.querySelector<HTMLElement>("[data-app-header]");
   const nav = header?.querySelector<HTMLElement>("#app-nav");
@@ -112,25 +115,27 @@ const pathname = Astro.url.pathname;
     const toggle = header.querySelector<HTMLButtonElement>(".app-menu-toggle");
     const overlay = header.querySelector<HTMLElement>("[data-app-nav-overlay]");
 
-    const setOpen = (open: boolean) => {
-      toggle?.setAttribute("aria-expanded", String(open));
-      toggle?.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
-      toggle?.classList.toggle("is-active", open);
-      nav.classList.toggle("is-open", open);
-      overlay?.classList.toggle("is-visible", open);
-      document.body.classList.toggle("mobile-menu-open", open);
-    };
-
-    toggle?.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
-    overlay?.addEventListener("click", () => setOpen(false));
-    nav.querySelectorAll(".app-header__link").forEach((link) => link.addEventListener("click", () => setOpen(false)));
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") setOpen(false);
-    });
-    // Crossing into the desktop layout removes the drawer: reset its state.
-    window.matchMedia("(min-width: 769px)").addEventListener("change", (e) => {
-      if (e.matches) setOpen(false);
-    });
+    if (toggle) {
+      const menu = createMenu({
+        toggle,
+        panel: nav,
+        onChange: (open) => {
+          toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+          toggle.classList.toggle("is-active", open);
+          nav.classList.toggle("is-open", open);
+          overlay?.classList.toggle("is-visible", open);
+          document.body.classList.toggle("mobile-menu-open", open);
+        },
+      });
+      overlay?.addEventListener("click", () => menu.setOpen(false, { restoreFocus: true }));
+      nav
+        .querySelectorAll(".app-header__link")
+        .forEach((link) => link.addEventListener("click", () => menu.setOpen(false)));
+      // Crossing into the desktop layout removes the drawer: reset its state.
+      window.matchMedia("(min-width: 769px)").addEventListener("change", (e) => {
+        if (e.matches && menu.isOpen()) menu.setOpen(false);
+      });
+    }
   }
 </script>
 
@@ -344,7 +349,11 @@ const pathname = Astro.url.pathname;
       flex-wrap: nowrap;
       padding: 72px 20px 24px;
       gap: 4px;
-      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      /* Hidden off-canvas links must not take focus; visibility flips after the slide-out. */
+      visibility: hidden;
+      transition:
+        right 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0s linear 0.3s;
       z-index: 100;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -352,6 +361,8 @@ const pathname = Astro.url.pathname;
 
     :global(html.js) .app-header__nav.is-open {
       right: 0;
+      visibility: visible;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .app-header__link:first-child,

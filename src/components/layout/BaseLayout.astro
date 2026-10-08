@@ -9,6 +9,7 @@ import "../../styles/tokens.css";
 import "../../styles/fonts.css";
 import "../../styles/global.css";
 import { asset, url } from "../../lib/url";
+import ogDefault from "../../assets/images/minka-logo.png";
 
 type PreloadFont = "inter" | "fraunces";
 
@@ -26,7 +27,7 @@ interface Props {
 const {
   title,
   description = "Mink'a es la comunidad de trueque de Lima. Intercambia objetos y servicios con tus vecinos: ahorra dinero y cuida el planeta.",
-  ogImage = asset("images/minka-logo.png"),
+  ogImage = ogDefault.src,
   lang = "es",
   bodyClass,
   mainClass,
@@ -40,7 +41,7 @@ const ogImageUrl = new URL(ogImage, site).href;
 
 const FONT_PRELOADS: Record<PreloadFont, { href: string; type: string }> = {
   inter: { href: asset("fonts/Inter/Inter-Variable.woff2"), type: "font/woff2" },
-  fraunces: { href: asset("fonts/Fraunces/Fraunces-Variable.ttf"), type: "font/ttf" },
+  fraunces: { href: asset("fonts/Fraunces/Fraunces-Variable.woff2"), type: "font/woff2" },
 };
 ---
 

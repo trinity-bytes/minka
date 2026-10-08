@@ -295,20 +295,35 @@ function renderHistory() {
     .join("");
 }
 
+// WAI-ARIA tabs: roving tabindex, aria-selected and arrow/Home/End keys.
 function setupTabs() {
-  const tabs = document.querySelectorAll(".tab-btn");
+  const tabs = Array.from(document.querySelectorAll(".tab-btn[role=tab]"));
   const contents = document.querySelectorAll(".tab-content");
 
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      // Remove active class from all
-      tabs.forEach((t) => t.classList.remove("active"));
-      contents.forEach((c) => c.classList.remove("active"));
+  const activate = (tab, { focus = false } = {}) => {
+    tabs.forEach((t) => {
+      const selected = t === tab;
+      t.classList.toggle("active", selected);
+      t.setAttribute("aria-selected", String(selected));
+      t.tabIndex = selected ? 0 : -1;
+    });
+    contents.forEach((c) => c.classList.toggle("active", c.id === tab.dataset.tab));
+    if (focus) tab.focus();
+  };
 
-      // Add active to current
-      tab.classList.add("active");
-      const targetId = tab.getAttribute("data-tab");
-      document.getElementById(targetId).classList.add("active");
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => activate(tab));
+    tab.addEventListener("keydown", (e) => {
+      const last = tabs.length - 1;
+      const target = {
+        ArrowRight: index === last ? 0 : index + 1,
+        ArrowLeft: index === 0 ? last : index - 1,
+        Home: 0,
+        End: last,
+      }[e.key];
+      if (target === undefined) return;
+      e.preventDefault();
+      activate(tabs[target], { focus: true });
     });
   });
 }

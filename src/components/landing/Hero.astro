@@ -5,9 +5,15 @@
  */
 import Button from "../ui/Button.astro";
 import Sticker from "../ui/Sticker.astro";
-import { asset, url } from "../../lib/url";
+import { Picture } from "astro:assets";
+import { url } from "../../lib/url";
+import bike from "../../assets/images/hero/bicicleta-vintage.jpg";
+import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
+import books from "../../assets/images/hero/set-libros.jpg";
 
 const words = ["ropa", "libros", "muebles", "servicios", "juguetes"];
+// Screen readers get the full sentence once; the animated word is decorative.
+const spokenTitle = `Intercambia ${words.slice(0, -1).join(", ")} o ${words.at(-1)} y haz que Lima gire.`;
 ---
 
 <section class="hero" id="inicio">
@@ -15,7 +21,8 @@ const words = ["ropa", "libros", "muebles", "servicios", "juguetes"];
     <div class="hero__content">
       <Sticker tone="green" data-reveal>✶ La comunidad de trueque de Lima</Sticker>
       <h1 class="hero__title display" data-reveal>
-        Intercambia
+        <span class="sr-only">{spokenTitle}</span>
+        <span aria-hidden="true">Intercambia
         <span class="hero__swap"
           ><span class="hero__word" data-words={words.join(",")}>{words[0]}</span><svg
             class="scribble scribble--circle draw"
@@ -30,8 +37,13 @@ const words = ["ropa", "libros", "muebles", "servicios", "juguetes"];
             ></path></svg
           ></span
         ><br />
-        y haz que <em>Lima gire</em>.
+        y haz que <em>Lima gire</em>.</span
+        >
       </h1>
+      <button type="button" class="hero__pause" data-hero-pause aria-pressed="false" hidden>
+        <span aria-hidden="true" data-hero-pause-icon>❚❚</span>
+        <span data-hero-pause-label>Pausar animación</span>
+      </button>
       <p class="hero__subtitle" data-reveal>
         Publica lo que ya no usas, conecta con vecinos verificados e intercambia sin gastar un sol.
         Ahorro real para ti, menos residuos para la ciudad.
@@ -48,23 +60,33 @@ const words = ["ropa", "libros", "muebles", "servicios", "juguetes"];
 
     <div class="hero__collage">
       <figure class="hero__photo hero__photo--main" data-reveal>
-        <img
-          src={asset("images/items/bicicleta-vintage.jpg")}
+        <Picture
+          src={bike}
+          formats={["avif", "webp"]}
+          widths={[400, 600, 800, 1000]}
+          sizes="(max-width: 640px) 72vw, 400px"
+          loading="eager"
           fetchpriority="high"
           alt="Bicicleta urbana vintage publicada para trueque en Mink'a"
         />
       </figure>
       <figure class="hero__photo hero__photo--b" data-reveal>
-        <img
-          src={asset("images/items/guitarra-acustica.jpg")}
+        <Picture
+          src={guitar}
+          formats={["avif", "webp"]}
+          widths={[240, 480]}
+          sizes="240px"
           loading="lazy"
           decoding="async"
           alt="Guitarra acústica disponible para intercambio"
         />
       </figure>
       <figure class="hero__photo hero__photo--c" data-reveal>
-        <img
-          src={asset("images/items/set-libros.jpg")}
+        <Picture
+          src={books}
+          formats={["avif", "webp"]}
+          widths={[200, 400]}
+          sizes="200px"
           loading="lazy"
           decoding="async"
           alt="Set de libros usados en buen estado"
@@ -104,32 +126,67 @@ const words = ["ropa", "libros", "muebles", "servicios", "juguetes"];
     immediate: reduceMotion,
   });
 
-  // Rotating headline word.
+  // Rotating headline word (decorative: the h1 carries an sr-only sentence).
+  // WCAG 2.2.2: a visible pause control; no rotation at all under reduced motion.
   const wordEl = document.querySelector<HTMLElement>(".hero__word");
+  const pauseBtn = document.querySelector<HTMLButtonElement>("[data-hero-pause]");
+  const pauseIcon = pauseBtn?.querySelector<HTMLElement>("[data-hero-pause-icon]");
+  const pauseLabel = pauseBtn?.querySelector<HTMLElement>("[data-hero-pause-label]");
   const words = (wordEl?.dataset.words ?? "")
     .split(",")
     .map((w) => w.trim())
     .filter(Boolean);
 
-  if (wordEl && words.length > 1) {
+  if (wordEl && pauseBtn && words.length > 1) {
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let index = 0;
-    const next = () => {
-      index = (index + 1) % words.length;
+    let timer: number | undefined;
+    let paused = false;
+
+    const show = (i: number) => {
+      index = i % words.length;
       wordEl.textContent = words[index];
     };
-    window.setInterval(() => {
-      if (reduceMotion) {
-        next();
-        return;
-      }
+    const tick = () => {
       wordEl.classList.add("is-out");
       window.setTimeout(() => {
-        next();
+        show(index + 1);
         wordEl.classList.remove("is-out");
         wordEl.classList.add("is-in");
         window.setTimeout(() => wordEl.classList.remove("is-in"), 340);
       }, 280);
-    }, 2600);
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const start = () => {
+      if (timer === undefined) timer = window.setInterval(tick, 2600);
+    };
+    const renderButton = () => {
+      pauseBtn.setAttribute("aria-pressed", String(paused));
+      if (pauseIcon) pauseIcon.textContent = paused ? "▶" : "❚❚";
+      if (pauseLabel) pauseLabel.textContent = paused ? "Reanudar animación" : "Pausar animación";
+    };
+    const sync = () => {
+      if (motionQuery.matches) {
+        stop();
+        show(0);
+        pauseBtn.hidden = true;
+        return;
+      }
+      pauseBtn.hidden = false;
+      if (paused) stop();
+      else start();
+      renderButton();
+    };
+
+    pauseBtn.addEventListener("click", () => {
+      paused = !paused;
+      sync();
+    });
+    motionQuery.addEventListener("change", sync);
+    sync();
   }
 </script>
 
@@ -266,6 +323,41 @@ const words = ["ropa", "libros", "muebles", "servicios", "juguetes"];
     to {
       stroke-dashoffset: 0;
     }
+  }
+
+  /* Pause control for the rotating word (WCAG 2.2.2). */
+  .hero__pause {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: -10px 0 20px;
+    padding: 4px 12px;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-ink-2);
+    background: transparent;
+    border: 1.5px solid currentColor;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+  }
+
+  .hero__pause[hidden] {
+    display: none;
+  }
+
+  .hero__pause:hover {
+    color: var(--color-ink);
+  }
+
+  .hero__pause:focus-visible {
+    outline: 3px solid var(--color-primary-pop);
+    outline-offset: 2px;
+  }
+
+  .hero__pause [aria-hidden="true"] {
+    font-size: 0.7rem;
+    letter-spacing: -0.1em;
   }
 
   .hero__subtitle {

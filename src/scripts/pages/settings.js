@@ -55,6 +55,15 @@ function loadSessions() {
   const sessionsList = document.getElementById("sessions-list");
   if (!sessionsList) return;
 
+  // Delegated once: rows are re-rendered via innerHTML.
+  if (!sessionsList.dataset.bound) {
+    sessionsList.dataset.bound = "true";
+    sessionsList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-logout-session]");
+      if (btn) logoutSession(Number(btn.dataset.logoutSession));
+    });
+  }
+
   const sessions = getSessions();
 
   if (!sessions.length) {
@@ -85,7 +94,7 @@ function loadSessions() {
       ${
         !session.current
           ? `
-        <button class="btn-icon" onclick="logoutSession(${session.id})" aria-label="Cerrar sesión">
+        <button type="button" class="btn-icon" data-logout-session="${session.id}" aria-label="Cerrar sesión">
           <i class="fas fa-times"></i>
         </button>
       `
@@ -97,7 +106,7 @@ function loadSessions() {
     .join("");
 }
 
-window.logoutSession = (id) => {
+function logoutSession(id) {
   Modal.confirm("¿Cerrar esta sesión?", {
     title: "Cerrar sesión",
     confirmText: "Cerrar sesión",
@@ -111,7 +120,7 @@ window.logoutSession = (id) => {
       Toast.show("Sesión cerrada correctamente.", "success");
     }
   });
-};
+}
 
 function setupEventListeners() {
   const prefs = window.Store ? Store.getPreferences() : {};
