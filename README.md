@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 -->
 <h1 align="center">Mink’a Landing Page</h1>
 <p align="center">
-  <img src="assets/images/minka-logo.png" alt="Logotipo de Mink’a" width="160">
+  <img src="public/assets/images/minka-logo.png" alt="Logotipo de Mink’a" width="160">
 </p>
 <p align="center"><strong>Economía circular al alcance de tu comunidad</strong></p>
 <p align="center">
@@ -56,17 +56,23 @@ Mink’a es una plataforma digital orientada a la economía circular y el truequ
 ## 🏗️ Arquitectura de la Landing
 
 ```text
-public/
-├── index.html          # Página principal con la estructura base del contenido
+astro.config.mjs        # Configuración de Astro (salida estática, base /minka)
+src/                    # Páginas y componentes Astro (migración en curso)
+public/                 # Sitio heredado, servido sin cambios
+├── index.html          # Landing principal
+├── pages/              # Páginas de la app (auth, busqueda, home, ...)
 └── assets/
-    ├── styles/styles.css   # Estilos globales y variables de diseño
-    └── scripts/main.js     # Comportamientos interactivos y componentes dinámicos
+    ├── styles/{core,pages}/   # Estilos globales y por página
+    ├── scripts/{core,pages}/  # Comportamientos interactivos
+    ├── images/
+    └── fonts/
 ```
 
 <a id="tecnologias-utilizadas"></a>
 
 ## 🚀 Tecnologías Utilizadas
 
+- Astro (salida estática) como herramienta de build.
 - HTML5 semántico para estructura y contenido.
 - CSS3 (flexbox, grid y variables personalizadas) para estilos responsivos.
 - JavaScript ES6+ para interactividad ligera y progresiva.
@@ -78,11 +84,11 @@ public/
 ## 🛠️ Guía de Uso y Desarrollo
 
 1. **Clona el repositorio:** `git clone https://github.com/Reflow-Tech-UPC/Minka-Landingpage.git`
-2. **Instala dependencias:** no se requieren dependencias externas; basta con un navegador moderno.
-3. **Ejecuta en local:** abre `public/index.html` en tu navegador favorito.
+2. **Instala dependencias:** requiere Node 24 (ver `.nvmrc`); ejecuta `npm install`.
+3. **Ejecuta en local:** `npm run dev` y abre `http://localhost:4321/minka/index.html`. Para validar el build: `npm run build && npm run preview`. Para revisar tipos: `npm run check`.
 4. **Crea una rama de trabajo:** `git checkout -b feature/nueva-seccion`
 5. **Haz commit con convenciones claras** (ej. `feat: agrega sección de preguntas frecuentes`).
-6. **Publica en GitHub Pages:** al fusionar con la rama principal, el despliegue se actualiza automáticamente.
+6. **Publica en GitHub Pages:** al fusionar con la rama principal, el workflow ejecuta `npm ci && npm run build` y publica `dist/` en GitHub Pages.
 
 <a id="autores"></a>
 
