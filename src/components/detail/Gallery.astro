@@ -1,0 +1,27 @@
+---
+/**
+ * Listing photo gallery: main image + thumbnail strip. The thumbnails,
+ * arrow-key navigation and alt texts are filled in by
+ * src/scripts/pages/detail.js (#gallery, #gallery-main, #gallery-thumbs).
+ */
+import { asset } from "../../lib/url";
+
+interface Props {
+  /** Placeholder shown until the script loads the listing photos. */
+  src?: string;
+}
+
+const { src = asset("images/items/bicicleta-vintage.jpg") } = Astro.props;
+---
+
+<div class="gallery" id="gallery">
+  <img
+    src={src}
+    loading="lazy"
+    decoding="async"
+    alt="Imagen principal"
+    class="gallery__main"
+    id="gallery-main"
+  />
+  <div class="gallery__thumbs" id="gallery-thumbs"></div>
+</div>

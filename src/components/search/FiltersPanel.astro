@@ -1,0 +1,119 @@
+---
+/**
+ * Search filters bar (collapsible on mobile with JS). Element ids are the
+ * contract with src/scripts/pages/search.js.
+ */
+import Button from "../ui/Button.astro";
+import CategorySelect from "./CategorySelect.astro";
+import FilterGroup from "./FilterGroup.astro";
+import { pickCategories } from "../../lib/categories";
+
+const includeCategories = pickCategories([
+  "Ropa y accesorios",
+  "Libros",
+  "Electrónica",
+  "Hogar",
+  "Servicios",
+  "Otros",
+]);
+// Legacy parity: "Otros" cannot be excluded.
+const excludeCategories = includeCategories.filter((c) => c.value !== "Otros");
+
+const sortOptions = [
+  { value: "relevance", label: "Relevancia", i18n: "search_sort_relevance" },
+  { value: "distance", label: "Menor distancia", i18n: "search_sort_distance" },
+  { value: "rating", label: "Mayor reputación", i18n: "search_sort_rating" },
+];
+---
+
+<aside class="filters" aria-label="Filtros">
+  <div class="filters__header">
+    <h2 data-i18n="search_filters_title">Filtros</h2>
+    <button type="button" class="filters__reset" id="reset-filters" data-i18n="search_filters_reset">
+      Limpiar
+    </button>
+    <button
+      type="button"
+      class="filters__toggle"
+      id="filters-toggle"
+      aria-controls="filters-content"
+      aria-expanded="false"
+      aria-label="Mostrar u ocultar filtros"
+    >
+      <i class="fas fa-sliders" aria-hidden="true"></i>
+      <span class="filters__toggle-count" hidden></span>
+      <i class="fas fa-chevron-down filters__toggle-chevron" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div class="filters__content" id="filters-content">
+    <FilterGroup for="filter-category" label="Categoría" labelKey="search_filter_category">
+      <CategorySelect
+        id="filter-category"
+        categories={includeCategories}
+        emptyLabel="Todas"
+        emptyKey="search_cat_all"
+      >
+        <option value="favorites" data-i18n="search_cat_favorites">❤️ Mis Favoritos</option>
+      </CategorySelect>
+    </FilterGroup>
+
+    <!-- T30 - Andy Salcedo: Exclusiones (HU34) -->
+    <FilterGroup for="filter-exclude" label="Excluir Categoría" labelKey="search_filter_exclude">
+      <CategorySelect
+        id="filter-exclude"
+        categories={excludeCategories}
+        emptyLabel="Ninguna"
+        emptyKey="search_exclude_none"
+      />
+    </FilterGroup>
+
+    <FilterGroup for="filter-rating" label="Reputación mínima" labelKey="search_filter_rating">
+      <div class="range-wrapper">
+        <input type="range" id="filter-rating" min="0" max="5" step="0.5" value="0" />
+        <div class="filter-group__hint">
+          <span id="filter-rating-value">0</span>
+          <span data-i18n="search_rating_stars">estrellas o más</span>
+        </div>
+      </div>
+    </FilterGroup>
+
+    <!-- T31 - Andy Salcedo: Tu Ubicación (HU36) -->
+    <FilterGroup for="filter-user-location" label="Tu Ubicación" labelKey="search_filter_location">
+      <div class="filter-group__row">
+        <input
+          type="text"
+          id="filter-user-location"
+          placeholder="Ej. Miraflores"
+          data-i18n="search_location_placeholder"
+        />
+        <Button appearance="flat" variant="outline" id="btn-get-location" title="Usar mi ubicación actual">
+          <i class="fa-solid fa-crosshairs"></i>
+        </Button>
+      </div>
+    </FilterGroup>
+
+    <FilterGroup for="filter-distance" label="Cercanía" labelKey="search_filter_distance">
+      <div class="range-wrapper">
+        <input type="range" id="filter-distance" min="1" max="30" step="1" value="15" />
+        <div class="filter-group__hint">
+          <span data-i18n="search_distance_up_to">Hasta</span>
+          <span id="filter-distance-value">15</span>
+          <span data-i18n="search_distance_km">km</span>
+        </div>
+      </div>
+    </FilterGroup>
+
+    <FilterGroup for="filter-sort" label="Ordenar por" labelKey="search_filter_sort">
+      <select id="filter-sort">
+        {
+          sortOptions.map((option) => (
+            <option value={option.value} data-i18n={option.i18n}>
+              {option.label}
+            </option>
+          ))
+        }
+      </select>
+    </FilterGroup>
+  </div>
+</aside>

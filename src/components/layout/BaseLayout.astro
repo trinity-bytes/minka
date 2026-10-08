@@ -1,0 +1,109 @@
+---
+/**
+ * Document shell shared by every Astro page: <head> meta (title, description,
+ * Open Graph), favicon, font preloads, global CSS, skip link and <main>.
+ * Header/footer are passed through the `header` and `footer` slots so the
+ * landing and the app shell can use different chrome.
+ */
+import "../../styles/tokens.css";
+import "../../styles/fonts.css";
+import "../../styles/global.css";
+import { asset, url } from "../../lib/url";
+import ogDefault from "../../assets/images/minka-logo.png";
+
+type PreloadFont = "inter" | "fraunces";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or site-relative image for social cards. */
+  ogImage?: string;
+  lang?: string;
+  bodyClass?: string;
+  mainClass?: string;
+  preloadFonts?: PreloadFont[];
+}
+
+const {
+  title,
+  description = "Mink'a es la comunidad de trueque de Lima. Intercambia objetos y servicios con tus vecinos: ahorra dinero y cuida el planeta.",
+  ogImage = ogDefault.src,
+  lang = "es",
+  bodyClass,
+  mainClass,
+  preloadFonts = ["inter"],
+} = Astro.props;
+
+const site = Astro.site ?? new URL(Astro.url.origin);
+// build.format "file" reports /minka/index.html for the root page.
+const canonical = new URL(Astro.url.pathname.replace(/index\.html$/, ""), site).href;
+const ogImageUrl = new URL(ogImage, site).href;
+
+const FONT_PRELOADS: Record<PreloadFont, { href: string; type: string }> = {
+  inter: { href: asset("fonts/Inter/Inter-Variable.woff2"), type: "font/woff2" },
+  fraunces: { href: asset("fonts/Fraunces/Fraunces-Variable.woff2"), type: "font/woff2" },
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>document.documentElement.classList.add("js");</script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_PE" />
+    <meta property="og:site_name" content="Mink'a" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/x-icon" href={url("favicon.ico")} />
+    {
+      preloadFonts.map((font) => (
+        <link
+          rel="preload"
+          as="font"
+          type={FONT_PRELOADS[font].type}
+          href={FONT_PRELOADS[font].href}
+          crossorigin
+        />
+      ))
+    }
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    {
+      /* Saved accessibility preferences (settings page; same Store key and
+         values as the retired legacy core script), applied before first
+         paint on every page. Rules: body.high-contrast / body.low-data in
+         global.css. Kept comment-free below: inline code ships verbatim. */
+    }
+    <script is:inline>
+      try {
+        var prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
+        if (prefs.highContrast) document.body.classList.add("high-contrast");
+        if (prefs.lowData) document.body.classList.add("low-data");
+        var fontSize = { small: "14px", medium: "16px", large: "20px" }[prefs.fontSize];
+        if (fontSize) {
+          document.documentElement.style.fontSize = fontSize;
+          document.documentElement.setAttribute("data-font-size", prefs.fontSize);
+        }
+      } catch (e) {}
+    </script>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <slot name="header" />
+    <main id="main" class={mainClass}>
+      <slot />
+    </main>
+    <slot name="footer" />
+    <script>
+      import { initReveal } from "../../scripts/reveal";
+      initReveal();
+    </script>
+  </body>
+</html>

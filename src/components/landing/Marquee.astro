@@ -1,0 +1,93 @@
+---
+/**
+ * Tilted ink band with an infinitely scrolling list of categories.
+ * Decorative (aria-hidden); the group is duplicated for a seamless loop.
+ */
+interface Props {
+  items?: string[];
+}
+
+const {
+  items = ["Ropa", "Libros", "Muebles", "Electrónica", "Servicios", "Juguetes", "Plantas", "Herramientas"],
+} = Astro.props;
+const groups = [0, 1];
+---
+
+<div class="marquee-band" aria-hidden="true">
+  <div class="marquee">
+    <div class="marquee__track">
+      {
+        groups.map(() => (
+          <div class="marquee__group">
+            {items.map((item) => (
+              <>
+                <span class="marquee__item">{item}</span>
+                <span class="marquee__star">✶</span>
+              </>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .marquee-band {
+    background: var(--color-ink);
+    border-top: var(--border-ink);
+    border-bottom: var(--border-ink);
+    transform: rotate(-1.1deg);
+    width: 104%;
+    margin: 0 0 0 -2%;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+  }
+
+  .marquee {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .marquee__track {
+    display: flex;
+    flex-shrink: 0;
+    min-width: 100%;
+    animation: marquee 26s linear infinite;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  .marquee__group {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    padding: 16px 17px;
+    white-space: nowrap;
+  }
+
+  .marquee__item {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 560;
+    font-variation-settings: var(--font-display-axes);
+    color: var(--color-paper);
+  }
+
+  .marquee__star {
+    color: var(--color-primary-pop);
+    font-size: 1.1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none !important;
+    }
+  }
+</style>

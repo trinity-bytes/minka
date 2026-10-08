@@ -1,0 +1,74 @@
+---
+/**
+ * Centered section heading: optional sticker eyebrow, display title (default
+ * slot, may contain <em>) and optional subtitle. `inverse` is for dark bands.
+ */
+import Sticker from "./Sticker.astro";
+
+interface Props {
+  eyebrow?: string;
+  eyebrowTone?: "paper" | "green" | "amber" | "terra";
+  subtitle?: string;
+  level?: 2 | 3;
+  inverse?: boolean;
+  /** Animate in with the reveal-on-scroll behavior. */
+  reveal?: boolean;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  eyebrowTone = "paper",
+  subtitle,
+  level = 2,
+  inverse = false,
+  reveal = true,
+  class: className,
+} = Astro.props;
+
+const Heading = `h${level}` as "h2" | "h3";
+---
+
+<div
+  class:list={["section-head", inverse && "section-head--inverse", className]}
+  data-reveal={reveal ? "" : undefined}
+>
+  {eyebrow && <Sticker tone={eyebrowTone} class="section-head__eyebrow">{eyebrow}</Sticker>}
+  <Heading class="section-head__title display"><slot /></Heading>
+  {subtitle && <p class="section-head__subtitle">{subtitle}</p>}
+</div>
+
+<style>
+  .section-head {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 64px;
+  }
+
+  .section-head .section-head__eyebrow {
+    margin-bottom: 20px;
+  }
+
+  .section-head__title {
+    font-size: clamp(2.1rem, 4.2vw, 3.3rem);
+    margin-bottom: 18px;
+  }
+
+  .section-head__subtitle {
+    font-size: 1.1rem;
+    color: var(--color-ink-2);
+    margin: 0;
+  }
+
+  .section-head--inverse .section-head__title {
+    color: var(--color-paper);
+  }
+
+  .section-head--inverse .section-head__title :global(em) {
+    color: var(--color-primary-pop);
+  }
+
+  .section-head--inverse .section-head__subtitle {
+    color: color-mix(in srgb, var(--color-paper) 72%, transparent);
+  }
+</style>

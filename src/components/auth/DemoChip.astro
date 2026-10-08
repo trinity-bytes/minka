@@ -1,0 +1,56 @@
+---
+/**
+ * Clickable sticker that fills the login form with the demo credentials
+ * (`[data-demo-fill]`, handled in src/scripts/pages/auth.js).
+ */
+interface Props {
+  email?: string;
+  password?: string;
+}
+
+const { email = "demo@minka.com", password = "demo1234" } = Astro.props;
+---
+
+<button type="button" class="demo-chip" data-demo-fill>
+  <span class="demo-chip__tag">Demo</span>
+  {email} · {password}
+</button>
+
+<style>
+  .demo-chip {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    border: 2px dashed var(--color-ink);
+    background: var(--color-warning-soft);
+    color: var(--color-ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: left;
+    padding: var(--space-8) var(--space-12);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transform: rotate(-1deg);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .demo-chip:hover {
+    transform: rotate(0deg) translateY(-1px);
+    box-shadow: var(--shadow-hard-sm);
+  }
+
+  .demo-chip__tag {
+    background: var(--color-accent);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-full);
+    padding: 1px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+</style>

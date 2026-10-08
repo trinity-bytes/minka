@@ -1,0 +1,256 @@
+---
+/**
+ * Settings: language, visual accessibility (high contrast, font size, low
+ * data), privacy and availability, security and sessions.
+ * Port of public/pages/settings.html.
+ * T27 - Miguel Sanca: accessibility and language (HU48, HU49).
+ * T28 - Leonardo Chavez: sessions and re-authentication (HU23, HU24).
+ * T29 - Lucero Pipa: privacy and availability (HU25, HU26).
+ * Logic: src/scripts/pages/settings.js (guarded: requires a session). The
+ * saved accessibility prefs are applied on every page by BaseLayout.
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import Button from "../../components/ui/Button.astro";
+import Modal from "../../components/ui/Modal.astro";
+import "../../styles/pages/settings.css";
+
+const DAYS = [
+  { value: "Lunes", short: "Lun" },
+  { value: "Martes", short: "Mar" },
+  { value: "Miércoles", short: "Mié" },
+  { value: "Jueves", short: "Jue" },
+  { value: "Viernes", short: "Vie" },
+  { value: "Sábado", short: "Sáb" },
+  { value: "Domingo", short: "Dom" },
+];
+const SLOTS = ["Mañana", "Tarde", "Noche"];
+---
+
+<AppLayout
+  title="Mink'a - Configuración y Accesibilidad"
+  description="Personaliza tu experiencia en Mink'a: idioma, accesibilidad, privacidad y seguridad."
+  bodyClass="settings-page"
+  mainClass="settings-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <div class="container">
+    <section class="settings-header">
+      <h1 data-i18n="settings_title">Configuración y Accesibilidad</h1>
+      <p data-i18n="settings_subtitle">Personaliza tu experiencia en Mink'a.</p>
+    </section>
+
+    <div class="settings-grid">
+      <!-- T27 - Miguel Sanca: Preferencias de Idioma (HU49) -->
+      <section class="settings-card">
+        <div class="settings-card__header">
+          <div class="settings-icon" aria-hidden="true"><i class="fas fa-language"></i></div>
+          <h2 data-i18n="language_title">Idioma</h2>
+        </div>
+        <div class="settings-card__body">
+          <p data-i18n="language_desc">Selecciona el idioma de la interfaz.</p>
+          <select id="language-select" class="form-select" aria-label="Seleccionar idioma">
+            <option value="es">Español</option>
+            <option value="qu">Quechua</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- T27 - Miguel Sanca: Accesibilidad Visual (HU48) -->
+      <section class="settings-card">
+        <div class="settings-card__header">
+          <div class="settings-icon" aria-hidden="true"><i class="fas fa-eye"></i></div>
+          <h2 data-i18n="visual_title">Accesibilidad Visual</h2>
+        </div>
+        <div class="settings-card__body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong data-i18n="contrast_label">Alto Contraste</strong>
+              <p data-i18n="contrast_desc">Aumenta el contraste para mejorar la legibilidad.</p>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                role="switch"
+                id="high-contrast-toggle"
+                aria-label="Alto contraste"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong data-i18n="font_size_label">Tamaño de Fuente</strong>
+              <p data-i18n="font_size_desc">Ajusta el tamaño del texto.</p>
+            </div>
+            <div class="font-controls">
+              <Button appearance="flat" variant="outline" class="btn-sm" id="font-decrease">A-</Button>
+              <Button appearance="flat" variant="outline" class="btn-sm" id="font-reset">A</Button>
+              <Button appearance="flat" variant="outline" class="btn-sm" id="font-increase">A+</Button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong data-i18n="low_data_label">Modo Bajo Consumo</strong>
+              <p data-i18n="low_data_desc">Reduce calidad de imágenes y desactiva animaciones.</p>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                role="switch"
+                id="low-data-toggle"
+                aria-label="Modo bajo consumo"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- T29 - Lucero Pipa: Privacidad y Disponibilidad (HU25, HU26) -->
+      <section class="settings-card">
+        <div class="settings-card__header">
+          <div class="settings-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></div>
+          <h2 data-i18n="privacy_title">Privacidad y Disponibilidad</h2>
+        </div>
+        <div class="settings-card__body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong data-i18n="visibility_label">Visibilidad del Perfil</strong>
+              <p data-i18n="visibility_desc">Controla quién puede ver tu información.</p>
+            </div>
+            <select id="visibility-select" class="form-select" aria-label="Visibilidad del perfil">
+              <option value="public">Público (Todos)</option>
+              <option value="verified">Solo Verificados</option>
+              <option value="private">Privado</option>
+            </select>
+          </div>
+
+          <!-- HU25: Ocultar distrito exacto -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong>Ocultar distrito exacto</strong>
+              <p>Muestra solo una ubicación aproximada en tu perfil.</p>
+            </div>
+            <label class="switch">
+              <input
+                type="checkbox"
+                role="switch"
+                id="hide-district-toggle"
+                aria-label="Ocultar distrito exacto"
+              />
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <Button appearance="flat" variant="outline" size="sm" id="preview-profile-btn">
+              <i class="fas fa-eye" aria-hidden="true"></i> Ver cómo ven mi perfil otros
+            </Button>
+          </div>
+
+          <div class="setting-divider"></div>
+
+          <!-- HU26: Disponibilidad Granular -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong data-i18n="availability_label">Horario de Intercambio</strong>
+              <p data-i18n="availability_desc">Define tus días y horas disponibles.</p>
+            </div>
+            <Button appearance="flat" variant="secondary" id="open-availability-modal">
+              Configurar Horarios
+            </Button>
+          </div>
+          <div id="availability-summary" class="availability-summary"></div>
+        </div>
+      </section>
+
+      <!-- T28 - Leonardo Chavez: Seguridad y Sesiones (HU23, HU24) -->
+      <section class="settings-card">
+        <div class="settings-card__header">
+          <div class="settings-icon" aria-hidden="true"><i class="fas fa-lock"></i></div>
+          <h2 data-i18n="security_title">Seguridad</h2>
+        </div>
+        <div class="settings-card__body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong data-i18n="password_label">Contraseña</strong>
+              <p data-i18n="password_desc">Cambia tu contraseña periódicamente.</p>
+            </div>
+            <Button appearance="flat" variant="outline" id="change-password-btn">
+              Cambiar Contraseña
+            </Button>
+          </div>
+
+          <div class="setting-divider"></div>
+
+          <h3>Sesiones Activas</h3>
+          <div id="sessions-list" class="sessions-list"></div>
+          <button type="button" class="btn btn-text text-danger" id="logout-all-sessions">
+            Cerrar todas las demás sesiones
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <div class="settings-actions">
+      <Button appearance="flat" variant="primary" size="lg" id="save-settings" data-i18n="save_btn">
+        Guardar Preferencias
+      </Button>
+    </div>
+  </div>
+
+  <Fragment slot="after-main">
+    <!-- T29 - Lucero Pipa: Modal de Disponibilidad (HU26) -->
+    <Modal id="availability-modal" title="Configurar Disponibilidad">
+      <p class="modal__subtitle">
+        Selecciona los días y franjas horarias en las que puedes realizar intercambios.
+      </p>
+      <div class="availability-grid">
+        {
+          DAYS.map((day) => (
+            <div class="day-row">
+              <label>
+                <input type="checkbox" name="day" value={day.value} /> {day.short}
+              </label>
+              <div class="time-slots">
+                {SLOTS.map((slot) => (
+                  <label>
+                    <input type="checkbox" name={`time_${day.value}`} value={slot} /> {slot}
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      <div class="modal__actions">
+        <Button appearance="flat" variant="secondary" id="cancel-availability">Cancelar</Button>
+        <Button appearance="flat" variant="primary" id="save-availability">Guardar Horarios</Button>
+      </div>
+    </Modal>
+
+    <!-- T28 - Reauth Modal -->
+    <Modal id="reauth-modal" title="Confirmar Identidad">
+      <p class="modal__subtitle">Por seguridad, ingresa tu contraseña para continuar.</p>
+      <input
+        type="password"
+        id="reauth-password"
+        class="form-input"
+        placeholder="Contraseña"
+        aria-label="Contraseña"
+      />
+      <p class="form__error" id="reauth-error" role="status" aria-live="polite"></p>
+      <div class="modal__actions">
+        <Button appearance="flat" variant="secondary" id="cancel-reauth">Cancelar</Button>
+        <Button appearance="flat" variant="primary" id="confirm-reauth">Confirmar</Button>
+      </div>
+    </Modal>
+  </Fragment>
+
+  <script>
+    import "../../scripts/pages/settings.js";
+  </script>
+</AppLayout>

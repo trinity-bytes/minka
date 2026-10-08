@@ -1,0 +1,37 @@
+---
+/**
+ * Publish form field: `.form__group` with label, the control (default
+ * slot), an optional hint and the `[data-error-for]` slot that
+ * src/scripts/pages/publish.js fills on validation.
+ */
+interface Props {
+  /** id of the control; the label points at it. Omit for grouped controls. */
+  for?: string;
+  label: string;
+  /** i18n key for the label (legacy I18n runtime). */
+  labelKey?: string;
+  hint?: string;
+  hintKey?: string;
+  /** id for the hint (live counters such as "0/80"). */
+  hintId?: string;
+  /** Render the validation message slot for `for`. */
+  error?: boolean;
+  class?: string;
+}
+
+const { for: htmlFor, label, labelKey, hint, hintKey, hintId, error = false, class: className } =
+  Astro.props;
+---
+
+<div class:list={["form__group", className]}>
+  <label for={htmlFor} data-i18n={labelKey}>{label}</label>
+  <slot />
+  {
+    hint && (
+      <p class="form__hint" id={hintId} data-i18n={hintKey} aria-live={hintId ? "polite" : undefined}>
+        {hint}
+      </p>
+    )
+  }
+  {error && <p class="form__error" data-error-for={htmlFor} />}
+</div>

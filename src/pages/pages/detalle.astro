@@ -1,0 +1,164 @@
+---
+/**
+ * Listing detail: gallery, description, owner, facts, exchange QR, item
+ * timeline, owner/visitor actions and similar listings. Port of
+ * public/pages/detalle.html.
+ * T25 - Ronel Rojas: environmental metrics when a trade closes.
+ * T31 - Andy Salcedo: location sharing and distance.
+ * T33 - Miguel Sanca: item timeline, QR reissue and offline close.
+ * Logic: src/scripts/pages/detail.js (guarded: requires a session).
+ */
+import AppLayout from "../../components/layout/AppLayout.astro";
+import Breadcrumb from "../../components/ui/Breadcrumb.astro";
+import Button from "../../components/ui/Button.astro";
+import CardSection from "../../components/ui/CardSection.astro";
+import Card from "../../components/ui/Card.astro";
+import Gallery from "../../components/detail/Gallery.astro";
+import SellerCard from "../../components/detail/SellerCard.astro";
+import QrCard from "../../components/detail/QrCard.astro";
+import OfflineModal from "../../components/detail/OfflineModal.astro";
+import RatingModal from "../../components/exchange/RatingModal.astro";
+import ReportModal from "../../components/exchange/ReportModal.astro";
+import CloseReasonModal from "../../components/detail/CloseReasonModal.astro";
+import EcoModal from "../../components/detail/EcoModal.astro";
+import { url } from "../../lib/url";
+import "../../styles/pages/detail.css";
+
+const FACTS = [
+  { label: "Estado", id: "item-condition" },
+  { label: "Ubicación", id: "item-location" },
+  { label: "Disponibilidad", id: "item-availability" },
+  { label: "Reputación", id: "item-rating" },
+];
+
+// Owner / visitor actions after "Contactar" and "Compartir" (all simulated
+// by detail.js). Order and variants match the legacy page.
+const ACTIONS: { id: string; key: string; label: string; variant: "primary" | "secondary" }[] = [
+  // T33 - Miguel Sanca: offline close (HU41)
+  { id: "action-offline-close", key: "detail_action_offline", label: "Cierre Offline (Código)", variant: "primary" },
+  { id: "action-edit", key: "detail_action_edit", label: "Editar publicación", variant: "secondary" },
+  { id: "action-close", key: "detail_action_close", label: "Cerrar publicación", variant: "secondary" },
+  { id: "action-delete", key: "detail_action_delete", label: "Eliminar publicación", variant: "secondary" },
+  { id: "action-pause", key: "detail_action_pause", label: "Pausar publicación", variant: "secondary" },
+  { id: "action-reserve", key: "detail_action_reserve", label: "Marcar como reservada", variant: "secondary" },
+  { id: "action-activate", key: "detail_action_resume", label: "Reanudar publicación", variant: "secondary" },
+  { id: "action-rate", key: "common_rate_title", label: "Calificar intercambio", variant: "secondary" },
+  { id: "action-report", key: "detail_action_report", label: "Reportar publicación", variant: "secondary" },
+];
+---
+
+<AppLayout
+  title="Mink'a - Detalle de publicación"
+  description="Ficha de una publicación de trueque en Mink'a: fotos, estado, ubicación y QR de intercambio."
+  bodyClass="detail-page"
+  mainClass="detail-main"
+  scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
+>
+  <Breadcrumb
+    slot="before-main"
+    items={[
+      { label: "Inicio", href: url("pages/home.html"), key: "nav_home" },
+      { label: "Búsqueda", href: url("pages/busqueda.html"), key: "nav_search" },
+      { label: "Detalle", id: "breadcrumb-current" },
+    ]}
+  />
+
+  <section class="detail-hero">
+    <div class="container">
+      <p class="detail-hero__eyebrow">Publicación activa</p>
+      <h1 id="item-title">Título del ítem</h1>
+      <p class="detail-hero__meta" id="item-meta">Categoría · Ubicación · Estado</p>
+    </div>
+  </section>
+
+  <section class="detail-layout" aria-label="Ficha de publicación">
+    <div class="container detail-grid">
+      <div class="detail-left">
+        <Gallery />
+
+        <CardSection title="Descripción" titleKey="detail_description" level={2}>
+          <p id="item-description">
+            Descripción del objeto. Se actualizará con datos simulados en el script.
+          </p>
+          <div class="tag-list" id="item-tags"></div>
+        </CardSection>
+
+        <SellerCard />
+      </div>
+
+      <aside class="detail-right">
+        <Card>
+          <div class="card__body detail-info">
+            {
+              FACTS.map((f) => (
+                <div class="info-row">
+                  <span>{f.label}</span>
+                  <strong id={f.id}>—</strong>
+                </div>
+              ))
+            }
+          </div>
+        </Card>
+
+        <QrCard />
+
+        <!-- T33 - Miguel Sanca: Historial de Trazabilidad (HU40) -->
+        <CardSection title="Historial del Objeto" titleKey="detail_timeline_title">
+          <ul class="timeline" id="item-timeline"></ul>
+        </CardSection>
+
+        <CardSection title="Acciones" titleKey="detail_actions_title" bodyClass="actions">
+          <Button
+            appearance="flat"
+            variant="primary"
+            href={url("pages/chat.html")}
+            id="action-contact"
+            data-i18n="detail_contact">Contactar</Button
+          >
+          <Button appearance="flat" variant="secondary" id="action-share">
+            <i class="fas fa-share-nodes" aria-hidden="true"></i>
+            Compartir
+          </Button>
+          {
+            ACTIONS.map((a) => (
+              <Button appearance="flat" variant={a.variant} id={a.id} data-i18n={a.key}>
+                {a.label}
+              </Button>
+            ))
+          }
+        </CardSection>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Chunk 4.8: Similares de la misma categoría -->
+  <section class="similar-section" id="similar-section" aria-label="Publicaciones similares" hidden>
+    <div class="container">
+      <h2 data-i18n="detail_similar">Similares</h2>
+      <div class="similar-grid" id="similar-grid"></div>
+    </div>
+  </section>
+
+  <Fragment slot="after-main">
+    <!-- Chunk 4.8: CTA fija en móvil -->
+    <div class="sticky-cta" id="sticky-cta" hidden>
+      <span class="sticky-cta__mode" id="sticky-cta-mode"></span>
+      <Button
+        appearance="flat"
+        variant="primary"
+        href={url("pages/chat.html")}
+        id="sticky-cta-contact"
+        data-i18n="detail_contact">Contactar</Button
+      >
+    </div>
+    <OfflineModal />
+    <RatingModal />
+    <ReportModal />
+    <CloseReasonModal />
+    <EcoModal />
+  </Fragment>
+
+  <script>
+    import "../../scripts/pages/detail.js";
+  </script>
+</AppLayout>

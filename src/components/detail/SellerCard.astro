@@ -1,0 +1,25 @@
+---
+/**
+ * Owner ("Publicador") card with a link to the owner's profile. Name,
+ * location, rating and the profile href are filled in by
+ * src/scripts/pages/detail.js.
+ */
+import Button from "../ui/Button.astro";
+import CardSection from "../ui/CardSection.astro";
+import { url } from "../../lib/url";
+---
+
+<CardSection class="seller-card" title="Publicador" titleKey="detail_publisher" bodyClass="seller">
+  <div class="seller__info">
+    <strong id="seller-name">Usuario Demo</strong>
+    <span id="seller-location">Lima, Perú</span>
+    <span id="seller-rating"><i class="fas fa-star" aria-hidden="true"></i> 4.5</span>
+  </div>
+  <Button
+    appearance="flat"
+    variant="primary"
+    href={url("pages/perfil.html")}
+    id="owner-profile-link"
+    data-i18n="detail_view_profile">Ver perfil</Button
+  >
+</CardSection>

@@ -1,0 +1,21 @@
+---
+/**
+ * One notification preference row: label + checkbox (`.pref-toggle`,
+ * styled globally in src/styles/pages/notifications.css). notifications.js
+ * reads and persists the checkbox by its id.
+ */
+interface Props {
+  id: string;
+  label: string;
+  /** i18n key for the label (legacy I18n runtime). */
+  labelKey?: string;
+  checked?: boolean;
+}
+
+const { id, label, labelKey, checked = false } = Astro.props;
+---
+
+<div class="pref-toggle">
+  <label for={id} data-i18n={labelKey}>{label}</label>
+  <input type="checkbox" id={id} checked={checked} />
+</div>

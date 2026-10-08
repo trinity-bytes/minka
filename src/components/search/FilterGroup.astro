@@ -1,0 +1,20 @@
+---
+/**
+ * One labelled filter control in the search filters bar. The control goes
+ * in the default slot; styles live in src/styles/pages/search.css.
+ */
+interface Props {
+  /** id of the control the label points at. */
+  for: string;
+  label: string;
+  /** i18n key for the label (legacy I18n runtime). */
+  labelKey?: string;
+}
+
+const { for: controlId, label, labelKey } = Astro.props;
+---
+
+<div class="filter-group">
+  <label for={controlId} data-i18n={labelKey}>{label}</label>
+  <slot />
+</div>

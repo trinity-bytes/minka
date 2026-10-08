@@ -1,0 +1,117 @@
+---
+/**
+ * Labelled auth form field: label, input (optionally with a show/hide
+ * password toggle), an optional slot below the input (e.g. the strength
+ * meter) and the `[data-error-for]` node that src/scripts/pages/auth.js
+ * fills and links through aria-describedby.
+ */
+interface Props {
+  id: string;
+  label: string;
+  /** i18n key for the label (legacy I18n runtime). */
+  labelKey?: string;
+  type?: "email" | "text" | "password";
+  name?: string;
+  autocomplete?: string;
+  placeholder?: string;
+  /** i18n key for the placeholder (I18n sets `placeholder` on inputs). */
+  placeholderKey?: string;
+  required?: boolean;
+  minlength?: number;
+  inputmode?: "email" | "text" | "tel";
+  /** Show the eye button that toggles password visibility. */
+  toggle?: boolean;
+}
+
+const {
+  id,
+  label,
+  labelKey,
+  type = "text",
+  name,
+  autocomplete,
+  placeholder,
+  placeholderKey,
+  required = false,
+  minlength,
+  inputmode,
+  toggle = false,
+} = Astro.props;
+
+const inputAttrs = {
+  type,
+  id,
+  name,
+  required,
+  minlength,
+  autocomplete,
+  inputmode,
+  placeholder,
+  "data-i18n": placeholderKey,
+};
+---
+
+<div class="form__group">
+  <label for={id} data-i18n={labelKey}>{label}</label>
+  {
+    toggle ? (
+      <div class="password-field">
+        <input {...inputAttrs} />
+        <button
+          type="button"
+          class="password-toggle"
+          aria-label="Mostrar contraseña"
+          aria-pressed="false"
+          data-toggle-password={id}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </button>
+      </div>
+    ) : (
+      <input {...inputAttrs} />
+    )
+  }
+  <slot />
+  <p class="form__error" data-error-for={id}></p>
+</div>
+
+<style>
+  .password-field {
+    position: relative;
+  }
+
+  .password-field input {
+    padding-right: 44px;
+    width: 100%;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: var(--space-8);
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    padding: var(--space-8);
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+  }
+
+  .password-toggle:hover,
+  .password-toggle[aria-pressed="true"] {
+    color: var(--color-primary);
+  }
+</style>

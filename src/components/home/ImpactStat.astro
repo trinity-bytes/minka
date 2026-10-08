@@ -1,0 +1,26 @@
+---
+/**
+ * One tile of the home impact card: tinted icon, value and label.
+ * `valueId` lets src/scripts/pages/home.js hydrate the value from Store.
+ */
+interface Props {
+  icon: string;
+  tone: "primary" | "success" | "warning" | "info";
+  value: string;
+  valueId?: string;
+  label: string;
+  labelKey: string;
+}
+
+const { icon, tone, value, valueId, label, labelKey } = Astro.props;
+---
+
+<div class="impact-stat">
+  <div class={`impact-stat__icon impact-stat__icon--${tone}`}>
+    <i class={`fas ${icon}`}></i>
+  </div>
+  <div class="impact-stat__content">
+    <span class="impact-stat__value" id={valueId}>{value}</span>
+    <span class="impact-stat__label" data-i18n={labelKey}>{label}</span>
+  </div>
+</div>

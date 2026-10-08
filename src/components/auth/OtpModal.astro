@@ -1,0 +1,65 @@
+---
+/**
+ * OTP verification dialog shown after registration. Opened/closed through
+ * the legacy Modal global; src/scripts/pages/auth.js validates the code.
+ */
+import Button from "../ui/Button.astro";
+---
+
+<div class="modal" id="otp-modal" aria-hidden="true">
+  <div class="modal__overlay" data-close-modal></div>
+  <div class="modal__content" role="dialog" aria-labelledby="otp-title" aria-modal="true">
+    <div class="modal__header">
+      <h2 id="otp-title">Verificación de Cuenta</h2>
+    </div>
+    <div class="modal__body">
+      <p>
+        Hemos enviado un código de verificación a
+        <strong id="otp-destination"></strong>
+      </p>
+      <p class="form__hint">Ingresa el código de 6 dígitos para verificar tu cuenta.</p>
+      <div class="form__group">
+        <label for="otp-input">Código OTP</label>
+        <input
+          type="text"
+          id="otp-input"
+          maxlength="6"
+          pattern="[0-9]{6}"
+          placeholder="123456"
+          autocomplete="off"
+        />
+        <p class="form__error" id="otp-error"></p>
+      </div>
+      <p class="form__hint">Código de prueba: <strong>123456</strong></p>
+    </div>
+    <div class="modal__footer">
+      <Button appearance="flat" variant="secondary" id="otp-cancel">Cancelar</Button>
+      <Button appearance="flat" variant="primary" id="otp-verify">Verificar</Button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #otp-input {
+    padding: var(--space-12);
+    border: var(--border-ink);
+    border-radius: var(--radius-sm);
+    font-size: 1.25rem;
+    text-align: center;
+    letter-spacing: 0.5rem;
+    font-weight: 600;
+  }
+
+  #otp-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
+  }
+
+  #otp-error {
+    min-height: 18px;
+    font-size: 0.85rem;
+    color: var(--color-error);
+    margin-top: var(--space-4);
+  }
+</style>

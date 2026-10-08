@@ -1,0 +1,130 @@
+---
+/**
+ * Landing section wrapper: vertical rhythm, centered container, optional
+ * giant folio number ("01") behind the content, and the colored "band"
+ * variant with a wavy top edge (showcase, final CTA).
+ */
+interface Props {
+  id?: string;
+  /** Giant decorative folio number, e.g. "01". */
+  folio?: string;
+  band?: "ink" | "amber";
+  /** Tighter top padding (sections following another section). */
+  compactTop?: boolean;
+  class?: string;
+}
+
+const { id, folio, band, compactTop = false, class: className } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={[
+    band ? ["band", `band--${band}`] : "section",
+    compactTop && "section--compact-top",
+    className,
+  ]}
+  data-folio={folio}
+>
+  {
+    band && (
+      <svg class="band__wave" viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,34 C240,66 480,2 720,26 C960,50 1200,10 1440,34 L1440,64 L0,64 Z" />
+      </svg>
+    )
+  }
+  <slot name="before" />
+  <div class="container section__inner">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: 110px 0;
+    position: relative;
+  }
+
+  .section.section--compact-top {
+    padding-top: 40px;
+  }
+
+  .section > .section__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Compensate the fixed header when jumping to anchors */
+  [id] {
+    scroll-margin-top: 96px;
+  }
+
+  /* Giant folios turn the scroll into a small editorial magazine. */
+  [data-folio]::before {
+    content: attr(data-folio);
+    position: absolute;
+    top: 54px;
+    left: max(24px, calc(50% - 680px));
+    z-index: 0;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 9vw, 9.5rem);
+    font-weight: 750;
+    font-variation-settings: var(--font-display-axes);
+    line-height: 0.75;
+    letter-spacing: -0.08em;
+    opacity: 0.045;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .band {
+    position: relative;
+    padding: 90px 0 100px;
+    background: var(--band-bg);
+  }
+
+  .band__wave {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    display: block;
+  }
+
+  .band__wave path {
+    fill: var(--band-bg);
+  }
+
+  .band--ink {
+    --band-bg: var(--color-ink);
+    color: var(--color-paper);
+    margin-top: 110px;
+  }
+
+  .band--amber {
+    --band-bg: var(--color-accent);
+    text-align: center;
+    overflow: hidden;
+    margin-top: 110px;
+  }
+
+  @media (max-width: 640px) {
+    .section {
+      padding: 76px 0;
+    }
+
+    [data-folio]::before {
+      top: 36px;
+      left: 12px;
+      font-size: 4.5rem;
+      opacity: 0.035;
+    }
+
+    .band--ink,
+    .band--amber {
+      margin-top: 76px;
+    }
+  }
+</style>

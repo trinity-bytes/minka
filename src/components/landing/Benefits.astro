@@ -1,0 +1,158 @@
+---
+/** "Beneficios": bento grid of four benefit cards. */
+import Card from "../ui/Card.astro";
+import SectionHead from "../ui/SectionHead.astro";
+import Sticker from "../ui/Sticker.astro";
+import LandingSection from "./LandingSection.astro";
+import { asset } from "../../lib/url";
+
+type Tone = "card" | "mint" | "accent-soft";
+
+interface Benefit {
+  icon: string;
+  title: string;
+  text: string;
+  tone: Tone;
+  span: "wide" | "narrow";
+  tag?: { label: string; tone: "amber" | "terra" };
+  delay?: number;
+}
+
+const benefits: Benefit[] = [
+  {
+    icon: "seguridad.svg",
+    title: "Seguridad primero",
+    text: "Verificación de usuarios, sistema de reputación y puntos de encuentro sugeridos en zonas públicas. Truequear con desconocidos nunca fue tan tranquilo.",
+    tone: "mint",
+    span: "wide",
+    tag: { label: "Comunidad verificada", tone: "terra" },
+  },
+  {
+    icon: "ahorro.svg",
+    title: "Ahorro real",
+    text: "Intercambia en lugar de comprar. Tu billetera y el planeta te lo agradecen.",
+    tone: "card",
+    span: "narrow",
+    delay: 120,
+  },
+  {
+    icon: "impacto.svg",
+    title: "Impacto ambiental",
+    text: "Cada trueque evita residuos y alarga la vida útil de las cosas.",
+    tone: "accent-soft",
+    span: "narrow",
+  },
+  {
+    icon: "comunidad.svg",
+    title: "Comunidad de verdad",
+    text: "Conoce a tus vecinos, construye redes de confianza y fortalece tu barrio. El trueque es la excusa; la comunidad es el premio.",
+    tone: "card",
+    span: "wide",
+    tag: { label: "Barrio a barrio", tone: "amber" },
+    delay: 120,
+  },
+];
+---
+
+<LandingSection id="beneficios" folio="02" compactTop>
+  <SectionHead eyebrow="¿Por qué Mink'a?" eyebrowTone="green" subtitle="En tu bolsillo, en tu barrio y en el planeta.">
+    Beneficios que se <em>sienten</em>
+  </SectionHead>
+  <div class="bento">
+    {
+      benefits.map((benefit) => (
+        <Card
+          as="article"
+          tone={benefit.tone}
+          radius="xl"
+          shadow="md"
+          interactive
+          class={`benefit benefit--${benefit.span}`}
+          data-reveal
+          style={benefit.delay ? `--reveal-delay: ${benefit.delay}ms` : undefined}
+        >
+          {benefit.tag && (
+            <Sticker tone={benefit.tag.tone} class="benefit__tag">
+              {benefit.tag.label}
+            </Sticker>
+          )}
+          <div class="benefit__icon" aria-hidden="true">
+            <img src={asset(`images/icons/${benefit.icon}`)} loading="lazy" decoding="async" alt="" />
+          </div>
+          <h3 class="benefit__title">{benefit.title}</h3>
+          <p class="benefit__text">{benefit.text}</p>
+        </Card>
+      ))
+    }
+  </div>
+</LandingSection>
+
+<style>
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 26px;
+  }
+
+  .bento .benefit {
+    padding: 36px 32px;
+  }
+
+  .bento .benefit--wide {
+    grid-column: span 4;
+  }
+
+  .bento .benefit--narrow {
+    grid-column: span 2;
+  }
+
+  .benefit .benefit__tag {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+  }
+
+  .benefit__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: var(--color-card);
+    border: var(--border-ink);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hard-sm);
+    margin-bottom: 22px;
+  }
+
+  .benefit__icon img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .benefit__title {
+    font-family: var(--font-display);
+    font-weight: 620;
+    font-variation-settings: var(--font-display-axes-text);
+    font-size: 1.55rem;
+    color: var(--color-ink);
+    margin: 0 0 12px;
+  }
+
+  .benefit__text {
+    color: var(--color-ink-2);
+    margin: 0;
+    max-width: 34rem;
+  }
+
+  @media (max-width: 1024px) {
+    .bento {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bento .benefit--wide,
+    .bento .benefit--narrow {
+      grid-column: span 2;
+    }
+  }
+</style>

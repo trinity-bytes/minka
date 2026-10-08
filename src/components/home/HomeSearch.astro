@@ -1,0 +1,52 @@
+---
+/**
+ * Home quick search (submits `q` to the search page) plus the publish
+ * shortcut. Validation/suggestions: src/scripts/pages/home.js.
+ */
+import { url } from "../../lib/url";
+---
+
+<div class="home-search">
+  <form class="home-search__form" action={url("pages/busqueda.html")} method="get">
+    <svg
+      class="home-search__icon"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <input
+      type="text"
+      class="home-search__input"
+      name="q"
+      placeholder="Buscar objetos, categorías, ubicaciones..."
+      aria-label="Buscar trueques"
+      data-i18n="home_search_placeholder"
+    />
+    <button type="submit" class="home-search__button" data-i18n="home_search_button">Buscar</button>
+  </form>
+  <a class="home-search__publish" href={url("pages/publicar.html")}>
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 5v14M5 12h14"></path>
+    </svg>
+    <span data-i18n="home_publish_button">Publicar</span>
+  </a>
+</div>

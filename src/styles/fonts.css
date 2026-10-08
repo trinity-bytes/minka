@@ -1,0 +1,52 @@
+/* ============================================
+   MINK'A - Font faces (single declaration)
+   Font files live in public/assets/fonts (BaseLayout preloads them by
+   URL). Root-relative URLs into public/ are rewritten by Vite with the
+   configured base (/minka) at build time.
+   ============================================ */
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter"),
+    url("/assets/fonts/Inter/Inter-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src:
+    local("Inter Italic"),
+    local("Inter-Italic"),
+    url("/assets/fonts/Inter/Inter-Italic-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces/Fraunces-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/assets/fonts/Fraunces/Fraunces-Italic-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pacifico";
+  src:
+    local("Pacifico"),
+    url("/assets/fonts/Pacifico/Pacifico-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

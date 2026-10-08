@@ -1,0 +1,156 @@
+---
+/** "Cómo funciona": three numbered step cards joined by a dashed connector. */
+import Card from "../ui/Card.astro";
+import SectionHead from "../ui/SectionHead.astro";
+import LandingSection from "./LandingSection.astro";
+import { asset } from "../../lib/url";
+
+const steps = [
+  {
+    icon: "publicar.svg",
+    title: "Publica tu oferta",
+    text: "Sube fotos de lo que ya no uses: ropa, libros, electrónica, muebles. Dale una segunda vida a tus cosas.",
+  },
+  {
+    icon: "conectar.svg",
+    title: "Conecta con vecinos",
+    text: "Explora ofertas cerca de ti, chatea con otros usuarios y encuentra el intercambio perfecto para ambos.",
+  },
+  {
+    icon: "intercambio.svg",
+    title: "Intercambia y celebra",
+    text: "Coordina el encuentro, completa el trueque y gana eco-puntos. Así cuidamos el planeta juntos.",
+  },
+];
+---
+
+<LandingSection id="como-funciona" folio="01">
+  <SectionHead
+    eyebrow="Así de fácil"
+    eyebrowTone="amber"
+    subtitle="Sin vueltas: publicas, conectas e intercambias. El círculo se cierra y todos ganan."
+  >
+    Tres pasos y ya estás <em>truequeando</em>
+  </SectionHead>
+  <div class="steps">
+    <svg class="steps__connector" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M40,45 C260,85 420,8 600,45 C780,82 940,8 1160,45"></path>
+    </svg>
+    {
+      steps.map((step, i) => (
+        <Card
+          as="article"
+          radius="xl"
+          shadow="md"
+          interactive
+          class="step"
+          data-reveal
+          style={i ? `--reveal-delay: ${i * 120}ms` : undefined}
+        >
+          <div class="step__num">{String(i + 1).padStart(2, "0")}</div>
+          <div class="step__icon" aria-hidden="true">
+            <img src={asset(`images/icons/${step.icon}`)} loading="lazy" decoding="async" alt="" />
+          </div>
+          <h3 class="step__title">{step.title}</h3>
+          <p class="step__text">{step.text}</p>
+        </Card>
+      ))
+    }
+  </div>
+</LandingSection>
+
+<style>
+  .steps {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  .steps__connector {
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    top: -34px;
+    width: 92%;
+    height: 90px;
+    z-index: 0;
+  }
+
+  .steps__connector path {
+    stroke: var(--color-ink-2);
+    stroke-width: 3;
+    stroke-dasharray: 8 10;
+    opacity: 0.55;
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  .steps .step {
+    z-index: 1;
+    padding: 34px 30px 30px;
+    --card-hover-rotate: -0.4deg;
+  }
+
+  /* The connector is child 1, so this is the second card (legacy parity). */
+  .steps .step:nth-child(3) {
+    transform: rotate(0.6deg);
+    --card-hover-rotate: 0.2deg;
+  }
+
+  .step__num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 480;
+    font-variation-settings: var(--font-display-axes);
+    font-size: 3.4rem;
+    line-height: 1;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+  }
+
+  .step__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background: var(--color-mint);
+    border: var(--border-ink);
+    border-radius: 50%;
+    box-shadow: var(--shadow-hard-sm);
+    margin-bottom: 20px;
+  }
+
+  .step__icon img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .step__title {
+    font-family: var(--font-display);
+    font-weight: 620;
+    font-variation-settings: var(--font-display-axes-text);
+    font-size: 1.45rem;
+    color: var(--color-ink);
+    margin: 0 0 12px;
+  }
+
+  .step__text {
+    font-size: 1rem;
+    color: var(--color-ink-2);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .steps__connector {
+      display: none;
+    }
+
+    .steps {
+      grid-template-columns: 1fr;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+  }
+</style>

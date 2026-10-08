@@ -1,0 +1,61 @@
+---
+/** "Voces reales": three testimonial notes. */
+import SectionHead from "../ui/SectionHead.astro";
+import Testimonial from "../ui/Testimonial.astro";
+import LandingSection from "./LandingSection.astro";
+import { asset } from "../../lib/url";
+
+const testimonials = [
+  {
+    quote:
+      "¡Mink'a transformó cómo adquiero cosas! Cambié mis habilidades de fotografía por productos orgánicos. Es genial conocer gente de mi barrio.",
+    name: "Sofía Ramírez",
+    place: "Miraflores",
+    avatar: asset("images/avatars/avatar-sofia.svg"),
+  },
+  {
+    quote:
+      "Intercambié servicios de diseño gráfico por desarrollo web. Perfecto para pequeños negocios que quieren crecer sin gastar tanto.",
+    name: "Carlos Mendoza",
+    place: "San Isidro",
+    avatar: asset("images/avatars/avatar-carlos.svg"),
+  },
+  {
+    quote:
+      "Nuestro huerto comunitario cambió verduras por servicios de carpintería. Mink'a fortaleció nuestra red local.",
+    name: "Isabella Torres",
+    place: "Surco",
+    avatar: asset("images/avatars/avatar-isabella.svg"),
+  },
+];
+---
+
+<LandingSection id="testimonios" folio="04" compactTop>
+  <SectionHead eyebrow="Voces reales" eyebrowTone="terra">
+    Vecinos que ya <em>truequean</em>
+  </SectionHead>
+  <div class="notes">
+    {
+      testimonials.map((item, i) => (
+        <Testimonial {...item} data-reveal style={i ? `--reveal-delay: ${i * 120}ms` : undefined} />
+      ))
+    }
+  </div>
+</LandingSection>
+
+<style>
+  .notes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  @media (max-width: 1024px) {
+    .notes {
+      grid-template-columns: 1fr;
+      max-width: 520px;
+      margin: 0 auto;
+      gap: 40px;
+    }
+  }
+</style>

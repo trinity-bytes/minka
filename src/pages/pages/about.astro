@@ -1,0 +1,83 @@
+---
+/**
+ * About us: public marketing page in the landing family (SiteHeader /
+ * SiteFooter, landing sections). Port of public/pages/about.html, keeping
+ * its copy and team video; nav and footer anchors point back to the
+ * landing through `anchorBase`.
+ */
+import BaseLayout from "../../components/layout/BaseLayout.astro";
+import SiteFooter from "../../components/layout/SiteFooter.astro";
+import SiteHeader from "../../components/layout/SiteHeader.astro";
+import FinalCta from "../../components/landing/FinalCta.astro";
+import VideoSection from "../../components/landing/VideoSection.astro";
+import { url } from "../../lib/url";
+
+const landing = url();
+---
+
+<BaseLayout
+  title="Sobre Nosotros - Mink'a"
+  description="Conoce al equipo de Mink'a, la comunidad de trueque que transforma la economía de Lima."
+  bodyClass="about-page"
+  preloadFonts={["fraunces", "inter"]}
+>
+  <SiteHeader slot="header" anchorBase={landing} />
+
+  <section class="about-hero">
+    <div class="container">
+      <h1 class="about-hero__title display" data-reveal>Sobre <em>Nosotros</em></h1>
+      <p class="about-hero__subtitle" data-reveal>
+        Conoce al equipo apasionado que está trabajando para transformar la economía de Lima a
+        través del trueque y la colaboración comunitaria.
+      </p>
+    </div>
+  </section>
+
+  <VideoSection
+    id="historia"
+    videoId="--xiPEQ3y08"
+    eyebrow=""
+    subtitle="Descubre quiénes somos y qué nos motiva"
+    label="Ver video Sobre Nosotros"
+    videoTitle="Video Sobre Nosotros Mink'a"
+  >
+    Nuestra Historia y Equipo
+  </VideoSection>
+
+  <FinalCta
+    subtitle="Únete a nuestra comunidad y empieza a truequear hoy mismo."
+    ctaLabel="Empezar Ahora"
+    small=""
+  >
+    ¿Listo para ser parte del cambio?
+  </FinalCta>
+
+  <SiteFooter slot="footer" anchorBase={landing} />
+</BaseLayout>
+
+<style>
+  /* Clears the fixed SiteHeader, like the landing hero. */
+  .about-hero {
+    padding: 170px 0 0;
+    text-align: center;
+  }
+
+  .about-hero__title {
+    font-size: clamp(2.6rem, 6vw, 4.6rem);
+    margin-bottom: 24px;
+  }
+
+  .about-hero__subtitle {
+    font-size: 1.16rem;
+    line-height: 1.65;
+    color: var(--color-ink-2);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 640px) {
+    .about-hero {
+      padding-top: 132px;
+    }
+  }
+</style>

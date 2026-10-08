@@ -1,0 +1,35 @@
+---
+/**
+ * Search query bar: input with history datalist, clear-history, search and
+ * save-search buttons, plus the save feedback line. Element ids are the
+ * contract with src/scripts/pages/search.js.
+ */
+import Button from "../ui/Button.astro";
+---
+
+<div class="search-bar" role="search">
+  <input
+    type="search"
+    id="search-query"
+    placeholder="Buscar por título, tags o distrito"
+    aria-label="Buscar publicaciones"
+    list="search-history-list"
+    data-i18n="search_placeholder"
+  />
+  <datalist id="search-history-list"></datalist>
+  <Button
+    appearance="flat"
+    variant="outline"
+    size="sm"
+    id="clear-history-btn"
+    title="Borrar historial de búsqueda"
+    aria-label="Borrar historial de búsqueda"
+  >
+    <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
+  </Button>
+  <Button appearance="flat" variant="primary" id="search-btn" data-i18n="search_btn">Buscar</Button>
+  <Button appearance="flat" variant="outline" id="save-search-btn" title="Guardar esta búsqueda">
+    <i class="far fa-bookmark"></i>
+  </Button>
+  <span id="save-search-feedback" class="form__success" role="status" aria-live="polite"></span>
+</div>
