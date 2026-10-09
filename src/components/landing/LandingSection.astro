@@ -109,7 +109,9 @@ const { id, folio, band, compactTop = false, class: className } = Astro.props;
     --color-ink: var(--color-on-lavender);
     color: var(--color-ink);
     text-align: center;
-    overflow: hidden;
+    /* Clip only sideways (floating sparks) so the wave above the band,
+       positioned at bottom: 100%, stays visible. */
+    overflow-x: clip;
     margin-top: 110px;
   }
 
