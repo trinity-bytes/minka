@@ -27,7 +27,7 @@ Close the minor carry-overs left open by the astro-migration feature before the 
 
 ## Tasks
 - [x] T1 Escape Store strings rendered via innerHTML (shared escape helper + unit tests). Route: delegated (multi-file).
-- [ ] T2 Search: "Limpiar" clears exclude/district; saved-search tags keyboard reachable (button semantics). Route: delegated.
+- [x] T2 Search: "Limpiar" clears exclude/district; saved-search tags keyboard reachable (button semantics). Route: delegated.
 - [ ] T3 Publish form reset after submit; gamification tablist ARIA; challenge deadline local-date parsing (+ unit test); remove dead `updateSummary`. Route: delegated.
 - [ ] T4 Deduplicate hero images (keep the single source actually needed, update references). Route: delegated.
 
@@ -38,7 +38,8 @@ Close the minor carry-overs left open by the astro-migration feature before the 
 
 ## Progress
 - 2026-10-09: branch and feature document created. Route: one delegated writer for T1–T4 (2+ non-trivial files per task).
-- 2026-10-09 T1: shared `escapeHtml` in `src/scripts/lib/html.js` (+ `tests/html.test.js`, `npm test` → `node --test`); applied to every Store/user-derived interpolation reaching innerHTML in search, home, detail, chat, community, profile, notifications, gamification, settings and publish page scripts. Classic core scripts already use textContent for dynamic strings (modal/toast/notif-badge), no change needed. RED observed (module missing, 1 fail) then GREEN (5/5). Checks: build OK, check 0 errors/0 warnings/34 hints, test 5/5. Commit: see T1 commit.
+- 2026-10-09 T1: shared `escapeHtml` in `src/scripts/lib/html.js` (+ `tests/html.test.js`, `npm test` → `node --test`); applied to every Store/user-derived interpolation reaching innerHTML in search, home, detail, chat, community, profile, notifications, gamification, settings and publish page scripts. Classic core scripts already use textContent for dynamic strings (modal/toast/notif-badge), no change needed. RED observed (module missing, 1 fail) then GREEN (5/5). Checks: build OK, check 0 errors/0 warnings/34 hints, test 5/5. Commit: e5d5070.
+- 2026-10-09 T2: "Limpiar" already reset exclude/district (state, persisted filters, URL and UI via DEFAULT_FILTERS + syncUI + persist, landed in aa1b738); verified by code trace, no change. Saved-search tags now render two native buttons (apply / remove) with aria-labels, visible :focus-visible outline and :focus-within pill state; pill click still applies; focus moves to the next tag (or the save button) after removal. No runnable RED (DOM behavior; no DOM test runner). Checks: build OK, check 0 errors/0 warnings/34 hints, test 5/5. Commit: see T2 commit.
 
 ## Next step
-T2.
+T3.

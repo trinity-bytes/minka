@@ -228,9 +228,17 @@ function attachEvents() {
     const remove = e.target.closest("[data-remove-saved-search]");
     if (remove) {
       removeSavedSearch(Number(remove.dataset.removeSavedSearch));
+      // The focused button was re-rendered away: keep focus in the list.
+      (
+        el.savedSearchesList.querySelector("[data-saved-search]") ||
+        el.saveSearchBtn
+      )?.focus();
       return;
     }
-    const tag = e.target.closest("[data-saved-search]");
+    // Clicking anywhere on the pill (not just its button) still applies it.
+    const tag = e.target
+      .closest(".saved-search-tag")
+      ?.querySelector("[data-saved-search]");
     if (tag) applySavedSearch(Number(tag.dataset.savedSearch));
   });
 
@@ -549,15 +557,21 @@ function loadSavedSearches() {
   }
 
   el.savedSearchesContainer.classList.remove("hidden");
+  // Real buttons: both actions are reachable and operable from the keyboard.
   el.savedSearchesList.innerHTML = searches
-    .map(
-      (s) => `
-    <li class="saved-search-tag" data-saved-search="${esc(s.id)}">
-      <span>${esc(s.query || "Todo")} ${s.category ? `(${esc(s.category)})` : ""}</span>
-      <span class="saved-search-remove" data-remove-saved-search="${esc(s.id)}">&times;</span>
+    .map((s) => {
+      const label = `${s.query || "Todo"}${s.category ? ` (${s.category})` : ""}`;
+      return `
+    <li class="saved-search-tag">
+      <button type="button" class="saved-search-tag__apply" data-saved-search="${esc(
+        s.id
+      )}" aria-label="Aplicar búsqueda guardada: ${esc(label)}">${esc(label)}</button>
+      <button type="button" class="saved-search-remove" data-remove-saved-search="${esc(
+        s.id
+      )}" aria-label="Eliminar búsqueda guardada: ${esc(label)}"><span aria-hidden="true">&times;</span></button>
     </li>
-  `
-    )
+  `;
+    })
     .join("");
 }
 
