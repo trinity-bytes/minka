@@ -303,7 +303,8 @@
 
 .filters__toggle-count {
   background: var(--color-accent);
-  border: 1.5px solid var(--color-ink);
+  color: var(--color-on-lavender);
+  border: 1.5px solid var(--color-on-lavender);
   border-radius: var(--radius-full);
   min-width: 20px;
   height: 20px;

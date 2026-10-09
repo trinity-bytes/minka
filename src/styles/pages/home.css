@@ -113,6 +113,7 @@
   align-items: center;
   gap: var(--space-8);
   padding: 10px 22px;
+  --color-ink: var(--color-on-lavender);
   background: var(--color-accent);
   color: var(--color-ink);
   border: var(--border-ink);

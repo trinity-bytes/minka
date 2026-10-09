@@ -40,6 +40,9 @@
   --color-lavender: #c4b2f5; /* fill; ink on it 8.14:1; on ink 8.14:1 */
   --color-lavender-soft: #ece6fd;
   --color-lavender-ink: #5b3fa8; /* 6.87:1 on bg, 7.72:1 on white, 6.36:1 on soft */
+  /* Text and strokes on lavender fills: green ink clashes with lavender, so use
+     a deep violet instead (8.05:1 on lavender, 12.63:1 on lavender-soft). */
+  --color-on-lavender: #2a1858;
   --color-mint: #d7f5e3; /* brand tint; ink on it 13.32:1 */
 
   /* Legacy accent roles re-pointed to the new palette (removed in T13) */
