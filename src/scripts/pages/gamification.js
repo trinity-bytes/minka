@@ -2,6 +2,7 @@
  * T24 - Lucero Pipa: Lógica para Gamificación y Canjes
  * Maneja puntos, insignias, ranking y catálogo de recompensas.
  */
+import { escapeHtml as esc } from "../lib/html.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initGamification();
@@ -190,13 +191,13 @@ function renderBadges() {
   container.innerHTML = BADGES.map((badge) => {
     const isEarned = MOCK_USER_DATA.badges.includes(badge.id);
     return `
-            <div class="badge-item ${isEarned ? "earned" : ""}" title="${
+            <div class="badge-item ${isEarned ? "earned" : ""}" title="${esc(
       badge.description
-    }">
+    )}">
                 <div class="badge-icon">
-                    <i class="fas ${badge.icon}"></i>
+                    <i class="fas ${esc(badge.icon)}"></i>
                 </div>
-                <span class="badge-name">${badge.name}</span>
+                <span class="badge-name">${esc(badge.name)}</span>
             </div>
         `;
   }).join("");
@@ -209,9 +210,9 @@ function renderEarnTable() {
   tbody.innerHTML = EARN_ACTIONS.map(
     (item) => `
         <tr>
-            <td>${item.action}</td>
-            <td class="earn-table__points">+${item.points}</td>
-            <td>${item.frequency}</td>
+            <td>${esc(item.action)}</td>
+            <td class="earn-table__points">+${esc(item.points)}</td>
+            <td>${esc(item.frequency)}</td>
         </tr>
     `
   ).join("");
@@ -225,14 +226,14 @@ function renderRewards() {
     const canAfford = MOCK_USER_DATA.points >= reward.cost;
     return `
             <div class="reward-card">
-                <div class="reward-icon"><i class="fas ${
+                <div class="reward-icon"><i class="fas ${esc(
                   reward.icon
-                }"></i></div>
-                <h3>${reward.name}</h3>
-                <p>${reward.description}</p>
-                <div class="reward-cost">${reward.cost} pts</div>
+                )}"></i></div>
+                <h3>${esc(reward.name)}</h3>
+                <p>${esc(reward.description)}</p>
+                <div class="reward-cost">${esc(reward.cost)} pts</div>
                 <button type="button" class="btn-redeem"
-                    data-redeem="${reward.id}"
+                    data-redeem="${esc(reward.id)}"
                     ${!canAfford ? "disabled" : ""}>
                     ${canAfford ? "Canjear" : "Puntos insuficientes"}
                 </button>
@@ -254,14 +255,14 @@ function renderRanking() {
   container.innerHTML = RANKING_DATA.map(
     (user) => `
         <div class="ranking-item ${user.isMe ? "highlight" : ""}">
-            <div class="ranking-position">${user.position}</div>
+            <div class="ranking-position">${esc(user.position)}</div>
             <div class="ranking-user">
-                <img src="${user.avatar}" alt="${
+                <img src="${esc(user.avatar)}" alt="${esc(
       user.name
-    }" class="ranking-avatar">
-                <span>${user.name} ${user.isMe ? "(Tú)" : ""}</span>
+    )}" class="ranking-avatar">
+                <span>${esc(user.name)} ${user.isMe ? "(Tú)" : ""}</span>
             </div>
-            <div class="ranking-points">${user.points} pts</div>
+            <div class="ranking-points">${esc(user.points)} pts</div>
         </div>
     `
   ).join("");
@@ -281,13 +282,13 @@ function renderHistory() {
       (item) => `
         <li class="history-item">
             <div>
-                <div class="history-action">${item.action}</div>
-                <span class="history-date">${item.date}</span>
+                <div class="history-action">${esc(item.action)}</div>
+                <span class="history-date">${esc(item.date)}</span>
             </div>
             <div class="history-points ${
               item.type === "earn" ? "positive" : "negative"
             }">
-                ${item.type === "earn" ? "+" : "-"}${item.points}
+                ${item.type === "earn" ? "+" : "-"}${esc(item.points)}
             </div>
         </li>
     `

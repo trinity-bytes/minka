@@ -4,6 +4,8 @@
 // globals Store, Session, Toast and I18n loaded as classic scripts by
 // AppLayout. Module scripts run before DOMContentLoaded, so the listener
 // below still fires.
+import { escapeHtml as esc } from "../lib/html.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("publish-form");
   const fileInput = document.getElementById("item-photos");
@@ -258,8 +260,8 @@ document.addEventListener("DOMContentLoaded", () => {
         : field.placeholderKey;
 
       wrap.innerHTML = `
-        <label for="dynamic-${field.key}">${labelText}</label>
-        <input id="dynamic-${field.key}" data-dynamic="${field.key}" placeholder="${placeholderText}" />
+        <label for="dynamic-${field.key}">${esc(labelText)}</label>
+        <input id="dynamic-${field.key}" data-dynamic="${field.key}" placeholder="${esc(placeholderText)}" />
         <p class="form__error"></p>
       `;
       const input = wrap.querySelector("input");
@@ -295,8 +297,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement("div");
         card.className = "preview-card";
         card.innerHTML = `
-          <img src="${e.target.result}" alt="${file.name}" />
-          <div class="preview-card__meta">${file.name}</div>
+          <img src="${esc(e.target.result)}" alt="${esc(file.name)}" />
+          <div class="preview-card__meta">${esc(file.name)}</div>
         `;
         previewGrid.appendChild(card);
       };
