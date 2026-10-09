@@ -63,7 +63,7 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 640;
+  font-weight: var(--font-title-weight);
   line-height: 1.15;
   color: var(--color-ink);
   letter-spacing: -0.01em;
@@ -71,7 +71,6 @@ h4 {
 
 h1 {
   font-size: 3rem;
-  font-weight: 680;
   margin-bottom: var(--space-24);
 }
 
@@ -98,21 +97,23 @@ label {
   margin-bottom: var(--space-8);
 }
 
-/* Editorial display voice (hero, section and CTA titles). */
+/* Poster display voice (hero, section and CTA titles): Fraunces Black,
+   fully soft, tight leading. Emphasis keeps the same weight. */
 .display {
   font-family: var(--font-display);
-  font-weight: 640;
+  font-weight: var(--font-display-weight);
   font-variation-settings: var(--font-display-axes);
   color: var(--color-ink);
-  letter-spacing: -0.015em;
-  line-height: 1.02;
+  letter-spacing: var(--font-display-tracking);
+  line-height: var(--font-display-leading);
+  text-wrap: balance;
   margin: 0;
 }
 
 .display em,
 .display i {
   font-style: italic;
-  font-weight: 500;
+  font-weight: inherit;
   color: var(--color-primary);
 }
 
@@ -190,7 +191,7 @@ label {
   transform: translateY(28px) !important;
   transition:
     opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.7s var(--ease-out);
   transition-delay: var(--reveal-delay, 0ms);
 }
 
@@ -225,6 +226,8 @@ label {
 
 /* High contrast: black text on white, strong borders, AAA dark green. */
 body.high-contrast {
+  --color-ink: var(--color-hc-ink);
+  --color-ink-2: var(--color-hc-ink-2);
   --color-primary: var(--color-hc-primary);
   --color-primary-dark: var(--color-hc-primary-dark);
   --color-primary-ink: var(--color-hc-primary);
@@ -232,6 +235,10 @@ body.high-contrast {
   --color-text-secondary: var(--color-hc-ink-2);
   --color-gray-600: var(--color-hc-ink-2);
   --color-border: var(--color-hc-ink);
+  /* --border-ink resolves on :root against the hairline border; restore
+     strong outlines for high contrast (the flat theme dropped them). */
+  --border-ink: 2px solid var(--color-hc-ink);
+  --border-ink-thin: 1.5px solid var(--color-hc-ink);
   background-color: var(--color-hc-paper) !important;
   color: var(--color-hc-ink) !important;
 }

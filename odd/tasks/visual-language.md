@@ -34,7 +34,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 - Forecast: several thousand authored lines → over budget. Strategy ask-on-risk; chain strategy defaults to `feature-branch-chain` (as in astro-migration) unless the user says otherwise. Branch `feat/visual-language` from `develop`.
 
 ## Tasks
-- [ ] T1 Foundation tokens + type (color roles, tinted app bg, radius scale, flat shadows, display + motion tokens). VISUAL DECISION. Route: delegated.
+- [x] T1 Foundation tokens + type (color roles, tinted app bg, radius scale, flat shadows, display + motion tokens). VISUAL DECISION. Route: delegated.
 - [ ] T2 Motion base + carry-overs (reveal via `translate`, word-split support, CTA wave clip). Route: delegated.
 - [ ] T3 Brand primitives (Logotype, Logomark, IconChip, BlobMedia, Sticker flat, Avatar, Badge). VISUAL DECISION (logotype). Route: delegated.
 - [ ] T4 Landing hero + tilted ribbon + SiteHeader. Route: delegated.
@@ -56,6 +56,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 
 ## Progress
 - 2026-10-09: references reviewed, direction approved, read-only audit done, branch + feature document created.
+- 2026-10-09 (T1, on top of cf1fd3b; route delegated, writer trigger: tokens + global + call sites): shared palette for landing + app in `src/styles/tokens.css`. Brand `#2ecc71` fill only (ink on it 7.37:1; white 2.10:1, never). Ink `#10291c` (13.79:1 on bg, 15.49:1 on white), ink-2 `#3d5547` (7.22/8.11), ink-deep `#0a1d13` for dark blocks. Background `#eef3ef` (paper/bg re-pointed), alt surface `#e6eee8`, card `#ffffff` (cream retired). Text green `#1a7a43` (4.78:1 bg, 5.37:1 white, 4.62:1 mint; white on it 5.37:1). Lavender accent `#c4b2f5` (ink on it 8.14:1, on ink 8.14:1), lavender-soft `#ece6fd`, lavender-ink `#5b3fa8` (6.87/7.72, 6.36 on soft), mint `#d7f5e3` (ink 13.32:1). Accent/terra aliased to lavender roles; warning-soft decoupled (`#fcefc7`), warning-ink `#7a5c00` (5.45:1). Cool green-gray neutrals; gray-500 `#5f6f64` (4.74/5.32), gray-600 `#4a5c50` (6.37/7.15). Hard shadows flattened, `--border-ink` now a 1px hairline (HC block restores 2px black and also forces ink to black). Radii: md 16, lg 24, xl 32, card 28, bento 38, buttons/chips pill. Display tokens (Fraunces 900, SOFT 100, WONK 0, opsz 144, leading 0.9, tracking -0.025em) applied to `.display`; headings use `--font-title-weight` 700. Motion tokens defined (easings, durations, stagger), consumed from T2. Call-site fixes: gamification earned badge text white→ink on lavender; sticker `btn--sm` radius → pill; AppFooter comment. `src/scripts/tokens.ts` mirrors no hex values (unchanged). Checks: build 15 pages OK; check 0 errors / 34 hints; no `npm test` script on this branch; preview 15/15 pages 200. No RED (token values). Carry-overs: rating stars now lavender (was amber, both <3:1 on white); `.band--amber`/`.sticker--amber`/`--color-terra` names stale (T13); `--color-warning` 2.79:1 on bg is icon-only; paper sticker buttons are white on tinted bg with a hairline (T9).
 
 ## Next step
-Answer open question 1, then T1.
+User visual check of T1 in preview, then T2.

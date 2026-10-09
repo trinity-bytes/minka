@@ -76,8 +76,8 @@
 }
 
 .badge-item.earned .badge-icon {
-  background: var(--color-accent); /* Amarillo Energía */
-  color: var(--color-on-primary);
+  background: var(--color-accent); /* lavender fill: ink text 8.14:1 */
+  color: var(--color-ink);
 }
 
 .badge-name {
