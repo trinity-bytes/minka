@@ -71,5 +71,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 
 - 2026-10-09 T4 review: user approved hero/ribbon/header. Fixes (inline): favicon not shown — Chrome preferred the old ICO because of `sizes="any"`; ICO regenerated from the leaf mark (16/32/48 PNG payloads) and listed first with `sizes="32x32"`, SVG after. Navbar: radius pill → 20px (pill read oversized), left padding 24→20 (mobile 18→16), wordmark lifted 3px for optical centering (its box reserves leaf/ascender space above the x-height).
 
+- 2026-10-09 navbar follow-up: the 20px radius broke concentricity with the pill CTA (user). Restored pill bar (outer radius = inner pill radius + padding) and slimmed vertical padding 8→6 to reduce bulk; buttons untouched to stay consistent site-wide.
+
 ## Next step
 User confirms navbar spacing + favicon, then T5 (bento + chip drop).
