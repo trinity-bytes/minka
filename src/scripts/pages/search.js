@@ -552,6 +552,7 @@ function loadSavedSearches() {
 
   const searches = Store.getSavedSearches();
   if (searches.length === 0) {
+    el.savedSearchesList.innerHTML = "";
     el.savedSearchesContainer.classList.add("hidden");
     return;
   }
