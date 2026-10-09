@@ -3,9 +3,8 @@
  * App shell footer, server-rendered port of FOOTER_HTML in
  * public/assets/scripts/core/components.js.
  */
-import { Image } from "astro:assets";
+import Logotype from "../brand/Logotype.astro";
 import { url } from "../../lib/url";
-import logoNegative from "../../assets/images/minka-logo-negativo-blanco.png";
 
 // Links without a destination page yet render as plain text (as in SiteFooter).
 const links: { href?: string; label: string }[] = [
@@ -19,7 +18,7 @@ const links: { href?: string; label: string }[] = [
 <footer class="app-footer">
   <div class="container app-footer__content">
     <div class="app-footer__brand">
-      <Image src={logoNegative} width={82} densities={[1, 2]} alt="Mink'a" class="app-footer__logo" />
+      <Logotype tone="white" leaf="brand" size={24} />
       <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
     </div>
     <div class="app-footer__links">
@@ -48,13 +47,6 @@ const links: { href?: string; label: string }[] = [
     display: flex;
     align-items: center;
     gap: var(--space-16);
-  }
-
-  .app-footer__logo {
-    height: 32px;
-    width: auto;
-    aspect-ratio: 1042 / 406;
-    opacity: 0.95;
   }
 
   .app-footer__brand p {

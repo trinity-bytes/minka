@@ -3,15 +3,14 @@
  * Minimal logo-only header of the auth page (port of the static
  * .auth-header in public/pages/auth.html + core/layout.css).
  */
-import { Image } from "astro:assets";
+import Logotype from "../brand/Logotype.astro";
 import { url } from "../../lib/url";
-import logo from "../../assets/images/minka-logo.png";
 ---
 
 <header class="auth-header">
   <div class="auth-header__container">
     <a href={url()} class="auth-header__logo" aria-label="Mink'a, inicio">
-      <Image src={logo} width={124} densities={[1, 2]} alt="Mink'a" class="auth-header__logo-img" loading="eager" />
+      <Logotype tone="ink" size={36} decorative />
     </a>
   </div>
 </header>
@@ -42,11 +41,8 @@ import logo from "../../assets/images/minka-logo.png";
     flex-shrink: 0;
   }
 
-  .auth-header__logo-img {
-    display: block;
-    height: 48px;
-    width: auto;
-    aspect-ratio: 1041 / 405; /* reserve space: no CLS */
+  .auth-header__logo :global(.logotype) {
+    height: 36px;
   }
 
   @media (max-width: 768px) {
@@ -54,8 +50,8 @@ import logo from "../../assets/images/minka-logo.png";
       padding: var(--space-12) 16px;
     }
 
-    .auth-header__logo-img {
-      height: 36px;
+    .auth-header__logo :global(.logotype) {
+      height: 30px;
     }
   }
 
@@ -70,8 +66,8 @@ import logo from "../../assets/images/minka-logo.png";
       padding: var(--space-8) 12px;
     }
 
-    .auth-header__logo-img {
-      height: 30px;
+    .auth-header__logo :global(.logotype) {
+      height: 26px;
     }
   }
 

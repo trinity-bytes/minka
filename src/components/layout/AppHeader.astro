@@ -6,9 +6,8 @@
  * from the session, handles logout and drives the mobile drawer.
  * Icons use Font Awesome classes, loaded by AppLayout (npm package).
  */
-import { Image } from "astro:assets";
+import Logotype from "../brand/Logotype.astro";
 import { isCurrent, url } from "../../lib/url";
-import logo from "../../assets/images/minka-logo.png";
 
 interface AppLink {
   href: string;
@@ -52,7 +51,7 @@ const pathname = Astro.url.pathname;
 <header class="app-header" data-app-header>
   <div class="app-header__container">
     <a href={url("pages/home.html")} class="app-header__logo" aria-label="Ir a inicio">
-      <Image src={logo} width={124} densities={[1, 2]} alt="Mink'a" class="app-header__logo-img" loading="eager" />
+      <Logotype tone="ink" size={36} decorative />
     </a>
     <button
       type="button"
@@ -165,11 +164,8 @@ const pathname = Astro.url.pathname;
     flex-shrink: 0;
   }
 
-  .app-header__logo-img {
-    display: block;
-    height: 48px;
-    width: auto;
-    aspect-ratio: 1041 / 405; /* reserve space: no CLS */
+  .app-header__logo :global(.logotype) {
+    height: 36px;
   }
 
   .app-header__nav {
@@ -400,8 +396,8 @@ const pathname = Astro.url.pathname;
       background: var(--color-mint);
     }
 
-    .app-header__logo-img {
-      height: 36px;
+    .app-header__logo :global(.logotype) {
+      height: 30px;
     }
   }
 
@@ -416,8 +412,8 @@ const pathname = Astro.url.pathname;
       padding: var(--space-8) 12px;
     }
 
-    .app-header__logo-img {
-      height: 30px;
+    .app-header__logo :global(.logotype) {
+      height: 26px;
     }
 
     :global(html.js) .app-header__nav {

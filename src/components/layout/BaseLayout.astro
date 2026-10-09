@@ -9,6 +9,8 @@ import "../../styles/tokens.css";
 import "../../styles/fonts.css";
 import "../../styles/global.css";
 import { asset, url } from "../../lib/url";
+// Social card stays raster for now (crawlers do not render SVG); replace with
+// a logotype-based card later.
 import ogDefault from "../../assets/images/minka-logo.png";
 
 type PreloadFont = "inter" | "fraunces";
@@ -62,7 +64,8 @@ const FONT_PRELOADS: Record<PreloadFont, { href: string; type: string }> = {
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
     <meta name="twitter:card" content="summary" />
-    <link rel="icon" type="image/x-icon" href={url("favicon.ico")} />
+    <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
+    <link rel="icon" type="image/x-icon" href={url("favicon.ico")} sizes="any" />
     {
       preloadFonts.map((font) => (
         <link

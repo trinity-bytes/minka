@@ -5,9 +5,8 @@
  * pass `anchorBase={url()}` so the anchors point back to the landing.
  */
 import Button from "../ui/Button.astro";
-import { Image } from "astro:assets";
+import Logotype from "../brand/Logotype.astro";
 import { url } from "../../lib/url";
-import logo from "../../assets/images/minka-logo.png";
 
 interface NavLink {
   href: string;
@@ -43,7 +42,7 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
 <header class="site-header" data-site-header>
   <div class="site-header__inner">
     <a href={homeHref} class="site-header__logo" aria-label="Mink'a, inicio">
-      <Image src={logo} width={114} densities={[1, 2]} alt="Mink'a" loading="eager" />
+      <Logotype tone="ink" size={34} decorative />
     </a>
     <nav class="site-nav" id="menu-principal" aria-label="Navegación principal">
       {navLinks.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
@@ -137,10 +136,9 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     box-shadow: var(--shadow-hard-sm);
   }
 
-  .site-header__logo img {
-    display: block;
-    height: 44px;
-    width: auto;
+  .site-header__logo {
+    display: flex;
+    align-items: center;
   }
 
   .site-nav {
