@@ -28,7 +28,7 @@ Close the minor carry-overs left open by the astro-migration feature before the 
 ## Tasks
 - [x] T1 Escape Store strings rendered via innerHTML (shared escape helper + unit tests). Route: delegated (multi-file).
 - [x] T2 Search: "Limpiar" clears exclude/district; saved-search tags keyboard reachable (button semantics). Route: delegated.
-- [ ] T3 Publish form reset after submit; gamification tablist ARIA; challenge deadline local-date parsing (+ unit test); remove dead `updateSummary`. Route: delegated.
+- [x] T3 Publish form reset after submit; gamification tablist ARIA; challenge deadline local-date parsing (+ unit test); remove dead `updateSummary`. Route: delegated.
 - [ ] T4 Deduplicate hero images (keep the single source actually needed, update references). Route: delegated.
 
 ## Acceptance criteria
@@ -39,7 +39,8 @@ Close the minor carry-overs left open by the astro-migration feature before the 
 ## Progress
 - 2026-10-09: branch and feature document created. Route: one delegated writer for T1–T4 (2+ non-trivial files per task).
 - 2026-10-09 T1: shared `escapeHtml` in `src/scripts/lib/html.js` (+ `tests/html.test.js`, `npm test` → `node --test`); applied to every Store/user-derived interpolation reaching innerHTML in search, home, detail, chat, community, profile, notifications, gamification, settings and publish page scripts. Classic core scripts already use textContent for dynamic strings (modal/toast/notif-badge), no change needed. RED observed (module missing, 1 fail) then GREEN (5/5). Checks: build OK, check 0 errors/0 warnings/34 hints, test 5/5. Commit: e5d5070.
-- 2026-10-09 T2: "Limpiar" already reset exclude/district (state, persisted filters, URL and UI via DEFAULT_FILTERS + syncUI + persist, landed in aa1b738); verified by code trace, no change. Saved-search tags now render two native buttons (apply / remove) with aria-labels, visible :focus-visible outline and :focus-within pill state; pill click still applies; focus moves to the next tag (or the save button) after removal. No runnable RED (DOM behavior; no DOM test runner). Checks: build OK, check 0 errors/0 warnings/34 hints, test 5/5. Commit: see T2 commit.
+- 2026-10-09 T2: "Limpiar" already reset exclude/district (state, persisted filters, URL and UI via DEFAULT_FILTERS + syncUI + persist, landed in aa1b738); verified by code trace, no change. Saved-search tags now render two native buttons (apply / remove) with aria-labels, visible :focus-visible outline and :focus-within pill state; pill click still applies; focus moves to the next tag (or the save button) after removal. No runnable RED (DOM behavior; no DOM test runner). Checks: build OK, check 0 errors/0 warnings/34 hints, test 5/5. Commit: 297fdde.
+- 2026-10-09 T3: publish form now resets after a successful submit (fields, photo previews, uploaded images, dynamic fields, QR code, counters, errors/aria-invalid, summary) and the published draft is cleared instead of re-saved, so a reload starts clean. Shared `src/scripts/lib/date.js` (`parseLocalDate`, `toLocalDateString`) + `tests/date.test.js` (TZ pinned to America/Lima in-test); community deadlines import it (replacing the inline copy) and gamification redemption history records the local day instead of the UTC day. Already done before this task (verified, no change): gamification tablist ARIA (role tablist/tab/tabpanel, aria-selected, aria-controls, roving tabindex, Arrow/Home/End) and dead `updateSummary` removal in notifications.js (both in aa1b738). RED observed (date module missing, 1 fail) then GREEN (10/10); behavioral RED for deadlines not possible since the inline fix already existed. Checks: build OK, check 0 errors/0 warnings/34 hints, test 10/10. Carry-over: dashboard.js still derives date-only strings via `toISOString().split("T")[0]` (out of scope). Commit: see T3 commit.
 
 ## Next step
-T3.
+T4.

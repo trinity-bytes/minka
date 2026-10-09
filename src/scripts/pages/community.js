@@ -1,13 +1,8 @@
 // T32 - Retos Comunitarios (HU38)
 // Estado persistido en Store: { challenges: [...], joined: [ids] }
 import { escapeHtml as esc } from "../lib/html.js";
-
-// "YYYY-MM-DD" as a local calendar date. `new Date("2025-12-15")` is parsed
-// as UTC midnight, which shows the previous day in UTC-5 (Lima).
-function parseLocalDate(value) {
-  const [year, month, day] = String(value).split("-").map(Number);
-  return new Date(year, month - 1, day);
-}
+// Deadlines are date-only strings: parse them on the local calendar day.
+import { parseLocalDate } from "../lib/date.js";
 
 const SEED_CHALLENGES = [
   {

@@ -128,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       generateQr();
       publishItem();
+      resetForm();
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.classList.remove("is-loading");
@@ -345,8 +346,32 @@ document.addEventListener("DOMContentLoaded", () => {
       payload: { itemId: newItem.id, title: newItem.title },
     });
 
-    // Also save as draft just in case
-    saveDraft(true);
+    // The item is published: drop the draft so a reload starts clean.
+    Store.saveDraft(null);
+  }
+
+  // Back to the pristine form after a successful publish: fields, photo
+  // previews, dynamic fields, counters, validation state and summary.
+  function resetForm() {
+    form.reset();
+    uploadedImages = [];
+    dynamicData = {};
+    currentCode = "";
+    previewGrid.innerHTML = "";
+    renderDynamicFields(inputRefs.category.value);
+    form.querySelectorAll("[data-error-for]").forEach((node) => {
+      node.textContent = "";
+    });
+    form.querySelectorAll("[aria-invalid]").forEach((field) => {
+      field.removeAttribute("aria-invalid");
+    });
+    const photoError = document.getElementById("photo-error");
+    if (photoError) photoError.textContent = "";
+    // form.reset() fires no input events: refresh the character counters.
+    [inputRefs.title, inputRefs.notes].forEach((input) =>
+      input?.dispatchEvent(new Event("input"))
+    );
+    updateSummary();
   }
 
   function buildOwner() {

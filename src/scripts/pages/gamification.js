@@ -3,6 +3,7 @@
  * Maneja puntos, insignias, ranking y catálogo de recompensas.
  */
 import { escapeHtml as esc } from "../lib/html.js";
+import { toLocalDateString } from "../lib/date.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initGamification();
@@ -368,7 +369,7 @@ function redeemReward(rewardId) {
         id: Date.now(),
         action: `Canje: ${reward.name}`,
         points: reward.cost,
-        date: new Date().toISOString().split("T")[0],
+        date: toLocalDateString(new Date()),
         type: "spend",
       });
 
