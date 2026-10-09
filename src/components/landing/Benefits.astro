@@ -1,158 +1,332 @@
 ---
-/** "Beneficios": bento grid of four benefit cards. */
-import Card from "../ui/Card.astro";
+/**
+ * "Beneficios": bento of solid color blocks (branding-board language).
+ * Desktop is a 4x3 grid: an ink poster statement with a giant faint leaf
+ * watermark, a white "Seguridad" block, brand-green "Ahorro" and lavender
+ * "Impacto" blocks, the white "chip drop" of Mink'a values and a mint
+ * "Comunidad" block whose blob photo bleeds off the corner. Every
+ * breakpoint fills its grid exactly (4x3, 2x5, single column).
+ */
+import BlobMedia from "../ui/BlobMedia.astro";
+import IconChip from "../ui/IconChip.astro";
 import SectionHead from "../ui/SectionHead.astro";
 import Sticker from "../ui/Sticker.astro";
+import Logomark from "../brand/Logomark.astro";
 import LandingSection from "./LandingSection.astro";
-import { asset } from "../../lib/url";
-
-type Tone = "card" | "mint" | "accent-soft";
-
-interface Benefit {
-  icon: string;
-  title: string;
-  text: string;
-  tone: Tone;
-  span: "wide" | "narrow";
-  tag?: { label: string; tone: "amber" | "terra" };
-  delay?: number;
-}
-
-const benefits: Benefit[] = [
-  {
-    icon: "seguridad.svg",
-    title: "Seguridad primero",
-    text: "Verificación de usuarios, sistema de reputación y puntos de encuentro sugeridos en zonas públicas. Truequear con desconocidos nunca fue tan tranquilo.",
-    tone: "mint",
-    span: "wide",
-    tag: { label: "Comunidad verificada", tone: "terra" },
-  },
-  {
-    icon: "ahorro.svg",
-    title: "Ahorro real",
-    text: "Intercambia en lugar de comprar. Tu billetera y el planeta te lo agradecen.",
-    tone: "card",
-    span: "narrow",
-    delay: 120,
-  },
-  {
-    icon: "impacto.svg",
-    title: "Impacto ambiental",
-    text: "Cada trueque evita residuos y alarga la vida útil de las cosas.",
-    tone: "accent-soft",
-    span: "narrow",
-  },
-  {
-    icon: "comunidad.svg",
-    title: "Comunidad de verdad",
-    text: "Conoce a tus vecinos, construye redes de confianza y fortalece tu barrio. El trueque es la excusa; la comunidad es el premio.",
-    tone: "card",
-    span: "wide",
-    tag: { label: "Barrio a barrio", tone: "amber" },
-    delay: 120,
-  },
-];
+import StickerChips from "./StickerChips.astro";
+import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
 ---
 
 <LandingSection id="beneficios" folio="02" compactTop>
   <SectionHead eyebrow="¿Por qué Mink'a?" eyebrowTone="green" subtitle="En tu bolsillo, en tu barrio y en el planeta.">
     Beneficios que se <em>sienten</em>
   </SectionHead>
+
   <div class="bento">
-    {
-      benefits.map((benefit) => (
-        <Card
-          as="article"
-          tone={benefit.tone}
-          radius="xl"
-          shadow="md"
-          interactive
-          class={`benefit benefit--${benefit.span}`}
-          data-reveal
-          style={benefit.delay ? `--reveal-delay: ${benefit.delay}ms` : undefined}
-        >
-          {benefit.tag && (
-            <Sticker tone={benefit.tag.tone} class="benefit__tag">
-              {benefit.tag.label}
-            </Sticker>
-          )}
-          <div class="benefit__icon" aria-hidden="true">
-            <img src={asset(`images/icons/${benefit.icon}`)} loading="lazy" decoding="async" alt="" />
-          </div>
-          <h3 class="benefit__title">{benefit.title}</h3>
-          <p class="benefit__text">{benefit.text}</p>
-        </Card>
-      ))
-    }
+    <div class="cell cell--poster" data-reveal>
+      <Logomark tone="current" size={480} class="poster__mark" />
+      <div class="poster__statement">
+        <p class="poster__text">
+          El trueque es la <span class="poster__key">excusa</span>; la comunidad es el
+          <span class="poster__key">premio</span>.
+        </p>
+        <Sticker tone="lavender" class="poster__sticker">Barrio a barrio</Sticker>
+      </div>
+    </div>
+
+    <article class="cell cell--safe" data-reveal style="--reveal-delay: 80ms">
+      <Sticker tone="mint" class="cell__tag">Comunidad verificada</Sticker>
+      <IconChip icon="shield" tone="brand" />
+      <h3 class="cell__title">Seguridad primero</h3>
+      <p class="cell__text">
+        Verificación de usuarios, sistema de reputación y puntos de encuentro sugeridos en zonas públicas.
+        Truequear con desconocidos nunca fue tan tranquilo.
+      </p>
+    </article>
+
+    <article class="cell cell--save" data-reveal style="--reveal-delay: 160ms">
+      <IconChip icon="coins" tone="ink" />
+      <h3 class="cell__title">Ahorro real</h3>
+      <p class="cell__text">Intercambia en lugar de comprar. Tu billetera y el planeta te lo agradecen.</p>
+    </article>
+
+    <article class="cell cell--impact" data-reveal style="--reveal-delay: 240ms">
+      <IconChip icon="leaf" tone="ink" />
+      <h3 class="cell__title">Impacto ambiental</h3>
+      <p class="cell__text">Cada trueque evita residuos y alarga la vida útil de las cosas.</p>
+    </article>
+
+    <div class="cell cell--drop" data-reveal>
+      <h3 class="cell__title">Lo que nos mueve</h3>
+      <StickerChips class="drop__pile" />
+    </div>
+
+    <article class="cell cell--community" data-reveal style="--reveal-delay: 120ms">
+      <div class="community__copy">
+        <IconChip icon="people" tone="brand" />
+        <h3 class="cell__title">Comunidad de verdad</h3>
+        <p class="cell__text">Conoce a tus vecinos, construye redes de confianza y fortalece tu barrio.</p>
+      </div>
+      <BlobMedia
+        src={guitar}
+        alt="Guitarra acústica lista para cambiar de manos entre vecinos"
+        shape="b"
+        ratio="1"
+        widths={[320, 480, 640]}
+        sizes="(max-width: 640px) 60vw, 320px"
+        class="community__photo"
+      />
+    </article>
   </div>
 </LandingSection>
 
 <style>
   .bento {
+    --cell-pad: clamp(24px, 2.6vw, 36px);
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 26px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-areas:
+      "poster poster safe safe"
+      "poster poster save impact"
+      "drop drop community community";
+    gap: 20px;
   }
 
-  .bento .benefit {
-    padding: 36px 32px;
+  .cell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    min-width: 0;
+    padding: var(--cell-pad);
+    border-radius: var(--radius-bento);
+    background: var(--cell-bg);
+    color: var(--cell-fg);
+    /* Clip watermarks, bleeding photos and falling chips to the block. */
+    overflow: clip;
   }
 
-  .bento .benefit--wide {
-    grid-column: span 4;
-  }
-
-  .bento .benefit--narrow {
-    grid-column: span 2;
-  }
-
-  .benefit .benefit__tag {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-  }
-
-  .benefit__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    background: var(--color-card);
-    border: var(--border-ink);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-hard-sm);
-    margin-bottom: 22px;
-  }
-
-  .benefit__icon img {
-    width: 34px;
-    height: 34px;
-  }
-
-  .benefit__title {
+  .cell__title {
+    margin: 6px 0 0;
     font-family: var(--font-display);
-    font-weight: 620;
+    font-weight: 700;
     font-variation-settings: var(--font-display-axes-text);
-    font-size: 1.55rem;
-    color: var(--color-ink);
-    margin: 0 0 12px;
+    font-size: clamp(1.4rem, 1.9vw, 1.7rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: inherit;
   }
 
-  .benefit__text {
-    color: var(--color-ink-2);
+  .cell__text {
     margin: 0;
     max-width: 34rem;
+    color: var(--cell-muted, inherit);
+    text-wrap: pretty;
   }
 
-  @media (max-width: 1024px) {
+  /* --- Poster: ink block, Fraunces Black statement, leaf watermark --- */
+  .cell--poster {
+    grid-area: poster;
+    --cell-bg: var(--color-ink);
+    --cell-fg: var(--color-brand);
+    justify-content: flex-end;
+    min-height: 420px;
+  }
+
+  .cell--poster :global(.poster__mark) {
+    position: absolute;
+    right: -12%;
+    top: -14%;
+    height: 118%;
+    width: auto;
+    color: var(--color-brand);
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .poster__statement {
+    position: relative;
+  }
+
+  .poster__text {
+    margin: 0;
+    max-width: 11ch;
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    line-height: var(--font-display-leading);
+    letter-spacing: var(--font-display-tracking);
+    text-wrap: balance;
+  }
+
+  .poster__key {
+    color: var(--color-lavender);
+  }
+
+  /* Sticker overlapping the end of the first line, as on the branding board. */
+  .cell--poster :global(.poster__sticker) {
+    position: absolute;
+    top: -0.9rem;
+    right: -0.6rem;
+    --sticker-rotate: 8deg;
+    font-size: 0.9rem;
+  }
+
+  /* --- Benefit blocks --- */
+  .cell--safe {
+    grid-area: safe;
+    --cell-bg: var(--color-card);
+    --cell-fg: var(--color-ink);
+    --cell-muted: var(--color-ink-2);
+  }
+
+  /* Corner tag: pill radius + 20px inset ~= the block radius (concentric). */
+  .cell--safe :global(.cell__tag) {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    --sticker-rotate: 3deg;
+  }
+
+  .cell--save {
+    grid-area: save;
+    --cell-bg: var(--color-brand);
+    --cell-fg: var(--color-on-brand);
+  }
+
+  .cell--impact {
+    grid-area: impact;
+    --cell-bg: var(--color-lavender);
+    --cell-fg: var(--color-on-lavender);
+    --logo-leaf: var(--color-on-lavender);
+  }
+
+  /* No green on lavender: violet chip with a lavender glyph. */
+  .cell--impact :global(.icon-chip) {
+    --chip-bg: var(--color-on-lavender);
+    --chip-fg: var(--color-lavender);
+  }
+
+  /* --- Chip drop --- */
+  .cell--drop {
+    grid-area: drop;
+    --cell-bg: var(--color-card);
+    --cell-fg: var(--color-ink);
+    justify-content: space-between;
+    min-height: 340px;
+  }
+
+  .cell--drop :global(.drop__pile) {
+    margin-top: auto;
+  }
+
+  /* --- Community: mint block, blob photo bleeding off the corner --- */
+  .cell--community {
+    grid-area: community;
+    --cell-bg: var(--color-mint);
+    --cell-fg: var(--color-ink);
+    --cell-muted: var(--color-ink-2);
+    min-height: 340px;
+  }
+
+  .community__copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: 56%;
+  }
+
+  .cell--community :global(.community__photo) {
+    position: absolute;
+    right: -10%;
+    bottom: -16%;
+    width: 52%;
+    max-width: 340px;
+  }
+
+  :global(body.high-contrast) .cell {
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  /* Tablet: 2 columns, 5 rows, no gaps. */
+  @media (max-width: 1100px) {
     .bento {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "poster poster"
+        "safe safe"
+        "save impact"
+        "drop drop"
+        "community community";
     }
 
-    .bento .benefit--wide,
-    .bento .benefit--narrow {
-      grid-column: span 2;
+    .cell--poster {
+      min-height: 360px;
+    }
+
+    .poster__text {
+      max-width: 14ch;
+    }
+
+    .cell--safe .cell__text {
+      max-width: 70%;
+    }
+  }
+
+  /* Phone: one column. */
+  @media (max-width: 640px) {
+    .bento {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "poster"
+        "safe"
+        "save"
+        "impact"
+        "drop"
+        "community";
+      gap: 14px;
+    }
+
+    .cell--poster {
+      min-height: 0;
+      padding-top: 72px;
+    }
+
+    .poster__text {
+      max-width: 11ch;
+    }
+
+    .cell--safe {
+      padding-top: 72px;
+    }
+
+    .cell--safe .cell__text {
+      max-width: none;
+    }
+
+    .cell--drop,
+    .cell--community {
+      min-height: 0;
+    }
+
+    .community__copy {
+      max-width: none;
+    }
+
+    /* The photo moves into the flow and bleeds off the bottom edge only. */
+    .cell--community :global(.community__photo) {
+      position: relative;
+      right: auto;
+      bottom: auto;
+      align-self: flex-end;
+      width: 70%;
+      margin: 4px -14% calc(-1 * var(--cell-pad) - 18%) 0;
     }
   }
 </style>
