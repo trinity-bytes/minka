@@ -64,8 +64,9 @@ const FONT_PRELOADS: Record<PreloadFont, { href: string; type: string }> = {
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
     <meta name="twitter:card" content="summary" />
+    <!-- ICO first with explicit sizes: sizes="any" makes Chrome prefer the ICO over the SVG. -->
+    <link rel="icon" href={url("favicon.ico")} sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
-    <link rel="icon" type="image/x-icon" href={url("favicon.ico")} sizes="any" />
     {
       preloadFonts.map((font) => (
         <link

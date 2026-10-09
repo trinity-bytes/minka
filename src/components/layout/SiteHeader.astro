@@ -126,7 +126,7 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     pointer-events: auto;
     max-width: 1240px;
     margin: 0 auto;
-    padding: 8px 8px 8px 24px;
+    padding: 8px 8px 8px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -135,7 +135,8 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
-    border-radius: var(--radius-full);
+    /* A full pill reads oversized at this height; a softer rect stays compact. */
+    border-radius: 20px;
     transition:
       background-color var(--dur-base) var(--ease-standard),
       box-shadow var(--dur-base) var(--ease-standard);
@@ -149,6 +150,9 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
   .site-header__logo {
     display: flex;
     align-items: center;
+    /* Optical centering: the wordmark box reserves ascender/leaf space above the
+       x-height, so its visual mass sits low. Lift it slightly. */
+    translate: 0 -3px;
     border-radius: var(--radius-sm, 8px);
   }
 
@@ -274,7 +278,7 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     }
 
     .site-header__inner {
-      padding: 6px 6px 6px 18px;
+      padding: 6px 6px 6px 16px;
     }
 
     .site-nav {
