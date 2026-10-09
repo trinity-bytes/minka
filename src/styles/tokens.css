@@ -43,6 +43,9 @@
   /* Text and strokes on lavender fills: green ink clashes with lavender, so use
      a deep violet instead (8.05:1 on lavender, 12.63:1 on lavender-soft). */
   --color-on-lavender: #2a1858;
+  /* Text and icons on brand-green fills: green ink reads muddy on green (same
+     hue) despite 7.37:1, so use a neutral near-black (9.28:1 on #2ecc71). */
+  --color-on-brand: #0b0d0c;
   --color-mint: #d7f5e3; /* brand tint; ink on it 13.32:1 */
 
   /* Legacy accent roles re-pointed to the new palette (removed in T13) */

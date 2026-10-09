@@ -306,6 +306,7 @@ body.high-contrast {
   --color-border: var(--color-hc-ink);
   /* Lavender fills re-point ink to this token locally; keep it black here. */
   --color-on-lavender: var(--color-hc-ink);
+  --color-on-brand: var(--color-hc-ink);
   /* --border-ink resolves on :root against the hairline border; restore
      strong outlines for high contrast (the flat theme dropped them). */
   --border-ink: 2px solid var(--color-hc-ink);
