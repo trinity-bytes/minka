@@ -1,5 +1,7 @@
 // T13 - Lucero Pipa: Lógica de perfil e identidad simulada
 // T35 - Leonardo Chavez: Gestión de reputación
+import { escapeHtml as esc } from "../lib/html.js";
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const demoUser = {
@@ -131,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
       myItemsList.innerHTML = `
         <div class="empty-state">
           <div class="empty-state__icon" aria-hidden="true">📦</div>
-          <p>${message}</p>
+          <p>${esc(message)}</p>
           ${cta}
         </div>`;
       return;
@@ -144,13 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
           ? window.I18n.t(statusKey)
           : item.status || "Activo";
         return `
-    <div class="profile-item-card" role="link" tabindex="0" data-item-id="${item.id}">
-      <img src="${
+    <div class="profile-item-card" role="link" tabindex="0" data-item-id="${esc(item.id)}">
+      <img src="${esc(
         item.images ? item.images[0] : "../assets/images/items/default.svg"
-      }" alt="${item.title}" />
+      )}" alt="${esc(item.title)}" />
       <div class="profile-item-info">
-        <h4>${item.title}</h4>
-        <span class="badge">${statusText}</span>
+        <h4>${esc(item.title)}</h4>
+        <span class="badge">${esc(statusText)}</span>
       </div>
     </div>
   `;
@@ -639,12 +641,12 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="review-card">
       <div class="review-header">
         <div class="review-author">
-          <img src="${review.avatar}" alt="${
+          <img src="${esc(review.avatar)}" alt="${esc(
           review.author
-        }" class="review-avatar">
+        )}" class="review-avatar">
           <div class="review-meta">
-            <span class="review-name">${review.author}</span>
-            <span class="review-date">${review.date}</span>
+            <span class="review-name">${esc(review.author)}</span>
+            <span class="review-date">${esc(review.date)}</span>
           </div>
         </div>
         <div class="review-rating">
@@ -657,12 +659,12 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("")}
         </div>
       </div>
-      <p class="review-content">${review.content}</p>
+      <p class="review-content">${esc(review.content)}</p>
       ${
         review.canAppeal
           ? `
         <div class="review-actions">
-          <button type="button" class="btn-appeal" data-appeal-review="${review.id}">
+          <button type="button" class="btn-appeal" data-appeal-review="${esc(review.id)}">
             <i class="fas fa-flag"></i> ${
               window.I18n
                 ? window.I18n.t("profile.messages.appealAction")

@@ -7,6 +7,7 @@
 // globals Store, Modal and Toast loaded as classic scripts by AppLayout.
 import { ECO_FACTORS } from "../../lib/eco";
 import { token } from "../tokens";
+import { escapeHtml as esc } from "../lib/html.js";
 
 const mockDetail = {
   id: "itm-001",
@@ -200,9 +201,9 @@ function renderTimeline() {
     <li class="timeline-item ${event.completed ? "completed" : ""}">
       <div class="timeline-marker"></div>
       <div class="timeline-content">
-        <h4>${event.title}</h4>
-        <span class="timeline-date">${event.date}</span>
-        <p class="timeline-desc">${event.desc}</p>
+        <h4>${esc(event.title)}</h4>
+        <span class="timeline-date">${esc(event.date)}</span>
+        <p class="timeline-desc">${esc(event.desc)}</p>
       </div>
     </li>
   `
@@ -220,27 +221,27 @@ function renderDetail(item) {
   el.condition.textContent = item.condition;
   el.location.textContent = item.location;
   el.availability.textContent = item.availability;
-  el.rating.innerHTML = `<i class="fas fa-star"></i> ${item.rating}`;
+  el.rating.innerHTML = `<i class="fas fa-star"></i> ${esc(item.rating)}`;
 
   if (item.specs && el.specsContainer) {
     Object.entries(item.specs).forEach(([key, value]) => {
       const row = document.createElement("div");
       row.className = "info-row";
-      row.innerHTML = `<span>${key}</span><strong>${value}</strong>`;
+      row.innerHTML = `<span>${esc(key)}</span><strong>${esc(value)}</strong>`;
       el.specsContainer.appendChild(row);
     });
   }
 
   el.sellerName.textContent = item.owner.name;
   el.sellerLocation.textContent = item.owner.location;
-  el.sellerRating.innerHTML = `<i class="fas fa-star"></i> ${item.owner.rating}`;
+  el.sellerRating.innerHTML = `<i class="fas fa-star"></i> ${esc(item.owner.rating)}`;
   if (ratingUser) {
     ratingUser.textContent = item.owner.name;
   }
 
   if (Array.isArray(item.tags)) {
     el.tags.innerHTML = item.tags
-      .map((tag) => `<span class="badge">${tag}</span>`)
+      .map((tag) => `<span class="badge">${esc(tag)}</span>`)
       .join("");
   }
 
@@ -270,7 +271,7 @@ function setupGallery(images, title) {
   thumbs.innerHTML = images
     .map(
       (src, idx) =>
-        `<img src="${src}" alt="Vista ${idx + 1}" data-idx="${idx}" loading="lazy" decoding="async" />`
+        `<img src="${esc(src)}" alt="Vista ${idx + 1}" data-idx="${idx}" loading="lazy" decoding="async" />`
     )
     .join("");
   // Con una sola foto no hay nada que navegar
@@ -367,15 +368,15 @@ function renderSimilar(item) {
   grid.innerHTML = similar
     .map(
       (s) => `
-      <a class="similar-card is-entering" href="detalle.html?id=${encodeURIComponent(
-        s.id
+      <a class="similar-card is-entering" href="detalle.html?id=${esc(
+        encodeURIComponent(s.id)
       )}">
-        <img src="${
+        <img src="${esc(
           s.images?.[0] || "../assets/images/items/default.svg"
-        }" alt="${s.title}" loading="lazy" decoding="async" />
+        )}" alt="${esc(s.title)}" loading="lazy" decoding="async" />
         <div class="similar-card__body">
-          <h3>${s.title}</h3>
-          <span class="badge">${s.category}</span>
+          <h3>${esc(s.title)}</h3>
+          <span class="badge">${esc(s.category)}</span>
         </div>
       </a>`
     )

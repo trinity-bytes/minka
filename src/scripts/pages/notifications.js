@@ -1,4 +1,6 @@
 // T22 - Miguel Sanca: Sistema de notificaciones con feed y preferencias
+import { escapeHtml as esc } from "../lib/html.js";
+
 (function () {
   // Persistencia centralizada en core/store.js (window.Store)
 
@@ -150,14 +152,14 @@
 
     ui.list.innerHTML = filtered
       .map((item) => {
-        const badgeClass = `badge badge--${item.type}`;
+        const badgeClass = `badge badge--${esc(item.type)}`;
         const icon = iconForType(item.type);
         const href = hrefForNotification(item);
         return `
         <article class="notification-item ${
           item.unread ? "is-unread" : ""
-        }" aria-label="${item.title}"${
-          href ? ` data-href="${href}" style="cursor:pointer"` : ""
+        }" aria-label="${esc(item.title)}"${
+          href ? ` data-href="${esc(href)}" style="cursor:pointer"` : ""
         }>
           <div class="notification-icon">${icon}</div>
           <div class="notification-body">
@@ -170,22 +172,22 @@
                     )}</span>`
                   : ""
               }
-              <span>${item.time}</span>
+              <span>${esc(item.time)}</span>
             </div>
-            <h4>${item.title}</h4>
-            <p>${item.text}</p>
+            <h4>${esc(item.title)}</h4>
+            <p>${esc(item.text)}</p>
           </div>
           <div class="notification-actions">
-            <button type="button" data-action="read" data-id="${item.id}">
+            <button type="button" data-action="read" data-id="${esc(item.id)}">
               ${
                 item.unread
                   ? I18n.t("notif_action_read")
                   : I18n.t("notif_action_unread")
               }
             </button>
-            <button type="button" data-action="remove" data-id="${
+            <button type="button" data-action="remove" data-id="${esc(
               item.id
-            }">${I18n.t("notif_action_remove")}</button>
+            )}">${I18n.t("notif_action_remove")}</button>
           </div>
         </article>
       `;

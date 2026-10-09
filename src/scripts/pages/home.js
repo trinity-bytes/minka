@@ -2,6 +2,7 @@
 // ES module bundled by src/pages/pages/home.astro; relies on the legacy
 // globals Session, Store, Toast and I18n loaded as classic scripts by
 // AppLayout (core/guard.js redirects guests to auth before this runs).
+import { escapeHtml as esc } from "../lib/html.js";
 
 const userNameEl = document.getElementById("home-username");
 const popularListEl = document.getElementById("popular-list");
@@ -116,40 +117,40 @@ function renderPopular() {
   popularListEl.innerHTML = allItems
     .map(
       (item) => `
-        <article class="popular-card is-entering" aria-label="${
+        <article class="popular-card is-entering" aria-label="${esc(
           item.title
-        }" data-item-id="${item.id}">
+        )}" data-item-id="${esc(item.id)}">
           <div class="popular-card__media">
-            <img src="${item.images ? item.images[0] : item.image}" alt="${
+            <img src="${esc(item.images ? item.images[0] : item.image)}" alt="${esc(
         item.title
-      }" loading="lazy" decoding="async" width="400" height="200" />
+      )}" loading="lazy" decoding="async" width="400" height="200" />
             <button class="fav-toggle" type="button" aria-pressed="${
               window.Store ? Store.isFavorite(item.id) : false
-            }" aria-label="Marcar como favorito" data-fav-id="${item.id}">
+            }" aria-label="Marcar como favorito" data-fav-id="${esc(item.id)}">
               <i class="fas fa-heart" aria-hidden="true"></i>
             </button>
           </div>
           <div class="popular-card__body">
-            <h3 class="popular-card__title">${item.title}</h3>
+            <h3 class="popular-card__title">${esc(item.title)}</h3>
             <div class="popular-card__meta">
-              <span class="badge">${item.category}</span>
-              <span><i class="fas fa-map-marker-alt"></i> ${
+              <span class="badge">${esc(item.category)}</span>
+              <span><i class="fas fa-map-marker-alt"></i> ${esc(
                 item.location
-              }</span>
-              <span><i class="fas fa-ruler"></i> ${item.distanceKm} km</span>
+              )}</span>
+              <span><i class="fas fa-ruler"></i> ${esc(item.distanceKm)} km</span>
               <span><i class="fas fa-star"></i> ${(item.rating || 5).toFixed(
                 1
               )}</span>
             </div>
             <div class="popular-card__footer">
-              <a class="btn btn-secondary" href="busqueda.html?category=${encodeURIComponent(
-                item.category
+              <a class="btn btn-secondary" href="busqueda.html?category=${esc(
+                encodeURIComponent(item.category)
               )}">${
         window.I18n ? window.I18n.t("card_view_similar") : "Ver similar"
       }</a>
-              <a class="btn btn-primary" href="detalle.html?id=${
-                item.id
-              }">${
+              <a class="btn btn-primary" href="detalle.html?id=${esc(
+                encodeURIComponent(item.id)
+              )}">${
         window.I18n ? window.I18n.t("card_view_detail") : "Ver detalle"
       }</a>
             </div>

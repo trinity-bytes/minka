@@ -172,15 +172,36 @@
   border: 1.5px dashed var(--color-ink);
 }
 
-.saved-search-tag:hover {
+.saved-search-tag:hover,
+.saved-search-tag:focus-within {
   background: var(--color-mint);
   border-style: solid;
 }
 
+/* Both actions are native buttons reset to look like the pill's text. */
+.saved-search-tag__apply,
+.saved-search-remove {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-full);
+}
+
 .saved-search-remove {
   color: var(--color-error);
-  cursor: pointer;
   font-weight: bold;
+  line-height: 1;
+  padding: 0 var(--space-4);
+}
+
+.saved-search-tag__apply:focus-visible,
+.saved-search-remove:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 /* T30 - Andy Salcedo: Estilos para Favoritos */

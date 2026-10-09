@@ -1,12 +1,8 @@
 // T32 - Retos Comunitarios (HU38)
 // Estado persistido en Store: { challenges: [...], joined: [ids] }
-
-// "YYYY-MM-DD" as a local calendar date. `new Date("2025-12-15")` is parsed
-// as UTC midnight, which shows the previous day in UTC-5 (Lima).
-function parseLocalDate(value) {
-  const [year, month, day] = String(value).split("-").map(Number);
-  return new Date(year, month - 1, day);
-}
+import { escapeHtml as esc } from "../lib/html.js";
+// Deadlines are date-only strings: parse them on the local calendar day.
+import { parseLocalDate } from "../lib/date.js";
 
 const SEED_CHALLENGES = [
   {
@@ -186,7 +182,7 @@ function renderChallenges() {
     el.grid.innerHTML = `
       <div class="empty-state challenges-empty">
         <i class="fas fa-map-marker-alt challenges-empty__icon" aria-hidden="true"></i>
-        <h3>No hay retos activos en ${currentUser.district}</h3>
+        <h3>No hay retos activos en ${esc(currentUser.district)}</h3>
         <p>¡Prueba seleccionando otro distrito o vuelve pronto!</p>
       </div>
     `;
@@ -202,22 +198,24 @@ function renderChallenges() {
       return `
       <article class="challenge-card">
         <div class="challenge-card__header">
-          <span class="challenge-card__badge">${challenge.district}</span>
+          <span class="challenge-card__badge">${esc(challenge.district)}</span>
           <span class="challenge-card__deadline">
-            <i class="far fa-clock" aria-hidden="true"></i> Hasta ${parseLocalDate(challenge.deadline).toLocaleDateString()}
+            <i class="far fa-clock" aria-hidden="true"></i> Hasta ${esc(
+              parseLocalDate(challenge.deadline).toLocaleDateString()
+            )}
           </span>
         </div>
         <div class="challenge-card__body">
-          <h3 class="challenge-card__title">${challenge.title}</h3>
-          <p class="challenge-card__desc">${challenge.description}</p>
+          <h3 class="challenge-card__title">${esc(challenge.title)}</h3>
+          <p class="challenge-card__desc">${esc(challenge.description)}</p>
           
           <div class="progress-section">
             <div class="progress-label">
               <span>Tu Progreso</span>
-              <span>${challenge.current} / ${challenge.goal}</span>
+              <span>${esc(challenge.current)} / ${esc(challenge.goal)}</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill" style="width: ${individualProgress}%"></div>
+              <div class="progress-fill" style="width: ${esc(individualProgress)}%"></div>
             </div>
           </div>
 
@@ -227,21 +225,21 @@ function renderChallenges() {
               <span>${Math.round(collectiveProgress)}% completado</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill collective" style="width: ${collectiveProgress}%"></div>
+              <div class="progress-fill collective" style="width: ${esc(collectiveProgress)}%"></div>
             </div>
             <small class="challenge-card__count">
-              ${challenge.collectiveCurrent} de ${
+              ${esc(challenge.collectiveCurrent)} de ${esc(
         challenge.collectiveGoal
-      } intercambios
+      )} intercambios
             </small>
           </div>
         </div>
         <div class="challenge-card__footer">
           <div class="reward-badge">
             <i class="fas fa-trophy"></i>
-            <span>${challenge.reward} (+${challenge.points} pts)</span>
+            <span>${esc(challenge.reward)} (+${esc(challenge.points)} pts)</span>
           </div>
-          <button class="btn btn-primary btn-sm" data-join="${challenge.id}" ${
+          <button class="btn btn-primary btn-sm" data-join="${esc(challenge.id)}" ${
             individualProgress >= 100 || state.joined.includes(challenge.id)
               ? "disabled"
               : ""

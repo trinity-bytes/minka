@@ -3,6 +3,7 @@
 // Los datos demo viven en Store.seedDemo(); la búsqueda lee solo Store.getItems().
 // ES module bundled by src/pages/pages/busqueda.astro; relies on the legacy
 // globals Store, Toast and I18n loaded as classic scripts by AppLayout.
+import { escapeHtml as esc } from "../lib/html.js";
 
 // T31 - Distritos de referencia. Declared before the initial render():
 // a restored district filter reads DISTRICT_KM during that first render,
@@ -227,9 +228,17 @@ function attachEvents() {
     const remove = e.target.closest("[data-remove-saved-search]");
     if (remove) {
       removeSavedSearch(Number(remove.dataset.removeSavedSearch));
+      // The focused button was re-rendered away: keep focus in the list.
+      (
+        el.savedSearchesList.querySelector("[data-saved-search]") ||
+        el.saveSearchBtn
+      )?.focus();
       return;
     }
-    const tag = e.target.closest("[data-saved-search]");
+    // Clicking anywhere on the pill (not just its button) still applies it.
+    const tag = e.target
+      .closest(".saved-search-tag")
+      ?.querySelector("[data-saved-search]");
     if (tag) applySavedSearch(Number(tag.dataset.savedSearch));
   });
 
@@ -290,8 +299,8 @@ function renderChips() {
     .map(
       (chip) => `
       <button class="filter-chip" type="button" data-chip="${chip.key}"
-        aria-label="Quitar filtro ${chip.label}">
-        ${chip.label} <span aria-hidden="true">×</span>
+        aria-label="Quitar filtro ${esc(chip.label)}">
+        ${esc(chip.label)} <span aria-hidden="true">×</span>
       </button>`
     )
     .join("");
@@ -432,37 +441,37 @@ function render() {
       }
 
       return `
-        <article class="result-card is-entering" aria-label="${item.title}">
+        <article class="result-card is-entering" aria-label="${esc(item.title)}">
           <div style="position: relative;">
-            <img src="${item.images ? item.images[0] : item.image}" alt="${
+            <img src="${esc(item.images ? item.images[0] : item.image)}" alt="${esc(
         item.title
-      }" class="result-card__img" loading="lazy" decoding="async" style="object-fit: cover;" />
+      )}" class="result-card__img" loading="lazy" decoding="async" style="object-fit: cover;" />
             <button class="item-card__favorite ${
               isFav ? "active" : ""
-            }" aria-pressed="${isFav}" data-fav-id="${item.id}" aria-label="${
+            }" aria-pressed="${isFav}" data-fav-id="${esc(item.id)}" aria-label="${
         isFav ? "Quitar de favoritos" : "Añadir a favoritos"
       }">
               <i class="fas fa-heart" aria-hidden="true"></i>
             </button>
           </div>
           <div class="result-card__body">
-            <h3 class="result-card__title">${item.title}</h3>
+            <h3 class="result-card__title">${esc(item.title)}</h3>
             <div class="result-card__meta">
-              <span class="badge">${item.category}</span>
-              <span>${item.location}</span>
-              <span>${displayDist} km</span>
-              <span><i class="fa-solid fa-star star-rating"></i> ${item.rating.toFixed(
-                1
+              <span class="badge">${esc(item.category)}</span>
+              <span>${esc(item.location)}</span>
+              <span>${esc(displayDist)} km</span>
+              <span><i class="fa-solid fa-star star-rating"></i> ${esc(
+                item.rating.toFixed(1)
               )}</span>
             </div>
             <div class="result-card__tags">
-              Tags: ${item.tags ? item.tags.join(", ") : ""}
+              Tags: ${esc(item.tags ? item.tags.join(", ") : "")}
             </div>
             <div class="result-card__footer">
               <div class="result-card__actions">
-                <a class="btn btn-secondary" href="detalle.html?id=${
-                  item.id
-                }">${
+                <a class="btn btn-secondary" href="detalle.html?id=${esc(
+                  encodeURIComponent(item.id)
+                )}">${
         window.I18n ? window.I18n.t("card_view_detail") : "Ver detalle"
       }</a>
                 <a class="btn btn-primary" href="chat.html">Quiero intercambiar</a>
@@ -543,20 +552,27 @@ function loadSavedSearches() {
 
   const searches = Store.getSavedSearches();
   if (searches.length === 0) {
+    el.savedSearchesList.innerHTML = "";
     el.savedSearchesContainer.classList.add("hidden");
     return;
   }
 
   el.savedSearchesContainer.classList.remove("hidden");
+  // Real buttons: both actions are reachable and operable from the keyboard.
   el.savedSearchesList.innerHTML = searches
-    .map(
-      (s) => `
-    <li class="saved-search-tag" data-saved-search="${s.id}">
-      <span>${s.query || "Todo"} ${s.category ? `(${s.category})` : ""}</span>
-      <span class="saved-search-remove" data-remove-saved-search="${s.id}">&times;</span>
+    .map((s) => {
+      const label = `${s.query || "Todo"}${s.category ? ` (${s.category})` : ""}`;
+      return `
+    <li class="saved-search-tag">
+      <button type="button" class="saved-search-tag__apply" data-saved-search="${esc(
+        s.id
+      )}" aria-label="Aplicar búsqueda guardada: ${esc(label)}">${esc(label)}</button>
+      <button type="button" class="saved-search-remove" data-remove-saved-search="${esc(
+        s.id
+      )}" aria-label="Eliminar búsqueda guardada: ${esc(label)}"><span aria-hidden="true">&times;</span></button>
     </li>
-  `
-    )
+  `;
+    })
     .join("");
 }
 
@@ -594,6 +610,6 @@ function loadSearchHistory() {
   if (!el.historyList) return;
   const history = Store.getSearchHistory().slice(0, 5);
   el.historyList.innerHTML = history
-    .map((term) => `<option value="${term}">`)
+    .map((term) => `<option value="${esc(term)}">`)
     .join("");
 }

@@ -5,6 +5,7 @@
 // ES module (bundled by Astro, deferred): runs after the classic core
 // scripts, with the DOM parsed. Globals used: Store, Modal.
 import { token, withAlpha } from "../tokens";
+import { escapeHtml as esc } from "../lib/html.js";
 
 const threads = [
   {
@@ -181,12 +182,12 @@ function renderThreads() {
       (t) => `
         <li class="thread ${
           t.id === currentThreadId ? "thread--active" : ""
-        }" data-id="${t.id}">
-          <div class="thread__title">${t.user}</div>
-          <div class="thread__meta">${t.item}</div>
-          <div class="thread__meta">${
+        }" data-id="${esc(t.id)}">
+          <div class="thread__title">${esc(t.user)}</div>
+          <div class="thread__meta">${esc(t.item)}</div>
+          <div class="thread__meta">${esc(
             t.location
-          } · <i class="fas fa-star"></i> ${t.rating}</div>
+          )} · <i class="fas fa-star"></i> ${esc(t.rating)}</div>
         </li>
       `
     )
@@ -208,7 +209,7 @@ function renderConversation() {
 
   els.convItem.textContent = thread.item;
   els.convUser.textContent = thread.user;
-  els.convMeta.innerHTML = `${thread.location} · <i class="fas fa-star"></i> ${thread.rating} · ${thread.distanceKm} km`;
+  els.convMeta.innerHTML = `${esc(thread.location)} · <i class="fas fa-star"></i> ${esc(thread.rating)} · ${esc(thread.distanceKm)} km`;
 
   if (thread.muted) {
     els.btnMute.innerHTML = '<i class="fa-solid fa-bell"></i>';
@@ -237,14 +238,14 @@ function renderConversation() {
 
       // T34 - Image Rendering
       const content = msg.image
-        ? `<img src="${msg.image}" alt="Foto adjunta" class="message__image" loading="lazy" />`
-        : `<div>${msg.text}</div>`;
+        ? `<img src="${esc(msg.image)}" alt="Foto adjunta" class="message__image" loading="lazy" />`
+        : `<div>${esc(msg.text)}</div>`;
 
       return `
         <div class="message ${msg.from === "me" ? "message--me" : ""}">
-          <div class="message__meta">${
+          <div class="message__meta">${esc(
             msg.from === "me" ? "Tú" : thread.user
-          } · ${msg.time} ${statusIcon}</div>
+          )} · ${esc(msg.time)} ${statusIcon}</div>
           ${content}
         </div>
       `;
@@ -258,7 +259,7 @@ function renderTemplates() {
   els.templateList.innerHTML = templates
     .map(
       (tpl) =>
-        `<button type="button" class="template" data-template="${tpl}">${tpl}</button>`
+        `<button type="button" class="template" data-template="${esc(tpl)}">${esc(tpl)}</button>`
     )
     .join("");
 
@@ -271,7 +272,7 @@ function renderMeetings() {
   els.meetingList.innerHTML = meetingPoints
     .map(
       (place) =>
-        `<button type="button" class="meeting-chip" data-place="${place}">${place}</button>`
+        `<button type="button" class="meeting-chip" data-place="${esc(place)}">${esc(place)}</button>`
     )
     .join("");
 

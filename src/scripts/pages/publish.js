@@ -4,6 +4,8 @@
 // globals Store, Session, Toast and I18n loaded as classic scripts by
 // AppLayout. Module scripts run before DOMContentLoaded, so the listener
 // below still fires.
+import { escapeHtml as esc } from "../lib/html.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("publish-form");
   const fileInput = document.getElementById("item-photos");
@@ -126,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       generateQr();
       publishItem();
+      resetForm();
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.classList.remove("is-loading");
@@ -258,8 +261,8 @@ document.addEventListener("DOMContentLoaded", () => {
         : field.placeholderKey;
 
       wrap.innerHTML = `
-        <label for="dynamic-${field.key}">${labelText}</label>
-        <input id="dynamic-${field.key}" data-dynamic="${field.key}" placeholder="${placeholderText}" />
+        <label for="dynamic-${field.key}">${esc(labelText)}</label>
+        <input id="dynamic-${field.key}" data-dynamic="${field.key}" placeholder="${esc(placeholderText)}" />
         <p class="form__error"></p>
       `;
       const input = wrap.querySelector("input");
@@ -295,8 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement("div");
         card.className = "preview-card";
         card.innerHTML = `
-          <img src="${e.target.result}" alt="${file.name}" />
-          <div class="preview-card__meta">${file.name}</div>
+          <img src="${esc(e.target.result)}" alt="${esc(file.name)}" />
+          <div class="preview-card__meta">${esc(file.name)}</div>
         `;
         previewGrid.appendChild(card);
       };
@@ -343,8 +346,32 @@ document.addEventListener("DOMContentLoaded", () => {
       payload: { itemId: newItem.id, title: newItem.title },
     });
 
-    // Also save as draft just in case
-    saveDraft(true);
+    // The item is published: drop the draft so a reload starts clean.
+    Store.saveDraft(null);
+  }
+
+  // Back to the pristine form after a successful publish: fields, photo
+  // previews, dynamic fields, counters, validation state and summary.
+  function resetForm() {
+    form.reset();
+    uploadedImages = [];
+    dynamicData = {};
+    currentCode = "";
+    previewGrid.innerHTML = "";
+    renderDynamicFields(inputRefs.category.value);
+    form.querySelectorAll("[data-error-for]").forEach((node) => {
+      node.textContent = "";
+    });
+    form.querySelectorAll("[aria-invalid]").forEach((field) => {
+      field.removeAttribute("aria-invalid");
+    });
+    const photoError = document.getElementById("photo-error");
+    if (photoError) photoError.textContent = "";
+    // form.reset() fires no input events: refresh the character counters.
+    [inputRefs.title, inputRefs.notes].forEach((input) =>
+      input?.dispatchEvent(new Event("input"))
+    );
+    updateSummary();
   }
 
   function buildOwner() {

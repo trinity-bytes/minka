@@ -6,6 +6,7 @@
 
 // NOTA: El diccionario de traducciones se ha movido a translations.js
 // NOTA: La lógica de i18n se ha movido a i18n.js
+import { escapeHtml as esc } from "../lib/html.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initSettings();
@@ -75,7 +76,7 @@ function loadSessions() {
   sessionsList.innerHTML = sessions
     .map(
       (session) => `
-    <div class="session-item" id="session-${session.id}">
+    <div class="session-item" id="session-${esc(session.id)}">
       <div class="session-icon">
         <i class="fas ${
           session.device.includes("Mobile") || session.device.includes("iPhone")
@@ -84,17 +85,17 @@ function loadSessions() {
         }"></i>
       </div>
       <div class="session-info">
-        <strong>${session.device}</strong>
-        <p>${session.location} · ${
+        <strong>${esc(session.device)}</strong>
+        <p>${esc(session.location)} · ${
         session.current
           ? '<span class="status-active">Actual</span>'
-          : session.lastActive
+          : esc(session.lastActive)
       }</p>
       </div>
       ${
         !session.current
           ? `
-        <button type="button" class="btn-icon" data-logout-session="${session.id}" aria-label="Cerrar sesión">
+        <button type="button" class="btn-icon" data-logout-session="${esc(session.id)}" aria-label="Cerrar sesión">
           <i class="fas fa-times"></i>
         </button>
       `
@@ -370,7 +371,7 @@ function updateAvailabilitySummary(availability) {
     .map(
       (day) => `
     <div class="availability-tag">
-      <strong>${day}:</strong> ${availability[day].join(", ")}
+      <strong>${esc(day)}:</strong> ${esc(availability[day].join(", "))}
     </div>
   `
     )
