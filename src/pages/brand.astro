@@ -1,0 +1,408 @@
+---
+/**
+ * Brand review board (not indexed, not linked from nav, excluded from the
+ * sitemap): new logotype and brand primitives of the visual-language feature
+ * for user approval before they replace the PNG logo and landing pieces.
+ */
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import BaseLayout from "../components/layout/BaseLayout.astro";
+import Logotype from "../components/brand/Logotype.astro";
+import Logomark from "../components/brand/Logomark.astro";
+import IconChip from "../components/ui/IconChip.astro";
+import BlobMedia from "../components/ui/BlobMedia.astro";
+import Sticker from "../components/ui/Sticker.astro";
+import Avatar from "../components/ui/Avatar.astro";
+import Badge from "../components/ui/Badge.astro";
+import WordReveal from "../components/ui/WordReveal.astro";
+import bike from "../assets/images/hero/bicicleta-vintage.jpg";
+import guitar from "../assets/images/hero/guitarra-acustica.jpg";
+import books from "../assets/images/hero/set-libros.jpg";
+
+const surfaces = [
+  { id: "bg", label: "Fondo", tone: "ink", leaf: "auto" },
+  { id: "bg", label: "Fondo, verde", tone: "brand", leaf: "auto" },
+  { id: "ink", label: "Tinta", tone: "white", leaf: "brand" },
+  { id: "green", label: "Verde marca", tone: "ink", leaf: "ink" },
+  { id: "green", label: "Verde marca, blanco", tone: "white", leaf: "white" },
+  { id: "lavender", label: "Lavanda", tone: "ink", leaf: "brand" },
+] as const;
+
+const people = ["Lucía Ramos", "Mateo Flores", "Rosa Huamán", "Diego Paredes", "Valeria Soto", "Jorge Quispe"];
+---
+
+<BaseLayout
+  title="Marca - Mink'a"
+  description="Tablero interno de revisión de marca de Mink'a."
+  bodyClass="brand-page"
+  preloadFonts={["fraunces", "inter"]}
+>
+  <meta slot="head" name="robots" content="noindex, nofollow" />
+
+  <div class="container brand">
+    <header class="brand__intro">
+      <Sticker tone="lavender">Revisión interna</Sticker>
+      <h1 class="display brand__title">Lenguaje de marca</h1>
+      <p class="brand__lede">
+        Logotipo nuevo en Fraunces Black con la hoja como apóstrofo, y las piezas base del lenguaje visual. Esta
+        página no se indexa ni aparece en la navegación.
+      </p>
+    </header>
+
+    <section class="brand__section" aria-labelledby="logo-title">
+      <h2 id="logo-title" class="brand__h2">Logotipo</h2>
+      <div class="logo-hero">
+        <Logotype tone="ink" size={140} />
+      </div>
+      <div class="surface-grid">
+        {
+          surfaces.map((s) => (
+            <figure class:list={["surface", `surface--${s.id}`]}>
+              <Logotype tone={s.tone} leaf={s.leaf} size="lg" />
+              <figcaption>{s.label}</figcaption>
+            </figure>
+          ))
+        }
+      </div>
+
+      <h3 class="brand__h3">Variante con mayúscula</h3>
+      <div class="surface-grid">
+        <figure class="surface surface--bg">
+          <Logotype variant="title" tone="ink" size="lg" />
+          <figcaption>Mink'a (título)</figcaption>
+        </figure>
+        <figure class="surface surface--ink">
+          <Logotype variant="title" tone="white" leaf="brand" size="lg" />
+          <figcaption>Mink'a sobre tinta</figcaption>
+        </figure>
+      </div>
+
+      <h3 class="brand__h3">Tamaños</h3>
+      <div class="row row--baseline">
+        <Logotype tone="ink" size="sm" />
+        <Logotype tone="ink" size="md" />
+        <Logotype tone="ink" size="lg" />
+      </div>
+    </section>
+
+    <section class="brand__section" aria-labelledby="mark-title">
+      <h2 id="mark-title" class="brand__h2">Isotipo</h2>
+      <div class="row">
+        <Logomark size="xl" label="Hoja de Mink'a" />
+        <span class="mark-tile mark-tile--ink"><Logomark tone="brand" size="lg" /></span>
+        <span class="mark-tile mark-tile--green"><Logomark tone="ink" size="lg" /></span>
+        <span class="mark-tile mark-tile--lavender"><Logomark tone="white" size="lg" /></span>
+        <Logomark size="md" />
+        <Logomark size="sm" />
+      </div>
+    </section>
+
+    <section class="brand__section" aria-labelledby="chips-title">
+      <h2 id="chips-title" class="brand__h2">Chips de icono</h2>
+      <div class="row">
+        <IconChip tone="ink" size="lg"><Logomark tone="brand" size={30} /></IconChip>
+        <IconChip tone="brand" size="lg"><i class="fa-solid fa-seedling"></i></IconChip>
+        <IconChip tone="lavender" size="lg"><i class="fa-solid fa-recycle"></i></IconChip>
+        <IconChip tone="mint" size="lg"><i class="fa-solid fa-hand-holding-heart"></i></IconChip>
+        <IconChip tone="ink" size="lg" label="Destacado"><i class="fa-solid fa-star"></i></IconChip>
+      </div>
+      <div class="row">
+        <IconChip tone="brand" icon="spark" />
+        <IconChip tone="lavender" icon="star" />
+        <IconChip tone="ink" icon="play" />
+        <IconChip tone="mint" icon="spark" size="sm" />
+        <IconChip tone="brand" variant="outlined"><i class="fa-solid fa-leaf"></i></IconChip>
+        <IconChip tone="lavender" variant="outlined"><i class="fa-solid fa-droplet"></i></IconChip>
+        <IconChip tone="ink" variant="outlined"><i class="fa-solid fa-box-open"></i></IconChip>
+      </div>
+    </section>
+
+    <section class="brand__section" aria-labelledby="blob-title">
+      <h2 id="blob-title" class="brand__h2">Fotos orgánicas</h2>
+      <div class="blob-grid">
+        <BlobMedia src={bike} alt="Bicicleta vintage" shape="a" ratio="4 / 5" />
+        <BlobMedia src={guitar} alt="Guitarra acústica" shape="b" />
+        <BlobMedia src={books} alt="Set de libros" shape="c" ratio="5 / 4" />
+      </div>
+      <div class="bleed-card">
+        <p class="display bleed-card__title">Dale otra vida a tus cosas</p>
+        <BlobMedia src={guitar} alt="" shape="b" class="bleed-card__blob" bleed="bottom-right" bleedBy="18%" />
+      </div>
+    </section>
+
+    <section class="brand__section" aria-labelledby="sticker-title">
+      <h2 id="sticker-title" class="brand__h2">Stickers planos</h2>
+      <div class="row row--loose">
+        <Sticker>Papel</Sticker>
+        <Sticker tone="mint">Menta</Sticker>
+        <Sticker tone="brand">¡Sin dinero!</Sticker>
+        <Sticker tone="lavender" style="--sticker-rotate: 4deg">Directo con vecinos</Sticker>
+        <Sticker tone="lavender-soft">Lavanda suave</Sticker>
+        <Sticker tone="ink" style="--sticker-rotate: -5deg">Hecho en Lima</Sticker>
+      </div>
+    </section>
+
+    <section class="brand__section" aria-labelledby="people-title">
+      <h2 id="people-title" class="brand__h2">Avatares y badges</h2>
+      <div class="row">
+        {people.map((name) => <Avatar name={name} />)}
+        <Avatar name="Ana María Quispe" size="lg" />
+        <Avatar name="Rosa" size="sm" />
+      </div>
+      <div class="row">
+        <Badge>Nuevo</Badge>
+        <Badge tone="brand">Disponible</Badge>
+        <Badge tone="lavender">Match</Badge>
+        <Badge tone="ink">Destacado</Badge>
+        <Badge tone="neutral">Cerrado</Badge>
+        <Badge tone="error">Reportado</Badge>
+        <Badge tone="brand" count={3} label="3 mensajes sin leer" />
+        <Badge tone="ink" count={128} label="128 notificaciones" />
+        <Badge tone="error" count={12} max={9} label="12 alertas" />
+      </div>
+    </section>
+
+    <section class="brand__section" aria-labelledby="motion-title">
+      <h2 id="motion-title" class="brand__h2">Revelado por palabras</h2>
+      <div class="reveal-demo" data-replay-root>
+        <WordReveal as="p" class="display reveal-demo__line" text="Intercambia lo que no usas por *lo que necesitas*." />
+        <WordReveal
+          as="p"
+          class="display reveal-demo__line reveal-demo__line--ink"
+          text="Haz que Lima gire, de vecino a vecino."
+          keys={["Lima", "gire"]}
+          delay={300}
+        />
+        <button type="button" class="replay" data-replay>Repetir animación</button>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // Replay the word reveal for review: drop and re-add .is-visible.
+  document.querySelectorAll<HTMLButtonElement>("[data-replay]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const root = button.closest("[data-replay-root]");
+      root?.querySelectorAll('[data-reveal="words"]').forEach((el) => {
+        el.classList.remove("is-visible");
+        void (el as HTMLElement).offsetWidth;
+        el.classList.add("is-visible");
+      });
+    });
+  });
+</script>
+
+<style>
+  .brand {
+    padding-block: 64px 120px;
+  }
+
+  .brand__intro {
+    max-width: 720px;
+    margin-bottom: 56px;
+  }
+
+  .brand__title {
+    margin: 18px 0 14px;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+  }
+
+  .brand__lede {
+    color: var(--color-ink-2);
+    font-size: 1.1rem;
+    max-width: 60ch;
+  }
+
+  .brand__section {
+    padding-block: 40px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .brand__h2 {
+    font-family: var(--font-display);
+    font-weight: var(--font-title-weight);
+    font-variation-settings: var(--font-display-axes-text);
+    font-size: 1.6rem;
+    margin-bottom: 24px;
+  }
+
+  .brand__h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-2);
+    margin: 32px 0 14px;
+  }
+
+  .logo-hero {
+    display: flex;
+    justify-content: center;
+    padding: 56px 24px;
+    margin-bottom: 20px;
+    background: var(--color-card);
+    border-radius: var(--radius-bento);
+    overflow: hidden;
+  }
+
+  .logo-hero :global(.logotype) {
+    max-width: 100%;
+    height: auto;
+    width: min(100%, 520px);
+  }
+
+  .surface-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+  }
+
+  .surface {
+    display: grid;
+    place-items: center;
+    gap: 18px;
+    margin: 0;
+    padding: 40px 24px 20px;
+    border-radius: var(--radius-card);
+  }
+
+  .surface figcaption {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.75;
+  }
+
+  .surface :global(.logotype) {
+    max-width: 100%;
+    height: auto;
+    width: min(100%, 230px);
+  }
+
+  .surface--bg {
+    background: var(--color-bg);
+    outline: 1px solid var(--color-border);
+    color: var(--color-ink);
+  }
+  .surface--ink {
+    background: var(--color-ink);
+    color: #ffffff;
+  }
+  .surface--green {
+    background: var(--color-brand);
+    color: var(--color-ink);
+  }
+  .surface--lavender {
+    --color-ink: var(--color-on-lavender);
+    background: var(--color-lavender);
+    color: var(--color-ink);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .row--baseline {
+    align-items: flex-end;
+  }
+
+  .row--loose {
+    gap: 22px 28px;
+    padding-block: 8px;
+  }
+
+  .mark-tile {
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    border-radius: var(--radius-card);
+  }
+  .mark-tile--ink {
+    background: var(--color-ink);
+  }
+  .mark-tile--green {
+    background: var(--color-brand);
+  }
+  .mark-tile--lavender {
+    background: var(--color-lavender);
+  }
+
+  .blob-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .bleed-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 24px;
+    min-height: 300px;
+    padding: 40px;
+    background: var(--color-ink);
+    color: var(--color-brand);
+    border-radius: var(--radius-bento);
+    overflow: hidden;
+  }
+
+  .bleed-card__title {
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
+  }
+
+  .bleed-card__blob {
+    width: 100%;
+  }
+
+  .reveal-demo {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+    padding: 40px;
+    background: var(--color-card);
+    border-radius: var(--radius-bento);
+  }
+
+  .reveal-demo__line {
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    max-width: 18ch;
+  }
+
+  .reveal-demo__line--ink {
+    --word-key-color: var(--color-lavender-ink);
+  }
+
+  .replay {
+    font: inherit;
+    font-weight: 700;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-ink);
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .replay:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 720px) {
+    .blob-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .bleed-card {
+      grid-template-columns: 1fr;
+      padding: 28px;
+    }
+  }
+</style>

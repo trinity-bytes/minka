@@ -1,0 +1,97 @@
+---
+/**
+ * Mink'a wordmark as inline SVG outlines (Fraunces Black + two-leaf
+ * apostrophe, see src/assets/brand/paths.ts). Paint comes from CSS so tones
+ * follow tokens and high contrast. Pending user approval before it replaces
+ * the PNG logo in headers and footers (review page: /brand).
+ */
+import type { HTMLAttributes } from "astro/types";
+import { LOGOTYPE } from "../../assets/brand/paths";
+
+type Tone = "ink" | "brand" | "white";
+type LeafTone = "auto" | Tone | "lavender";
+
+interface Props extends Omit<HTMLAttributes<"svg">, "role"> {
+  tone?: Tone;
+  /** Leaf color; "auto" = brand green on ink, otherwise the wordmark tone. */
+  leaf?: LeafTone;
+  /** Rendered height: keyword or px. Width follows the aspect ratio. */
+  size?: "sm" | "md" | "lg" | "xl" | number;
+  /** "lower" (mink'a, default) or "title" (Mink'a). */
+  variant?: keyof typeof LOGOTYPE;
+  /** Accessible name; pass `decorative` to hide it from AT instead. */
+  label?: string;
+  decorative?: boolean;
+}
+
+const SIZES = { sm: 28, md: 40, lg: 64, xl: 120 } as const;
+
+const {
+  tone = "brand",
+  leaf = "auto",
+  size = "md",
+  variant = "lower",
+  label = "Mink'a",
+  decorative = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const art = LOGOTYPE[variant];
+const height = typeof size === "number" ? size : SIZES[size];
+const leafTone = leaf === "auto" ? (tone === "ink" ? "brand" : tone) : leaf;
+const a11y = decorative
+  ? { "aria-hidden": "true" as const }
+  : { role: "img" as const, "aria-label": label };
+---
+
+<svg
+  class:list={["logotype", `logotype--${tone}`, `logotype-leaf--${leafTone}`, className]}
+  viewBox={art.viewBox}
+  height={height}
+  focusable="false"
+  {...a11y}
+  {...rest}
+>
+  <path class="logotype__glyphs" d={art.glyphs}></path>
+  <path class="logotype__leaf" fill-rule="evenodd" d={art.leaf}></path>
+</svg>
+
+<style>
+  .logotype {
+    display: block;
+    width: auto;
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
+  .logotype--ink .logotype__glyphs {
+    fill: var(--color-ink);
+  }
+  .logotype--brand .logotype__glyphs {
+    fill: var(--color-brand);
+  }
+  .logotype--white .logotype__glyphs {
+    fill: #ffffff;
+  }
+
+  .logotype-leaf--ink .logotype__leaf {
+    fill: var(--color-ink);
+  }
+  .logotype-leaf--brand .logotype__leaf {
+    fill: var(--color-brand);
+  }
+  .logotype-leaf--white .logotype__leaf {
+    fill: #ffffff;
+  }
+  .logotype-leaf--lavender .logotype__leaf {
+    fill: var(--color-lavender);
+  }
+
+  /* Forced colors: follow the system text color. */
+  @media (forced-colors: active) {
+    .logotype path {
+      fill: CanvasText;
+    }
+  }
+</style>

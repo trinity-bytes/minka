@@ -1,0 +1,85 @@
+---
+/**
+ * Pill badge for statuses and tags, or a compact counter (`count`) capped at
+ * `max` ("99+"). Counters should carry a `label` ("3 mensajes sin leer"):
+ * the number alone is hidden from AT and the label is read instead.
+ * Class names avoid the legacy global `.badge` rules in app.css.
+ */
+import type { HTMLAttributes } from "astro/types";
+import { formatCount } from "../../scripts/lib/avatar.js";
+
+interface Props extends HTMLAttributes<"span"> {
+  tone?: "brand" | "mint" | "lavender" | "ink" | "neutral" | "error";
+  count?: number;
+  max?: number;
+  label?: string;
+}
+
+const { tone = "mint", count, max = 99, label, class: className, ...rest } = Astro.props;
+const isCount = typeof count === "number";
+---
+
+<span class:list={["pill-badge", `pill-badge--${tone}`, isCount && "pill-badge--count", className]} {...rest}>
+  {
+    isCount ? (
+      <Fragment>
+        <span aria-hidden={label ? "true" : undefined}>{formatCount(count, max)}</span>
+        {label && <span class="sr-only">{label}</span>}
+      </Fragment>
+    ) : (
+      <slot />
+    )
+  }
+</span>
+
+<style>
+  .pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    background: var(--badge-bg);
+    color: var(--badge-fg, var(--color-ink));
+    font-family: var(--font-primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .pill-badge--count {
+    justify-content: center;
+    min-width: 1.75em;
+    height: 1.75em;
+    padding: 0 0.45em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pill-badge--brand {
+    --badge-bg: var(--color-brand);
+  }
+  .pill-badge--mint {
+    --badge-bg: var(--color-mint);
+  }
+  .pill-badge--lavender {
+    --badge-bg: var(--color-lavender);
+    --badge-fg: var(--color-on-lavender);
+  }
+  .pill-badge--ink {
+    --badge-bg: var(--color-ink);
+    --badge-fg: #ffffff;
+  }
+  .pill-badge--neutral {
+    --badge-bg: var(--color-paper-2);
+    --badge-fg: var(--color-ink-2);
+  }
+  .pill-badge--error {
+    --badge-bg: var(--color-error);
+    --badge-fg: #ffffff;
+  }
+
+  :global(body.high-contrast) .pill-badge {
+    outline: 2px solid var(--color-hc-ink);
+  }
+</style>

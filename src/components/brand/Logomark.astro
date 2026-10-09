@@ -1,0 +1,63 @@
+---
+/**
+ * Mink'a leaf mark alone (the logotype apostrophe) for watermarks, favicons
+ * and compact brand moments. Decorative unless `label` is given.
+ */
+import type { HTMLAttributes } from "astro/types";
+import { LOGOMARK } from "../../assets/brand/paths";
+
+type Tone = "brand" | "ink" | "white" | "lavender" | "current";
+
+interface Props extends Omit<HTMLAttributes<"svg">, "role"> {
+  tone?: Tone;
+  /** Rendered height: keyword or px. */
+  size?: "sm" | "md" | "lg" | "xl" | number;
+  label?: string;
+}
+
+const SIZES = { sm: 20, md: 32, lg: 64, xl: 160 } as const;
+
+const { tone = "brand", size = "md", label, class: className, ...rest } = Astro.props;
+const height = typeof size === "number" ? size : SIZES[size];
+const a11y = label
+  ? { role: "img" as const, "aria-label": label }
+  : { "aria-hidden": "true" as const };
+---
+
+<svg
+  class:list={["logomark", `logomark--${tone}`, className]}
+  viewBox={LOGOMARK.viewBox}
+  height={height}
+  focusable="false"
+  {...a11y}
+  {...rest}
+>
+  <path fill-rule="evenodd" d={LOGOMARK.leaf}></path>
+</svg>
+
+<style>
+  .logomark {
+    display: block;
+    width: auto;
+    flex-shrink: 0;
+    fill: currentColor;
+  }
+  .logomark--brand {
+    fill: var(--color-brand);
+  }
+  .logomark--ink {
+    fill: var(--color-ink);
+  }
+  .logomark--white {
+    fill: #ffffff;
+  }
+  .logomark--lavender {
+    fill: var(--color-lavender);
+  }
+
+  @media (forced-colors: active) {
+    .logomark {
+      fill: CanvasText;
+    }
+  }
+</style>

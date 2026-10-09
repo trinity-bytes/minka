@@ -1,21 +1,29 @@
 ---
 /**
- * Tilted pill label with ink border and hard shadow. Consumers can position
- * it with their own class and change the tilt through `--sticker-rotate`.
+ * Flat, tilted pill label (solid fill, no border or shadow). Consumers can
+ * position it with their own class and change the tilt through
+ * `--sticker-rotate`. Legacy tones map onto the new palette:
+ * green -> mint, amber -> lavender, terra -> lavender-soft (renamed in T13).
  */
 import type { HTMLAttributes } from "astro/types";
 
+type Tone = "paper" | "mint" | "brand" | "lavender" | "lavender-soft" | "ink";
+type LegacyTone = "green" | "amber" | "terra";
+
 interface Props extends HTMLAttributes<"span"> {
-  tone?: "paper" | "green" | "amber" | "terra";
-  /** Handwritten (Pacifico) variant. */
+  tone?: Tone | LegacyTone;
+  /** Handwritten (Pacifico) variant; legacy, dropped with Pacifico in T13. */
   hand?: boolean;
   as?: "span" | "p" | "div";
 }
 
+const LEGACY: Record<LegacyTone, Tone> = { green: "mint", amber: "lavender", terra: "lavender-soft" };
+
 const { tone = "paper", hand = false, as: Tag = "span", class: className, ...rest } = Astro.props;
+const resolved = tone in LEGACY ? LEGACY[tone as LegacyTone] : (tone as Tone);
 ---
 
-<Tag class:list={["sticker", `sticker--${tone}`, hand && "sticker--hand", className]} {...rest}>
+<Tag class:list={["sticker", `sticker--${resolved}`, hand && "sticker--hand", className]} {...rest}>
   <slot />
 </Tag>
 
@@ -27,29 +35,36 @@ const { tone = "paper", hand = false, as: Tag = "span", class: className, ...res
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-ink);
-    background: var(--color-card);
-    border: var(--border-ink);
+    color: var(--sticker-fg, var(--color-ink));
+    background: var(--sticker-bg, var(--color-card));
     border-radius: var(--radius-full);
-    padding: 7px 16px;
-    box-shadow: var(--shadow-hard-sm);
+    padding: 8px 16px;
     transform: rotate(var(--sticker-rotate, -2deg));
     white-space: nowrap;
     margin: 0;
   }
 
-  .sticker--green {
-    background: var(--color-mint);
+  .sticker--mint {
+    --sticker-bg: var(--color-mint);
   }
 
-  .sticker--amber {
-    --color-ink: var(--color-on-lavender);
-    background: var(--color-accent);
-    color: var(--color-ink);
+  .sticker--brand {
+    --sticker-bg: var(--color-brand);
   }
 
-  .sticker--terra {
-    background: var(--color-terra-soft);
+  .sticker--lavender {
+    --sticker-bg: var(--color-lavender);
+    --sticker-fg: var(--color-on-lavender);
+  }
+
+  .sticker--lavender-soft {
+    --sticker-bg: var(--color-lavender-soft);
+    --sticker-fg: var(--color-on-lavender);
+  }
+
+  .sticker--ink {
+    --sticker-bg: var(--color-ink);
+    --sticker-fg: var(--color-brand);
   }
 
   .sticker--hand {
@@ -58,5 +73,10 @@ const { tone = "paper", hand = false, as: Tag = "span", class: className, ...res
     text-transform: none;
     letter-spacing: 0;
     font-size: 1rem;
+  }
+
+  /* Without the old ink border, high contrast needs an explicit outline. */
+  :global(body.high-contrast) .sticker {
+    outline: 2px solid var(--color-hc-ink);
   }
 </style>
