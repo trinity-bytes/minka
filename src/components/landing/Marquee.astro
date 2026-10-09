@@ -1,8 +1,14 @@
 ---
 /**
- * Tilted ink band with an infinitely scrolling list of categories.
- * Decorative (aria-hidden); the group is duplicated for a seamless loop.
+ * Tilted lavender ribbon with an endlessly scrolling list of categories
+ * (the only marquee on the landing). The moving text is decorative
+ * (aria-hidden); the list is duplicated for a seamless loop. It pauses on
+ * hover and keyboard focus, has a visible pause toggle (WCAG 2.2.2) and stays
+ * still under reduced motion. Lavender fill: ink is --color-on-lavender and
+ * the leaf separator follows --logo-leaf (never green on lavender).
  */
+import Logomark from "../brand/Logomark.astro";
+
 interface Props {
   items?: string[];
 }
@@ -13,81 +19,181 @@ const {
 const groups = [0, 1];
 ---
 
-<div class="marquee-band" aria-hidden="true">
-  <div class="marquee">
-    <div class="marquee__track">
+<div class="ribbon" data-ribbon>
+  <div class="ribbon__band">
+    <div class="ribbon__track" aria-hidden="true">
       {
         groups.map(() => (
-          <div class="marquee__group">
+          <div class="ribbon__group">
             {items.map((item) => (
               <>
-                <span class="marquee__item">{item}</span>
-                <span class="marquee__star">✶</span>
+                <span class="ribbon__item">{item}</span>
+                <Logomark tone="brand" size={22} class="ribbon__leaf" />
               </>
             ))}
           </div>
         ))
       }
     </div>
+    <button type="button" class="ribbon__toggle" data-ribbon-toggle aria-pressed="false" hidden>
+      <span class="ribbon__toggle-icon" aria-hidden="true"></span>
+      <span class="sr-only" data-ribbon-label>Pausar cinta de categorías</span>
+    </button>
   </div>
 </div>
 
+<script>
+  document.querySelectorAll<HTMLElement>("[data-ribbon]").forEach((ribbon) => {
+    const toggle = ribbon.querySelector<HTMLButtonElement>("[data-ribbon-toggle]");
+    const label = ribbon.querySelector<HTMLElement>("[data-ribbon-label]");
+    if (!toggle) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      // Nothing moves under reduced motion, so there is nothing to pause.
+      toggle.hidden = motion.matches;
+    };
+    toggle.addEventListener("click", () => {
+      const paused = toggle.getAttribute("aria-pressed") !== "true";
+      toggle.setAttribute("aria-pressed", String(paused));
+      ribbon.classList.toggle("is-paused", paused);
+      if (label) label.textContent = paused ? "Reanudar cinta de categorías" : "Pausar cinta de categorías";
+    });
+    motion.addEventListener("change", sync);
+    sync();
+  });
+</script>
+
 <style>
-  .marquee-band {
-    background: var(--color-ink);
-    border-top: var(--border-ink);
-    border-bottom: var(--border-ink);
-    transform: rotate(-1.1deg);
-    width: 104%;
-    margin: 0 0 0 -2%;
-    overflow: hidden;
+  .ribbon {
     position: relative;
     z-index: 2;
+    padding: 28px 0;
   }
 
-  .marquee {
-    display: flex;
+  .ribbon__band {
+    --logo-leaf: var(--color-on-lavender);
+    position: relative;
+    width: 106%;
+    margin-left: -3%;
+    background: var(--color-lavender);
+    color: var(--color-on-lavender);
+    transform: rotate(-2deg);
     overflow: hidden;
+  }
+
+  .ribbon__track {
+    display: flex;
+    width: max-content;
+    animation: ribbon-scroll 32s linear infinite;
     user-select: none;
   }
 
-  .marquee__track {
-    display: flex;
-    flex-shrink: 0;
-    min-width: 100%;
-    animation: marquee 26s linear infinite;
+  .ribbon:hover .ribbon__track,
+  .ribbon:focus-within .ribbon__track,
+  .ribbon.is-paused .ribbon__track {
+    animation-play-state: paused;
   }
 
-  @keyframes marquee {
+  @keyframes ribbon-scroll {
     to {
-      transform: translateX(-100%);
+      transform: translateX(-50%);
     }
   }
 
-  .marquee__group {
+  .ribbon__group {
     display: flex;
     align-items: center;
-    gap: 34px;
-    padding: 16px 17px;
+    gap: 28px;
+    padding: 14px 14px;
     white-space: nowrap;
   }
 
-  .marquee__item {
+  .ribbon__item {
     font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 560;
+    font-weight: var(--font-display-weight);
     font-variation-settings: var(--font-display-axes);
-    color: var(--color-paper);
+    letter-spacing: var(--font-display-tracking);
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    line-height: 1.1;
   }
 
-  .marquee__star {
-    color: var(--color-primary-pop);
-    font-size: 1.1rem;
+  .ribbon__band :global(.ribbon__leaf) {
+    height: 22px;
+    transform: rotate(18deg);
+  }
+
+  /* Pause toggle: small pill pinned to the right end of the band. */
+  .ribbon__toggle {
+    position: absolute;
+    top: 50%;
+    right: calc(3% + 16px);
+    translate: 0 -50%;
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-on-lavender);
+    color: var(--color-lavender);
+    cursor: pointer;
+    transition: transform var(--dur-fast) var(--ease-standard);
+  }
+
+  .ribbon__toggle[hidden] {
+    display: none;
+  }
+
+  .ribbon__toggle:hover {
+    transform: scale(1.06);
+  }
+
+  .ribbon__toggle:focus-visible {
+    outline: 3px solid var(--color-on-lavender);
+    outline-offset: 3px;
+  }
+
+  /* Pause glyph (two bars) by default, play triangle when paused. */
+  .ribbon__toggle-icon {
+    width: 10px;
+    height: 12px;
+    border-inline: 3.5px solid currentColor;
+  }
+
+  .ribbon__toggle[aria-pressed="true"] .ribbon__toggle-icon {
+    width: 0;
+    height: 0;
+    border-block: 7px solid transparent;
+    border-inline: 11px solid currentColor;
+    border-inline-end: 0;
+    margin-left: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .ribbon {
+      padding: 20px 0;
+    }
+
+    .ribbon__group {
+      gap: 20px;
+      padding: 11px 10px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .marquee__track {
+    .ribbon__track {
       animation: none !important;
+    }
+  }
+
+  :global(body.high-contrast) .ribbon__band {
+    outline: 2px solid var(--color-hc-ink);
+  }
+
+  @media (forced-colors: active) {
+    .ribbon__band {
+      border-block: 2px solid CanvasText;
     }
   }
 </style>
