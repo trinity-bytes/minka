@@ -78,8 +78,9 @@ const a11y = decorative
   .logotype-leaf--ink .logotype__leaf {
     fill: var(--color-ink);
   }
+  /* Lavender scopes override --logo-leaf so green never sits on lavender. */
   .logotype-leaf--brand .logotype__leaf {
-    fill: var(--color-brand);
+    fill: var(--logo-leaf, var(--color-brand));
   }
   .logotype-leaf--white .logotype__leaf {
     fill: #ffffff;

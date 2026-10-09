@@ -46,6 +46,8 @@
   /* Text and icons on brand-green fills: green ink reads muddy on green (same
      hue) despite 7.37:1, so use a neutral near-black (9.28:1 on #2ecc71). */
   --color-on-brand: #0b0d0c;
+  /* Rule: no green on lavender. Lavender scopes set --logo-leaf (logotype and
+     logomark leaf) to --color-on-lavender. */
   --color-mint: #d7f5e3; /* brand tint; ink on it 13.32:1 */
 
   /* Legacy accent roles re-pointed to the new palette (removed in T13) */
