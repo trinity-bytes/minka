@@ -76,5 +76,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 
 - 2026-10-09 T5 review (user): left side of the bento looks very good. Open items: (a) in the poster headline "el premio" reads as joined — check word spacing between key-word spans / negative tracking; (b) right side of the bento feels boring — needs more visual interest (e.g. stronger color block, sticker/photo, bigger icon chips or stat). Chip text size at small widths not yet confirmed. Session paused here.
 
+- 2026-10-09 T5 review fixes (route inline: one file, mechanical): (a) poster `word-spacing: 0.08em` to offset negative display tracking. (b) "Ahorro real" leads with a Fraunces Black "S/ 0" figure + "para truequear" label (honest: a trueque costs no money; no invented stats) instead of the coin chip; icon chips in safe/impact/community at `lg` (64px); impact block gets a faint on-lavender leaf watermark (12%) echoing the poster. Checks: build 16 pages OK; check 0 errors; test 15/15. Uncommitted pending user visual check.
+
 ## Next step
-Resume: fix T5 items (a) and (b), user re-check; then T6 (sticky stack + stat rings), T7; then propose a landing PR slice into develop. Reminder: PR #2 (fix/minor-backlog) still open.
+Resume: user re-checks T5 fixes (a)/(b) in browser, then commit; then T6 (sticky stack + stat rings), T7; then propose a landing PR slice into develop. Reminder: PR #2 (fix/minor-backlog) still open.

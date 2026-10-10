@@ -36,7 +36,7 @@ import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
 
     <article class="cell cell--safe" data-reveal style="--reveal-delay: 80ms">
       <Sticker tone="mint" class="cell__tag">Comunidad verificada</Sticker>
-      <IconChip icon="shield" tone="brand" />
+      <IconChip icon="shield" tone="brand" size="lg" />
       <h3 class="cell__title">Seguridad primero</h3>
       <p class="cell__text">
         Verificación de usuarios, sistema de reputación y puntos de encuentro sugeridos en zonas públicas.
@@ -45,13 +45,17 @@ import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
     </article>
 
     <article class="cell cell--save" data-reveal style="--reveal-delay: 160ms">
-      <IconChip icon="coins" tone="ink" />
+      <p class="save__stat">
+        <span class="save__figure">S/&nbsp;0</span>
+        <span class="save__label">para truequear</span>
+      </p>
       <h3 class="cell__title">Ahorro real</h3>
       <p class="cell__text">Intercambia en lugar de comprar. Tu billetera y el planeta te lo agradecen.</p>
     </article>
 
     <article class="cell cell--impact" data-reveal style="--reveal-delay: 240ms">
-      <IconChip icon="leaf" tone="ink" />
+      <Logomark tone="current" size={240} class="impact__mark" />
+      <IconChip icon="leaf" tone="ink" size="lg" />
       <h3 class="cell__title">Impacto ambiental</h3>
       <p class="cell__text">Cada trueque evita residuos y alarga la vida útil de las cosas.</p>
     </article>
@@ -63,7 +67,7 @@ import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
 
     <article class="cell cell--community" data-reveal style="--reveal-delay: 120ms">
       <div class="community__copy">
-        <IconChip icon="people" tone="brand" />
+        <IconChip icon="people" tone="brand" size="lg" />
         <h3 class="cell__title">Comunidad de verdad</h3>
         <p class="cell__text">Conoce a tus vecinos, construye redes de confianza y fortalece tu barrio.</p>
       </div>
@@ -158,6 +162,8 @@ import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
     font-size: clamp(2.6rem, 5vw, 4.6rem);
     line-height: var(--font-display-leading);
     letter-spacing: var(--font-display-tracking);
+    /* Negative tracking narrows Fraunces Black spaces; keep words apart. */
+    word-spacing: 0.08em;
     text-wrap: balance;
   }
 
@@ -196,6 +202,30 @@ import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
     --cell-fg: var(--color-on-brand);
   }
 
+  /* Big figure instead of an icon: a trueque costs nothing. */
+  .save__stat {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .save__figure {
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(3.4rem, 5.4vw, 5rem);
+    line-height: var(--font-display-leading);
+    letter-spacing: var(--font-display-tracking);
+  }
+
+  .save__label {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
   .cell--impact {
     grid-area: impact;
     --cell-bg: var(--color-lavender);
@@ -207,6 +237,22 @@ import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
   .cell--impact :global(.icon-chip) {
     --chip-bg: var(--color-on-lavender);
     --chip-fg: var(--color-lavender);
+  }
+
+  /* Faint leaf watermark, like the poster, kept behind the copy. */
+  .cell--impact :global(.impact__mark) {
+    position: absolute;
+    right: -18%;
+    bottom: -22%;
+    height: 78%;
+    width: auto;
+    color: var(--color-on-lavender);
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .cell--impact > :global(:not(.impact__mark)) {
+    position: relative;
   }
 
   /* --- Chip drop --- */
