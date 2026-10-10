@@ -92,5 +92,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 
 - 2026-10-10 folio review (user; route inline, mechanical): only 4 sections were numbered, so Showcase and Video read as a different part of the page. Folios now run 01-06 in page order: HowItWorks 01, Benefits 02, Showcase 03 (faint paper numeral on the ink band), Video 04 (new `folio` pass-through prop, set only from index so about stays unnumbered), Impact 05, Testimonials 06; the closing CTA stays unnumbered. Checks: build OK; check 0 errors; dist/index.html folios 01..06 in order, about 0.
 
+- 2026-10-10 delivery (user decision): landing slice T1-T7b approved visually; user waived PRs for this slice as a size exception (no business logic touched) and the user fast-forwarded `develop` 657711b..c30fe2c (21 commits, in order, no merge commit).
+
 ## Next step
-User visual check of T7b, then propose the landing PR slice into develop (feature-branch-chain), then T8. Reminder: PR #2 (fix/minor-backlog) still open.
+T8 app shell: present the mobile-nav visual decision to the user first (bottom tab bar vs drawer), then delegate. Reminder: PR #2 (fix/minor-backlog) still open.
