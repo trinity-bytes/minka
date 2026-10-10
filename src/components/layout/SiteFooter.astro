@@ -5,8 +5,8 @@
  * text instead of dead `#` links. Other public pages (about) pass
  * `anchorBase={url()}` so `#anchor` links point back to the landing.
  * Visual: one ink-deep bento block with rounded top corners, pill/disc
- * social buttons and a giant faint lowercase logotype watermark spanning
- * the width, cropped by the bottom edge (decorative, hidden in HC).
+ * social buttons and a giant full-contrast lowercase logotype spanning
+ * the width, cropped by the bottom edge; it is the only footer logo and links home.
  */
 import Icon, { type IconName } from "../ui/Icon.astro";
 import Logotype from "../brand/Logotype.astro";
@@ -83,9 +83,6 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     <div class="container">
       <div class="site-footer__grid">
         <div class="site-footer__brand">
-          <a href={homeHref} class="site-footer__logo" aria-label="Mink'a, inicio">
-            <Logotype tone="white" leaf="brand" size={40} decorative />
-          </a>
           <p class="site-footer__desc">
             Plataforma de trueque para economía circular. Construyendo una Lima más sostenible, un
             intercambio a la vez.
@@ -123,7 +120,9 @@ const social: { icon: IconName; label: string; href?: string }[] = [
         </div>
       </div>
     </div>
-    <Logotype tone="white" leaf="brand" size={240} decorative class="site-footer__watermark" />
+    <a href={homeHref} class="site-footer__logo" aria-label="Mink'a, inicio">
+      <Logotype tone="white" leaf="brand" size={240} decorative class="site-footer__wordmark" />
+    </a>
   </div>
 </footer>
 
@@ -149,12 +148,6 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     grid-template-columns: 1.6fr 1fr 1fr 1fr;
     gap: 44px;
     padding-bottom: 52px;
-  }
-
-  .site-footer__logo {
-    display: inline-block;
-    margin-bottom: 20px;
-    border-radius: var(--radius-control);
   }
 
   .site-footer__desc {
@@ -246,22 +239,23 @@ const social: { icon: IconName; label: string; href?: string }[] = [
   }
 
   /* Giant lowercase wordmark spanning the block, cropped by the bottom
-     edge: glyphs at 7% paper (decorative, aria-hidden), leaf in brand. */
-  .site-footer__block :global(.site-footer__watermark) {
+     edge: the regular white-on-ink logo (paper glyphs, brand leaf) at full
+     strength. It is the footer's only logo, so it doubles as the home link. */
+  .site-footer__logo {
     display: block;
     width: calc(100% - 2 * clamp(12px, 2vw, 32px));
-    height: auto;
     margin: clamp(8px, 2vw, 24px) auto -7%;
-    pointer-events: none;
-    user-select: none;
+    border-radius: var(--radius-md);
   }
 
-  .site-footer__block :global(.site-footer__watermark .logotype__glyphs) {
-    fill: color-mix(in srgb, var(--color-paper) 7%, transparent);
+  .site-footer__logo:focus-visible {
+    outline-offset: -4px;
   }
 
-  .site-footer__block :global(.site-footer__watermark .logotype__leaf) {
-    opacity: 0.9;
+  .site-footer__block :global(.site-footer__wordmark) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   @media (max-width: 1024px) {
@@ -294,7 +288,7 @@ const social: { icon: IconName; label: string; href?: string }[] = [
   }
 
   /* High contrast: white block, black text and 2px outlines; links keep the
-     global HC link color. The decorative watermark is dropped. */
+     global HC link color. The wordmark turns solid ink. */
   :global(body.high-contrast) .site-footer__block {
     background: var(--color-hc-paper);
     color: var(--color-hc-ink);
@@ -323,13 +317,14 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     fill: var(--color-hc-ink);
   }
 
-  :global(body.high-contrast) .site-footer__block :global(.site-footer__watermark) {
-    display: none;
+  :global(body.high-contrast) .site-footer__logo :global(.logotype__leaf) {
+    fill: var(--color-hc-ink);
   }
 
   @media (forced-colors: active) {
-    .site-footer__block :global(.site-footer__watermark) {
-      display: none;
+    .site-footer__logo :global(.logotype__glyphs),
+    .site-footer__logo :global(.logotype__leaf) {
+      fill: CanvasText;
     }
   }
 </style>
