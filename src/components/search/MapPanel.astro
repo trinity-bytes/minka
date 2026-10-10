@@ -1,30 +1,25 @@
 ---
 /**
- * Reference map beside the search results (static demo image). White card
- * with the map inset; styles live in src/styles/pages/search.css.
+ * Reference map (static demo image): the second section of the search
+ * tools panel, under the filters. Styles live in
+ * src/styles/pages/search.css.
  */
 import { Picture } from "astro:assets";
-import IconChip from "../ui/IconChip.astro";
 import map from "../../assets/images/mapa-ejemplo-minka.png";
 ---
 
-<aside class="map-panel" aria-labelledby="map-panel-title">
-  <div class="map-panel__header">
-    <IconChip tone="lavender" size="sm"><i class="fas fa-map-location-dot"></i></IconChip>
-    <div>
-      <h2 id="map-panel-title">Mapa</h2>
-      <p>Se muestran los distritos de referencia según la distancia.</p>
-    </div>
-  </div>
+<section class="map-panel tools__section" aria-labelledby="map-panel-title">
+  <h2 class="tools__label" id="map-panel-title">Mapa</h2>
+  <p class="map-panel__desc">Se muestran los distritos de referencia según la distancia.</p>
   <div class="map-panel__body">
     <Picture
       src={map}
       formats={["avif", "webp"]}
       widths={[400, 640, 1000]}
-      sizes="(max-width: 1199px) 100vw, 320px"
+      sizes="(max-width: 1199px) 100vw, 340px"
       alt="Mapa referencial"
       class="map-panel__image"
       loading="lazy"
     />
   </div>
-</aside>
+</section>

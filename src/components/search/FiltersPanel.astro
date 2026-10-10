@@ -1,8 +1,9 @@
 ---
 /**
- * Search filters card: side column on wide screens, a bar above the
- * results otherwise (collapsible on mobile with JS). Element ids are the
- * contract with src/scripts/pages/search.js.
+ * Search filters: the first section of the tinted tools panel on wide
+ * screens, a tinted block above the results otherwise (collapsible on
+ * phones with JS). Element ids and the `.filters` hook are the contract
+ * with src/scripts/pages/search.js.
  */
 import Button from "../ui/Button.astro";
 import CategorySelect from "./CategorySelect.astro";
@@ -27,9 +28,9 @@ const sortOptions = [
 ];
 ---
 
-<aside class="filters" aria-label="Filtros">
+<section class="filters tools__section" aria-labelledby="filters-title">
   <div class="filters__header">
-    <h2 data-i18n="search_filters_title">Filtros</h2>
+    <h2 class="tools__label" id="filters-title" data-i18n="search_filters_title">Filtros</h2>
     <button type="button" class="filters__reset" id="reset-filters" data-i18n="search_filters_reset">
       Limpiar
     </button>
@@ -123,4 +124,4 @@ const sortOptions = [
       </select>
     </FilterGroup>
   </div>
-</aside>
+</section>

@@ -1,8 +1,10 @@
 /* T15 - Andy Salcedo: Estilos de buscador y filtros */
 /* T30 - Andy Salcedo: Estilos de búsqueda avanzada */
-/* Visual language (T10b-2): white rounded cards on the tinted app
-   background, pill search field and chips, flat result cards with an
-   inset photo. The page title is the only serif (ui/PageHead); every other
+/* Visual language (T10b-2, T10c-2): two zones with distinct roles. The
+   main column (pill search field, chips, saved searches, results) sits on
+   the neutral app background and only the repeated result cards are white
+   cards; filters + map share one mint tools panel with kicker-labelled
+   sections (same language as the detalle decision panel). The page title is the only serif (ui/PageHead); every other
    heading is Inter. Global (not scoped) on purpose: search.js renders the
    result cards, filter chips and saved searches as HTML strings. Fields and
    buttons come from the app primitives (app.css); this sheet only sets
@@ -128,20 +130,20 @@
 
 /* === Saved searches (T30) === */
 .saved-searches {
-  margin-top: var(--space-16);
-  padding: var(--space-16) var(--space-20);
-  border-radius: var(--radius-lg);
-  background: var(--color-card);
+  margin-top: var(--space-20);
 }
 
 .saved-searches.hidden {
   display: none;
 }
 
-.saved-searches h2 {
-  margin: 0 0 var(--space-12);
-  font-size: 0.95rem;
-  color: var(--color-ink);
+.search-main .saved-searches h2 {
+  margin: 0 0 var(--space-8);
+  color: var(--color-ink-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .saved-searches ul {
@@ -186,22 +188,30 @@
   background: var(--color-lavender);
 }
 
-/* === Layout: filters / results / map ===
-   Phones and tablets: filters bar, results, map. >=1200px: results on the
-   left, filters + map in a sticky side column. */
-.search-layout {
-  padding: var(--space-24) 0 0;
-}
-
+/* === Layout: main column + tools panel (T10c-2) ===
+   >=1200px: query and results in the main column on the neutral page
+   background; filters + map share one mint tools panel on the right.
+   Below that the panel unwraps (`display: contents`) and its sections keep
+   the tint as separate blocks: query / filters / results / map. */
 .search-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
+    "query"
     "filters"
     "results"
     "map";
   gap: var(--space-24);
   align-items: start;
+}
+
+.search-query {
+  grid-area: query;
+  min-width: 0;
+}
+
+.search-tools {
+  display: contents;
 }
 
 .filters {
@@ -210,45 +220,100 @@
 
 .results {
   grid-area: results;
+  min-width: 0;
 }
 
 .map-panel {
   grid-area: map;
 }
 
+/* Tinted tool blocks (narrow screens: one block per section). */
+.tools__section {
+  min-width: 0;
+  padding: var(--space-20) var(--space-24) var(--space-24);
+  border-radius: var(--radius-card);
+  background: var(--color-mint);
+}
+
+/* Kicker label: same voice as the detalle "Ficha del objeto" label. */
+.search-main .tools__label {
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 @media (min-width: 1200px) {
   .search-grid {
-    grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-columns: minmax(0, 1fr) 22rem;
     grid-template-areas:
-      "results filters"
-      "results map";
+      "query tools"
+      "results tools";
     grid-template-rows: auto 1fr;
+    column-gap: var(--space-32);
+    row-gap: var(--space-32);
+  }
+
+  .search-tools {
+    grid-area: tools;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: var(--space-8) var(--space-24) var(--space-24);
+    border-radius: var(--radius-card);
+    background: var(--color-mint);
+  }
+
+  /* Sections inside the one panel: flat, split by a soft ink divider with
+     generous room so filters and map read as two distinct tools. */
+  .search-tools .tools__section {
+    padding: var(--space-24) 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .search-tools .tools__section + .tools__section {
+    margin-top: var(--space-8);
+    padding-top: var(--space-32);
+    border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  }
+
+  .search-tools .tools__section:last-child {
+    padding-bottom: 0;
+  }
+
+  .search-tools .filters__content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-20);
   }
 }
 
-/* === Filters card === */
-.filters {
-  padding: var(--space-20);
-  border-radius: var(--radius-card);
-  background: var(--color-card);
+/* Sticky only when the whole panel fits the viewport. */
+@media (min-width: 1200px) and (min-height: 1040px) {
+  .search-tools {
+    position: sticky;
+    top: var(--space-24);
+  }
 }
 
+/* === Filters === */
 .filters__header {
   display: flex;
   align-items: center;
   gap: var(--space-12);
+  min-height: 36px;
 }
 
-.filters__header h2 {
-  margin: 0 auto 0 0;
-  font-size: 1.05rem;
-  color: var(--color-ink);
+.filters__header .tools__label {
+  margin-right: auto;
 }
 
 .filters__content {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-  gap: var(--space-16);
+  gap: var(--space-16) var(--space-20);
   margin-top: var(--space-16);
 }
 
@@ -258,15 +323,18 @@
   border: 0;
   border-radius: var(--radius-full);
   background: transparent;
-  color: var(--color-primary);
+  color: var(--color-ink);
   font-family: var(--font-primary);
   font-size: 0.85rem;
   font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 
 .filters__reset:hover {
-  background: var(--color-mint);
+  background: var(--color-card);
+  text-decoration: none;
 }
 
 .filters__reset:focus-visible,
@@ -284,7 +352,7 @@
   padding: 0 var(--space-16);
   border: 0;
   border-radius: var(--radius-full);
-  background: var(--color-paper);
+  background: var(--color-card);
   color: var(--color-ink);
   font-weight: 700;
   font-size: 0.85rem;
@@ -365,7 +433,7 @@
 }
 
 .filter-group input[type="range"] {
-  accent-color: var(--color-brand);
+  accent-color: var(--color-ink);
 }
 
 .filter-group__hint {
@@ -375,18 +443,14 @@
   color: var(--color-ink-2);
 }
 
-/* === Results card === */
-.results {
-  padding: var(--space-24);
-}
-
+/* === Results: neutral background, white result cards === */
 .results__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-12);
-  margin-bottom: var(--space-20);
+  margin-bottom: var(--space-16);
 }
 
 .results__header h2 {
@@ -399,7 +463,7 @@
   margin: 0;
   padding: 4px 12px;
   border-radius: var(--radius-full);
-  background: var(--color-mint);
+  background: var(--color-card);
   color: var(--color-ink);
   font-size: 0.82rem;
   font-weight: 700;
@@ -408,23 +472,30 @@
 .results__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: var(--space-16);
+  gap: var(--space-20);
 }
 
-/* Result card: paper tile inside the white results card, photo inset with
-   a concentric radius (tile radius - padding). */
+/* Empty states render inside the grid: give them the white surface. */
+.results__grid > .empty-state {
+  grid-column: 1 / -1;
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+}
+
+/* Result card: white tile (the repeated item), photo inset with a
+   concentric radius (tile radius - padding). */
 .result-card {
   --tile-pad: 8px;
   display: flex;
   flex-direction: column;
   padding: var(--tile-pad);
-  border-radius: var(--radius-lg);
-  background: var(--color-paper);
-  transition: background-color var(--dur-fast) var(--ease-standard);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  transition: box-shadow var(--dur-fast) var(--ease-standard);
 }
 
 .result-card:hover {
-  background: var(--color-paper-2);
+  box-shadow: 0 0 0 1px var(--color-gray-100);
 }
 
 .result-card__media {
@@ -435,8 +506,8 @@
   display: block;
   width: 100%;
   height: 170px;
-  border-radius: calc(var(--radius-lg) - var(--tile-pad));
-  background: var(--color-card);
+  border-radius: calc(var(--radius-card) - var(--tile-pad));
+  background: var(--color-paper-2);
   object-fit: cover;
 }
 
@@ -465,7 +536,7 @@
 }
 
 .result-card__meta .badge {
-  background: var(--color-card);
+  background: var(--color-paper);
 }
 
 .result-card__tags {
@@ -491,6 +562,10 @@
 .result-card__actions .btn {
   flex: 1 1 auto;
   white-space: nowrap;
+}
+
+.result-card__actions .btn-secondary {
+  --btn-bg: var(--color-paper);
 }
 
 /* Favorite (T30): white disc over the photo; the filled heart uses the
@@ -526,27 +601,9 @@
   }
 }
 
-/* === Map card === */
-.map-panel {
-  padding: var(--space-20);
-  border-radius: var(--radius-card);
-  background: var(--color-card);
-}
-
-.map-panel__header {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-12);
-}
-
-.map-panel__header h2 {
-  margin: 0 0 var(--space-4);
-  font-size: 1.05rem;
-  color: var(--color-ink);
-}
-
-.map-panel__header p {
-  margin: 0;
+/* === Map === */
+.map-panel__desc {
+  margin: var(--space-8) 0 0;
   font-size: 0.85rem;
   color: var(--color-ink-2);
 }
@@ -564,16 +621,13 @@
   object-fit: cover;
 }
 
-@media (min-width: 1200px) {
-  .map-panel {
-    position: sticky;
-    top: var(--space-24);
-  }
-}
-
 /* === Phones === */
 @media (max-width: 768px) {
-  .filters {
+  .search-grid {
+    gap: var(--space-20);
+  }
+
+  .filters.tools__section {
     padding: var(--space-12) var(--space-12) var(--space-12) var(--space-20);
   }
 
@@ -588,11 +642,11 @@
 
   .filters__content {
     grid-template-columns: minmax(0, 1fr);
-    padding-right: var(--space-8);
+    padding: 0 var(--space-8) var(--space-8) 0;
   }
 
-  .results {
-    padding: var(--space-16);
+  .map-panel.tools__section {
+    padding: var(--space-16) var(--space-20) var(--space-20);
   }
 
   .results__grid {
@@ -601,18 +655,30 @@
 }
 
 /* === High contrast / forced colors === */
-body.high-contrast .filters,
-body.high-contrast .results,
-body.high-contrast .map-panel,
-body.high-contrast .saved-searches,
+body.high-contrast .tools__section,
+body.high-contrast .search-tools,
 body.high-contrast .result-card,
+body.high-contrast .results__grid > .empty-state,
 body.high-contrast .saved-search-tag,
 body.high-contrast .item-card__favorite,
 body.high-contrast .filter-chip--clear,
+body.high-contrast .filters__toggle,
 body.high-contrast #results-count {
   background: var(--color-hc-paper);
   color: var(--color-hc-ink);
   outline: 2px solid var(--color-hc-ink);
+}
+
+/* One outline per panel on wide screens, none on its inner sections. */
+@media (min-width: 1200px) {
+  body.high-contrast .search-tools .tools__section {
+    outline: 0;
+  }
+}
+
+body.high-contrast .tools__label,
+body.high-contrast .filters__reset {
+  color: var(--color-hc-ink);
 }
 
 body.high-contrast .filter-chip:not(.filter-chip--clear),
@@ -629,14 +695,26 @@ body.high-contrast .result-card a.btn-primary {
 }
 
 @media (forced-colors: active) {
-  .filters,
-  .results,
-  .map-panel,
-  .saved-searches,
+  .tools__section,
   .result-card,
+  .results__grid > .empty-state,
   .saved-search-tag,
   .filter-chip,
   .item-card__favorite {
     border: 1px solid CanvasText;
+  }
+
+  @media (min-width: 1200px) {
+    .search-tools {
+      border: 1px solid CanvasText;
+    }
+
+    .search-tools .tools__section {
+      border-width: 0;
+    }
+
+    .search-tools .tools__section + .tools__section {
+      border-top-width: 1px;
+    }
   }
 }

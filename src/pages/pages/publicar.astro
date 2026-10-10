@@ -5,15 +5,18 @@
  * T14 - Ronel Rojas: publish form, mock QR and local drafts.
  * T23 - Ronel Rojas: states, reservation and per-category dynamic fields.
  * Logic: src/scripts/pages/publish.js (guarded: requires a session).
- * Visual language (T10b-2): white rounded form cards, pill delivery-mode
- * chips, a sticky summary card beside the form on wide screens.
+ * Visual language (T10b-2, T10c-2): two zones. The form is one white sheet
+ * with numbered steps split by dividers; the mint side panel previews the
+ * listing and holds the actions, with "Publicar" as the only primary
+ * button. The <form> wraps both zones so the submit button and the draft
+ * button stay inside it (publish.js queries form button[type=submit]).
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
 import Button from "../../components/ui/Button.astro";
-import CardSection from "../../components/ui/CardSection.astro";
 import PageHead from "../../components/ui/PageHead.astro";
 import Toggle from "../../components/ui/Toggle.astro";
 import Field from "../../components/publish/Field.astro";
+import FormStep from "../../components/publish/FormStep.astro";
 import PhotoUploader from "../../components/publish/PhotoUploader.astro";
 import SummaryCard from "../../components/publish/SummaryCard.astro";
 import { CATEGORIES } from "../../lib/categories";
@@ -77,11 +80,11 @@ const MODES = [
 
   <!-- T14 - Ronel Rojas: Formulario de publicación y QR -->
   <section class="publish-layout" aria-label="Formulario de publicación">
-    <div class="container publish-grid">
-      <form id="publish-form" class="publish-form" novalidate>
-        <CardSection
-          class="publish-card"
-          level={2}
+    <form id="publish-form" class="container publish-grid" novalidate>
+      <div class="publish-form">
+        <FormStep
+          step={1}
+          id="step-main"
           title="Información principal"
           titleKey="publish.mainInfo.title"
           subtitle="Define qué ofreces y en qué estado se encuentra."
@@ -170,11 +173,11 @@ const MODES = [
               data-i18n-placeholder="publish.mainInfo.tagsPlaceholder"
             />
           </Field>
-        </CardSection>
+        </FormStep>
 
-        <CardSection
-          class="publish-card"
-          level={2}
+        <FormStep
+          step={2}
+          id="step-location"
           title="Ubicación y entrega"
           titleKey="publish.location.title"
           subtitle="Indica dónde está el objeto y cómo prefieres el intercambio."
@@ -228,23 +231,23 @@ const MODES = [
                 data-i18n-placeholder="publish.location.notesPlaceholder"></textarea>
             </Field>
           </div>
-        </CardSection>
+        </FormStep>
 
-        <CardSection
-          class="publish-card"
-          level={2}
+        <FormStep
+          step={3}
+          id="step-photos"
           title="Fotos del objeto"
           titleKey="publish.photos.title"
           subtitle="Sube hasta 5 fotos. Formatos JPG o PNG."
           subtitleKey="publish.photos.subtitle"
         >
           <PhotoUploader />
-        </CardSection>
+        </FormStep>
+      </div>
 
-        <div class="form__actions">
-          <Button appearance="flat" variant="secondary" id="save-draft" data-i18n="publish.actions.saveDraft">
-            Guardar borrador
-          </Button>
+      <aside class="publish-summary" aria-label="Resumen y QR">
+        <SummaryCard />
+        <div class="summary-actions">
           <Button
             appearance="flat"
             variant="primary"
@@ -255,14 +258,13 @@ const MODES = [
           >
             Publicar
           </Button>
+          <Button appearance="flat" variant="secondary" id="save-draft" data-i18n="publish.actions.saveDraft">
+            Guardar borrador
+          </Button>
+          <p class="form__success" id="form-success" role="status" aria-live="polite"></p>
         </div>
-        <p class="form__success" id="form-success" role="status" aria-live="polite"></p>
-      </form>
-
-      <aside class="publish-summary" aria-label="Resumen y QR">
-        <SummaryCard />
       </aside>
-    </div>
+    </form>
   </section>
 
   <script>
