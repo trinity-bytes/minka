@@ -117,6 +117,16 @@
   flex-direction: column;
   gap: var(--space-16);
   padding: var(--space-24);
+  container-type: inline-size;
+}
+
+/* In the narrow rail column, stack the chip above the figure so labels fit. */
+@container (max-width: 340px) {
+  .impact-stat {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
 }
 
 .home-impact__title {
