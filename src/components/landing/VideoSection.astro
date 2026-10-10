@@ -3,9 +3,14 @@
  * "Dale play": YouTube facade that only loads the player on click.
  * Defaults are the landing's presentation video; the about page passes its
  * own video and copy. Default slot: the section title (may contain <em>).
+ *
+ * Visual: the player sits in a solid mint bento frame (concentric radii);
+ * the facade is an ink screen with a faint leaf watermark and a flat
+ * brand-green play disc. Nothing moves except the play disc on hover.
  */
 import Icon from "../ui/Icon.astro";
 import SectionHead from "../ui/SectionHead.astro";
+import Logomark from "../brand/Logomark.astro";
 import LandingSection from "./LandingSection.astro";
 
 interface Props {
@@ -44,8 +49,9 @@ const hasTitle = Astro.slots.has("default");
         data-video-title={videoTitle}
         aria-label={`Reproducir ${videoTitle.charAt(0).toLowerCase()}${videoTitle.slice(1)}`}
       >
+        <Logomark tone="current" size={360} class="video__mark" />
         <span class="video__play" aria-hidden="true">
-          <Icon name="play" size={30} class="video__play-icon" />
+          <Icon name="play" size={34} class="video__play-icon" />
         </span>
         <span class="video__label">{label}</span>
       </button>
@@ -69,24 +75,22 @@ const hasTitle = Astro.slots.has("default");
 </script>
 
 <style>
+  /* Mint bento frame; the screen radius = frame radius - frame padding. */
   .video {
-    max-width: 920px;
+    --frame-pad: clamp(12px, 1.8vw, 22px);
+    max-width: 960px;
     margin: 0 auto;
-    background: var(--color-card);
-    border: var(--border-ink);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-hard-lg);
-    padding: 18px;
-    transform: rotate(-0.5deg);
+    padding: var(--frame-pad);
+    background: var(--color-mint);
+    border-radius: var(--radius-bento);
   }
 
   .video__ratio {
     position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    border: var(--border-ink);
-    border-radius: var(--radius-lg);
+    aspect-ratio: 16 / 9;
+    overflow: clip;
+    border-radius: calc(var(--radius-bento) - var(--frame-pad));
+    background: var(--color-ink);
   }
 
   .video__facade {
@@ -95,47 +99,83 @@ const hasTitle = Astro.slots.has("default");
     width: 100%;
     height: 100%;
     border: 0;
+    border-radius: inherit;
     cursor: pointer;
-    background:
-      radial-gradient(closest-side, color-mix(in srgb, var(--color-primary-pop) 25%, transparent), transparent 75%),
-      var(--color-ink);
+    background: var(--color-ink);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: clamp(14px, 2.4vw, 24px);
+    padding: 24px;
     color: var(--color-paper);
+    overflow: clip;
+  }
+
+  /* The screen clips, so the focus ring is drawn inside it. */
+  .video__facade:focus-visible {
+    outline: 3px solid var(--color-brand);
+    outline-offset: -8px;
+  }
+
+  /* Faint giant leaf behind the play disc (decorative). */
+  .video__facade :global(.video__mark) {
+    position: absolute;
+    right: -6%;
+    bottom: -22%;
+    height: 112%;
+    width: auto;
+    color: var(--color-brand);
+    opacity: 0.09;
+    pointer-events: none;
   }
 
   .video__play {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 88px;
-    height: 88px;
-    background: var(--color-primary-pop);
-    border: var(--border-ink);
-    border-radius: 50%;
-    box-shadow: var(--shadow-hard-md);
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: clamp(68px, 10vw, 104px);
+    height: clamp(68px, 10vw, 104px);
+    background: var(--color-brand);
+    border-radius: var(--radius-full);
     color: var(--color-on-brand);
-    transition: transform 0.2s ease;
+    transition: transform var(--dur-base) var(--ease-spring);
   }
 
-  .video__facade:hover .video__play {
-    transform: scale(1.1) rotate(-6deg);
+  .video__facade:hover .video__play,
+  .video__facade:focus-visible .video__play {
+    transform: scale(1.08) rotate(-6deg);
   }
 
-  .video__play .video__play-icon {
-    margin-left: 6px;
+  /* Optical centering of the triangle glyph. */
+  .video__play :global(.video__play-icon) {
+    margin-left: 6%;
   }
 
   .video__label {
+    position: relative;
     font-family: var(--font-display);
-    font-size: 1.3rem;
-    font-weight: 560;
-    font-variation-settings:
-      "SOFT" 100,
-      "WONK" 1,
-      "opsz" 40;
+    font-weight: 700;
+    font-variation-settings: var(--font-display-axes-text);
+    font-size: clamp(1.05rem, 2vw, 1.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video__facade:hover .video__play,
+    .video__facade:focus-visible .video__play {
+      transform: none;
+    }
+  }
+
+  :global(body.high-contrast) .video {
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  :global(body.high-contrast) .video__play {
+    outline: 2px solid var(--color-paper);
   }
 </style>

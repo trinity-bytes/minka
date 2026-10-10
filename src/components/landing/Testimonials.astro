@@ -1,61 +1,230 @@
 ---
-/** "Voces reales": three testimonial notes. */
+/**
+ * "Voces reales": three testimonials as solid bento blocks (white, mint,
+ * lavender) with a giant Fraunces quote mark, star rating and an initials
+ * avatar. Desktop staggers the blocks vertically (margin, not translate,
+ * which the reveal animation owns). Nothing loops or moves after reveal.
+ */
+import Avatar from "../ui/Avatar.astro";
+import Icon from "../ui/Icon.astro";
 import SectionHead from "../ui/SectionHead.astro";
-import Testimonial from "../ui/Testimonial.astro";
 import LandingSection from "./LandingSection.astro";
-import { asset } from "../../lib/url";
+import type { AvatarTone } from "../../scripts/lib/avatar.js";
 
-const testimonials = [
+type Tone = "white" | "mint" | "lavender";
+
+const testimonials: { quote: string; name: string; place: string; tone: Tone; avatar: AvatarTone }[] = [
   {
     quote:
       "¡Mink'a transformó cómo adquiero cosas! Cambié mis habilidades de fotografía por productos orgánicos. Es genial conocer gente de mi barrio.",
     name: "Sofía Ramírez",
     place: "Miraflores",
-    avatar: asset("images/avatars/avatar-sofia.svg"),
+    tone: "white",
+    avatar: "brand",
   },
   {
     quote:
       "Intercambié servicios de diseño gráfico por desarrollo web. Perfecto para pequeños negocios que quieren crecer sin gastar tanto.",
     name: "Carlos Mendoza",
     place: "San Isidro",
-    avatar: asset("images/avatars/avatar-carlos.svg"),
+    tone: "mint",
+    avatar: "lavender",
   },
   {
     quote:
       "Nuestro huerto comunitario cambió verduras por servicios de carpintería. Mink'a fortaleció nuestra red local.",
     name: "Isabella Torres",
     place: "Surco",
-    avatar: asset("images/avatars/avatar-isabella.svg"),
+    tone: "lavender",
+    // No green on lavender: the avatar stays in the lavender family.
+    avatar: "lavender-soft",
   },
 ];
+
+const RATING = 5;
+const stars = Array.from({ length: RATING });
 ---
 
 <LandingSection id="testimonios" folio="04" compactTop>
   <SectionHead eyebrow="Voces reales" eyebrowTone="terra">
     Vecinos que ya <em>truequean</em>
   </SectionHead>
-  <div class="notes">
+  <ul class="voices" role="list">
     {
       testimonials.map((item, i) => (
-        <Testimonial {...item} data-reveal style={i ? `--reveal-delay: ${i * 120}ms` : undefined} />
+        <li
+          class:list={["voice", `voice--${item.tone}`]}
+          data-reveal
+          style={i ? `--reveal-delay: ${i * 120}ms` : undefined}
+        >
+          <figure class="voice__figure">
+            <div class="voice__top">
+              <span class="voice__mark" aria-hidden="true">
+                “
+              </span>
+              <span class="voice__stars" role="img" aria-label={`${RATING} de 5 estrellas`}>
+                {stars.map(() => (
+                  <Icon name="star" size={18} />
+                ))}
+              </span>
+            </div>
+            <blockquote class="voice__quote">
+              <p>{item.quote}</p>
+            </blockquote>
+            <figcaption class="voice__person">
+              <Avatar name={item.name} tone={item.avatar} size="lg" decorative />
+              <span>
+                <span class="voice__name">{item.name}</span>
+                <span class="voice__place">{item.place}</span>
+              </span>
+            </figcaption>
+          </figure>
+        </li>
       ))
     }
-  </div>
+  </ul>
 </LandingSection>
 
 <style>
-  .notes {
+  .voices {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .voice {
+    min-width: 0;
+    padding: clamp(24px, 2.6vw, 36px);
+    border-radius: var(--radius-bento);
+    background: var(--voice-bg);
+    color: var(--color-ink);
+  }
+
+  /* Desktop rhythm: the middle block drops, the last one sits half-way. */
+  .voice:nth-child(2) {
+    margin-top: 56px;
+  }
+
+  .voice:nth-child(3) {
+    margin-top: 24px;
+  }
+
+  .voice--white {
+    --voice-bg: var(--color-card);
+    --voice-accent: var(--color-primary);
+  }
+
+  .voice--mint {
+    --voice-bg: var(--color-mint);
+    --voice-accent: var(--color-lavender-ink);
+  }
+
+  .voice--lavender {
+    --voice-bg: var(--color-lavender);
+    /* Re-point ink so text, stars and the mark use violet on lavender. */
+    --color-ink: var(--color-on-lavender);
+    --color-ink-2: var(--color-on-lavender);
+    --voice-accent: var(--color-on-lavender);
+  }
+
+  .voice__figure {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: 100%;
+    margin: 0;
+  }
+
+  .voice__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .voice__mark {
+    display: block;
+    height: 0.5em;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(5rem, 7vw, 6.5rem);
+    line-height: 0.82;
+    color: var(--voice-accent);
+  }
+
+  .voice__stars {
+    display: inline-flex;
+    gap: 3px;
+    color: var(--color-ink);
+  }
+
+  .voice__quote {
+    margin: 0;
+  }
+
+  .voice__quote p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variation-settings: var(--font-display-axes-text);
+    font-size: clamp(1.1rem, 1.35vw, 1.24rem);
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  .voice__person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+  }
+
+  .voice__name {
+    display: block;
+    font-weight: 800;
+    font-size: 0.98rem;
+    color: var(--color-ink);
+  }
+
+  .voice__place {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--color-ink-2);
   }
 
   @media (max-width: 1024px) {
-    .notes {
-      grid-template-columns: 1fr;
-      max-width: 520px;
+    .voices {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 560px;
       margin: 0 auto;
-      gap: 40px;
     }
+
+    .voice:nth-child(2),
+    .voice:nth-child(3) {
+      margin-top: 0;
+    }
+  }
+
+  :global(body.high-contrast) .voice {
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  :global(body.high-contrast) .voice--lavender {
+    --color-ink: var(--color-hc-ink);
+    --color-ink-2: var(--color-hc-ink);
+    --voice-accent: var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .voice--white,
+  :global(body.high-contrast) .voice--mint {
+    --voice-accent: var(--color-hc-ink);
   }
 </style>
