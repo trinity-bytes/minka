@@ -1,0 +1,36 @@
+---
+/**
+ * On/off switch: a native checkbox with role="switch" inside the shared
+ * `.switch` / `.slider` markup that page scripts and the settings page
+ * already use, styled once in src/styles/app.css (pill track, brand green
+ * when on with an --color-on-brand knob, 64x44 hit area). Requires a page
+ * built on AppLayout. Give it an accessible name with `label` (visually
+ * hidden) or point `aria-labelledby` at visible text; extra attributes
+ * (data-*, aria-*) go to the input.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends Omit<HTMLAttributes<"input">, "type" | "role" | "class"> {
+  id: string;
+  /** Accessible name (aria-label) when no visible label is referenced. */
+  label?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const { id, label, checked = false, disabled = false, class: className, ...rest } = Astro.props;
+---
+
+<label class:list={["switch", className]}>
+  <input
+    type="checkbox"
+    role="switch"
+    id={id}
+    aria-label={label}
+    checked={checked}
+    disabled={disabled}
+    {...rest}
+  />
+  <span class="slider round"></span>
+</label>

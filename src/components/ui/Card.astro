@@ -1,6 +1,7 @@
 ---
 /**
- * Editorial card surface: ink border, rounded corners, hard offset shadow.
+ * App card surface: white, --radius-card corners, flat (no border, no
+ * offset shadow). `shadow` md/lg add a soft drop; `interactive` lifts softly.
  * Inner padding/layout belongs to the consumer.
  */
 import type { HTMLAttributes } from "astro/types";
@@ -10,7 +11,7 @@ interface Props extends HTMLAttributes<"div"> {
   tone?: "card" | "mint" | "accent-soft" | "paper";
   radius?: "lg" | "xl";
   shadow?: "sm" | "md" | "lg";
-  /** Lift on hover (translate + larger shadow). */
+  /** Soft lift on hover (2px rise + shadow; no rise under reduced motion). */
   interactive?: boolean;
 }
 
@@ -40,13 +41,18 @@ const {
 </Tag>
 
 <style>
+  /* White app card on the tinted background (T9): no border, no offset
+     shadow. The transparent border keeps the box size and becomes visible
+     under forced colors; high contrast restores a 2px black outline through
+     the global `body.high-contrast .card` rule in global.css. Tinted tones
+     that would vanish on the tinted page keep a hairline. */
   .card {
     position: relative;
     margin: 0;
     background: var(--color-card);
-    border: var(--border-ink);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-hard-sm);
+    border: 1px solid transparent;
+    border-radius: var(--radius-card);
+    box-shadow: none;
   }
 
   .card--mint {
@@ -59,6 +65,7 @@ const {
 
   .card--paper {
     background: var(--color-paper);
+    border-color: var(--color-border);
   }
 
   .card--radius-xl {
@@ -66,21 +73,32 @@ const {
   }
 
   .card--shadow-md {
-    box-shadow: var(--shadow-hard-md);
+    box-shadow: var(--shadow-sm);
   }
 
   .card--shadow-lg {
-    box-shadow: var(--shadow-hard-lg);
+    box-shadow: var(--shadow-lg);
   }
 
   .card--interactive {
     transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease;
+      transform var(--dur-fast) var(--ease-standard),
+      box-shadow var(--dur-fast) var(--ease-standard);
   }
 
   .card--interactive:hover {
-    transform: translate(-3px, -3px) rotate(var(--card-hover-rotate, 0deg));
-    box-shadow: var(--shadow-hard-lg);
+    box-shadow: var(--shadow-lift);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card--interactive:hover {
+      transform: translateY(-2px) rotate(var(--card-hover-rotate, 0deg));
+    }
+  }
+
+  @media (forced-colors: active) {
+    .card {
+      border-color: CanvasText;
+    }
   }
 </style>

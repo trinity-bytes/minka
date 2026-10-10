@@ -3,7 +3,8 @@
  * Pill badge for statuses and tags, or a compact counter (`count`) capped at
  * `max` ("99+"). Counters should carry a `label` ("3 mensajes sin leer"):
  * the number alone is hidden from AT and the label is read instead.
- * Class names avoid the legacy global `.badge` rules in app.css.
+ * Class names avoid the legacy global `.badge` rules in app.css, which
+ * since T9 mirror this look for the badges page scripts render as strings.
  */
 import type { HTMLAttributes } from "astro/types";
 import { formatCount } from "../../scripts/lib/avatar.js";
@@ -81,6 +82,14 @@ const isCount = typeof count === "number";
   }
 
   :global(body.high-contrast) .pill-badge {
+    --badge-bg: var(--color-hc-paper);
+    --badge-fg: var(--color-hc-ink);
     outline: 2px solid var(--color-hc-ink);
+  }
+
+  @media (forced-colors: active) {
+    .pill-badge {
+      outline: 1px solid CanvasText;
+    }
   }
 </style>

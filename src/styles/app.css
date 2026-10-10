@@ -174,86 +174,117 @@ body.high-contrast .app-badge {
   }
 }
 
-/* === Buttons (flat app look) === */
+/* === Buttons (flat app look, T9) ===
+   Pill, flat (no lift, no offset shadow). Each variant sets --btn-bg /
+   --btn-fg / --btn-border, so the loading spinner can read the label color
+   while the label itself is hidden. Text on the brand fill always uses
+   --color-on-brand. The transparent border keeps every variant the same
+   size and becomes a visible outline under forced colors. */
 .btn {
+  --btn-bg: var(--color-card);
+  --btn-fg: var(--color-ink);
+  --btn-border: transparent;
+  --btn-bg-hover: var(--btn-bg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-8);
+  min-height: 44px;
   font-family: var(--font-primary);
-  font-size: 1rem;
-  font-weight: 600;
-  padding: var(--space-12) var(--space-24);
-  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: var(--space-10) var(--space-20);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-btn);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
 }
 
-.btn i {
-  margin-right: var(--space-8);
+/* The global a:hover color would win over link buttons: pin the label. */
+.btn:hover,
+.btn:focus-visible {
+  background: var(--btn-bg-hover);
+  color: var(--btn-fg);
 }
 
 .btn-primary {
-  background: var(--color-primary-ink);
-  color: var(--color-on-primary);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-primary:hover {
-  background: var(--color-primary-dark);
-  /* the global a:hover color would win over .btn-primary: pin it here */
-  color: var(--color-on-primary);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  --btn-bg: var(--color-brand);
+  --btn-fg: var(--color-on-brand);
+  --btn-bg-hover: color-mix(in srgb, var(--color-brand) 86%, var(--color-ink));
 }
 
 .btn-primary:active {
-  background: var(--color-primary-darker);
-  color: var(--color-on-primary);
-  transform: translateY(0);
+  --btn-bg-hover: color-mix(in srgb, var(--color-brand) 76%, var(--color-ink));
 }
 
 .btn-secondary {
-  background: transparent;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-}
-
-.btn-secondary:hover {
-  background: color-mix(in srgb, var(--color-primary-pop) 10%, transparent);
+  --btn-bg: var(--color-card);
+  --btn-border: var(--color-gray-200);
+  --btn-bg-hover: var(--color-paper-2);
 }
 
 .btn-outline {
-  background: transparent;
-  color: var(--color-gray-700);
-  border: 1.5px solid var(--color-gray-300);
+  --btn-bg: transparent;
+  --btn-fg: var(--color-ink-2);
+  --btn-border: var(--color-gray-300);
+  --btn-bg-hover: var(--color-card);
 }
 
 .btn-outline:hover {
-  background: var(--color-gray-50);
-  border-color: var(--color-gray-400);
-  color: var(--color-gray-900);
+  --btn-fg: var(--color-ink);
+  --btn-border: var(--color-gray-400);
+}
+
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-ink-2);
+  --btn-bg-hover: color-mix(in srgb, var(--color-ink) 7%, transparent);
+}
+
+.btn-ghost:hover {
+  --btn-fg: var(--color-ink);
 }
 
 .btn-ink {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  --btn-bg: var(--color-ink);
+  --btn-fg: var(--color-paper);
+  --btn-bg-hover: var(--color-ink-deep);
+}
+
+/* White on --color-error 5.44:1, on --color-error-ink 6.6:1.
+   core/modal.js toggles .btn-danger on destructive confirms. */
+.btn-danger {
+  --btn-bg: var(--color-error);
+  --btn-fg: #ffffff;
+  --btn-bg-hover: var(--color-error-ink);
 }
 
 .btn-large {
-  padding: var(--space-16) var(--space-32);
-  font-size: 1.125rem;
+  min-height: 52px;
+  padding: var(--space-12) 28px;
+  font-size: 1.05rem;
 }
 
-.btn-small {
-  padding: var(--space-8) var(--space-16);
-  font-size: 0.9rem;
+/* .btn-sm is the name page scripts render (community.js). */
+.btn-small,
+.btn-sm {
+  min-height: 36px;
+  padding: 6px var(--space-16);
+  font-size: 0.875rem;
 }
 
 .btn:disabled,
+.btn[aria-disabled="true"],
 .btn.is-loading {
-  opacity: 0.65;
+  opacity: 0.55;
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -268,16 +299,10 @@ body.high-contrast .app-badge {
   position: absolute;
   width: 18px;
   height: 18px;
-  border: 2.5px solid color-mix(in srgb, var(--color-on-primary) 40%, transparent);
-  border-top-color: var(--color-white);
+  border: 2.5px solid color-mix(in srgb, var(--btn-fg) 30%, transparent);
+  border-top-color: var(--btn-fg);
   border-radius: 50%;
   animation: btn-spin 0.7s linear infinite;
-}
-
-.btn-secondary.is-loading::after,
-.btn-outline.is-loading::after {
-  border-color: color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
-  border-top-color: var(--color-primary);
 }
 
 @keyframes btn-spin {
@@ -286,86 +311,139 @@ body.high-contrast .app-badge {
   }
 }
 
+/* Ink ring offset from the pill: visible on white, tinted and dark fills. */
 .btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .btn:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
   }
 }
 
 @media (max-width: 480px) {
   .btn {
-    padding: var(--space-10) var(--space-16);
+    padding-inline: var(--space-16);
     font-size: 0.9rem;
   }
 
   .btn-large {
-    padding: var(--space-12) var(--space-24);
+    padding-inline: var(--space-24);
     font-size: 1rem;
   }
 }
 
-@media (max-width: 360px) {
-  .btn {
-    padding: var(--space-8) var(--space-12);
-    font-size: 0.85rem;
-  }
-}
-
 @media (hover: none) and (pointer: coarse) {
-  .btn {
+  .btn,
+  .btn-small,
+  .btn-sm {
     min-height: 44px;
     min-width: 44px;
   }
 }
 
-/* === Badge === */
+/* High contrast: 2px black outline, black text on white, dark green fills
+   with white text for the strong variants. */
+body.high-contrast .btn {
+  border: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .btn:not(.btn-primary, .btn-ink, .btn-danger) {
+  --btn-bg: var(--color-hc-paper);
+  --btn-bg-hover: var(--color-hc-paper);
+  --btn-fg: var(--color-hc-ink);
+}
+
+body.high-contrast .btn-primary,
+body.high-contrast .btn-ink {
+  --btn-bg: var(--color-hc-primary);
+  --btn-bg-hover: var(--color-hc-primary-dark);
+  --btn-fg: var(--color-hc-paper);
+}
+
+body.high-contrast .btn:focus-visible {
+  outline: 3px solid var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .btn {
+    border-color: ButtonText;
+  }
+
+  .btn:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .btn.is-loading::after {
+    border-color: GrayText;
+    border-top-color: ButtonText;
+  }
+}
+
+/* === Badge (legacy global, T9) ===
+   Same look as ui/Badge `.pill-badge`: page scripts render
+   `<span class="badge badge--<type>">` as strings, so the legacy names keep
+   working and only the visuals are unified. Unread counters in the shell use
+   `.app-badge` (above), which notif-badge.js fills via textContent. */
 .badge {
+  --badge-bg: var(--color-mint);
+  --badge-fg: var(--color-ink);
   display: inline-flex;
   align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-10);
+  gap: 6px;
+  padding: 4px 12px;
   border-radius: var(--radius-full);
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  background: var(--badge-bg);
+  color: var(--badge-fg);
+  font-family: var(--font-primary);
+  font-size: 0.78rem;
   font-weight: 700;
-  font-size: 0.85rem;
+  line-height: 1.3;
+  white-space: nowrap;
 }
 
-.badge--warning {
-  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
-  color: var(--color-warning-ink);
+/* --color-warning-ink on --color-warning-soft 5.45:1. */
+.badge--warning,
+.badge--reminder {
+  --badge-bg: var(--color-warning-soft);
+  --badge-fg: var(--color-warning-ink);
 }
 
+/* Lavender-ink on lavender-soft 6.36:1 (no green on lavender). */
 .badge--info,
 .badge--message {
-  background: color-mix(in srgb, var(--color-ink-2) 12%, transparent);
-  color: var(--color-secondary-dark);
+  --badge-bg: var(--color-lavender-soft);
+  --badge-fg: var(--color-lavender-ink);
 }
 
 /* Notification feed badges (rendered by notifications.js) */
 .badge--neutral {
-  background: var(--color-gray-50);
-  color: var(--color-secondary);
+  --badge-bg: var(--color-paper-2);
+  --badge-fg: var(--color-ink-2);
 }
 
 .badge--match {
-  background: color-mix(in srgb, var(--color-primary-pop) 15%, transparent);
-  color: var(--color-secondary-dark);
-}
-
-.badge--reminder {
-  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
-  color: var(--color-warning-ink);
+  --badge-bg: var(--color-mint);
+  --badge-fg: var(--color-ink);
 }
 
 .badge--new {
-  background: color-mix(in srgb, var(--color-error) 15%, transparent);
-  color: var(--color-error-ink);
+  --badge-bg: var(--color-brand);
+  --badge-fg: var(--color-on-brand);
+}
+
+body.high-contrast .badge {
+  --badge-bg: var(--color-hc-paper);
+  --badge-fg: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .badge {
+    outline: 1px solid CanvasText;
+  }
 }
 
 /* === Breadcrumb === */
@@ -499,34 +577,64 @@ body.high-contrast .app-badge {
   flex-wrap: wrap;
 }
 
-/* === Toast (container created by core/toast.js) === */
+/* === Toast (container created by core/toast.js) ===
+   toast.js sets only textContent, so the status icon is a CSS disc drawn
+   by ::before (its glyph is hidden from AT with the alt-text syntax). A
+   single line renders as an ink pill (min-height 48 = 2 x radius); longer
+   messages wrap into a rounded card. On phones app.css lifts the container
+   above the tab bar (body.app-shell rule at the top of this file). */
 .toast-container {
   position: fixed;
   bottom: var(--space-24);
   right: var(--space-24);
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-8);
   z-index: var(--z-toast);
 }
 
 .toast {
+  --toast-icon-bg: var(--color-lavender);
+  --toast-icon-fg: var(--color-on-lavender);
   display: flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-12);
   min-width: 240px;
-  max-width: 360px;
-  padding: var(--space-12) var(--space-16);
-  border-radius: var(--space-10);
-  background: var(--color-secondary-dark);
-  color: var(--color-white);
+  max-width: 380px;
+  min-height: 48px;
+  padding: var(--space-10) var(--space-20) var(--space-10) var(--space-12);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background: var(--color-ink);
+  color: var(--color-paper);
   box-shadow: var(--shadow-lift);
+  font-family: var(--font-primary);
+  font-size: 0.92rem;
   font-weight: 600;
+  line-height: 1.35;
   opacity: 0;
   transform: translateY(8px);
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+    opacity var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.toast::before {
+  content: "i";
+  content: "i" / "";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--toast-icon-bg);
+  color: var(--toast-icon-fg);
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .toast.is-visible {
@@ -534,16 +642,25 @@ body.high-contrast .app-badge {
   transform: translateY(0);
 }
 
+/* Brand disc with on-brand glyph; lavender disc on the ink toast 8.14:1. */
 .toast--success {
-  border-left: 4px solid var(--color-primary);
+  --toast-icon-bg: var(--color-brand);
+  --toast-icon-fg: var(--color-on-brand);
+}
+
+.toast--success::before {
+  content: "✓";
+  content: "✓" / "";
 }
 
 .toast--error {
-  border-left: 4px solid var(--color-error);
+  --toast-icon-bg: var(--color-error);
+  --toast-icon-fg: #ffffff;
 }
 
-.toast--info {
-  border-left: 4px solid var(--color-info);
+.toast--error::before {
+  content: "!";
+  content: "!" / "";
 }
 
 @media (max-width: 480px) {
@@ -551,10 +668,36 @@ body.high-contrast .app-badge {
     left: var(--space-16);
     right: var(--space-16);
     bottom: var(--space-16);
+    align-items: stretch;
+  }
+
+  .toast {
+    max-width: none;
   }
 }
 
-/* === Modal (driven by core/modal.js; also used for Modal.confirm) === */
+body.high-contrast .toast {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  border: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .toast::before {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .toast::before {
+    outline: 1px solid CanvasText;
+  }
+}
+
+/* === Modal (driven by core/modal.js; also used for Modal.confirm) ===
+   White card with the xl radius and a soft, flat drop shadow; the close
+   button is a 44px icon pill. Behavior (visibility switch, focus) is
+   unchanged. */
 .modal {
   position: fixed;
   inset: 0;
@@ -586,7 +729,7 @@ body.high-contrast .app-badge {
   position: absolute;
   inset: 0;
   background: var(--color-scrim);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
 }
 
 .modal__content {
@@ -594,14 +737,14 @@ body.high-contrast .app-badge {
   width: min(560px, 100%);
   max-height: calc(100dvh - var(--space-32));
   overflow-y: auto;
-  background: var(--color-white);
-  border-radius: var(--space-16);
+  background: var(--color-card);
+  border: 1px solid transparent;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-modal);
-  padding: var(--space-24);
-  border: 1px solid var(--color-gray-50);
+  padding: 28px;
   z-index: 1;
-  transform: translateY(20px);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: translateY(16px);
+  transition: transform var(--dur-base) var(--ease-out);
 }
 
 .modal[aria-hidden="false"] .modal__content {
@@ -612,37 +755,51 @@ body.high-contrast .app-badge {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-8);
+  gap: var(--space-12);
   margin-bottom: var(--space-16);
 }
 
 .modal__header h2,
 .modal__header h3,
 .modal__title {
-  font-size: 1.25rem;
-  color: var(--color-secondary-dark);
+  font-family: var(--font-primary);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
   margin: 0;
 }
 
 .modal__close {
-  background: transparent;
-  border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
-  color: var(--color-gray-400);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.2s ease;
+  width: 44px;
+  height: 44px;
+  /* Pull the pill into the header padding so the title keeps its line. */
+  margin: -6px -8px -6px 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
 }
 
 .modal__close:hover {
-  background: var(--color-gray-50);
-  color: var(--color-error);
+  background: var(--color-gray-100);
+  color: var(--color-ink);
+}
+
+.modal__close:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
 }
 
 .modal__body {
@@ -659,6 +816,7 @@ body.high-contrast .app-badge {
 .modal__footer {
   display: flex;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: var(--space-12);
   margin-top: var(--space-24);
 }
@@ -677,6 +835,12 @@ body.high-contrast .app-badge {
   color: var(--color-text-secondary);
   font-size: 0.9rem;
   margin-top: var(--space-8);
+}
+
+body.high-contrast .modal__close {
+  background: var(--color-hc-paper);
+  border: 2px solid var(--color-hc-ink);
+  color: var(--color-hc-ink);
 }
 
 /* === Rating stars (detail, later chat) === */
@@ -712,57 +876,137 @@ body.high-contrast .app-badge {
     padding: var(--space-24);
     max-width: 100%;
     margin: var(--space-16);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card);
   }
 }
 
 @media (max-width: 480px) {
   .modal__content {
-    padding: var(--space-16);
+    padding: var(--space-20);
     margin: var(--space-8);
+    border-radius: var(--radius-lg);
   }
 }
 
-/* === Form elements === */
-input,
+/* === Form elements (T9) ===
+   Text-like fields only: `:where()` keeps the selector at element
+   specificity so page CSS still overrides it, and leaves checkboxes,
+   radios, ranges and file pickers native. White fill, md radius, 44px
+   target; the border is gray-400 (3.5:1 on white, the non-text minimum).
+   Focus: ink border plus a soft ink ring; the transparent outline shows up
+   under forced colors, where box-shadow is dropped. */
+input:where(:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="hidden"], [type="submit"], [type="button"], [type="reset"], [type="image"])),
 select,
 textarea {
   width: 100%;
-  padding: var(--space-12);
-  border: 1.5px solid var(--color-gray-100);
-  border-radius: var(--space-10);
+  min-height: 44px;
+  padding: var(--space-10) 14px;
+  border: 1px solid var(--color-gray-400);
+  border-radius: var(--radius-md);
   font: inherit;
-  color: var(--color-gray-900);
-  background: var(--color-white);
+  color: var(--color-ink);
+  background: var(--color-card);
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color var(--dur-fast) var(--ease-standard),
+    box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+input:where(:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="hidden"], [type="submit"], [type="button"], [type="reset"], [type="image"])):hover,
+select:hover,
+textarea:hover {
+  border-color: var(--color-ink-2);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-pop) 18%, transparent);
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ink) 16%, transparent);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+input:where([type="checkbox"], [type="radio"]):focus {
+  box-shadow: none;
+}
+
+input:where([type="checkbox"], [type="radio"]):focus-visible {
+  outline: 2px solid var(--color-ink);
+}
+
+/* Error state set by page scripts (aria-invalid) or by markup. */
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--color-error);
+}
+
+input[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 18%, transparent);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--color-paper-2);
+  color: var(--color-gray-600);
+  cursor: not-allowed;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--color-gray-300);
+  color: var(--color-gray-500);
+}
+
+/* Native checkboxes and radios: brand accent, 20px. Zero specificity so
+   the existing .form__checkbox / .form-check sizes still apply. */
+:where(input[type="checkbox"], input[type="radio"]) {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-brand);
+  cursor: pointer;
 }
 
 /* The chevron is an SVG data URI: it cannot read CSS custom properties,
-   so its stroke stays a literal (legacy gray). */
+   so its stroke is a literal (--color-ink-2 #3d5547). */
 select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237f8c8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233d5547' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
-  padding-right: 2.5rem;
+  padding-right: 2.75rem;
 }
 
 textarea {
+  min-height: 96px;
   resize: vertical;
+}
+
+fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+legend {
+  padding: 0;
+  margin-bottom: var(--space-8);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+body.high-contrast input,
+body.high-contrast select,
+body.high-contrast textarea {
+  border: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast :where(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--color-hc-primary);
 }
 
 /* === Form helpers === */
@@ -773,8 +1017,9 @@ textarea {
 }
 
 .form__group label {
-  font-weight: 600;
-  color: var(--color-secondary-dark);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-ink);
 }
 
 .form__row {
@@ -787,29 +1032,34 @@ textarea {
 .form__checkbox {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-10);
+  min-height: 44px;
   font-size: 0.95rem;
-  color: var(--color-secondary);
+  color: var(--color-ink-2);
+  cursor: pointer;
 }
 
 .form__checkbox input {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .form__link {
   border: none;
   background: none;
   color: var(--color-primary-ink);
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
+/* --color-error-ink on white 6.6:1, on the tinted bg 5.9:1. */
 .form__error {
   min-height: 18px;
   font-size: 0.85rem;
-  color: var(--color-error);
+  font-weight: 600;
+  color: var(--color-error-ink);
 }
 
 .form__success {
@@ -818,7 +1068,7 @@ textarea {
 }
 
 .form__hint {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--color-gray-600);
 }
 
@@ -826,24 +1076,35 @@ textarea {
    by page scripts alike). */
 .form-label {
   display: block;
-  font-weight: 600;
+  font-size: 0.92rem;
+  font-weight: 700;
   margin: var(--space-8) 0 var(--space-4);
-  color: var(--color-gray-700);
+  color: var(--color-ink);
 }
 
 .form-check {
   display: flex;
   align-items: center;
   gap: var(--space-12);
-  margin-top: var(--space-12);
-  color: var(--color-gray-700);
-  padding: var(--space-8);
-  border-radius: var(--space-8);
-  transition: background-color 0.2s ease;
+  min-height: 44px;
+  margin-top: var(--space-8);
+  color: var(--color-ink-2);
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard);
 }
 
 .form-check:hover {
-  background-color: var(--color-gray-50);
+  background-color: var(--color-paper-2);
+}
+
+.form-check:has(input:checked) {
+  background-color: var(--color-mint);
+  border-color: color-mix(in srgb, var(--color-brand) 45%, transparent);
+  color: var(--color-ink);
 }
 
 .form-check input[type="radio"],
@@ -852,7 +1113,7 @@ textarea {
   cursor: pointer;
   width: 1.2em;
   height: 1.2em;
-  accent-color: var(--color-primary);
+  accent-color: var(--color-brand);
 }
 
 .form-check label {
@@ -864,7 +1125,7 @@ textarea {
 .form-feedback {
   margin-top: var(--space-8);
   font-weight: 600;
-  color: var(--color-gray-700);
+  color: var(--color-ink-2);
 }
 
 .form-feedback.is-success {
@@ -872,63 +1133,219 @@ textarea {
 }
 
 .form-feedback.is-error {
-  color: var(--color-error);
+  color: var(--color-error-ink);
 }
 
-/* === Toggle switch === */
+body.high-contrast .form-check:has(input:checked) {
+  background-color: var(--color-hc-paper);
+  border: 2px solid var(--color-hc-ink);
+}
+
+/* === Toggle switch (.switch > input[role=switch] + .slider; ui/Toggle) ===
+   Pill track 48x28. Off: gray-400 track (3.5:1 on white) with a white
+   knob. On: brand track with an --color-on-brand knob (9.28:1), so the
+   state never relies on hue alone. The invisible input covers the track
+   plus 8px around it, giving a 64x44 hit area. */
 .switch {
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 24px;
+  width: 48px;
+  height: 28px;
   flex-shrink: 0;
+  margin: 0;
 }
 
 .switch input {
+  position: absolute;
+  inset: -8px;
+  z-index: 1;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
   opacity: 0;
-  width: 0;
-  height: 0;
+  cursor: pointer;
+}
+
+.switch input:disabled {
+  cursor: not-allowed;
 }
 
 .slider {
   position: absolute;
-  cursor: pointer;
   inset: 0;
-  background-color: var(--color-gray-200);
-  transition: 0.4s;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background-color: var(--color-gray-400);
+  transition: background-color var(--dur-base) var(--ease-standard);
 }
 
 .slider::before {
   position: absolute;
   content: "";
-  height: 16px;
-  width: 16px;
-  left: 4px;
-  bottom: 4px;
-  background-color: var(--color-on-primary);
-  transition: 0.4s;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-standard);
 }
 
 input:checked + .slider {
-  background-color: var(--color-primary);
-}
-
-input:focus-visible + .slider {
-  box-shadow:
-    0 0 0 3px var(--color-white),
-    0 0 0 5px var(--color-primary-darker);
+  background-color: var(--color-brand);
 }
 
 input:checked + .slider::before {
-  transform: translateX(26px);
+  transform: translateX(20px);
+  background-color: var(--color-on-brand);
 }
 
+input:focus-visible + .slider {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+input:disabled + .slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Kept for markup parity: the track is always a pill now. */
 .slider.round {
-  border-radius: 34px;
+  border-radius: var(--radius-full);
 }
 
 .slider.round::before {
   border-radius: 50%;
+}
+
+body.high-contrast .slider::before {
+  background-color: var(--color-hc-ink);
+  box-shadow: none;
+}
+
+body.high-contrast input:checked + .slider::before {
+  background-color: var(--color-hc-paper);
+}
+
+body.high-contrast input:focus-visible + .slider {
+  outline: 3px solid var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .slider {
+    border-color: CanvasText;
+  }
+
+  .slider::before {
+    background-color: CanvasText;
+  }
+
+  input:checked + .slider {
+    background-color: Highlight;
+  }
+
+  input:checked + .slider::before {
+    background-color: Canvas;
+  }
+}
+
+/* === Pill tabs (ui/PillTabs; shared so script/page markup can adopt) ===
+   A row of pills; the current one is the dark ink pill. Works for a real
+   tablist (aria-selected) and for link navigation (aria-current). Scrolls
+   sideways on narrow screens instead of wrapping. */
+.pill-tabs {
+  display: flex;
+  gap: var(--space-4);
+  width: max-content;
+  max-width: 100%;
+  padding: var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  list-style: none;
+}
+
+.pill-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.pill-tabs--plain {
+  padding: 0;
+  background: transparent;
+}
+
+.pill-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  flex: none;
+  min-height: 40px;
+  padding: var(--space-8) 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-ink-2);
+  font-family: var(--font-primary);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
+}
+
+.pill-tabs__tab:hover {
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+}
+
+.pill-tabs__tab[aria-selected="true"],
+.pill-tabs__tab[aria-current]:not([aria-current="false"]) {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.pill-tabs__tab:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .pill-tabs__tab {
+    min-height: 44px;
+  }
+}
+
+body.high-contrast .pill-tabs {
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .pill-tabs__tab[aria-selected="true"],
+body.high-contrast .pill-tabs__tab[aria-current]:not([aria-current="false"]) {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+@media (forced-colors: active) {
+  .pill-tabs__tab[aria-selected="true"],
+  .pill-tabs__tab[aria-current]:not([aria-current="false"]) {
+    border-color: Highlight;
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
 }
 
 @media (max-width: 768px) {
