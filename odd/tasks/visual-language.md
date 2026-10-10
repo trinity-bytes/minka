@@ -43,7 +43,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 - [x] T6b HowItWorks step photos (Pexels 7679885 / 9461489 / 11013648, supplied by user 2026-10-10) clipped with BlobMedia on each sticky card. Route: delegated.
 - [x] T7a Landing video, testimonials, final CTA. Route: delegated.
 - [x] T7b Landing footer + watermark, about, 404. Route: delegated.
-- [x] T8 App shell 3 columns (AppLayout shell prop, AppSidebar, rail slot, slim header). Mobile nav decided 2026-10-10 (user chose A): bottom tab bar Inicio · Buscar · Publicar (central brand-green button) · Comunidad · Perfil; slim mobile header keeps Notificaciones + Chats; Salir moves into Perfil/sidebar. Route: delegated. Commit 4aa018e. Visual pass pending (no browser on host).
+- [x] T8 App shell 3 columns (AppLayout shell prop, AppSidebar, rail slot, slim header). Mobile nav decided 2026-10-10 (user chose A): bottom tab bar Inicio · Buscar · Publicar (central brand-green button) · Comunidad · Perfil; slim mobile header keeps Notificaciones + Chats; Salir moves into Perfil/sidebar. Route: delegated. Commit 4aa018e. Visual pass approved by user 2026-10-10.
 - [x] T9 App primitives restyle (buttons, badges, forms, modal, toast, toggle, PillTabs). Route: delegated. Commit 8f8fe42. Visual pass pending (no browser on host).
 - [ ] T10a Adopt: home, comunidad, notificaciones. Route: delegated.
 - [ ] T10b Adopt: perfil, gamification, dashboard, busqueda, detalle, settings, chat, publicar, auth. Route: delegated.
