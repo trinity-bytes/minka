@@ -4,6 +4,9 @@
  * Entries without an `href` (no destination exists yet) render as plain
  * text instead of dead `#` links. Other public pages (about) pass
  * `anchorBase={url()}` so `#anchor` links point back to the landing.
+ * Visual: one ink-deep bento block with rounded top corners, pill/disc
+ * social buttons and a giant faint lowercase logotype watermark spanning
+ * the width, cropped by the bottom edge (decorative, hidden in HC).
  */
 import Icon, { type IconName } from "../ui/Icon.astro";
 import Logotype from "../brand/Logotype.astro";
@@ -76,56 +79,69 @@ const social: { icon: IconName; label: string; href?: string }[] = [
 ---
 
 <footer class="site-footer">
-  <div class="container">
-    <div class="site-footer__grid">
-      <div>
-        <a href={homeHref} class="site-footer__logo" aria-label="Mink'a, inicio">
-          <Logotype tone="white" leaf="brand" size={40} decorative />
-        </a>
-        <p class="site-footer__desc">
-          Plataforma de trueque para economía circular. Construyendo una Lima más sostenible, un
-          intercambio a la vez.
-        </p>
-      </div>
-      {
-        footerColumns.map((column) => (
-          <div>
-            <h3 class="site-footer__title">{column.title}</h3>
-            <ul class="site-footer__links">
-              {column.links.map((link) => (
-                <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
-    </div>
-    <div class="site-footer__bottom">
-      <p class="site-footer__copy">© 2025 Mink'a. Todos los derechos reservados.</p>
-      <div class="site-footer__social">
+  <div class="site-footer__block">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div class="site-footer__brand">
+          <a href={homeHref} class="site-footer__logo" aria-label="Mink'a, inicio">
+            <Logotype tone="white" leaf="brand" size={40} decorative />
+          </a>
+          <p class="site-footer__desc">
+            Plataforma de trueque para economía circular. Construyendo una Lima más sostenible, un
+            intercambio a la vez.
+          </p>
+        </div>
         {
-          social.map((item) =>
-            item.href ? (
-              <a href={item.href} aria-label={item.label} class="site-footer__social-item">
-                <Icon name={item.icon} class="site-footer__icon" />
-              </a>
-            ) : (
-              <span class="site-footer__social-item">
-                <Icon name={item.icon} label={item.label} class="site-footer__icon" />
-              </span>
-            ),
-          )
+          footerColumns.map((column) => (
+            <div>
+              <h3 class="site-footer__title">{column.title}</h3>
+              <ul class="site-footer__links">
+                {column.links.map((link) => (
+                  <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>
+                ))}
+              </ul>
+            </div>
+          ))
         }
       </div>
+      <div class="site-footer__bottom">
+        <p class="site-footer__copy">© 2025 Mink'a. Todos los derechos reservados.</p>
+        <div class="site-footer__social">
+          {
+            social.map((item) =>
+              item.href ? (
+                <a href={item.href} aria-label={item.label} class="site-footer__social-item">
+                  <Icon name={item.icon} class="site-footer__icon" />
+                </a>
+              ) : (
+                <span class="site-footer__social-item">
+                  <Icon name={item.icon} label={item.label} class="site-footer__icon" />
+                </span>
+              ),
+            )
+          }
+        </div>
+      </div>
     </div>
+    <Logotype tone="white" leaf="brand" size={240} decorative class="site-footer__watermark" />
   </div>
 </footer>
 
 <style>
+  /* Text pairs on --color-ink-deep (#0a1d13): paper 15.61:1, links (paper
+     72%) 8.52:1, blurb (paper 65%) 7.16:1, copyright (paper 58%) 5.95:1,
+     brand-green titles and link hover 8.34:1. */
   .site-footer {
+    padding-top: clamp(24px, 4vw, 48px);
+  }
+
+  .site-footer__block {
+    position: relative;
+    overflow: clip;
     background: var(--color-ink-deep);
     color: var(--color-paper);
-    padding: 80px 0 36px;
+    border-radius: var(--radius-bento) var(--radius-bento) 0 0;
+    padding: clamp(56px, 7vw, 88px) 0 0;
   }
 
   .site-footer__grid {
@@ -137,23 +153,25 @@ const social: { icon: IconName; label: string; href?: string }[] = [
 
   .site-footer__logo {
     display: inline-block;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-control);
   }
 
   .site-footer__desc {
     color: color-mix(in srgb, var(--color-paper) 65%, transparent);
-    font-size: 0.98rem;
+    font-size: 1rem;
+    line-height: 1.6;
     max-width: 300px;
     margin: 0;
   }
 
   .site-footer__title {
-    font-family: var(--font-primary);
-    font-size: 0.85rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-primary-pop);
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: var(--font-display-axes-text);
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    color: var(--color-brand);
     margin: 0 0 18px;
   }
 
@@ -171,17 +189,17 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     color: color-mix(in srgb, var(--color-paper) 72%, transparent);
     font-size: 0.96rem;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color var(--dur-fast) var(--ease-standard);
   }
 
   .site-footer__links a:hover,
   .site-footer__links a:focus-visible {
-    color: var(--color-primary-pop);
+    color: var(--color-brand);
   }
 
   .site-footer__bottom {
     border-top: 1px solid color-mix(in srgb, var(--color-paper) 14%, transparent);
-    padding-top: 28px;
+    padding: 28px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -192,40 +210,58 @@ const social: { icon: IconName; label: string; href?: string }[] = [
   .site-footer__copy {
     margin: 0;
     font-size: 0.9rem;
-    color: color-mix(in srgb, var(--color-paper) 55%, transparent);
+    color: color-mix(in srgb, var(--color-paper) 58%, transparent);
   }
 
   .site-footer__social {
     display: flex;
-    gap: 12px;
+    gap: 10px;
   }
 
+  /* Flat discs; linked ones fill brand green with --color-on-brand. */
   .site-footer__social-item {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border: 1.5px solid color-mix(in srgb, var(--color-paper) 30%, transparent);
-    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--color-paper) 10%, transparent);
     color: var(--color-paper);
     transition:
-      background-color 0.2s ease,
-      border-color 0.2s ease,
-      transform 0.2s ease;
+      background-color var(--dur-fast) var(--ease-standard),
+      color var(--dur-fast) var(--ease-standard),
+      transform var(--dur-base) var(--ease-spring);
   }
 
   a.site-footer__social-item:hover,
   a.site-footer__social-item:focus-visible {
-    background: var(--color-primary-pop);
-    border-color: var(--color-primary-pop);
+    background: var(--color-brand);
     color: var(--color-on-brand);
-    transform: translateY(-3px);
+    transform: translateY(-3px) rotate(-6deg);
   }
 
   .site-footer__social .site-footer__icon {
     width: 18px;
     height: 18px;
+  }
+
+  /* Giant lowercase wordmark spanning the block, cropped by the bottom
+     edge: glyphs at 7% paper (decorative, aria-hidden), leaf in brand. */
+  .site-footer__block :global(.site-footer__watermark) {
+    display: block;
+    width: calc(100% - 2 * clamp(12px, 2vw, 32px));
+    height: auto;
+    margin: clamp(8px, 2vw, 24px) auto -7%;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .site-footer__block :global(.site-footer__watermark .logotype__glyphs) {
+    fill: color-mix(in srgb, var(--color-paper) 7%, transparent);
+  }
+
+  .site-footer__block :global(.site-footer__watermark .logotype__leaf) {
+    opacity: 0.9;
   }
 
   @media (max-width: 1024px) {
@@ -235,6 +271,10 @@ const social: { icon: IconName; label: string; href?: string }[] = [
   }
 
   @media (max-width: 640px) {
+    .site-footer__block {
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+
     .site-footer__grid {
       grid-template-columns: 1fr;
       gap: 36px;
@@ -243,6 +283,53 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     .site-footer__bottom {
       justify-content: center;
       text-align: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a.site-footer__social-item:hover,
+    a.site-footer__social-item:focus-visible {
+      transform: none;
+    }
+  }
+
+  /* High contrast: white block, black text and 2px outlines; links keep the
+     global HC link color. The decorative watermark is dropped. */
+  :global(body.high-contrast) .site-footer__block {
+    background: var(--color-hc-paper);
+    color: var(--color-hc-ink);
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  :global(body.high-contrast) .site-footer__desc,
+  :global(body.high-contrast) .site-footer__copy,
+  :global(body.high-contrast) .site-footer__title,
+  :global(body.high-contrast) .site-footer__links span {
+    color: var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .site-footer__bottom {
+    border-top-color: var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .site-footer__social-item {
+    background: var(--color-hc-paper);
+    color: var(--color-hc-ink);
+    border: 2px solid var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .site-footer__logo :global(.logotype__glyphs) {
+    fill: var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .site-footer__block :global(.site-footer__watermark) {
+    display: none;
+  }
+
+  @media (forced-colors: active) {
+    .site-footer__block :global(.site-footer__watermark) {
+      display: none;
     }
   }
 </style>
