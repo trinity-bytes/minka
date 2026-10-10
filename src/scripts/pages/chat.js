@@ -5,7 +5,13 @@
 // ES module (bundled by Astro, deferred): runs after the classic core
 // scripts, with the DOM parsed. Globals used: Store, Modal.
 import { token, withAlpha } from "../tokens";
-import { avatarTone, initials } from "../lib/avatar.js";
+import { avatarTone, formatCount, initials } from "../lib/avatar.js";
+import {
+  filterThreads,
+  groupPositions,
+  lastMessagePreview,
+  trailingIncomingCount,
+} from "../lib/chat-thread.js";
 
 const threads = [
   {
@@ -85,16 +91,24 @@ const feedback = {
 };
 
 let currentThreadId = threads[0].id;
+// Presentational only (not persisted): threads opened in this page view.
+// Unopened threads show their incoming messages after the user's last
+// reply as an unread pill.
+const seenThreads = new Set();
+let listQuery = "";
 loadDynamicThreads();
 hydrateMessages();
 restoreThread();
 handleUrlParams();
+seenThreads.add(currentThreadId);
 renderThreads();
 renderConversation();
 renderTemplates();
 renderMeetings();
 attachComposer();
 attachMobileNav();
+attachThreadSearch();
+attachExtras();
 attachLocationSharing(); // T31
 attachPhotoSharing(); // T34
 attachMute();
@@ -177,37 +191,63 @@ function handleUrlParams() {
 }
 
 function renderThreads() {
-  els.list.innerHTML = threads
-    .map(
-      (t) => `
-        <li class="thread ${
-          t.id === currentThreadId ? "thread--active" : ""
-        }" data-id="${t.id}">
-          <button type="button" class="thread__btn"${
-            t.id === currentThreadId ? ' aria-current="true"' : ""
-          }>
+  // Re-rendering replaces the rows: remember a focused row to restore it.
+  const focusedId = document.activeElement?.closest?.("#thread-list .thread")?.dataset.id;
+  const visible = filterThreads(threads, listQuery);
+  if (!visible.length) {
+    els.list.innerHTML = `<li class="thread-list__empty">No hay conversaciones que coincidan.</li>`;
+    return;
+  }
+
+  els.list.innerHTML = visible
+    .map((t) => {
+      const active = t.id === currentThreadId;
+      const preview = lastMessagePreview(t);
+      const unread = seenThreads.has(t.id) ? 0 : trailingIncomingCount(t.messages);
+      return `
+        <li class="thread ${active ? "thread--active" : ""}${unread ? " thread--unread" : ""}" data-id="${t.id}">
+          <button type="button" class="thread__btn"${active ? ' aria-current="true"' : ""}>
             <span class="chat-avatar chat-avatar--${avatarTone(t.user)}" aria-hidden="true">${initials(t.user)}</span>
             <span class="thread__text">
-              <span class="thread__title">${t.user}</span>
-              <span class="thread__meta">${t.item}</span>
-              <span class="thread__meta">${
-                t.location
-              } · <i class="fas fa-star" aria-hidden="true"></i> ${t.rating}</span>
+              <span class="thread__top">
+                <span class="thread__title">${t.user}</span>
+                <span class="thread__time">${preview.time}</span>
+              </span>
+              <span class="thread__item">${t.item}</span>
+              <span class="thread__bottom">
+                <span class="thread__preview">${preview.own ? "Tú: " : ""}${preview.text}</span>
+                ${
+                  unread
+                    ? `<span class="thread__unread"><span class="sr-only">Mensajes sin leer: </span>${formatCount(unread)}</span>`
+                    : ""
+                }
+              </span>
             </span>
           </button>
         </li>
-      `
-    )
+      `;
+    })
     .join("");
+
+  if (focusedId) {
+    els.list.querySelector(`.thread[data-id="${focusedId}"] .thread__btn`)?.focus();
+  }
 
   els.list.querySelectorAll(".thread").forEach((node) => {
     node.addEventListener("click", () => {
       currentThreadId = node.dataset.id;
+      seenThreads.add(currentThreadId);
       persistThread();
       renderThreads();
       renderConversation();
+      // The list was re-rendered: keep keyboard focus on the chosen row.
+      activeThreadButton()?.focus();
     });
   });
+}
+
+function activeThreadButton() {
+  return els.list.querySelector(".thread--active .thread__btn");
 }
 
 function renderConversation() {
@@ -235,11 +275,13 @@ function renderConversation() {
     els.btnMute.setAttribute("aria-label", "Silenciar conversación");
   }
 
+  const positions = groupPositions(thread.messages);
   els.messages.innerHTML = thread.messages
-    .map((msg) => {
+    .map((msg, index) => {
+      const own = msg.from === "me";
       // T34 - Status Icon Logic
       let statusIcon = "";
-      if (msg.from === "me") {
+      if (own) {
         if (msg.status === "read")
           statusIcon =
             '<i class="fas fa-check-double message__status read" role="img" aria-label="Leído"></i>';
@@ -253,12 +295,24 @@ function renderConversation() {
         ? `<img src="${msg.image}" alt="Foto adjunta" class="message__image" loading="lazy" />`
         : `<div class="message__text">${msg.text}</div>`;
 
+      const { start, end } = positions[index];
+      const classes = [
+        "message",
+        own ? "message--me" : "",
+        start ? "message--start" : "",
+        end ? "message--end" : "",
+        msg.image && !msg.text ? "message--photo" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+      // Sender is visible through alignment and color; the sr-only label
+      // keeps it for screen readers.
       return `
-        <div class="message ${msg.from === "me" ? "message--me" : ""}">
-          <div class="message__meta">${
-            msg.from === "me" ? "Tú" : thread.user
-          } · ${msg.time} ${statusIcon}</div>
+        <div class="${classes}">
+          <span class="sr-only">${own ? "Tú" : thread.user}:</span>
           ${content}
+          <div class="message__meta">${msg.time} ${statusIcon}</div>
         </div>
       `;
     })
@@ -315,12 +369,15 @@ function attachMobileNav() {
   els.list.addEventListener("click", (e) => {
     if (e.target.closest(".thread")) {
       shell.classList.add("is-thread-open");
+      // Phones: the list is hidden now, so focus moves into the thread.
+      if (btnBack && btnBack.offsetParent) btnBack.focus();
     }
   });
 
   if (btnBack) {
     btnBack.addEventListener("click", () => {
       shell.classList.remove("is-thread-open");
+      activeThreadButton()?.focus();
     });
   }
 
@@ -328,6 +385,50 @@ function attachMobileNav() {
   if (new URLSearchParams(window.location.search).get("thread")) {
     shell.classList.add("is-thread-open");
   }
+}
+
+// Client-side filter of the conversation list (name, listing, last message).
+function attachThreadSearch() {
+  const input = document.getElementById("thread-search");
+  if (!input) return;
+  input.addEventListener("input", () => {
+    listQuery = input.value;
+    renderThreads();
+  });
+}
+
+// "+" in the composer unfolds the extras panel (photo, location, meeting
+// points); choosing an extra or Escape folds it again.
+function attachExtras() {
+  const toggle = document.getElementById("btn-extras");
+  const panel = document.getElementById("chat-extras");
+  if (!toggle || !panel) return;
+
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.classList.toggle("is-open", open);
+  };
+
+  toggle.addEventListener("click", () => setOpen(panel.hidden));
+  // Capture phase: fold the panel and focus the toggle before the extra
+  // runs, so a modal it opens (location prompt) returns focus to the "+".
+  panel.addEventListener(
+    "click",
+    (e) => {
+      if (!e.target.closest("button")) return;
+      setOpen(false);
+      toggle.focus();
+    },
+    true
+  );
+  // Escape anywhere in the composer folds the panel back.
+  panel.parentElement.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !panel.hidden) {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
 }
 
 function attachMute() {
@@ -494,6 +595,7 @@ function insertMessage(text, fromUser = false, image = null) {
   thread.messages.push(newMessage);
   persistMessages(thread);
   renderConversation();
+  renderThreads(); // keep the row preview and time current
 
   // Notificar mensajes entrantes (badge + feed)
   if (!fromUser && window.Store) {
