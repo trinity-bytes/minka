@@ -238,7 +238,7 @@ function renderChallenges() {
         </div>
         <div class="challenge-card__footer">
           <div class="reward-badge">
-            <i class="fas fa-trophy"></i>
+            <i class="fas fa-trophy" aria-hidden="true"></i>
             <span>${challenge.reward} (+${challenge.points} pts)</span>
           </div>
           <button class="btn btn-primary btn-sm" data-join="${challenge.id}" ${

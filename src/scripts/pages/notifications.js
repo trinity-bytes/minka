@@ -159,7 +159,7 @@
         }" aria-label="${item.title}"${
           href ? ` data-href="${href}" style="cursor:pointer"` : ""
         }>
-          <div class="notification-icon">${icon}</div>
+          <div class="notification-icon notification-icon--${item.type}" aria-hidden="true">${icon}</div>
           <div class="notification-body">
             <div class="notification-meta">
               <span class="${badgeClass}">${labelForType(item.type)}</span>
@@ -172,18 +172,18 @@
               }
               <span>${item.time}</span>
             </div>
-            <h4>${item.title}</h4>
+            <h3 class="notification-title">${item.title}</h3>
             <p>${item.text}</p>
           </div>
           <div class="notification-actions">
-            <button type="button" data-action="read" data-id="${item.id}">
+            <button type="button" class="btn btn-ghost btn-sm" data-action="read" data-id="${item.id}">
               ${
                 item.unread
                   ? I18n.t("notif_action_read")
                   : I18n.t("notif_action_unread")
               }
             </button>
-            <button type="button" data-action="remove" data-id="${
+            <button type="button" class="btn btn-ghost btn-sm" data-action="remove" data-id="${
               item.id
             }">${I18n.t("notif_action_remove")}</button>
           </div>
@@ -267,10 +267,10 @@
   }
 
   function iconForType(type) {
-    if (type === "message") return "💬";
-    if (type === "match") return "✨";
-    if (type === "reminder") return "⏰";
-    return "🔔";
+    if (type === "message") return '<i class="fas fa-comment"></i>';
+    if (type === "match") return '<i class="fas fa-wand-magic-sparkles"></i>';
+    if (type === "reminder") return '<i class="fas fa-clock"></i>';
+    return '<i class="fas fa-bell"></i>';
   }
 
   function loadFeed() {
