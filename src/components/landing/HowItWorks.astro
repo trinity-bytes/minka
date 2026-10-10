@@ -6,31 +6,77 @@
  * are supported (and motion is allowed), covered cards recede: they scale
  * down slightly and dim, driven by the list's view timeline. Small or short
  * viewports and reduced motion get a plain vertical list.
+ *
+ * Each card shows a photo cropped by a blob (BlobMedia); the glyph disc sits
+ * as a small accent overlapping the blob edge. `focus` is the photo's
+ * object-position so the subject survives the crop (photos are not square).
  */
+import type { ImageMetadata } from "astro";
+import BlobMedia from "../ui/BlobMedia.astro";
 import SectionHead from "../ui/SectionHead.astro";
 import LandingSection from "./LandingSection.astro";
+import publicaFoto from "../../assets/images/how-it-works/publica-foto.jpg";
+import conectaVecinos from "../../assets/images/how-it-works/conecta-vecinos.jpg";
+import intercambiaManos from "../../assets/images/how-it-works/intercambia-manos.jpg";
 
-/* Stroke glyphs (24x24, currentColor) drawn for these cards. */
-const steps = [
+interface Step {
+  tone: "ink" | "lavender" | "brand";
+  title: string;
+  text: string;
+  /** Stroke glyph paths (24x24, currentColor). */
+  glyph: string[];
+  photo: {
+    src: ImageMetadata;
+    alt: string;
+    shape: "a" | "b" | "c";
+    /** Width / height of the blob box; also sizes it by the card height. */
+    ratio: number;
+    /** object-position focal point. */
+    focus: string;
+  };
+}
+
+const steps: Step[] = [
   {
     tone: "ink",
     title: "Publica tu oferta",
     text: "Sube fotos de lo que ya no uses: ropa, libros, electrónica, muebles. Dale una segunda vida a tus cosas.",
     glyph: ["M3.5 8.5h3.2l1.8-2.8h7l1.8 2.8h3.2v10.8h-17z", "M12 16.6a3.3 3.3 0 1 0 0-6.6 3.3 3.3 0 0 0 0 6.6z"],
+    photo: {
+      src: publicaFoto,
+      alt: "Mujer fotografiando con su celular unas piezas de cerámica para publicarlas",
+      shape: "a",
+      ratio: 1.08,
+      focus: "60% 50%",
+    },
   },
   {
     tone: "lavender",
     title: "Conecta con vecinos",
     text: "Explora ofertas cerca de ti, chatea con otros usuarios y encuentra el intercambio perfecto para ambos.",
     glyph: ["M3.5 4.5h12v8.5H9l-3.8 3v-3H3.5z", "M18.5 8.5h2v8.5h-1.7v3l-3.8-3H11v-1.5"],
+    photo: {
+      src: conectaVecinos,
+      alt: "Dos vecinos se encuentran en la vereda; él sonríe con suéter verde y gorro amarillo",
+      shape: "b",
+      ratio: 0.92,
+      focus: "68% 38%",
+    },
   },
   {
     tone: "brand",
     title: "Intercambia y celebra",
     text: "Coordina el encuentro, completa el trueque y gana eco-puntos. Así cuidamos el planeta juntos.",
     glyph: ["M4 8h15.5", "M15.5 4l4 4-4 4", "M20 16H4.5", "M8.5 12l-4 4 4 4"],
+    photo: {
+      src: intercambiaManos,
+      alt: "Dos manos se pasan un celular amarillo sobre un fondo rojo",
+      shape: "c",
+      ratio: 1,
+      focus: "50% 45%",
+    },
   },
-] as const;
+];
 ---
 
 <LandingSection id="como-funciona" folio="01">
@@ -56,15 +102,31 @@ const steps = [
                 </h3>
                 <p class="step-card__text">{step.text}</p>
               </div>
-              <div class="step-card__visual" aria-hidden="true">
-                <span class="step-card__numeral">{num}</span>
-                <span class="step-card__disc">
-                  <svg viewBox="0 0 24 24" focusable="false">
-                    {step.glyph.map((d) => (
-                      <path d={d} />
-                    ))}
-                  </svg>
+              <div class="step-card__visual">
+                <span class="step-card__numeral" aria-hidden="true">
+                  {num}
                 </span>
+                <div
+                  class="step-card__photo"
+                  style={`--photo-ratio: ${step.photo.ratio}; --photo-focus: ${step.photo.focus}`}
+                >
+                  <BlobMedia
+                    src={step.photo.src}
+                    alt={step.photo.alt}
+                    shape={step.photo.shape}
+                    ratio={String(step.photo.ratio)}
+                    widths={[320, 480, 640, 880]}
+                    sizes="(max-width: 640px) 90vw, (max-width: 900px) 280px, 420px"
+                    loading="lazy"
+                  />
+                  <span class="step-card__disc" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      {step.glyph.map((d) => (
+                        <path d={d} />
+                      ))}
+                    </svg>
+                  </span>
+                </div>
               </div>
             </article>
           </li>
@@ -80,6 +142,8 @@ const steps = [
        each following card a step lower so the previous edges stay visible. */
     --stack-top: 104px;
     --stack-step: 22px;
+    /* Tallest a sticky card may be under the stacked offsets. */
+    --card-max: calc(100svh - var(--stack-top) - var(--cards) * var(--stack-step) - 24px);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -101,8 +165,9 @@ const steps = [
     align-items: center;
     gap: 32px;
     /* Never taller than the space left under the stacked offsets. */
-    min-height: min(30rem, calc(100svh - var(--stack-top) - var(--cards) * var(--stack-step) - 24px));
-    padding: clamp(32px, 4.4vw, 64px);
+    --card-pad: clamp(32px, 4.4vw, 64px);
+    min-height: min(30rem, var(--card-max));
+    padding: var(--card-pad);
     border-radius: var(--radius-bento);
     background: var(--card-bg);
     color: var(--card-fg);
@@ -204,20 +269,41 @@ const steps = [
     user-select: none;
   }
 
-  .step-card__disc {
+  /* Photo box: sized by the column and by the card's height budget, so the
+     blob never pushes a sticky card past the viewport. */
+  .step-card__photo {
     position: relative;
+    z-index: 1;
+    width: min(100%, 420px, calc((var(--card-max) - 2 * var(--card-pad)) * var(--photo-ratio)));
+  }
+
+  .step-card__photo :global(img) {
+    object-position: var(--photo-focus);
+  }
+
+  /* Step 03's coral backdrop: tone it down a touch next to the brand green. */
+  .step-card--brand .step-card__photo :global(img) {
+    filter: saturate(0.82);
+  }
+
+  /* Glyph disc: small accent overlapping the blob's lower-left edge. */
+  .step-card__disc {
+    position: absolute;
+    left: -4%;
+    bottom: 4%;
     display: grid;
     place-items: center;
-    width: clamp(128px, 14vw, 188px);
+    width: clamp(72px, 7.5vw, 104px);
     aspect-ratio: 1;
+    border: 4px solid var(--card-bg);
     border-radius: var(--radius-full);
     background: var(--disc-bg);
     color: var(--disc-fg);
   }
 
   .step-card__disc svg {
-    width: 44%;
-    height: 44%;
+    width: 46%;
+    height: 46%;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.7;
@@ -276,6 +362,11 @@ const steps = [
     .step-card__numeral {
       display: none;
     }
+
+    /* The `auto` column needs an explicit width. */
+    .step-card__photo {
+      width: min(clamp(200px, 30vw, 280px), calc((var(--card-max) - 2 * var(--card-pad)) * var(--photo-ratio)));
+    }
   }
 
   /* Phones, short viewports and reduced motion: a plain list. Cards keep
@@ -283,6 +374,8 @@ const steps = [
   @media (max-width: 640px), (max-height: 620px), (prefers-reduced-motion: reduce) {
     .stack {
       gap: 16px;
+      /* Nothing sticks, so the height budget no longer limits the photo. */
+      --card-max: 60rem;
     }
 
     .stack__item {
@@ -304,11 +397,23 @@ const steps = [
 
     .step-card__visual {
       order: -1;
-      justify-items: start;
+    }
+
+    /* Wider, shorter crop on phones keeps the text close to the photo. */
+    .step-card__photo {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .step-card .step-card__photo :global(.blob-media) {
+      aspect-ratio: 4 / 3;
     }
 
     .step-card__disc {
-      width: 72px;
+      left: 0;
+      bottom: -6px;
+      width: 64px;
+      border-width: 3px;
     }
 
     .step-card__title {
