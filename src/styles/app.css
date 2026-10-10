@@ -36,6 +36,12 @@ body.app-shell {
   flex-direction: column;
 }
 
+/* AppSiteFooter carries its own bottom spacing; page `main` padding-bottom
+   (e.g. .profile-page__main, .settings-main) would stack under it. */
+body.app-shell > main:has(> .app-site-footer) {
+  padding-bottom: 0;
+}
+
 /* Flex items with `margin-inline: auto` (.container) would shrink to fit. */
 :where(body.app-shell > main) > :where(*) {
   width: 100%;

@@ -8,10 +8,8 @@
  * Logic: src/scripts/pages/profile.js (guarded: requires a session);
  * `?user=<id>` shows another user's public profile read-only.
  *
- * Visual language (T10b): PageHead title with a visible "Salir" action.
- * Logout is wired by src/scripts/app-shell.ts, which only handles
- * `[data-action="logout"]` inside `[data-app-shell]`, hence the attribute
- * on the actions wrapper.
+ * Visual language (T10b): PageHead title. Logout lives in the shell
+ * (sidebar on desktop, account menu on phones), not on this page.
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
 import Button from "../../components/ui/Button.astro";
@@ -65,14 +63,7 @@ const APPEAL_REASONS = [
     titleKey="profile.title"
     subtitle="Completa tus datos, sube tu foto y verifica tu identidad para aumentar la confianza."
     subtitleKey="profile.subtitle"
-  >
-    <div slot="actions" class="profile-head__actions" data-app-shell>
-      <button type="button" class="btn btn-outline profile-logout" data-action="logout">
-        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-        <span>Salir</span>
-      </button>
-    </div>
-  </PageHead>
+  />
 
   <div class="container profile">
     <article class="profile-card" aria-labelledby="perfil-resumen">

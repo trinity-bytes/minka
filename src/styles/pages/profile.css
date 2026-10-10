@@ -46,16 +46,6 @@
   color: var(--color-ink);
 }
 
-/* PageHead actions: logout */
-.profile-head__actions {
-  display: flex;
-  gap: var(--space-8);
-}
-
-.profile-logout {
-  color: var(--color-error-ink, var(--color-error));
-}
-
 /* === Summary card === */
 .profile-card {
   display: grid;
