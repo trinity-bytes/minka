@@ -1,0 +1,171 @@
+---
+/**
+ * Mobile bottom tab bar (<=768px; user decision 2026-10-10, option A):
+ * Inicio · Buscar · Publicar · Comunidad · Perfil. Publicar is a raised
+ * brand-green disc in the middle (icon in --color-on-brand). Clears the
+ * home indicator with env(safe-area-inset-bottom); AppLayout pads the body
+ * by --app-tabbar-h so content never hides behind it.
+ */
+import { TAB_ITEMS, current } from "./app/nav";
+
+const pathname = Astro.url.pathname;
+---
+
+<nav class="app-tabbar" aria-label="Navegación inferior" data-app-shell>
+  <ul role="list">
+    {
+      TAB_ITEMS.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={["app-tabbar__link", item.key === "publish" && "app-tabbar__link--publish"]}
+            aria-current={current(item, pathname)}
+          >
+            <span class="app-tabbar__icon" aria-hidden="true">
+              <i class={`fa-solid ${item.icon}`} />
+            </span>
+            <span class="app-tabbar__label" data-i18n={item.i18n}>
+              {item.label}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .app-tabbar {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .app-tabbar {
+      display: block;
+      position: fixed;
+      inset-inline: 0;
+      bottom: 0;
+      z-index: var(--z-overlay);
+      padding: 6px var(--space-8) calc(6px + env(safe-area-inset-bottom));
+      background: var(--color-card);
+      border-top: 1px solid var(--color-gray-100);
+      box-shadow: 0 -6px 20px color-mix(in srgb, var(--color-ink) 7%, transparent);
+      font-family: var(--font-primary);
+    }
+  }
+
+  .app-tabbar ul {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 520px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: end;
+  }
+
+  .app-tabbar__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-height: 52px;
+    padding: 4px 2px;
+    border-radius: var(--radius-md);
+    color: var(--color-gray-600);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app-tabbar__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 30px;
+    border-radius: var(--radius-full);
+    font-size: 1.1rem;
+    transition: background-color var(--dur-fast) var(--ease-standard);
+  }
+
+  .app-tabbar__link[aria-current] {
+    color: var(--color-ink);
+    font-weight: 700;
+  }
+
+  /* Active tab: the ink pill of the sidebar, shrunk around the icon. */
+  .app-tabbar__link[aria-current] .app-tabbar__icon {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .app-tabbar__link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* === Publicar: raised brand disc === */
+  .app-tabbar__link--publish .app-tabbar__icon {
+    width: 56px;
+    height: 56px;
+    margin-top: -22px;
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+    font-size: 1.35rem;
+    box-shadow:
+      0 0 0 4px var(--color-card),
+      0 6px 16px color-mix(in srgb, var(--color-ink) 18%, transparent);
+  }
+
+  .app-tabbar__link--publish[aria-current] .app-tabbar__icon {
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+    box-shadow:
+      0 0 0 4px var(--color-card),
+      0 0 0 6px var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .app-tabbar__link--publish:active .app-tabbar__icon {
+      transform: scale(0.94);
+    }
+  }
+
+  /* === High contrast / forced colors === */
+  :global(body.high-contrast) .app-tabbar {
+    background: var(--color-hc-paper);
+    border-top: 2px solid var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .app-tabbar__link[aria-current] .app-tabbar__icon,
+  :global(body.high-contrast) .app-tabbar__link--publish .app-tabbar__icon {
+    background: var(--color-hc-paper);
+    color: var(--color-hc-ink);
+    outline: 2px solid var(--color-hc-ink);
+    box-shadow: none;
+  }
+
+  :global(body.high-contrast) .app-tabbar__link:focus-visible {
+    outline: 2px solid var(--color-hc-ink);
+  }
+
+  @media (forced-colors: active) {
+    .app-tabbar__link[aria-current] .app-tabbar__icon,
+    .app-tabbar__link--publish .app-tabbar__icon {
+      outline: 2px solid CanvasText;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app-tabbar__icon {
+      transition: none;
+    }
+  }
+
+  @media print {
+    .app-tabbar {
+      display: none !important;
+    }
+  }
+</style>

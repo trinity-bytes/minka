@@ -8,18 +8,29 @@
  * guests before the page renders, and Astro-processed scripts are always
  * deferred modules. They are emitted in the legacy order so the page's own
  * module script (bundled by Astro, deferred) finds the globals ready.
- * AppHeader and AppFooter replace the retired core/components.js.
- * Slots: default (inside <main>), `before-main` (between the header and
- * <main>, e.g. a breadcrumb) and `after-main` (after the footer: modals,
- * fixed bars).
+ *
+ * App chrome (T8, visual-language): a fixed AppSidebar on the left
+ * (>768px; icon rail 769-1099px), the page in <main>, and an optional right
+ * rail. Phones get the slim AppHeader on top and the AppTabBar at the
+ * bottom instead of the sidebar. The sidebar replaced the old AppFooter
+ * (its links live in the sidebar fine print and the phone account menu).
+ *
+ * Columns: `shell="standard"` (default) is sidebar + main. `shell="rail"`
+ * adds a right column filled by the `rail` slot (>=1280px; it stacks under
+ * the page below that); passing a `rail` slot also selects it. The rail is
+ * an <aside> inside <main>, after the page content.
+ *
+ * Slots: default (inside <main>), `rail`, `before-main` (between the
+ * chrome and <main>, e.g. a breadcrumb) and `after-main` (after <main>:
+ * modals, fixed bars).
  */
 // BaseLayout first: its global CSS (tokens, reset, element typography) must
 // precede app.css, whose responsive element rules override it.
 import BaseLayout from "./BaseLayout.astro";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../../styles/app.css";
-import AppHeader from "./AppHeader.astro";
-import AppFooter from "./AppFooter.astro";
+import AppChrome from "./app/AppChrome.astro";
+import AppTabBar from "./AppTabBar.astro";
 import AuthHeader from "./AuthHeader.astro";
 import { asset } from "../../lib/url";
 
@@ -34,6 +45,9 @@ export type LegacyScript =
   | "guard"
   | "notif-badge";
 
+/** "standard": sidebar + main. "rail": sidebar + main + right rail. */
+export type AppShell = "standard" | "rail";
+
 interface Props {
   title: string;
   description?: string;
@@ -41,23 +55,30 @@ interface Props {
   mainClass?: string;
   /** "app": full navigation; "auth": logo-only header (auth page). */
   chrome?: "app" | "auth";
-  /** Render AppFooter (app chrome only); full-height screens such as chat drop it. */
+  /** Column layout for app chrome; defaults to "rail" when a `rail` slot is passed. */
+  shell?: AppShell;
+  /**
+   * @deprecated No effect since T8: the app shell has no footer (the
+   * sidebar carries its links). Kept so existing pages compile unchanged.
+   */
   footer?: boolean;
   scripts?: LegacyScript[];
 }
 
-const {
-  title,
-  description,
-  bodyClass,
-  mainClass,
-  chrome = "app",
-  footer = true,
-  scripts = [],
-} = Astro.props;
-// A static element (not a ternary expression) so the `before-main` slot,
-// also forwarded into BaseLayout's `header` slot, is not dropped.
-const Header = chrome === "auth" ? AuthHeader : AppHeader;
+const { title, description, bodyClass, mainClass, chrome = "app", shell, scripts = [] } = Astro.props;
+
+const isApp = chrome === "app";
+const hasRail = Astro.slots.has("rail");
+const layout: AppShell = shell ?? (hasRail ? "rail" : "standard");
+const withRail = isApp && layout === "rail" && hasRail;
+
+const bodyClasses = [isApp && "app-shell", withRail && "app-shell--rail", bodyClass].filter(Boolean).join(" ");
+const mainClasses = [withRail && "app-shell__main--rail", mainClass].filter(Boolean).join(" ") || undefined;
+// Static elements picked by variable (not conditional expressions) so the
+// `before-main` / `after-main` slots forwarded into the same BaseLayout
+// slots are not dropped. Fragment renders nothing for auth chrome.
+const Top = isApp ? AppChrome : AuthHeader;
+const Bottom = isApp ? AppTabBar : Fragment;
 
 // Canonical load order (matches the legacy pages). `defer` scripts run
 // after parsing, before the page module and before DOMContentLoaded.
@@ -78,7 +99,7 @@ const legacy = ORDER.filter((s) => scripts.includes(s.name)).map((s) => ({
 }));
 ---
 
-<BaseLayout title={title} description={description} bodyClass={bodyClass} mainClass={mainClass}>
+<BaseLayout title={title} description={description} bodyClass={bodyClasses || undefined} mainClass={mainClasses}>
   <Fragment slot="head">
     {
       legacy.map((s) =>
@@ -86,9 +107,22 @@ const legacy = ORDER.filter((s) => scripts.includes(s.name)).map((s) => ({
       )
     }
   </Fragment>
-  <Header slot="header" />
+  <Top slot="header" />
   <slot name="before-main" slot="header" />
-  <slot />
-  {chrome === "app" && footer && <AppFooter slot="footer" />}
+  {
+    withRail ? (
+      <Fragment>
+        <div class="app-shell__content">
+          <slot />
+        </div>
+        <aside class="app-shell__rail" aria-label="Panel lateral">
+          <slot name="rail" />
+        </aside>
+      </Fragment>
+    ) : (
+      <slot />
+    )
+  }
+  <Bottom slot="footer" />
   <slot name="after-main" slot="footer" />
 </BaseLayout>

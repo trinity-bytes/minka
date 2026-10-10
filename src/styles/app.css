@@ -8,6 +8,119 @@
    definition. The legacy stylesheets were retired in T6.
    ============================================ */
 
+/* === App shell columns (AppLayout, T8) ===
+   BaseLayout renders chrome, <main> and the footer slot as body siblings,
+   so the left column is a fixed AppSidebar plus a body inset rather than a
+   wrapping grid; page markup stays untouched. Phones (<=768px) drop the
+   sidebar for the slim AppHeader and the fixed AppTabBar, and the body
+   reserves the tab bar height (plus the home-indicator inset). */
+body.app-shell {
+  --app-sidebar-w: 256px;
+  --app-rail-w: 320px;
+  --app-tabbar-h: 64px;
+  --app-tabbar-offset: calc(var(--app-tabbar-h) + env(safe-area-inset-bottom));
+  background-color: var(--color-bg);
+  padding-inline-start: var(--app-sidebar-w);
+}
+
+@media (max-width: 1099px) {
+  body.app-shell {
+    --app-sidebar-w: 84px;
+  }
+}
+
+@media (max-width: 768px) {
+  body.app-shell {
+    padding-inline-start: 0;
+    padding-bottom: var(--app-tabbar-offset);
+  }
+
+  /* Page-level fixed bottom bars (detalle CTA) and toasts sit above the tab bar. */
+  body.app-shell .sticky-cta {
+    bottom: var(--app-tabbar-offset);
+  }
+
+  body.app-shell .toast-container {
+    bottom: calc(var(--app-tabbar-offset) + var(--space-16));
+  }
+}
+
+/* Optional right rail (`shell="rail"`): stacked under the page content
+   until there is room for a third column. */
+.app-shell__main--rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-24);
+}
+
+.app-shell__content {
+  min-width: 0;
+}
+
+.app-shell__rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-width: 0;
+  padding: 0 24px var(--space-24);
+}
+
+@media (min-width: 1280px) {
+  .app-shell__main--rail {
+    grid-template-columns: minmax(0, 1fr) var(--app-rail-w);
+    align-items: start;
+  }
+
+  .app-shell__rail {
+    position: sticky;
+    top: var(--space-24);
+    padding: var(--space-24) 24px var(--space-24) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell__rail {
+    padding-inline: 16px;
+  }
+}
+
+/* Unread counter in the shell (filled by core/notif-badge.js, which
+   rewrites textContent and toggles .is-hidden). */
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: var(--radius-full);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font-family: var(--font-primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+body.high-contrast .app-badge {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .app-badge {
+    outline: 1px solid CanvasText;
+  }
+}
+
+@media print {
+  body.app-shell {
+    padding: 0;
+  }
+}
+
 /* === Responsive typography (app scale) === */
 @media (max-width: 1024px) {
   h1 {
