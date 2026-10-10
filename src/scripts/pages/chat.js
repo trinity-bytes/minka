@@ -5,6 +5,7 @@
 // ES module (bundled by Astro, deferred): runs after the classic core
 // scripts, with the DOM parsed. Globals used: Store, Modal.
 import { token, withAlpha } from "../tokens";
+import { avatarTone, initials } from "../lib/avatar.js";
 
 const threads = [
   {
@@ -182,11 +183,18 @@ function renderThreads() {
         <li class="thread ${
           t.id === currentThreadId ? "thread--active" : ""
         }" data-id="${t.id}">
-          <div class="thread__title">${t.user}</div>
-          <div class="thread__meta">${t.item}</div>
-          <div class="thread__meta">${
-            t.location
-          } · <i class="fas fa-star"></i> ${t.rating}</div>
+          <button type="button" class="thread__btn"${
+            t.id === currentThreadId ? ' aria-current="true"' : ""
+          }>
+            <span class="chat-avatar chat-avatar--${avatarTone(t.user)}" aria-hidden="true">${initials(t.user)}</span>
+            <span class="thread__text">
+              <span class="thread__title">${t.user}</span>
+              <span class="thread__meta">${t.item}</span>
+              <span class="thread__meta">${
+                t.location
+              } · <i class="fas fa-star" aria-hidden="true"></i> ${t.rating}</span>
+            </span>
+          </button>
         </li>
       `
     )
@@ -208,15 +216,20 @@ function renderConversation() {
 
   els.convItem.textContent = thread.item;
   els.convUser.textContent = thread.user;
-  els.convMeta.innerHTML = `${thread.location} · <i class="fas fa-star"></i> ${thread.rating} · ${thread.distanceKm} km`;
+  els.convMeta.innerHTML = `${thread.location} · <i class="fas fa-star" aria-hidden="true"></i> ${thread.rating} · ${thread.distanceKm} km`;
+  const convAvatar = document.getElementById("conv-avatar");
+  if (convAvatar) {
+    convAvatar.textContent = initials(thread.user);
+    convAvatar.className = `chat-avatar chat-avatar--${avatarTone(thread.user)} chat-avatar--md`;
+  }
 
   if (thread.muted) {
-    els.btnMute.innerHTML = '<i class="fa-solid fa-bell"></i>';
+    els.btnMute.innerHTML = '<i class="fa-solid fa-bell" aria-hidden="true"></i>';
     els.btnMute.classList.add("is-muted");
     els.btnMute.title = "Activar notificaciones";
     els.btnMute.setAttribute("aria-label", "Activar notificaciones");
   } else {
-    els.btnMute.innerHTML = '<i class="fa-solid fa-bell-slash"></i>';
+    els.btnMute.innerHTML = '<i class="fa-solid fa-bell-slash" aria-hidden="true"></i>';
     els.btnMute.classList.remove("is-muted");
     els.btnMute.title = "Silenciar";
     els.btnMute.setAttribute("aria-label", "Silenciar conversación");
@@ -229,16 +242,16 @@ function renderConversation() {
       if (msg.from === "me") {
         if (msg.status === "read")
           statusIcon =
-            '<i class="fas fa-check-double message__status read"></i>';
+            '<i class="fas fa-check-double message__status read" role="img" aria-label="Leído"></i>';
         else if (msg.status === "delivered")
-          statusIcon = '<i class="fas fa-check-double message__status"></i>';
-        else statusIcon = '<i class="fas fa-check message__status"></i>';
+          statusIcon = '<i class="fas fa-check-double message__status" role="img" aria-label="Entregado"></i>';
+        else statusIcon = '<i class="fas fa-check message__status" role="img" aria-label="Enviado"></i>';
       }
 
       // T34 - Image Rendering
       const content = msg.image
         ? `<img src="${msg.image}" alt="Foto adjunta" class="message__image" loading="lazy" />`
-        : `<div>${msg.text}</div>`;
+        : `<div class="message__text">${msg.text}</div>`;
 
       return `
         <div class="message ${msg.from === "me" ? "message--me" : ""}">

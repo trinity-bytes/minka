@@ -2,46 +2,64 @@
 /* T18 - Leonardo Chavez: Estilos de modales de rating y reporte */
 /* T23 - Ronel Rojas: Variantes de badge para estados (now in app.css) */
 /* T33 - Timeline Styles */
-/* Global (not scoped) on purpose: src/scripts/pages/detail.js renders the
-   timeline, tags, spec rows, thumbnails and similar cards as HTML strings.
-   Card surfaces come from the Card component; `.card__header/.card__body`
-   spacing is page-specific. Folds the detail/timeline overrides of the
-   legacy core/responsive.css. The legacy page also loaded pages/home.css,
-   but none of its selectors match this page. */
-.detail-page {
-  background: var(--color-surface);
+/* Visual language (T10b-2): white rounded cards on the tinted app
+   background, flat rows, pill badges, initials avatar for the owner and a
+   clear action hierarchy (one primary "Contactar", grouped secondary
+   actions, destructive ones last). The listing title is the only serif
+   (same voice as ui/PageHead; the h1 keeps its own markup because
+   detail.js rewrites #item-title and `.detail-hero__eyebrow`). Global (not
+   scoped) on purpose: detail.js renders the timeline, tags, spec rows,
+   thumbnails and similar cards as HTML strings. */
+
+.detail-main :where(h2, h3, h4) {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
-.detail-main {
-  padding-bottom: var(--space-64);
-}
-
+/* === Title block (mirrors ui/PageHead) === */
 .detail-hero {
-  padding: var(--space-32) 0;
-  background: linear-gradient(135deg, var(--color-surface-alt) 0%, var(--color-bg) 100%);
-  border-bottom: 1px solid var(--color-gray-50);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-24);
 }
 
 .detail-hero__eyebrow {
-  color: var(--color-primary);
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-mint);
+  color: var(--color-ink);
+  font-size: 0.78rem;
   font-weight: 700;
-  margin-bottom: var(--space-8);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.detail-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-variation-settings: var(--font-display-axes-text);
+  font-size: clamp(1.75rem, 1.1rem + 1.8vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: var(--font-display-tracking);
+  color: var(--color-ink);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .detail-hero__meta {
-  color: var(--color-gray-600);
-  margin-top: var(--space-8);
+  margin: 0;
+  color: var(--color-ink-2);
 }
 
-.detail-layout {
-  padding: var(--space-32) 0;
-}
-
+/* === Layout === */
 .detail-grid {
   display: grid;
-  grid-template-columns: 1.7fr 1fr;
+  grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 1fr);
   gap: var(--space-24);
   align-items: start;
 }
@@ -50,113 +68,429 @@
 .detail-right {
   display: flex;
   flex-direction: column;
-  gap: var(--space-24);
+  gap: var(--space-16);
+  min-width: 0;
 }
 
-.card__header {
-  padding: var(--space-16) var(--space-20) 0;
+/* Card spacing (surfaces come from ui/Card). */
+.detail-layout .card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding: var(--space-24) var(--space-24) 0;
 }
 
-.card__body {
-  padding: var(--space-16) var(--space-20) var(--space-20);
+.detail-layout .card__header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--color-ink);
 }
 
-/* === Gallery === */
+.detail-layout .card__body {
+  padding: var(--space-16) var(--space-24) var(--space-24);
+}
+
+.detail-layout .card__body > p {
+  margin: 0;
+  color: var(--color-ink-2);
+  line-height: 1.6;
+}
+
+/* === Gallery: white card, photo inset with a concentric radius === */
 .gallery {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-16);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-16);
+  --gallery-pad: 10px;
+  padding: var(--gallery-pad);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
 }
 
 .gallery__main {
+  display: block;
   width: 100%;
-  border-radius: var(--space-12);
+  max-height: 460px;
+  border-radius: calc(var(--radius-card) - var(--gallery-pad));
   object-fit: cover;
-  max-height: 420px;
 }
 
 .gallery__thumbs {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--space-12);
-  margin-top: var(--space-12);
+  display: flex;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.gallery__thumbs[hidden] {
+  display: none;
 }
 
 .gallery__thumbs img {
-  width: 100%;
-  height: 90px;
-  object-fit: cover;
-  border-radius: var(--space-10);
+  flex: none;
+  width: 104px;
+  height: 76px;
   border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  object-fit: cover;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  opacity: 0.75;
+  transition:
+    opacity var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard);
 }
 
-.gallery__thumbs img.is-active,
 .gallery__thumbs img:hover {
-  border-color: var(--color-primary);
+  opacity: 1;
+}
+
+.gallery__thumbs img.is-active {
+  border-color: var(--color-ink);
+  opacity: 1;
 }
 
 .gallery:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
-  border-radius: var(--space-12);
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
 }
 
-/* === Chunk 4.8: similares === */
+/* === Tags, facts === */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: var(--space-16);
+}
+
+.tag-list:empty {
+  display: none;
+}
+
+.detail-summary .detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: var(--space-8);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-16);
+  padding: var(--space-10) 0;
+  font-size: 0.92rem;
+  color: var(--color-ink-2);
+}
+
+.info-row + .info-row {
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.info-row strong {
+  color: var(--color-ink);
+  text-align: right;
+}
+
+.info-row .fa-star,
+#seller-rating .fa-star {
+  color: var(--color-warning);
+}
+
+/* Primary CTA block of the summary card. */
+.detail-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  padding: 0 var(--space-24) var(--space-24);
+}
+
+.detail-cta .btn {
+  width: 100%;
+}
+
+/* === Owner card === */
+.seller-card .seller {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.seller__info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 0.88rem;
+  color: var(--color-ink-2);
+}
+
+.seller__info strong {
+  font-size: 1rem;
+  color: var(--color-ink);
+}
+
+/* Initials avatar (same tints as ui/Avatar; retinted by detail.js). */
+.seller-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--seller-avatar-bg, var(--color-mint));
+  color: var(--seller-avatar-fg, var(--color-ink));
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.seller-avatar--brand {
+  --seller-avatar-bg: var(--color-brand);
+  --seller-avatar-fg: var(--color-on-brand);
+}
+
+.seller-avatar--alt {
+  --seller-avatar-bg: var(--color-paper-2);
+}
+
+.seller-avatar--lavender {
+  --seller-avatar-bg: var(--color-lavender);
+  --seller-avatar-fg: var(--color-on-lavender);
+}
+
+.seller-avatar--lavender-soft {
+  --seller-avatar-bg: var(--color-lavender-soft);
+  --seller-avatar-fg: var(--color-on-lavender);
+}
+
+/* === Actions: grouped secondary actions, destructive last === */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.actions__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.actions__label {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.actions__group .btn {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+}
+
+.actions__group--risk {
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+/* Destructive action as an outlined danger pill; it fills on hover. */
+.actions .btn-danger {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-error-ink);
+  --btn-border: color-mix(in srgb, var(--color-error) 45%, transparent);
+}
+
+.actions .btn-danger:hover {
+  --btn-fg: #ffffff;
+  --btn-bg: var(--color-error);
+}
+
+/* === QR card === */
+.qr-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.qr-frame {
+  display: grid;
+  place-items: center;
+  padding: var(--space-16);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
+}
+
+.qr-frame img {
+  display: block;
+  width: 180px;
+  height: 180px;
+  border-radius: var(--radius-sm);
+}
+
+.qr-canvas {
+  display: none;
+}
+
+.qr-code {
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: var(--color-ink-2);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.qr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.qr-actions #qr-reissue {
+  width: 36px;
+  padding: 0;
+}
+
+/* === Timeline (T33) === */
+.timeline {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 11px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--color-gray-100);
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline-item + .timeline-item {
+  margin-top: var(--space-20);
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-gray-400);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+}
+
+.timeline-item.completed .timeline-marker {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  box-shadow: inset 0 0 0 4px var(--color-card);
+}
+
+.timeline-content h3 {
+  margin: 0 0 2px;
+  font-size: 0.98rem;
+  color: var(--color-ink);
+}
+
+.timeline-date {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray-600);
+}
+
+.timeline-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-ink-2);
+}
+
+/* === Similar listings (Chunk 4.8) === */
 .similar-section {
-  padding: var(--space-32) 0 var(--space-48);
+  padding-top: var(--space-32);
+}
+
+.similar-section[hidden] {
+  display: none;
+}
+
+.similar-section h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-ink);
 }
 
 .similar-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
   gap: var(--space-16);
   margin-top: var(--space-16);
 }
 
 .similar-card {
+  --tile-pad: 8px;
   display: block;
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-12);
-  overflow: hidden;
-  text-decoration: none;
+  padding: var(--tile-pad);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
   color: inherit;
-  box-shadow: var(--shadow-soft);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  text-decoration: none;
+  transition: box-shadow var(--dur-fast) var(--ease-standard);
 }
 
 .similar-card:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-lift);
 }
 
+.similar-card:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
 .similar-card img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
   display: block;
+  width: 100%;
+  height: 150px;
+  border-radius: calc(var(--radius-card) - var(--tile-pad));
+  background: var(--color-paper);
+  object-fit: cover;
 }
 
 .similar-card__body {
-  padding: var(--space-12);
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
   align-items: flex-start;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-8) var(--space-8);
 }
 
 .similar-card__body h3 {
-  font-size: 1rem;
   margin: 0;
+  font-size: 1rem;
+  color: var(--color-ink);
 }
 
-/* === Chunk 4.8: CTA fija en móvil === */
+/* === Mobile sticky CTA (Chunk 4.8): floating white bar above the tab bar
+   (app.css sets `bottom` to the tab bar offset). === */
 .sticky-cta {
   display: none;
 }
@@ -164,18 +498,19 @@
 @media (max-width: 768px) {
   .sticky-cta {
     position: fixed;
+    right: var(--space-12);
     bottom: 0;
-    left: 0;
-    right: 0;
+    left: var(--space-12);
     z-index: var(--z-overlay);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-12);
-    padding: var(--space-12) var(--space-16);
-    background: var(--color-white);
-    border-top: 1px solid var(--color-gray-50);
-    box-shadow: 0 -4px 16px color-mix(in srgb, var(--color-ink) 8%, transparent);
+    margin-bottom: var(--space-8);
+    padding: var(--space-8) var(--space-8) var(--space-8) var(--space-20);
+    border-radius: var(--radius-full);
+    background: var(--color-card);
+    box-shadow: var(--shadow-lg);
   }
 
   .sticky-cta[hidden] {
@@ -183,168 +518,58 @@
   }
 
   .sticky-cta__mode {
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
+    min-width: 0;
     overflow: hidden;
+    color: var(--color-ink-2);
+    font-size: 0.85rem;
+    font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  .sticky-cta .btn {
+    flex: none;
+  }
 }
 
-/* === Facts, tags, owner === */
-.tag-list {
+/* === Modals: offline close code, eco receipt === */
+#offline-form {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-8);
+  flex-direction: column;
+  gap: var(--space-12);
+  margin-top: var(--space-16);
+}
+
+#offline-form .modal__actions {
   margin-top: var(--space-8);
 }
 
-.detail-info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-12);
+.offline-code-input {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  text-align: center;
+  text-transform: uppercase;
 }
 
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.95rem;
-  color: var(--color-gray-700);
-}
-
-.info-row strong {
-  color: var(--color-secondary-dark);
-}
-
-.seller-card .seller {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-16);
-}
-
-.seller__info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  color: var(--color-gray-700);
-}
-
-/* === QR card === */
-.qr-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.qr-card__body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-16) var(--space-20) 48px;
-}
-
-.qr-canvas {
+.form-feedback:empty {
   display: none;
 }
 
-.qr-actions {
-  display: flex;
-  gap: var(--space-8);
-}
-
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-}
-
-/* === Timeline (T33) === */
-.timeline {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  position: relative;
-}
-
-.timeline::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 15px;
-  width: 2px;
-  background: var(--color-border);
-}
-
-.timeline-item {
-  position: relative;
-  padding-left: 40px;
-  margin-bottom: 1.5rem;
-}
-
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-marker {
-  position: absolute;
-  left: 6px;
-  top: 4px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--color-bg);
-  border: 2px solid var(--color-primary);
-  z-index: 1;
-}
-
-.timeline-item.completed .timeline-marker {
-  background: var(--color-primary);
-}
-
-.timeline-content h4 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1rem;
-  color: var(--color-text);
-}
-
-.timeline-date {
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.timeline-desc {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-/* === Offline close code (was inline style) === */
-.offline-code-input {
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center;
-  font-size: 1.2rem;
-}
-
-/* === Eco receipt (T25; was inline style with off-palette colors) === */
 .eco-receipt {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin: 1.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+  margin: var(--space-20) 0;
 }
 
 .eco-metric {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-20) var(--space-12);
+  border-radius: var(--radius-lg);
   text-align: center;
-  padding: 1rem;
-  border-radius: var(--radius-sm);
 }
 
 .eco-metric--co2 {
@@ -352,37 +577,34 @@
 }
 
 .eco-metric--water {
-  background: var(--color-info-soft);
-}
-
-.eco-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.eco-metric--co2 .eco-icon {
-  color: var(--color-primary);
-}
-
-.eco-metric--water .eco-icon {
-  color: var(--color-info);
+  background: var(--color-lavender-soft);
 }
 
 .eco-value {
   display: block;
-  font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-ink);
 }
 
 .eco-label {
-  font-size: 0.9rem;
-  color: var(--color-gray-600);
+  font-size: 0.88rem;
+  color: var(--color-ink-2);
+}
+
+.eco-metric--water .eco-value,
+.eco-metric--water .eco-label {
+  color: var(--color-on-lavender);
 }
 
 .eco-comparison {
+  margin-bottom: var(--space-12);
+  color: var(--color-ink-2);
   text-align: center;
-  margin-bottom: 1rem;
-  color: var(--color-secondary);
+}
+
+.eco-comparison p {
+  margin: 0;
 }
 
 .eco-comparison__value {
@@ -390,41 +612,142 @@
 }
 
 .eco-comparison__value.is-similar {
-  color: var(--color-secondary);
+  color: var(--color-ink);
 }
 
 .eco-reference {
-  text-align: center;
+  color: var(--color-gray-600);
   font-size: 0.8rem;
-  color: var(--color-gray-500);
+  text-align: center;
 }
 
 .eco-reference a {
   color: var(--color-primary);
 }
 
-@media (max-width: 1024px) {
+/* === Responsive === */
+@media (max-width: 960px) {
   .detail-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+
+  /* One column: photos, summary + CTA, description, owner, actions, QR,
+     history. Only the visual order changes; the description and history
+     hold no focusable elements, so focus order still follows it. */
+  .detail-left,
+  .detail-right {
+    display: contents;
+  }
+
+  .gallery {
+    order: 1;
+  }
+
+  .detail-summary {
+    order: 2;
+  }
+
+  .detail-description {
+    order: 3;
+  }
+
+  .seller-card {
+    order: 4;
+  }
+
+  .detail-actions {
+    order: 5;
+  }
+
+  .qr-card {
+    order: 6;
+  }
+
+  .detail-timeline {
+    order: 7;
   }
 }
 
 @media (max-width: 768px) {
+  /* Keep the site links clear of the floating sticky CTA. */
+  .detail-main > .app-site-footer.app-site-footer {
+    padding-bottom: 72px;
+  }
+
   .gallery__main {
-    max-height: 280px;
+    max-height: 300px;
   }
 
-  .timeline::before {
-    left: 12px;
+  .detail-layout .card__header {
+    padding: var(--space-20) var(--space-20) 0;
   }
 
-  .timeline-item {
-    padding-left: 35px;
+  .detail-layout .card__body,
+  .detail-cta {
+    padding-inline: var(--space-20);
+  }
+}
+
+@media (max-width: 480px) {
+  .eco-receipt {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* === High contrast / forced colors === */
+body.high-contrast .gallery,
+body.high-contrast .similar-card,
+body.high-contrast .qr-frame,
+body.high-contrast .sticky-cta,
+body.high-contrast .eco-metric,
+body.high-contrast .detail-hero__eyebrow,
+body.high-contrast .seller-avatar {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .eco-metric * {
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .gallery__thumbs img.is-active {
+  border-color: var(--color-hc-ink);
+}
+
+body.high-contrast .timeline::before {
+  background: var(--color-hc-ink);
+}
+
+body.high-contrast .timeline-marker {
+  border-color: var(--color-hc-ink);
+}
+
+body.high-contrast .timeline-item.completed .timeline-marker {
+  border-color: var(--color-hc-ink);
+  background: var(--color-hc-ink);
+}
+
+/* The global high-contrast link color would paint link buttons blue on
+   the dark primary fill (global.css covers button.btn-primary only); that
+   global rule is !important, so this override must be too. */
+body.high-contrast .detail-cta a.btn-primary,
+body.high-contrast .sticky-cta a.btn-primary {
+  color: var(--color-hc-paper) !important;
+}
+
+@media (forced-colors: active) {
+  .gallery,
+  .similar-card,
+  .qr-frame,
+  .sticky-cta,
+  .eco-metric,
+  .seller-avatar {
+    border: 1px solid CanvasText;
   }
 
-  .timeline-marker {
-    left: 3px;
-    width: 18px;
-    height: 18px;
+  .timeline-item.completed .timeline-marker {
+    background: CanvasText;
   }
 }

@@ -41,12 +41,12 @@ const copy = COPY[mode];
 </div>
 
 <style>
-  /* Resolved cascade of the legacy core/components.css + pages/auth.css */
+  /* Flat pill buttons (visual-language T10b-2): Google white with a
+     hairline, Facebook brand blue (white text 4.6:1). */
   .social-login {
     display: flex;
     flex-direction: column;
-    gap: var(--space-10);
-    margin-bottom: 1.5rem;
+    gap: var(--space-8);
   }
 
   .btn-social {
@@ -55,20 +55,20 @@ const copy = COPY[mode];
     justify-content: center;
     gap: var(--space-10);
     width: 100%;
-    padding: var(--space-12);
-    border: var(--border-ink);
-    border-radius: var(--radius-md);
-    font-weight: 600;
+    min-height: 48px;
+    padding: var(--space-8) var(--space-16);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-full);
+    font-family: var(--font-primary);
+    font-weight: 700;
     font-size: 0.95rem;
     cursor: pointer;
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease;
+    transition: background-color var(--dur-fast) var(--ease-standard);
   }
 
-  .btn-social:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: var(--shadow-hard-sm);
+  .btn-social:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
   }
 
   .btn-google {
@@ -81,34 +81,44 @@ const copy = COPY[mode];
   }
 
   .btn-facebook {
+    border-color: transparent;
     background-color: var(--color-brand-facebook);
-    color: var(--color-on-primary);
+    color: #ffffff;
+  }
+
+  .btn-facebook:hover {
+    background-color: color-mix(in srgb, var(--color-brand-facebook) 86%, #000000);
   }
 
   .auth-divider {
     display: flex;
     align-items: center;
-    text-align: center;
-    margin: 1.5rem 0;
+    margin: var(--space-4) 0;
     color: var(--color-ink-2);
     font-size: 0.85rem;
+    text-align: center;
   }
 
   .auth-divider::before,
   .auth-divider::after {
     content: "";
     flex: 1;
-    border-bottom: 1.5px solid var(--color-gray-200);
+    border-bottom: 1px solid var(--color-gray-200);
   }
 
   .auth-divider span {
     padding: 0 var(--space-16);
   }
 
-  @media (max-width: 480px) {
+  :global(body.high-contrast) .btn-social {
+    background: var(--color-hc-paper);
+    color: var(--color-hc-ink);
+    border: 2px solid var(--color-hc-ink);
+  }
+
+  @media (forced-colors: active) {
     .btn-social {
-      padding: 0.6rem;
-      font-size: 0.85rem;
+      border-color: ButtonText;
     }
   }
 </style>

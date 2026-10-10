@@ -31,19 +31,26 @@ const FACTS = [
   { label: "Reputación", id: "item-rating" },
 ];
 
-// Owner / visitor actions after "Contactar" and "Compartir" (all simulated
-// by detail.js). Order and variants match the legacy page.
-const ACTIONS: { id: string; key: string; label: string; variant: "primary" | "secondary" }[] = [
+// Owner / visitor actions (all simulated by detail.js), grouped by intent
+// (visual-language T10b-2): Contactar is the only primary action and sits
+// with Compartir in the summary card; the rest are secondary or ghost
+// buttons grouped below, destructive ones last. Every id/i18n key kept.
+type Action = { id: string; key: string; label: string; icon: string };
+const EXCHANGE_ACTIONS: Action[] = [
   // T33 - Miguel Sanca: offline close (HU41)
-  { id: "action-offline-close", key: "detail_action_offline", label: "Cierre Offline (Código)", variant: "primary" },
-  { id: "action-edit", key: "detail_action_edit", label: "Editar publicación", variant: "secondary" },
-  { id: "action-close", key: "detail_action_close", label: "Cerrar publicación", variant: "secondary" },
-  { id: "action-delete", key: "detail_action_delete", label: "Eliminar publicación", variant: "secondary" },
-  { id: "action-pause", key: "detail_action_pause", label: "Pausar publicación", variant: "secondary" },
-  { id: "action-reserve", key: "detail_action_reserve", label: "Marcar como reservada", variant: "secondary" },
-  { id: "action-activate", key: "detail_action_resume", label: "Reanudar publicación", variant: "secondary" },
-  { id: "action-rate", key: "common_rate_title", label: "Calificar intercambio", variant: "secondary" },
-  { id: "action-report", key: "detail_action_report", label: "Reportar publicación", variant: "secondary" },
+  { id: "action-offline-close", key: "detail_action_offline", label: "Cierre Offline (Código)", icon: "fa-key" },
+  { id: "action-rate", key: "common_rate_title", label: "Calificar intercambio", icon: "fa-star" },
+];
+const MANAGE_ACTIONS: Action[] = [
+  { id: "action-edit", key: "detail_action_edit", label: "Editar publicación", icon: "fa-pen" },
+  { id: "action-pause", key: "detail_action_pause", label: "Pausar publicación", icon: "fa-pause" },
+  { id: "action-reserve", key: "detail_action_reserve", label: "Marcar como reservada", icon: "fa-bookmark" },
+  { id: "action-activate", key: "detail_action_resume", label: "Reanudar publicación", icon: "fa-play" },
+  { id: "action-close", key: "detail_action_close", label: "Cerrar publicación", icon: "fa-box-archive" },
+];
+const RISK_ACTIONS: (Action & { variant: "danger" | "ghost" })[] = [
+  { id: "action-delete", key: "detail_action_delete", label: "Eliminar publicación", icon: "fa-trash", variant: "danger" },
+  { id: "action-report", key: "detail_action_report", label: "Reportar publicación", icon: "fa-flag", variant: "ghost" },
 ];
 ---
 
@@ -63,12 +70,10 @@ const ACTIONS: { id: string; key: string; label: string; variant: "primary" | "s
     ]}
   />
 
-  <section class="detail-hero">
-    <div class="container">
-      <p class="detail-hero__eyebrow">Publicación activa</p>
-      <h1 id="item-title">Título del ítem</h1>
-      <p class="detail-hero__meta" id="item-meta">Categoría · Ubicación · Estado</p>
-    </div>
+  <section class="container detail-hero">
+    <p class="detail-hero__eyebrow">Publicación activa</p>
+    <h1 id="item-title">Título del ítem</h1>
+    <p class="detail-hero__meta" id="item-meta">Categoría · Ubicación · Estado</p>
   </section>
 
   <section class="detail-layout" aria-label="Ficha de publicación">
@@ -76,18 +81,21 @@ const ACTIONS: { id: string; key: string; label: string; variant: "primary" | "s
       <div class="detail-left">
         <Gallery />
 
-        <CardSection title="Descripción" titleKey="detail_description" level={2}>
+        <CardSection class="detail-description" title="Descripción" titleKey="detail_description" level={2}>
           <p id="item-description">
             Descripción del objeto. Se actualizará con datos simulados en el script.
           </p>
           <div class="tag-list" id="item-tags"></div>
         </CardSection>
 
-        <SellerCard />
+        <!-- T33 - Miguel Sanca: Historial de Trazabilidad (HU40) -->
+        <CardSection class="detail-timeline" title="Historial del Objeto" titleKey="detail_timeline_title" level={2}>
+          <ul class="timeline" id="item-timeline"></ul>
+        </CardSection>
       </div>
 
-      <aside class="detail-right">
-        <Card>
+      <aside class="detail-right" aria-label="Resumen y acciones">
+        <Card class="detail-summary">
           <div class="card__body detail-info">
             {
               FACTS.map((f) => (
@@ -98,45 +106,68 @@ const ACTIONS: { id: string; key: string; label: string; variant: "primary" | "s
               ))
             }
           </div>
+          <div class="detail-cta">
+            <Button
+              appearance="flat"
+              variant="primary"
+              size="lg"
+              href={url("pages/chat.html")}
+              id="action-contact"
+              data-i18n="detail_contact">Contactar</Button
+            >
+            <Button appearance="flat" variant="secondary" size="lg" id="action-share">
+              <i class="fas fa-share-nodes" aria-hidden="true"></i>
+              Compartir
+            </Button>
+          </div>
         </Card>
 
+        <SellerCard />
+
+        <CardSection class="detail-actions" title="Acciones" titleKey="detail_actions_title" level={2} bodyClass="actions">
+          <div class="actions__group" role="group" aria-labelledby="actions-exchange">
+            <p class="actions__label" id="actions-exchange">Intercambio</p>
+            {
+              EXCHANGE_ACTIONS.map((a) => (
+                <Button appearance="flat" variant="secondary" size="sm" id={a.id}>
+                  <i class:list={["fas", a.icon]} aria-hidden="true" />
+                  <span data-i18n={a.key}>{a.label}</span>
+                </Button>
+              ))
+            }
+          </div>
+          <div class="actions__group" role="group" aria-labelledby="actions-manage">
+            <p class="actions__label" id="actions-manage">Gestionar publicación</p>
+            {
+              MANAGE_ACTIONS.map((a) => (
+                <Button appearance="flat" variant="secondary" size="sm" id={a.id}>
+                  <i class:list={["fas", a.icon]} aria-hidden="true" />
+                  <span data-i18n={a.key}>{a.label}</span>
+                </Button>
+              ))
+            }
+          </div>
+          <div class="actions__group actions__group--risk">
+            {
+              RISK_ACTIONS.map((a) => (
+                <Button appearance="flat" variant={a.variant} size="sm" id={a.id}>
+                  <i class:list={["fas", a.icon]} aria-hidden="true" />
+                  <span data-i18n={a.key}>{a.label}</span>
+                </Button>
+              ))
+            }
+          </div>
+        </CardSection>
+
         <QrCard />
-
-        <!-- T33 - Miguel Sanca: Historial de Trazabilidad (HU40) -->
-        <CardSection title="Historial del Objeto" titleKey="detail_timeline_title">
-          <ul class="timeline" id="item-timeline"></ul>
-        </CardSection>
-
-        <CardSection title="Acciones" titleKey="detail_actions_title" bodyClass="actions">
-          <Button
-            appearance="flat"
-            variant="primary"
-            href={url("pages/chat.html")}
-            id="action-contact"
-            data-i18n="detail_contact">Contactar</Button
-          >
-          <Button appearance="flat" variant="secondary" id="action-share">
-            <i class="fas fa-share-nodes" aria-hidden="true"></i>
-            Compartir
-          </Button>
-          {
-            ACTIONS.map((a) => (
-              <Button appearance="flat" variant={a.variant} id={a.id} data-i18n={a.key}>
-                {a.label}
-              </Button>
-            ))
-          }
-        </CardSection>
       </aside>
     </div>
   </section>
 
   <!-- Chunk 4.8: Similares de la misma categoría -->
-  <section class="similar-section" id="similar-section" aria-label="Publicaciones similares" hidden>
-    <div class="container">
-      <h2 data-i18n="detail_similar">Similares</h2>
-      <div class="similar-grid" id="similar-grid"></div>
-    </div>
+  <section class="container similar-section" id="similar-section" aria-label="Publicaciones similares" hidden>
+    <h2 data-i18n="detail_similar">Similares</h2>
+    <div class="similar-grid" id="similar-grid"></div>
   </section>
 
   <Fragment slot="after-main">

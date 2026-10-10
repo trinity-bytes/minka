@@ -2,7 +2,10 @@
 /**
  * Auth page (login / register / recovery, simulated). Port of
  * public/pages/auth.html. Logic: src/scripts/pages/auth.js.
+ * Visual language (T10b-2): auth chrome (AuthHeader only), a mint bento
+ * intro block beside a white rounded auth card with pill tabs.
  */
+import Logomark from "../../components/brand/Logomark.astro";
 import AppLayout from "../../components/layout/AppLayout.astro";
 import AuthTabs, { type AuthTab } from "../../components/auth/AuthTabs.astro";
 import AuthField from "../../components/auth/AuthField.astro";
@@ -30,16 +33,17 @@ const tabs: AuthTab[] = [
   scripts={["translations", "i18n", "session", "modal", "toast"]}
 >
   <section class="auth-hero">
+    <Logomark size="xl" class="auth-hero__mark" />
     <div class="auth-hero__content">
       <h1 data-i18n="auth_title">Ingresa a Mink'a</h1>
       <p class="auth-hero__note">
-        <span data-i18n="auth_subtitle">Usa el usuario demo para probar la plataforma:</span>
+        <span data-i18n="auth_subtitle">Usa el usuario demo para probar la plataforma:</span>{" "}
         <strong>demo@minka.com</strong> / <strong>demo1234</strong>.
       </p>
       <ul class="auth-hero__bullets">
-        <li data-i18n="auth_bullet_login">Inicio de sesión</li>
-        <li data-i18n="auth_bullet_register">Registro con validaciones</li>
-        <li data-i18n="auth_bullet_recovery">Recuperación de contraseña</li>
+        <li><span class="auth-hero__check" aria-hidden="true"><i class="fas fa-check"></i></span><span data-i18n="auth_bullet_login">Inicio de sesión</span></li>
+        <li><span class="auth-hero__check" aria-hidden="true"><i class="fas fa-check"></i></span><span data-i18n="auth_bullet_register">Registro con validaciones</span></li>
+        <li><span class="auth-hero__check" aria-hidden="true"><i class="fas fa-check"></i></span><span data-i18n="auth_bullet_recovery">Recuperación de contraseña</span></li>
       </ul>
     </div>
   </section>

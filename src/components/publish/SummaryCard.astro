@@ -3,6 +3,7 @@
  * Live summary of the publish form. Each value (#summary-*) is updated by
  * src/scripts/pages/publish.js (updateSummary).
  */
+import IconChip from "../ui/IconChip.astro";
 const ROWS = [
   { id: "title", key: "publish.summary.itemTitle", label: "Título:", value: "—" },
   { id: "category", key: "publish.summary.category", label: "Categoría:", value: "—" },
@@ -14,7 +15,10 @@ const ROWS = [
 ---
 
 <div class="summary-card">
-  <h3 data-i18n="publish.summary.title">Resumen rápido</h3>
+  <div class="summary-card__head">
+    <IconChip tone="mint" size="sm"><i class="fas fa-list-check"></i></IconChip>
+    <h2 data-i18n="publish.summary.title">Resumen rápido</h2>
+  </div>
   <ul class="summary-list">
     {
       ROWS.map((r) => (
@@ -24,5 +28,5 @@ const ROWS = [
       ))
     }
   </ul>
-  <p class="form__hint" data-i18n="publish.summary.qrHint">El QR se generará automáticamente al publicar.</p>
+  <p class="form__hint summary-card__hint" data-i18n="publish.summary.qrHint">El QR se generará automáticamente al publicar.</p>
 </div>

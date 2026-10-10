@@ -8,6 +8,12 @@
  * T34 - Ronel Rojas: watermarked photos and read receipts (HU43, HU44).
  * Logic: src/scripts/pages/chat.js (guarded: requires a session). Handoff
  * from detalle: `chat.html?thread=<itemId>&owner=<ownerId>`.
+ *
+ * Visual language (T10b-2): full-height messaging screen (footer={false})
+ * with white rounded cards. The thread list title is the page h1 (the only
+ * serif, as in ui/PageHead) and the open conversation's partner is the h2.
+ * chat.js fills the thread rows, the partner avatar (#conv-avatar) and the
+ * message bubbles (own = brand fill, other = white).
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
 import Button from "../../components/ui/Button.astro";
@@ -27,7 +33,7 @@ import "../../styles/pages/chat.css";
   <section class="container chat-shell" aria-label="Mensajes">
     <aside class="threads" aria-label="Conversaciones">
       <div class="threads__header">
-        <h2 data-i18n="nav_chats">Chats</h2>
+        <h1 data-i18n="nav_chats">Chats</h1>
       </div>
       <ul class="thread-list" id="thread-list"></ul>
     </aside>
@@ -42,9 +48,10 @@ import "../../styles/pages/chat.css";
         >
           <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
         </button>
+        <span class="chat-avatar chat-avatar--mint chat-avatar--md" id="conv-avatar" aria-hidden="true">U</span>
         <div class="conversation__info">
           <p class="conversation__eyebrow" id="conv-item">Publicación</p>
-          <h3 id="conv-user">Usuario</h3>
+          <h2 id="conv-user">Usuario</h2>
           <p class="conversation__meta" id="conv-meta">Ubicación · Reputación</p>
         </div>
         <div class="conversation__actions">
@@ -55,7 +62,7 @@ import "../../styles/pages/chat.css";
             title="Silenciar"
             aria-label="Silenciar conversación"
           >
-            <i class="fa-solid fa-bell-slash"></i>
+            <i class="fa-solid fa-bell-slash" aria-hidden="true"></i>
           </button>
           <button
             class="icon-btn"
@@ -66,7 +73,7 @@ import "../../styles/pages/chat.css";
           >
             <i class="fa-solid fa-flag" aria-hidden="true"></i>
           </button>
-          <Button appearance="flat" variant="primary" class="btn-rate" id="btn-rate">
+          <Button appearance="flat" variant="secondary" size="sm" class="btn-rate" id="btn-rate">
             <i class="fa-solid fa-star" aria-hidden="true"></i>
             <span class="btn-rate__label">Calificar</span>
           </Button>
@@ -124,7 +131,10 @@ import "../../styles/pages/chat.css";
           autocomplete="off"
           required
         />
-        <Button appearance="flat" variant="primary" type="submit" data-i18n="common_send">Enviar</Button>
+        <Button appearance="flat" variant="primary" type="submit" class="composer__send">
+          <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+          <span data-i18n="common_send">Enviar</span>
+        </Button>
       </form>
     </section>
   </section>

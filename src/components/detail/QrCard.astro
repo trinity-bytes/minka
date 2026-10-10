@@ -14,28 +14,38 @@ import { asset } from "../../lib/url";
   aria-label="Código QR de la publicación"
   title="QR de intercambio"
   titleKey="detail_qr_title"
+  level={2}
   headerClass="qr-card__header"
   bodyClass="qr-card__body"
 >
   <span slot="header-extra" class="badge" id="qr-status">Pendiente</span>
-  <img
-    id="qr-image"
-    src={asset("images/QR-generico.svg")}
-    alt="QR de la publicación"
-    width="220"
-    height="220"
-    loading="lazy"
-  />
+  <div class="qr-frame">
+    <img
+      id="qr-image"
+      src={asset("images/QR-generico.svg")}
+      alt="QR de la publicación"
+      width="220"
+      height="220"
+      loading="lazy"
+    />
+  </div>
   <canvas id="qr-canvas" width="220" height="220" aria-hidden="true" class="qr-canvas"></canvas>
   <p class="qr-code" id="qr-code-text">Qr generico</p>
   <div class="qr-actions">
-    <Button appearance="flat" variant="secondary" id="qr-download" disabled data-i18n="detail_qr_download">
+    <Button appearance="flat" variant="secondary" size="sm" id="qr-download" disabled data-i18n="detail_qr_download">
       Descargar
     </Button>
-    <Button appearance="flat" variant="secondary" id="qr-share" disabled data-i18n="common_share">
+    <Button appearance="flat" variant="secondary" size="sm" id="qr-share" disabled data-i18n="common_share">
       Compartir
     </Button>
-    <Button appearance="flat" variant="outline" id="qr-reissue" title="Reemitir QR perdido" aria-label="Reemitir QR perdido">
+    <Button
+      appearance="flat"
+      variant="ghost"
+      size="sm"
+      id="qr-reissue"
+      title="Reemitir QR perdido"
+      aria-label="Reemitir QR perdido"
+    >
       <i class="fas fa-sync-alt" aria-hidden="true"></i>
     </Button>
   </div>

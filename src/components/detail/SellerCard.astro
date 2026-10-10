@@ -1,23 +1,34 @@
 ---
 /**
- * Owner ("Publicador") card with a link to the owner's profile. Name,
- * location, rating and the profile href are filled in by
- * src/scripts/pages/detail.js.
+ * Owner ("Publicador") card: initials avatar, name, location, rating and a
+ * link to the owner's profile. Name, location, rating, the avatar initials
+ * and tint (#seller-avatar) and the profile href are filled in by
+ * src/scripts/pages/detail.js. The avatar uses the page-level
+ * `.seller-avatar--<tone>` classes (detail.css) so the script can retint it.
  */
 import Button from "../ui/Button.astro";
 import CardSection from "../ui/CardSection.astro";
 import { url } from "../../lib/url";
+import { avatarTone, initials } from "../../scripts/lib/avatar.js";
+
+const PLACEHOLDER = "Usuario Demo";
 ---
 
-<CardSection class="seller-card" title="Publicador" titleKey="detail_publisher" bodyClass="seller">
+<CardSection class="seller-card" title="Publicador" titleKey="detail_publisher" level={2} bodyClass="seller">
+  <span
+    class:list={["seller-avatar", `seller-avatar--${avatarTone(PLACEHOLDER)}`]}
+    id="seller-avatar"
+    aria-hidden="true">{initials(PLACEHOLDER)}</span
+  >
   <div class="seller__info">
-    <strong id="seller-name">Usuario Demo</strong>
+    <strong id="seller-name">{PLACEHOLDER}</strong>
     <span id="seller-location">Lima, Perú</span>
     <span id="seller-rating"><i class="fas fa-star" aria-hidden="true"></i> 4.5</span>
   </div>
   <Button
     appearance="flat"
-    variant="primary"
+    variant="secondary"
+    size="sm"
     href={url("pages/perfil.html")}
     id="owner-profile-link"
     data-i18n="detail_view_profile">Ver perfil</Button

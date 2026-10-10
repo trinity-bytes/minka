@@ -1,6 +1,7 @@
 ---
 /**
- * Search filters bar (collapsible on mobile with JS). Element ids are the
+ * Search filters card: side column on wide screens, a bar above the
+ * results otherwise (collapsible on mobile with JS). Element ids are the
  * contract with src/scripts/pages/search.js.
  */
 import Button from "../ui/Button.astro";
@@ -87,8 +88,14 @@ const sortOptions = [
           placeholder="Ej. Miraflores"
           data-i18n="search_location_placeholder"
         />
-        <Button appearance="flat" variant="outline" id="btn-get-location" title="Usar mi ubicación actual">
-          <i class="fa-solid fa-crosshairs"></i>
+        <Button
+          appearance="flat"
+          variant="secondary"
+          id="btn-get-location"
+          title="Usar mi ubicación actual"
+          aria-label="Usar mi ubicación actual"
+        >
+          <i class="fa-solid fa-crosshairs" aria-hidden="true"></i>
         </Button>
       </div>
     </FilterGroup>

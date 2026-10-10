@@ -5,11 +5,14 @@
  * T14 - Ronel Rojas: publish form, mock QR and local drafts.
  * T23 - Ronel Rojas: states, reservation and per-category dynamic fields.
  * Logic: src/scripts/pages/publish.js (guarded: requires a session).
+ * Visual language (T10b-2): white rounded form cards, pill delivery-mode
+ * chips, a sticky summary card beside the form on wide screens.
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
 import Button from "../../components/ui/Button.astro";
 import CardSection from "../../components/ui/CardSection.astro";
 import PageHead from "../../components/ui/PageHead.astro";
+import Toggle from "../../components/ui/Toggle.astro";
 import Field from "../../components/publish/Field.astro";
 import PhotoUploader from "../../components/publish/PhotoUploader.astro";
 import SummaryCard from "../../components/publish/SummaryCard.astro";
@@ -129,11 +132,10 @@ const MODES = [
               </select>
             </Field>
             <div class="form__group form__group--inline">
-              <label class="inline-label" for="item-reserved" data-i18n="publish.mainInfo.reserved">Reserva</label>
-              <label class="switch">
-                <input type="checkbox" role="switch" id="item-reserved" />
-                <span class="slider round"></span>
-              </label>
+              <div class="reserve-row">
+                <label class="inline-label" for="item-reserved" data-i18n="publish.mainInfo.reserved">Reserva</label>
+                <Toggle id="item-reserved" />
+              </div>
               <p class="form__hint" data-i18n="publish.mainInfo.reservedHint">
                 Marca si ya tienes un interesado confirmado.
               </p>
@@ -203,6 +205,7 @@ const MODES = [
                   MODES.map((m) => (
                     <label class="mode-chip">
                       <input type="checkbox" name="mode" value={m.value} checked={m.checked} />
+                      <i class="fas fa-check mode-chip__check" aria-hidden="true" />
                       <span data-i18n={m.key}>{m.value}</span>
                     </label>
                   ))

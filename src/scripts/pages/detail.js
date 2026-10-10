@@ -7,6 +7,7 @@
 // globals Store, Modal and Toast loaded as classic scripts by AppLayout.
 import { ECO_FACTORS } from "../../lib/eco";
 import { token } from "../tokens";
+import { avatarTone, initials } from "../lib/avatar.js";
 
 const mockDetail = {
   id: "itm-001",
@@ -198,9 +199,9 @@ function renderTimeline() {
     .map(
       (event) => `
     <li class="timeline-item ${event.completed ? "completed" : ""}">
-      <div class="timeline-marker"></div>
+      <span class="timeline-marker" aria-hidden="true"></span>
       <div class="timeline-content">
-        <h4>${event.title}</h4>
+        <h3>${event.title}</h3>
         <span class="timeline-date">${event.date}</span>
         <p class="timeline-desc">${event.desc}</p>
       </div>
@@ -220,7 +221,7 @@ function renderDetail(item) {
   el.condition.textContent = item.condition;
   el.location.textContent = item.location;
   el.availability.textContent = item.availability;
-  el.rating.innerHTML = `<i class="fas fa-star"></i> ${item.rating}`;
+  el.rating.innerHTML = `<i class="fas fa-star" aria-hidden="true"></i> ${item.rating}`;
 
   if (item.specs && el.specsContainer) {
     Object.entries(item.specs).forEach(([key, value]) => {
@@ -233,7 +234,12 @@ function renderDetail(item) {
 
   el.sellerName.textContent = item.owner.name;
   el.sellerLocation.textContent = item.owner.location;
-  el.sellerRating.innerHTML = `<i class="fas fa-star"></i> ${item.owner.rating}`;
+  el.sellerRating.innerHTML = `<i class="fas fa-star" aria-hidden="true"></i> ${item.owner.rating}`;
+  const sellerAvatar = document.getElementById("seller-avatar");
+  if (sellerAvatar) {
+    sellerAvatar.textContent = initials(item.owner.name);
+    sellerAvatar.className = `seller-avatar seller-avatar--${avatarTone(item.owner.name)}`;
+  }
   if (ratingUser) {
     ratingUser.textContent = item.owner.name;
   }

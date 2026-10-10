@@ -433,11 +433,11 @@ function render() {
 
       return `
         <article class="result-card is-entering" aria-label="${item.title}">
-          <div style="position: relative;">
+          <div class="result-card__media">
             <img src="${item.images ? item.images[0] : item.image}" alt="${
         item.title
-      }" class="result-card__img" loading="lazy" decoding="async" style="object-fit: cover;" />
-            <button class="item-card__favorite ${
+      }" class="result-card__img" loading="lazy" decoding="async" />
+            <button type="button" class="item-card__favorite ${
               isFav ? "active" : ""
             }" aria-pressed="${isFav}" data-fav-id="${item.id}" aria-label="${
         isFav ? "Quitar de favoritos" : "Añadir a favoritos"
@@ -451,7 +451,7 @@ function render() {
               <span class="badge">${item.category}</span>
               <span>${item.location}</span>
               <span>${displayDist} km</span>
-              <span><i class="fa-solid fa-star star-rating"></i> ${item.rating.toFixed(
+              <span><i class="fa-solid fa-star star-rating" aria-hidden="true"></i> ${item.rating.toFixed(
                 1
               )}</span>
             </div>
@@ -460,12 +460,12 @@ function render() {
             </div>
             <div class="result-card__footer">
               <div class="result-card__actions">
-                <a class="btn btn-secondary" href="detalle.html?id=${
+                <a class="btn btn-secondary btn-sm" href="detalle.html?id=${
                   item.id
                 }">${
         window.I18n ? window.I18n.t("card_view_detail") : "Ver detalle"
       }</a>
-                <a class="btn btn-primary" href="chat.html">Quiero intercambiar</a>
+                <a class="btn btn-primary btn-sm" href="chat.html">Quiero intercambiar</a>
               </div>
             </div>
           </div>
@@ -551,9 +551,9 @@ function loadSavedSearches() {
   el.savedSearchesList.innerHTML = searches
     .map(
       (s) => `
-    <li class="saved-search-tag" data-saved-search="${s.id}">
-      <span>${s.query || "Todo"} ${s.category ? `(${s.category})` : ""}</span>
-      <span class="saved-search-remove" data-remove-saved-search="${s.id}">&times;</span>
+    <li class="saved-search-tag">
+      <button type="button" class="saved-search-apply" data-saved-search="${s.id}">${s.query || "Todo"} ${s.category ? `(${s.category})` : ""}</button>
+      <button type="button" class="saved-search-remove" data-remove-saved-search="${s.id}" aria-label="Quitar búsqueda guardada"><span aria-hidden="true">&times;</span></button>
     </li>
   `
     )

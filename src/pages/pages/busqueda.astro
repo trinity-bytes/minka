@@ -2,6 +2,11 @@
 /**
  * Search page: query, filters, saved searches and results. Port of
  * public/pages/busqueda.html. Logic: src/scripts/pages/search.js.
+ *
+ * Layout (visual-language T10b-2): no shell rail, because the rail stacks
+ * under the page below 1280px and the filters must stay above the results.
+ * The page grid instead puts filters + map in a side column on wide
+ * screens (>=1200px) and stacks filters / results / map below that.
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
 import FiltersPanel from "../../components/search/FiltersPanel.astro";
@@ -31,7 +36,7 @@ import "../../styles/pages/search.css";
       <div id="active-filters" class="filter-chips" aria-label="Filtros activos"></div>
       <!-- T30 - Andy Salcedo: Lista de Búsquedas Guardadas (HU32) -->
       <div id="saved-searches-container" class="saved-searches hidden">
-        <h3 data-i18n="search_saved_title">Búsquedas Guardadas</h3>
+        <h2 data-i18n="search_saved_title">Búsquedas Guardadas</h2>
         <ul id="saved-searches-list"></ul>
       </div>
     </div>
@@ -41,17 +46,15 @@ import "../../styles/pages/search.css";
     <div class="container search-grid">
       <FiltersPanel />
 
-      <div class="search-results-wrapper">
-        <Card as="section" class="results" shadow="md" aria-live="polite">
-          <div class="results__header">
-            <h2 data-i18n="search_results_title">Resultados</h2>
-            <p id="results-count">0 <span data-i18n="search_results_count">resultados</span></p>
-          </div>
-          <div class="results__grid" id="results-list"></div>
-        </Card>
+      <Card as="section" class="results" aria-live="polite">
+        <div class="results__header">
+          <h2 data-i18n="search_results_title">Resultados</h2>
+          <p id="results-count">0 <span data-i18n="search_results_count">resultados</span></p>
+        </div>
+        <div class="results__grid" id="results-list"></div>
+      </Card>
 
-        <MapPanel />
-      </div>
+      <MapPanel />
     </div>
   </section>
 
