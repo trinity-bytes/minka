@@ -1,8 +1,10 @@
 ---
 /**
- * Simulated social login buttons (Google / Facebook) plus the "or use your
- * email" divider. Buttons carry `data-social-provider`; the click is
- * handled in src/scripts/pages/auth.js (simulateSocialLogin).
+ * Simulated social login buttons (Google / Facebook) under a short "o"
+ * divider (T10c-4: they sit below the primary submit as the secondary
+ * route). Buttons carry `data-social-provider`; the click is handled in
+ * src/scripts/pages/auth.js (simulateSocialLogin). Side by side when the
+ * form panel is wide enough (container query on .auth-forms).
  */
 interface Props {
   mode: "login" | "register";
@@ -14,18 +16,17 @@ const COPY = {
   login: {
     google: { key: "auth_social_google", label: "Continuar con Google" },
     facebook: { key: "auth_social_facebook", label: "Continuar con Facebook" },
-    divider: { key: "auth_divider_email", label: "o ingresa con tu correo" },
   },
   register: {
     google: { key: "auth_social_google_reg", label: "Registrarse con Google" },
     facebook: { key: "auth_social_facebook_reg", label: "Registrarse con Facebook" },
-    divider: { key: "auth_divider_form", label: "o completa el formulario" },
   },
 } as const;
 
 const copy = COPY[mode];
 ---
 
+<div class="auth-divider" aria-hidden="true"><span>o</span></div>
 <div class="social-login">
   <button type="button" class="btn-social btn-google" data-social-provider="Google">
     <i class="fab fa-google"></i>
@@ -36,17 +37,20 @@ const copy = COPY[mode];
     <span data-i18n={copy.facebook.key}>{copy.facebook.label}</span>
   </button>
 </div>
-<div class="auth-divider">
-  <span data-i18n={copy.divider.key}>{copy.divider.label}</span>
-</div>
 
 <style>
   /* Flat pill buttons (visual-language T10b-2): Google white with a
      hairline, Facebook brand blue (white text 4.6:1). */
   .social-login {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-8);
+  }
+
+  @container auth-forms (min-width: 430px) {
+    .social-login {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   .btn-social {
@@ -56,12 +60,13 @@ const copy = COPY[mode];
     gap: var(--space-10);
     width: 100%;
     min-height: 48px;
-    padding: var(--space-8) var(--space-16);
+    padding: var(--space-8) var(--space-12);
     border: 1px solid var(--color-gray-200);
     border-radius: var(--radius-full);
     font-family: var(--font-primary);
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
     cursor: pointer;
     transition: background-color var(--dur-fast) var(--ease-standard);
   }
@@ -93,7 +98,7 @@ const copy = COPY[mode];
   .auth-divider {
     display: flex;
     align-items: center;
-    margin: var(--space-4) 0;
+    margin: 0;
     color: var(--color-ink-2);
     font-size: 0.85rem;
     text-align: center;

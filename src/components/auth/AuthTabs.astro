@@ -1,6 +1,6 @@
 ---
 /**
- * Pill tab control of the auth card (shared `.pill-tabs*` look from
+ * Pill tab control of the auth form panel (shared `.pill-tabs*` look from
  * app.css: active = ink pill, driven by aria-selected). Each tab targets
  * the form with the same `data-form`; src/scripts/pages/auth.js toggles
  * `modal__tab--active` / aria-selected (class names kept for the script).
@@ -38,24 +38,22 @@ const { tabs, active } = Astro.props;
 </div>
 
 <style>
-  /* Full-width track tinted so it reads inside the white card. */
+  /* Compact centered switch (T10c-4): equal columns for any tab count,
+     track tinted so it reads on the white form panel. */
   .modal__tabs {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     width: 100%;
+    max-width: 340px;
+    margin-inline: auto;
     background: var(--color-paper);
   }
 
   .modal__tab {
     min-width: 0;
     padding-inline: var(--space-8);
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     white-space: nowrap;
-  }
-
-  @media (min-width: 900px) {
-    .modal__tab {
-      font-size: 0.95rem;
-    }
   }
 </style>

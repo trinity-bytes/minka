@@ -1,10 +1,12 @@
 /* ============================================
-   Auth page layout (visual language T10b-2). Auth chrome only (AuthHeader,
-   no sidebar or tab bar). Tinted app background, a mint bento intro block
-   (desktop) beside a white rounded auth card; flat, no ink borders or
-   offset shadows (high contrast restores outlines). The h1 is the only
-   serif (same voice as ui/PageHead). Field, tab, social-login, demo-chip
-   and OTP styles live in src/components/auth/*.
+   Auth page layout (visual language T10c-4). Auth chrome only (AuthHeader,
+   no sidebar or tab bar). One rounded white split container centered on
+   the tinted background: the form panel on the left and, from 900px, an
+   inset photo panel on the right (concentric radius: bento outer, card
+   inner, separated by the container padding). Flat; high contrast and
+   forced colors hide the decorative photo and restore outlines. The title
+   and the photo tagline are the only serif. Field, tab, social-login,
+   demo-chip and OTP styles live in src/components/auth/*.
    ============================================ */
 :root {
   color-scheme: light;
@@ -16,115 +18,89 @@
   color: var(--color-ink);
 }
 
-/* === Layout: one column on phones, two on desktop === */
+/* === Page: center the split container below the header === */
 .auth-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-16);
-  align-items: start;
+  place-items: center;
   width: 100%;
-  max-width: 1080px;
+  max-width: calc(1100px + 48px);
   margin: 0 auto;
-  padding: var(--space-16) 16px var(--space-48);
+  padding: var(--space-8) 16px var(--space-40);
 }
 
-/* `svg.` beats the scoped Logomark display rule. */
-/* === Intro: plain title on phones, mint bento block on desktop === */
-.auth-hero {
-  position: relative;
-  overflow: clip;
+.auth-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: 560px;
+  padding: var(--space-10);
+  border-radius: var(--radius-bento);
+  background: var(--color-card);
 }
 
-.auth-hero svg.auth-hero__mark {
-  display: none;
-}
-
-.auth-hero__content {
-  position: relative;
+/* === Form panel === */
+.auth-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
-  padding: var(--space-8) var(--space-4) 0;
+  gap: var(--space-20);
+  width: 100%;
+  max-width: 460px;
+  margin-inline: auto;
+  padding: var(--space-24) var(--space-10) var(--space-16);
 }
 
-.auth-hero__content h1 {
+.auth-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  text-align: center;
+}
+
+.auth-title {
   margin: 0;
   font-family: var(--font-display);
   font-weight: var(--font-display-weight);
   font-variation-settings: var(--font-display-axes-text);
-  font-size: clamp(1.9rem, 1.2rem + 2.6vw, 3.2rem);
-  line-height: 1.02;
+  font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.6rem);
+  line-height: 1.05;
   letter-spacing: var(--font-display-tracking);
   color: var(--color-ink);
   text-wrap: balance;
 }
 
-.auth-hero__note {
-  max-width: 40ch;
+/* One title per mode, driven by which form auth.js leaves visible (no
+   extra script). Without :has() the login title stays. */
+.auth-title__text:not([data-auth-title="login"]) {
+  display: none;
+}
+
+.auth-panel:has(.auth-form[data-form="register"]:not(.is-hidden)) [data-auth-title="login"],
+.auth-panel:has(.auth-form[data-form="recovery"]:not(.is-hidden)) [data-auth-title="login"] {
+  display: none;
+}
+
+.auth-panel:has(.auth-form[data-form="register"]:not(.is-hidden)) [data-auth-title="register"],
+.auth-panel:has(.auth-form[data-form="recovery"]:not(.is-hidden)) [data-auth-title="recovery"] {
+  display: inline;
+}
+
+/* The pill switch has no recovery tab; hide it while recovering. */
+.auth-panel:has(.auth-form[data-form="recovery"]:not(.is-hidden)) .modal__tabs {
+  display: none;
+}
+
+.auth-intro__subtitle {
   margin: 0;
   color: var(--color-ink-2);
-  font-size: 1rem;
-  line-height: 1.55;
-}
-
-.auth-hero__note strong {
-  color: var(--color-ink);
-}
-
-.auth-hero__bullets {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-12);
-  margin: var(--space-8) 0 0;
-  padding: 0;
-  list-style: none;
-  color: var(--color-ink);
-  font-weight: 600;
-}
-
-.auth-hero__bullets li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-}
-
-.auth-hero__check {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  background: var(--color-brand);
-  color: var(--color-on-brand);
-  font-size: 0.8rem;
-}
-
-/* Phones: only the title, so the form is visible without scrolling. */
-@media (max-width: 899px) {
-  .auth-hero__note,
-  .auth-hero__bullets {
-    display: none;
-  }
-}
-
-/* === Auth card === */
-.auth-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-  padding: var(--space-20);
-  border-radius: var(--radius-card);
-  background: var(--color-card);
-}
-
-.auth-card__subtitle {
-  margin: 0;
-  color: var(--color-ink-2);
-  font-size: 0.92rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 /* === Forms (fields from the app primitives) === */
+.auth-forms {
+  container: auth-forms / inline-size;
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -145,10 +121,45 @@
 
 .auth-form .form__row {
   flex-wrap: wrap;
+  margin-top: calc(var(--space-8) * -1);
+}
+
+.auth-form .form__row .form__checkbox {
+  font-size: 0.88rem;
+}
+
+/* Button links: the UI face (buttons do not inherit it by default). */
+.auth-form .form__link {
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-primary);
+  font-size: 0.88rem;
 }
 
 .auth-form > .btn {
   width: 100%;
+}
+
+/* Switch line: "¿No tienes cuenta? Crear Cuenta". */
+.auth-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4) var(--space-8);
+  min-height: 44px;
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-switch .form__link {
+  min-height: 44px;
+  color: var(--color-ink);
+  font-weight: 800;
 }
 
 /* Legal links inside the terms checkbox */
@@ -158,67 +169,136 @@
   text-underline-offset: 2px;
 }
 
-/* === Desktop: two columns === */
+/* === Photo panel: hidden on phones and small tablets (the lazy image
+   inside a display:none box is never requested) === */
+.auth-photo {
+  display: none;
+}
+
 @media (min-width: 900px) {
   .auth-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: var(--space-32);
-    padding: var(--space-48) 24px var(--space-64);
+    min-height: calc(100dvh - 64px);
+    padding: var(--space-16) 24px var(--space-48);
   }
 
-  .auth-hero {
-    position: sticky;
-    top: 104px;
-    min-height: 26rem;
-    padding: var(--space-48) var(--space-40);
-    border-radius: var(--radius-bento);
-    background: var(--color-mint);
+  .auth-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+    max-width: 1100px;
   }
 
-  .auth-hero svg.auth-hero__mark {
-    position: absolute;
-    right: -28px;
-    bottom: -36px;
+  .auth-panel {
+    justify-content: center;
+    padding: var(--space-40) var(--space-32);
+  }
+
+  .auth-photo {
+    position: relative;
     display: block;
-    height: 220px;
-    opacity: 0.55;
-    rotate: -12deg;
+    overflow: hidden;
+    min-height: 34rem;
+    border-radius: calc(var(--radius-bento) - var(--space-10));
+    background: var(--color-ink-deep);
+    isolation: isolate;
   }
 
-  .auth-hero__content {
-    gap: var(--space-16);
-    padding: 0;
+  .auth-photo :where(picture) {
+    position: absolute;
+    inset: 0;
   }
 
-  .auth-card {
-    padding: var(--space-32);
+  .auth-photo__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% 40%;
+  }
+
+  /* Dark gradient so the tagline sits on near-solid ink-deep. */
+  .auth-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to top,
+      var(--color-ink-deep) 0%,
+      color-mix(in srgb, var(--color-ink-deep) 88%, transparent) 22%,
+      color-mix(in srgb, var(--color-ink-deep) 40%, transparent) 42%,
+      transparent 60%
+    );
+  }
+
+  .auth-photo__badge {
+    position: absolute;
+    top: var(--space-16);
+    right: var(--space-16);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--color-ink-deep);
+  }
+
+  .auth-photo__tagline {
+    position: absolute;
+    right: var(--space-32);
+    bottom: var(--space-32);
+    left: var(--space-32);
+    z-index: 2;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(1.9rem, 1rem + 1.7vw, 2.6rem);
+    line-height: 1.02;
+    letter-spacing: var(--font-display-tracking);
+    color: var(--color-paper);
+    text-wrap: balance;
+  }
+
+  /* Brand green on ink-deep is well above 4.5:1. */
+  .auth-photo__tagline em {
+    display: block;
+    font-style: normal;
+    color: var(--color-brand);
   }
 }
 
 /* === High contrast / forced colors === */
-body.high-contrast .auth-card,
-body.high-contrast .auth-hero {
+body.high-contrast .auth-split {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 560px;
   background: var(--color-hc-paper);
   color: var(--color-hc-ink);
   outline: 2px solid var(--color-hc-ink);
 }
 
-body.high-contrast .auth-hero svg.auth-hero__mark {
+body.high-contrast .auth-intro__subtitle,
+body.high-contrast .auth-switch,
+body.high-contrast .auth-title {
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .auth-form .form__link {
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .auth-photo {
   display: none;
 }
 
-body.high-contrast .auth-hero__check {
-  background: var(--color-hc-ink);
-  color: var(--color-hc-paper);
-}
-
 @media (forced-colors: active) {
-  .auth-card,
-  .auth-hero {
+  .auth-split {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 560px;
     border: 1px solid CanvasText;
   }
 
-  .auth-hero svg.auth-hero__mark {
+  .auth-photo {
     display: none;
   }
 }
