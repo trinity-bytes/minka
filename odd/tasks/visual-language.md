@@ -43,7 +43,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 - [x] T6b HowItWorks step photos (Pexels 7679885 / 9461489 / 11013648, supplied by user 2026-10-10) clipped with BlobMedia on each sticky card. Route: delegated.
 - [x] T7a Landing video, testimonials, final CTA. Route: delegated.
 - [x] T7b Landing footer + watermark, about, 404. Route: delegated.
-- [ ] T8 App shell 3 columns (AppLayout shell prop, AppSidebar, rail slot, slim header). VISUAL DECISION (mobile nav). Route: delegated.
+- [ ] T8 App shell 3 columns (AppLayout shell prop, AppSidebar, rail slot, slim header). Mobile nav decided 2026-10-10 (user chose A): bottom tab bar Inicio · Buscar · Publicar (central brand-green button) · Comunidad · Perfil; slim mobile header keeps Notificaciones + Chats; Salir moves into Perfil/sidebar. Route: delegated.
 - [ ] T9 App primitives restyle (buttons, badges, forms, modal, toast, toggle, PillTabs). Route: delegated.
 - [ ] T10a Adopt: home, comunidad, notificaciones. Route: delegated.
 - [ ] T10b Adopt: perfil, gamification, dashboard, busqueda, detalle, settings, chat, publicar, auth. Route: delegated.
@@ -95,4 +95,4 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 - 2026-10-10 delivery (user decision): landing slice T1-T7b approved visually; user waived PRs for this slice as a size exception (no business logic touched) and the user fast-forwarded `develop` 657711b..c30fe2c (21 commits, in order, no merge commit).
 
 ## Next step
-T8 app shell: present the mobile-nav visual decision to the user first (bottom tab bar vs drawer), then delegate. Reminder: PR #2 (fix/minor-backlog) still open.
+T8 app shell: mobile nav decided (bottom tab bar, option A); delegate the writer. Reminder: PR #2 (fix/minor-backlog) still open.
