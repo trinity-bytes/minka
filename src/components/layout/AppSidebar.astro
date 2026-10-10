@@ -2,15 +2,15 @@
 /**
  * Desktop app sidebar (>768px): logotype, primary nav with a dark ink
  * active pill, the unread counter on Notificaciones, the signed-in user
- * block (initials Avatar filled by app-shell.ts) with "Salir", and the
- * site links that used to live in AppFooter. 769-1099px it collapses to an
+ * block (initials Avatar filled by app-shell.ts) with "Salir". Site links
+ * live in AppSiteFooter at the end of <main>. 769-1099px it collapses to an
  * icon rail (labels stay in the accessibility tree). Hidden on phones,
  * where AppHeader + AppTabBar take over.
  */
 import Logotype from "../brand/Logotype.astro";
 import Logomark from "../brand/Logomark.astro";
 import Avatar from "../ui/Avatar.astro";
-import { LOGIN_HREF, SIDEBAR_ITEMS, SITE_LINKS, current } from "./app/nav";
+import { LOGIN_HREF, SIDEBAR_ITEMS, current } from "./app/nav";
 import { url } from "../../lib/url";
 
 const pathname = Astro.url.pathname;
@@ -66,13 +66,6 @@ const pathname = Astro.url.pathname;
       <span class="app-sidebar__label" data-i18n="nav_login">Ingresar</span>
     </a>
   </div>
-
-  <nav class="app-sidebar__site" aria-label="Enlaces del sitio">
-    <ul role="list">
-      {SITE_LINKS.map((link) => <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>)}
-    </ul>
-    <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
-  </nav>
 </div>
 
 <script>
@@ -168,8 +161,7 @@ const pathname = Astro.url.pathname;
   }
 
   .app-sidebar__link:focus-visible,
-  .app-sidebar__logo:focus-visible,
-  .app-sidebar__site a:focus-visible {
+  .app-sidebar__logo:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
@@ -239,36 +231,6 @@ const pathname = Astro.url.pathname;
     box-shadow: inset 0 0 0 1.5px currentColor;
   }
 
-  /* === Site links (former AppFooter) === */
-  .app-sidebar__site {
-    padding: 0 var(--space-12);
-    font-size: 0.78rem;
-    color: var(--color-gray-600);
-  }
-
-  .app-sidebar__site ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px var(--space-12);
-  }
-
-  .app-sidebar__site a {
-    color: var(--color-gray-600);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  .app-sidebar__site a:hover {
-    color: var(--color-ink);
-  }
-
-  .app-sidebar__site p {
-    margin: var(--space-8) 0 0;
-    font-size: inherit;
-    color: inherit;
-  }
-
   /* === Compact icon rail (tablet) === */
   @media (max-width: 1099px) {
     .app-sidebar {
@@ -321,10 +283,6 @@ const pathname = Astro.url.pathname;
       top: 2px;
       inset-inline-end: 2px;
       font-size: 0.68rem;
-    }
-
-    .app-sidebar__site {
-      display: none;
     }
   }
 

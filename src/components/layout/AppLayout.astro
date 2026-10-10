@@ -30,6 +30,7 @@ import BaseLayout from "./BaseLayout.astro";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../../styles/app.css";
 import AppChrome from "./app/AppChrome.astro";
+import AppSiteFooter from "./app/AppSiteFooter.astro";
 import AppTabBar from "./AppTabBar.astro";
 import AuthHeader from "./AuthHeader.astro";
 import { asset } from "../../lib/url";
@@ -79,6 +80,7 @@ const mainClasses = [withRail && "app-shell__main--rail", mainClass].filter(Bool
 // slots are not dropped. Fragment renders nothing for auth chrome.
 const Top = isApp ? AppChrome : AuthHeader;
 const Bottom = isApp ? AppTabBar : Fragment;
+const SiteFooter = isApp ? AppSiteFooter : Fragment;
 
 // Canonical load order (matches the legacy pages). `defer` scripts run
 // after parsing, before the page module and before DOMContentLoaded.
@@ -114,13 +116,17 @@ const legacy = ORDER.filter((s) => scripts.includes(s.name)).map((s) => ({
       <Fragment>
         <div class="app-shell__content">
           <slot />
+          <SiteFooter />
         </div>
         <aside class="app-shell__rail" aria-label="Panel lateral">
           <slot name="rail" />
         </aside>
       </Fragment>
     ) : (
-      <slot />
+      <Fragment>
+        <slot />
+        <SiteFooter />
+      </Fragment>
     )
   }
   <Bottom slot="footer" />
