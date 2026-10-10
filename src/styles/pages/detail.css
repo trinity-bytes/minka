@@ -2,14 +2,16 @@
 /* T18 - Leonardo Chavez: Estilos de modales de rating y reporte */
 /* T23 - Ronel Rojas: Variantes de badge para estados (now in app.css) */
 /* T33 - Timeline Styles */
-/* Visual language (T10b-2): white rounded cards on the tinted app
-   background, flat rows, pill badges, initials avatar for the owner and a
-   clear action hierarchy (one primary "Contactar", grouped secondary
-   actions, destructive ones last). The listing title is the only serif
-   (same voice as ui/PageHead; the h1 keeps its own markup because
-   detail.js rewrites #item-title and `.detail-hero__eyebrow`). Global (not
-   scoped) on purpose: detail.js renders the timeline, tags, spec rows,
-   thumbnails and similar cards as HTML strings. */
+/* Visual language (T10b-2, T10c-1): two zones with distinct roles instead of
+   equal cards. The listing (white, main column) tells the item story on one
+   surface: gallery, the reaction bar right under the photo, description
+   and history split by dividers. The decision panel (mint, side column)
+   holds the facts, the only primary action ("Contactar"), the owner and the
+   exchange pass ticket. The listing title is the only serif (same voice as
+   ui/PageHead; the h1 keeps its own markup because detail.js rewrites
+   #item-title and `.detail-hero__eyebrow`). Global (not scoped) on
+   purpose: detail.js renders the timeline, tags, spec rows, thumbnails and
+   similar cards as HTML strings. */
 
 .detail-main :where(h2, h3, h4) {
   font-family: var(--font-primary);
@@ -56,53 +58,80 @@
   color: var(--color-ink-2);
 }
 
-/* === Layout === */
+/* === Layout: listing + decision panel === */
 .detail-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 1fr);
+  grid-template-columns: minmax(0, 1.7fr) minmax(20rem, 1fr);
   gap: var(--space-24);
   align-items: start;
 }
 
-.detail-left,
-.detail-right {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
+.listing {
   min-width: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-card);
 }
 
-/* Card spacing (surfaces come from ui/Card). */
-.detail-layout .card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-12);
-  padding: var(--space-24) var(--space-24) 0;
+.listing__section {
+  margin: 0 var(--space-24);
+  padding: var(--space-24) 0;
+  border-top: 1px solid var(--color-gray-100);
 }
 
-.detail-layout .card__header h2 {
-  margin: 0;
-  font-size: 1.1rem;
+.listing__section h2 {
+  margin: 0 0 var(--space-12);
+  font-size: 1.15rem;
   color: var(--color-ink);
 }
 
-.detail-layout .card__body {
-  padding: var(--space-16) var(--space-24) var(--space-24);
-}
-
-.detail-layout .card__body > p {
+.listing__section > p {
   margin: 0;
   color: var(--color-ink-2);
   line-height: 1.6;
 }
 
-/* === Gallery: white card, photo inset with a concentric radius === */
-.gallery {
-  --gallery-pad: 10px;
-  padding: var(--gallery-pad);
+.decision {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--space-8) var(--space-20) var(--space-20);
   border-radius: var(--radius-card);
-  background: var(--color-card);
+  background: var(--color-mint);
+}
+
+/* Sticky only when the whole panel fits the viewport. */
+@media (min-width: 961px) and (min-height: 1180px) {
+  .decision {
+    position: sticky;
+    top: var(--space-24);
+  }
+}
+
+.decision__section {
+  padding: var(--space-16) 0;
+}
+
+.decision__section + .decision__section {
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+
+.decision__label {
+  margin: 0 0 var(--space-8);
+  color: var(--color-ink-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* === Media: gallery inset in the listing, concentric radius === */
+.listing__media {
+  --gallery-pad: 10px;
+  padding: var(--gallery-pad) var(--gallery-pad) var(--space-12);
+}
+
+.gallery {
+  border-radius: calc(var(--radius-card) - var(--gallery-pad));
 }
 
 .gallery__main {
@@ -153,6 +182,257 @@
   outline-offset: 3px;
 }
 
+/* === Reaction bar: round icon actions under the photo === */
+.reactions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+  padding: 0 var(--space-8);
+}
+
+.reactions__group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.reaction {
+  position: relative;
+}
+
+.reaction__btn {
+  --reaction-bg: var(--color-paper-2);
+  --reaction-fg: var(--color-ink);
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--reaction-bg);
+  color: var(--reaction-fg);
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.reaction__btn--brand {
+  --reaction-bg: var(--color-brand);
+  --reaction-fg: var(--color-on-brand);
+}
+
+.reaction__btn--lavender {
+  --reaction-bg: var(--color-lavender);
+  --reaction-fg: var(--color-on-lavender);
+}
+
+.reaction__btn--mint {
+  --reaction-bg: var(--color-mint);
+}
+
+.reaction__btn--ink {
+  --reaction-bg: var(--color-ink);
+  --reaction-fg: var(--color-card);
+}
+
+.reaction__btn:hover {
+  background: color-mix(in srgb, var(--reaction-bg) 88%, var(--color-ink));
+}
+
+.reaction__btn--ink:hover,
+.reaction--menu.is-open .reaction__btn {
+  background: var(--color-ink-2);
+}
+
+.reaction__btn:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reaction__btn {
+    transition:
+      scale var(--dur-fast) var(--ease-standard),
+      background-color var(--dur-fast) var(--ease-standard);
+  }
+
+  .reaction__btn:hover {
+    scale: 1.1;
+  }
+
+  .reaction__btn:active {
+    scale: 0.96;
+  }
+}
+
+/* Tooltip: above the button, on hover and keyboard focus. The invisible
+   bridge keeps it hoverable (WCAG 1.4.13); Escape adds .is-tip-dismissed.
+   Edge buttons anchor it to their side so it never leaves the bar. */
+.reaction__tip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 5;
+  width: max-content;
+  max-width: min(15rem, calc(100vw - 2 * var(--space-16)));
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-ink);
+  color: var(--color-card);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  translate: -50% 4px;
+}
+
+.reaction__tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  height: 12px;
+}
+
+.reactions__group:first-of-type .reaction:first-child .reaction__tip {
+  left: 0;
+  translate: 0 4px;
+}
+
+.reactions__group--end .reaction__tip {
+  right: 0;
+  left: auto;
+  translate: 0 4px;
+}
+
+.reaction:hover .reaction__tip,
+.reaction:has(.reaction__btn:focus-visible) .reaction__tip {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  translate: -50% 0;
+}
+
+.reactions__group:first-of-type .reaction:first-child:is(:hover, :has(:focus-visible)) .reaction__tip,
+.reactions__group--end .reaction:is(:hover, :has(:focus-visible)) .reaction__tip {
+  translate: 0 0;
+}
+
+.reaction.is-tip-dismissed .reaction__tip,
+.reaction.is-open .reaction__tip {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reaction__tip {
+    transition:
+      opacity var(--dur-fast) var(--ease-standard),
+      translate var(--dur-fast) var(--ease-standard),
+      visibility var(--dur-fast);
+  }
+}
+
+/* "Gestionar" menu: owner actions, destructive one last and separated. */
+.manage-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  /* Above the phone tab bar and sticky CTA, below modals. */
+  z-index: calc(var(--z-overlay) + 1);
+  width: max-content;
+  min-width: 15rem;
+  padding: var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  box-shadow: var(--shadow-xl);
+}
+
+.manage-menu[hidden] {
+  display: none;
+}
+
+/* Phones: open upward over the photo, clear of the fixed bottom bars. */
+@media (max-width: 768px) {
+  .manage-menu {
+    top: auto;
+    bottom: calc(100% + 8px);
+  }
+}
+
+.manage-menu__label {
+  margin: 0;
+  padding: var(--space-8) var(--space-12) var(--space-4);
+  color: var(--color-ink-2);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.manage-menu__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.manage-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-12);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.manage-menu__item .fas {
+  width: 1.1rem;
+  color: var(--color-ink-2);
+  text-align: center;
+}
+
+.manage-menu__item:hover,
+.manage-menu__item:focus-visible {
+  background: var(--color-paper-2);
+}
+
+.manage-menu__item:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: -2px;
+}
+
+.manage-menu__danger {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.manage-menu__item--danger,
+.manage-menu__item--danger .fas {
+  color: var(--color-error-ink);
+}
+
+.manage-menu__item--danger:hover,
+.manage-menu__item--danger:focus-visible {
+  background: color-mix(in srgb, var(--color-error) 10%, var(--color-card));
+}
+
 /* === Tags, facts === */
 .tag-list {
   display: flex;
@@ -165,11 +445,10 @@
   display: none;
 }
 
-.detail-summary .detail-info {
+.detail-info {
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding-bottom: var(--space-8);
 }
 
 .info-row {
@@ -183,7 +462,7 @@
 }
 
 .info-row + .info-row {
-  border-top: 1px solid var(--color-gray-100);
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
 }
 
 .info-row strong {
@@ -196,20 +475,19 @@
   color: var(--color-warning);
 }
 
-/* Primary CTA block of the summary card. */
+/* The page's only primary action. */
 .detail-cta {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-8);
-  padding: 0 var(--space-24) var(--space-24);
+  margin-top: var(--space-16);
 }
 
 .detail-cta .btn {
   width: 100%;
 }
 
-/* === Owner card === */
-.seller-card .seller {
+/* === Owner === */
+.seller {
   display: flex;
   align-items: center;
   gap: var(--space-12);
@@ -264,21 +542,61 @@
   --seller-avatar-fg: var(--color-on-lavender);
 }
 
-/* === Actions: grouped secondary actions, destructive last === */
-.actions {
+/* === Exchange pass: a ticket with a brand strip, a real QR, a perforated
+   tear line and a stub. The code box stays dark-on-white in every mode. === */
+.qr-pass {
+  --pass-notch: var(--color-mint);
+  --pass-pad: var(--space-20);
+  position: relative;
+  container-type: inline-size;
+  margin-top: var(--space-8);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+}
+
+.qr-pass__strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--pass-pad);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+
+.qr-pass__strip .logotype {
+  height: 22px;
+}
+
+.qr-pass__kind {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qr-pass__main {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16) var(--pass-pad) var(--space-20);
 }
 
-.actions__group {
+.qr-pass__heading {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-8);
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-12);
+  width: 100%;
 }
 
-.actions__label {
-  flex-basis: 100%;
+.qr-pass__titles {
+  min-width: 0;
+}
+
+.qr-pass__heading h2 {
   margin: 0;
   color: var(--color-ink-2);
   font-size: 0.78rem;
@@ -287,49 +605,156 @@
   text-transform: uppercase;
 }
 
-.actions__group .btn {
-  flex: 1 1 auto;
-  justify-content: flex-start;
+.qr-pass__item {
+  margin: 2px 0 0;
+  color: var(--color-ink);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
-.actions__group--risk {
-  padding-top: var(--space-16);
-  border-top: 1px solid var(--color-gray-100);
+.qr-pass__heading .badge {
+  flex: none;
 }
 
-/* Destructive action as an outlined danger pill; it fills on hover. */
-.actions .btn-danger {
-  --btn-bg: transparent;
-  --btn-fg: var(--color-error-ink);
-  --btn-border: color-mix(in srgb, var(--color-error) 45%, transparent);
+.qr-pass__code {
+  position: relative;
+  width: min(100%, 220px);
+  aspect-ratio: 1;
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  overflow: hidden;
+  forced-color-adjust: none;
 }
 
-.actions .btn-danger:hover {
-  --btn-fg: #ffffff;
-  --btn-bg: var(--color-error);
+.qr-pass__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  shape-rendering: crispEdges;
 }
 
-/* === QR card === */
-.qr-card__body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-12);
+.qr-pass__light {
+  fill: var(--color-card);
 }
 
-.qr-frame {
+.qr-pass__dark {
+  fill: var(--color-ink);
+}
+
+/* White rounded square over the modules detail.js leaves clear. */
+.qr-pass__logo {
+  position: absolute;
+  top: var(--qr-logo-start, 40%);
+  left: var(--qr-logo-start, 40%);
   display: grid;
   place-items: center;
-  padding: var(--space-16);
-  border-radius: var(--radius-lg);
-  background: var(--color-paper);
+  width: var(--qr-logo-size, 20%);
+  height: var(--qr-logo-size, 20%);
+  border-radius: 22%;
+  background: var(--color-card);
 }
 
-.qr-frame img {
-  display: block;
-  width: 180px;
-  height: 180px;
-  border-radius: var(--radius-sm);
+.qr-pass__logo .logomark {
+  height: 70%;
+}
+
+.qr-pass__empty {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  color: var(--color-gray-400);
+  font-size: 3rem;
+}
+
+.qr-pass__code.is-empty {
+  border-style: dashed;
+  border-color: var(--color-gray-300);
+}
+
+.qr-pass__code.is-empty .qr-pass__svg,
+.qr-pass__code.is-empty .qr-pass__logo {
+  visibility: hidden;
+}
+
+.qr-pass__code.is-empty .qr-pass__empty {
+  display: grid;
+}
+
+.qr-pass__hint {
+  margin: 0;
+  max-width: 30ch;
+  color: var(--color-ink-2);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* Perforation: dashed line between two notches cut in the panel color. */
+.qr-pass__tear {
+  position: relative;
+  height: 0;
+  margin: 0 var(--space-16);
+  border-top: 2px dashed var(--color-gray-200);
+}
+
+.qr-pass__tear::before,
+.qr-pass__tear::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--pass-notch);
+}
+
+.qr-pass__tear::before {
+  left: calc(-1 * var(--space-16) - 11px);
+}
+
+.qr-pass__tear::after {
+  right: calc(-1 * var(--space-16) - 11px);
+}
+
+.qr-pass__stub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16) var(--pass-pad) var(--space-20);
+}
+
+.qr-pass__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8) var(--space-20);
+  margin: 0;
+}
+
+.qr-pass__meta > div {
+  min-width: 0;
+}
+
+.qr-pass__meta > div[hidden] {
+  display: none;
+}
+
+.qr-pass__meta dt {
+  color: var(--color-ink-2);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.qr-pass__meta dd {
+  margin: 2px 0 0;
+  color: var(--color-ink);
+  font-size: 0.88rem;
+  font-weight: 600;
 }
 
 .qr-canvas {
@@ -337,25 +762,33 @@
 }
 
 .qr-code {
-  margin: 0;
-  max-width: 100%;
   overflow-wrap: anywhere;
-  color: var(--color-ink-2);
+  color: var(--color-ink);
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
   font-size: 0.8rem;
-  text-align: center;
 }
 
 .qr-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: var(--space-8);
+}
+
+.qr-actions .btn {
+  min-width: 0;
+  padding-inline: var(--space-12);
 }
 
 .qr-actions #qr-reissue {
   width: 36px;
   padding: 0;
+}
+
+/* Narrow pass (side column at ~1024px): text-only actions so labels fit. */
+@container (max-width: 300px) {
+  .qr-actions .btn:not(#qr-reissue) .fas {
+    display: none;
+  }
 }
 
 /* === Timeline (T33) === */
@@ -629,18 +1062,53 @@
 @media (max-width: 960px) {
   .detail-grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-16);
+    gap: var(--space-12);
   }
 
-  /* One column: photos, summary + CTA, description, owner, actions, QR,
-     history. Only the visual order changes; the description and history
-     hold no focusable elements, so focus order still follows it. */
-  .detail-left,
-  .detail-right {
+  /* One column: photos + reactions, summary + CTA, description, owner,
+     pass, history. Both zones dissolve into their sections (each keeps its
+     zone surface) and only the visual order changes; the description and
+     history hold no focusable elements, so focus order still follows it. */
+  .listing,
+  .decision {
     display: contents;
   }
 
-  .gallery {
+  .listing > *,
+  .decision > .decision__section {
+    margin: 0;
+    border-radius: var(--radius-card);
+  }
+
+  .listing > * {
+    background: var(--color-card);
+  }
+
+  .listing__section {
+    padding: var(--space-20);
+    border-top: 0;
+  }
+
+  .decision > .decision__section {
+    padding: var(--space-16) var(--space-20) var(--space-20);
+    background: var(--color-mint);
+  }
+
+  .decision__section + .decision__section {
+    border-top: 0;
+  }
+
+  .qr-pass {
+    --pass-notch: var(--color-bg);
+    margin-top: 0;
+    border-radius: var(--radius-card);
+  }
+
+  .qr-pass__strip {
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+  }
+
+  .listing__media {
     order: 1;
   }
 
@@ -656,16 +1124,25 @@
     order: 4;
   }
 
-  .detail-actions {
+  .qr-pass {
     order: 5;
   }
 
-  .qr-card {
+  .detail-timeline {
     order: 6;
   }
 
-  .detail-timeline {
-    order: 7;
+  body.high-contrast .listing > *,
+  body.high-contrast .decision > .decision__section {
+    background: var(--color-hc-paper);
+    outline: 2px solid var(--color-hc-ink);
+  }
+}
+
+@media (max-width: 960px) and (forced-colors: active) {
+  .listing > *,
+  .decision > .decision__section {
+    border: 1px solid CanvasText;
   }
 }
 
@@ -679,14 +1156,6 @@
     max-height: 300px;
   }
 
-  .detail-layout .card__header {
-    padding: var(--space-20) var(--space-20) 0;
-  }
-
-  .detail-layout .card__body,
-  .detail-cta {
-    padding-inline: var(--space-20);
-  }
 }
 
 @media (max-width: 480px) {
@@ -696,9 +1165,12 @@
 }
 
 /* === High contrast / forced colors === */
-body.high-contrast .gallery,
+body.high-contrast .listing,
+body.high-contrast .decision,
+body.high-contrast .qr-pass,
+body.high-contrast .qr-pass__strip,
+body.high-contrast .manage-menu,
 body.high-contrast .similar-card,
-body.high-contrast .qr-frame,
 body.high-contrast .sticky-cta,
 body.high-contrast .eco-metric,
 body.high-contrast .detail-hero__eyebrow,
@@ -706,6 +1178,74 @@ body.high-contrast .seller-avatar {
   background: var(--color-hc-paper);
   color: var(--color-hc-ink);
   outline: 2px solid var(--color-hc-ink);
+}
+
+/* Reaction discs and tooltips: white with a black ring / black with white
+   text; the danger item keeps its meaning through the icon and label. */
+body.high-contrast .reaction__btn {
+  --reaction-bg: var(--color-hc-paper);
+  --reaction-fg: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .reaction__btn:hover,
+body.high-contrast .reaction--menu.is-open .reaction__btn {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .reaction__btn:focus-visible {
+  outline-width: 3px;
+}
+
+body.high-contrast .reaction__tip {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .manage-menu__item,
+body.high-contrast .manage-menu__item .fas,
+body.high-contrast .qr-pass__strip *,
+body.high-contrast .info-row strong,
+body.high-contrast .decision__label {
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .qr-pass__strip .logotype path {
+  fill: var(--color-hc-ink);
+}
+
+body.high-contrast .manage-menu__item:hover,
+body.high-contrast .manage-menu__item:focus-visible {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .manage-menu__item:hover .fas,
+body.high-contrast .manage-menu__item:focus-visible .fas {
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .qr-pass {
+  --pass-notch: var(--color-hc-paper);
+}
+
+body.high-contrast .qr-pass__tear {
+  border-top-color: var(--color-hc-ink);
+}
+
+body.high-contrast .qr-pass__code {
+  border: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .qr-pass__light,
+body.high-contrast .qr-pass__logo {
+  fill: var(--color-hc-paper);
+  background: var(--color-hc-paper);
+}
+
+body.high-contrast .qr-pass__dark {
+  fill: var(--color-hc-ink);
 }
 
 body.high-contrast .eco-metric * {
@@ -738,9 +1278,13 @@ body.high-contrast .sticky-cta a.btn-primary {
 }
 
 @media (forced-colors: active) {
-  .gallery,
+  .listing,
+  .decision,
+  .qr-pass,
+  .manage-menu,
+  .reaction__tip,
+  .reaction__btn,
   .similar-card,
-  .qr-frame,
   .sticky-cta,
   .eco-metric,
   .seller-avatar {
@@ -749,5 +1293,26 @@ body.high-contrast .sticky-cta a.btn-primary {
 
   .timeline-item.completed .timeline-marker {
     background: CanvasText;
+  }
+
+  /* The QR box opts out of forced colors: always dark modules on white. */
+  .qr-pass__light,
+  .qr-pass__logo {
+    fill: #ffffff;
+    background: #ffffff;
+  }
+
+  .qr-pass__dark {
+    fill: #000000;
+  }
+
+  .qr-pass__logo .logomark {
+    fill: #000000;
+  }
+
+  /* Logotype's scoped ink tone outranks its own forced-colors rule. */
+  .qr-pass .qr-pass__strip .logotype path.logotype__glyphs,
+  .qr-pass .qr-pass__strip .logotype path.logotype__leaf {
+    fill: CanvasText;
   }
 }

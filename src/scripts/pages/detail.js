@@ -8,6 +8,8 @@
 import { ECO_FACTORS } from "../../lib/eco";
 import { token } from "../tokens";
 import { avatarTone, initials } from "../lib/avatar.js";
+import { qrMatrix, qrPath, logoArea, drawQr, codeIssuedAt } from "../lib/qr.js";
+import { LOGOMARK } from "../../assets/brand/paths";
 
 const mockDetail = {
   id: "itm-001",
@@ -44,6 +46,14 @@ const qrText = document.getElementById("qr-code-text");
 const qrStatus = document.getElementById("qr-status");
 const qrDownload = document.getElementById("qr-download");
 const qrShare = document.getElementById("qr-share");
+// Declared before init() runs (it renders the QR on load).
+const QR_MARGIN = 4; // quiet zone, in modules
+const QR_LOGO_RATIO = 0.2; // logo square ≤ 20% of the code width
+const qrSvg = document.getElementById("qr-svg");
+const qrModules = document.getElementById("qr-modules");
+const qrPassItem = document.getElementById("qr-pass-item");
+const qrIssuedRow = document.getElementById("qr-issued-row");
+const qrIssued = document.getElementById("qr-issued");
 
 const thumbs = document.getElementById("gallery-thumbs");
 const mainImg = document.getElementById("gallery-main");
@@ -214,6 +224,7 @@ function renderTimeline() {
 function renderDetail(item) {
   if (!item) return;
   el.title.textContent = item.title;
+  if (qrPassItem) qrPassItem.textContent = item.title;
   const breadcrumbCurrent = document.getElementById("breadcrumb-current");
   if (breadcrumbCurrent) breadcrumbCurrent.textContent = item.title;
   el.meta.textContent = `${item.category} · ${item.location} · ${item.condition}`;
@@ -405,6 +416,7 @@ function bindActions() {
     }).then((newTitle) => {
       if (newTitle) {
         el.title.textContent = newTitle;
+        if (qrPassItem) qrPassItem.textContent = newTitle;
         persistItemPatch({ title: newTitle });
         Toast.show("Cambios guardados exitosamente.", "success");
       }
@@ -637,7 +649,7 @@ function updateState(state) {
 }
 
 function setPlaceholderQr(label = "Pendiente") {
-  qrImage.src = "../assets/images/QR-generico.svg";
+  clearQrImage();
   qrText.textContent = label === "Pendiente" ? "Sin generar" : label;
   qrStatus.textContent = label;
   qrDownload.disabled = true;
@@ -657,53 +669,70 @@ function generateQr() {
   qrShare.disabled = false;
 }
 
-// Dibuja el pseudo-QR en el canvas y refleja el resultado en la imagen.
-// Si no hay canvas disponible, cae al SVG genérico.
+// Exchange pass QR (T10c-1): a real, scannable code (level H) drawn as one
+// SVG path with the Mink'a leaf on a white square at the center, plus the
+// same matrix on the hidden canvas for the downloadable/shareable PNG.
+
 function renderQrImage(code) {
-  if (qrCanvas && qrCtx) {
-    drawPseudoQr(code);
-    qrImage.src = qrCanvas.toDataURL("image/png");
-  } else {
-    qrImage.src = "../assets/images/QR-generico.svg";
+  const { matrix, size } = qrMatrix(code);
+  const clear = logoArea(size, QR_LOGO_RATIO);
+  const total = size + QR_MARGIN * 2;
+
+  if (qrSvg && qrModules) {
+    qrSvg.setAttribute("viewBox", `0 0 ${total} ${total}`);
+    qrModules.setAttribute("d", qrPath(matrix, { margin: QR_MARGIN, clear }));
   }
+  qrImage.style.setProperty("--qr-logo-start", `${((clear.start + QR_MARGIN) / total) * 100}%`);
+  qrImage.style.setProperty("--qr-logo-size", `${((clear.end - clear.start) / total) * 100}%`);
+  qrImage.classList.remove("is-empty");
+  qrImage.setAttribute("aria-label", `Código QR de intercambio: ${code}`);
+
+  const issued = codeIssuedAt(code);
+  if (qrIssuedRow && qrIssued) {
+    qrIssuedRow.hidden = !issued;
+    qrIssued.textContent = issued
+      ? issued.toLocaleDateString("es-PE", { day: "numeric", month: "short", year: "numeric" })
+      : "";
+  }
+
+  if (qrCanvas && qrCtx) drawQrCanvas(matrix, clear);
 }
 
-function drawPseudoQr(seedStr) {
-  const size = 25;
-  const cell = qrCanvas.width / size;
-  const seed = seedStr
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  let rng = seed;
+function clearQrImage() {
+  qrModules?.setAttribute("d", "");
+  qrImage.classList.add("is-empty");
+  qrImage.setAttribute("aria-label", "QR sin generar");
+  if (qrIssuedRow) qrIssuedRow.hidden = true;
+}
 
-  const next = () => {
-    rng ^= rng << 13;
-    rng ^= rng >> 17;
-    rng ^= rng << 5;
-    return Math.abs(rng);
-  };
+// Canvas cannot read CSS custom properties: resolve the tokens first.
+function drawQrCanvas(matrix, clear) {
+  const px = qrCanvas.width;
+  const cell = drawQr(qrCtx, matrix, {
+    px,
+    margin: QR_MARGIN,
+    dark: token("--color-ink"),
+    light: token("--color-card"),
+    clear,
+  });
 
-  // Canvas cannot read CSS custom properties: resolve the tokens first.
-  const colors = {
-    paper: token("--color-on-primary"),
-    ink: token("--color-secondary-dark"),
-    accent: token("--color-primary-pop"),
-  };
+  // White rounded square with the leaf over the cleared modules.
+  const x = (clear.start + QR_MARGIN) * cell;
+  const side = (clear.end - clear.start) * cell;
+  qrCtx.fillStyle = token("--color-card");
+  qrCtx.beginPath();
+  qrCtx.roundRect(x, x, side, side, side * 0.22);
+  qrCtx.fill();
 
-  qrCtx.fillStyle = colors.paper;
-  qrCtx.fillRect(0, 0, qrCanvas.width, qrCanvas.height);
-  for (let y = 0; y < size; y += 1) {
-    for (let x = 0; x < size; x += 1) {
-      const value = next();
-      if (value % 3 === 0) {
-        qrCtx.fillStyle = colors.ink;
-        qrCtx.fillRect(x * cell, y * cell, cell, cell);
-      } else if (value % 7 === 0) {
-        qrCtx.fillStyle = colors.accent;
-        qrCtx.fillRect(x * cell, y * cell, cell, cell);
-      }
-    }
-  }
+  const [vx, vy, vw, vh] = LOGOMARK.viewBox.split(" ").map(Number);
+  const scale = (side * 0.7) / vh;
+  qrCtx.save();
+  qrCtx.translate(x + side / 2, x + side / 2);
+  qrCtx.scale(scale, scale);
+  qrCtx.translate(-(vx + vw / 2), -(vy + vh / 2));
+  qrCtx.fillStyle = token("--color-brand");
+  qrCtx.fill(new Path2D(LOGOMARK.leaf));
+  qrCtx.restore();
 }
 
 function openModal(modal) {

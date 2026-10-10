@@ -11,9 +11,8 @@
 import AppLayout from "../../components/layout/AppLayout.astro";
 import Breadcrumb from "../../components/ui/Breadcrumb.astro";
 import Button from "../../components/ui/Button.astro";
-import CardSection from "../../components/ui/CardSection.astro";
-import Card from "../../components/ui/Card.astro";
 import Gallery from "../../components/detail/Gallery.astro";
+import ReactionBar from "../../components/detail/ReactionBar.astro";
 import SellerCard from "../../components/detail/SellerCard.astro";
 import QrCard from "../../components/detail/QrCard.astro";
 import OfflineModal from "../../components/detail/OfflineModal.astro";
@@ -31,27 +30,9 @@ const FACTS = [
   { label: "Reputación", id: "item-rating" },
 ];
 
-// Owner / visitor actions (all simulated by detail.js), grouped by intent
-// (visual-language T10b-2): Contactar is the only primary action and sits
-// with Compartir in the summary card; the rest are secondary or ghost
-// buttons grouped below, destructive ones last. Every id/i18n key kept.
-type Action = { id: string; key: string; label: string; icon: string };
-const EXCHANGE_ACTIONS: Action[] = [
-  // T33 - Miguel Sanca: offline close (HU41)
-  { id: "action-offline-close", key: "detail_action_offline", label: "Cierre Offline (Código)", icon: "fa-key" },
-  { id: "action-rate", key: "common_rate_title", label: "Calificar intercambio", icon: "fa-star" },
-];
-const MANAGE_ACTIONS: Action[] = [
-  { id: "action-edit", key: "detail_action_edit", label: "Editar publicación", icon: "fa-pen" },
-  { id: "action-pause", key: "detail_action_pause", label: "Pausar publicación", icon: "fa-pause" },
-  { id: "action-reserve", key: "detail_action_reserve", label: "Marcar como reservada", icon: "fa-bookmark" },
-  { id: "action-activate", key: "detail_action_resume", label: "Reanudar publicación", icon: "fa-play" },
-  { id: "action-close", key: "detail_action_close", label: "Cerrar publicación", icon: "fa-box-archive" },
-];
-const RISK_ACTIONS: (Action & { variant: "danger" | "ghost" })[] = [
-  { id: "action-delete", key: "detail_action_delete", label: "Eliminar publicación", icon: "fa-trash", variant: "danger" },
-  { id: "action-report", key: "detail_action_report", label: "Reportar publicación", icon: "fa-flag", variant: "ghost" },
-];
+// Specs appended by detail.js (Marca, Modelo, Color) join these rows.
+// Actions live in the reaction bar under the gallery (ReactionBar); the
+// decision panel keeps one primary action, "Contactar" (T10c-1).
 ---
 
 <AppLayout
@@ -76,27 +57,36 @@ const RISK_ACTIONS: (Action & { variant: "danger" | "ghost" })[] = [
     <p class="detail-hero__meta" id="item-meta">Categoría · Ubicación · Estado</p>
   </section>
 
+  <!-- Two zones (T10c-1): the listing tells the item story on one white
+       surface; the tinted decision panel holds facts, the only primary
+       action, the owner and the exchange pass. -->
   <section class="detail-layout" aria-label="Ficha de publicación">
     <div class="container detail-grid">
-      <div class="detail-left">
-        <Gallery />
+      <article class="listing" aria-labelledby="item-title">
+        <div class="listing__media">
+          <Gallery />
+          <ReactionBar />
+        </div>
 
-        <CardSection class="detail-description" title="Descripción" titleKey="detail_description" level={2}>
+        <section class="listing__section detail-description" aria-labelledby="description-title">
+          <h2 id="description-title" data-i18n="detail_description">Descripción</h2>
           <p id="item-description">
             Descripción del objeto. Se actualizará con datos simulados en el script.
           </p>
           <div class="tag-list" id="item-tags"></div>
-        </CardSection>
+        </section>
 
         <!-- T33 - Miguel Sanca: Historial de Trazabilidad (HU40) -->
-        <CardSection class="detail-timeline" title="Historial del Objeto" titleKey="detail_timeline_title" level={2}>
+        <section class="listing__section detail-timeline" aria-labelledby="timeline-title">
+          <h2 id="timeline-title" data-i18n="detail_timeline_title">Historial del Objeto</h2>
           <ul class="timeline" id="item-timeline"></ul>
-        </CardSection>
-      </div>
+        </section>
+      </article>
 
-      <aside class="detail-right" aria-label="Resumen y acciones">
-        <Card class="detail-summary">
-          <div class="card__body detail-info">
+      <aside class="decision" aria-label="Resumen y acciones">
+        <section class="detail-summary decision__section" aria-labelledby="summary-title">
+          <h2 class="decision__label" id="summary-title">Ficha del objeto</h2>
+          <div class="detail-info">
             {
               FACTS.map((f) => (
                 <div class="info-row">
@@ -115,49 +105,10 @@ const RISK_ACTIONS: (Action & { variant: "danger" | "ghost" })[] = [
               id="action-contact"
               data-i18n="detail_contact">Contactar</Button
             >
-            <Button appearance="flat" variant="secondary" size="lg" id="action-share">
-              <i class="fas fa-share-nodes" aria-hidden="true"></i>
-              Compartir
-            </Button>
           </div>
-        </Card>
+        </section>
 
         <SellerCard />
-
-        <CardSection class="detail-actions" title="Acciones" titleKey="detail_actions_title" level={2} bodyClass="actions">
-          <div class="actions__group" role="group" aria-labelledby="actions-exchange">
-            <p class="actions__label" id="actions-exchange">Intercambio</p>
-            {
-              EXCHANGE_ACTIONS.map((a) => (
-                <Button appearance="flat" variant="secondary" size="sm" id={a.id}>
-                  <i class:list={["fas", a.icon]} aria-hidden="true" />
-                  <span data-i18n={a.key}>{a.label}</span>
-                </Button>
-              ))
-            }
-          </div>
-          <div class="actions__group" role="group" aria-labelledby="actions-manage">
-            <p class="actions__label" id="actions-manage">Gestionar publicación</p>
-            {
-              MANAGE_ACTIONS.map((a) => (
-                <Button appearance="flat" variant="secondary" size="sm" id={a.id}>
-                  <i class:list={["fas", a.icon]} aria-hidden="true" />
-                  <span data-i18n={a.key}>{a.label}</span>
-                </Button>
-              ))
-            }
-          </div>
-          <div class="actions__group actions__group--risk">
-            {
-              RISK_ACTIONS.map((a) => (
-                <Button appearance="flat" variant={a.variant} size="sm" id={a.id}>
-                  <i class:list={["fas", a.icon]} aria-hidden="true" />
-                  <span data-i18n={a.key}>{a.label}</span>
-                </Button>
-              ))
-            }
-          </div>
-        </CardSection>
 
         <QrCard />
       </aside>
