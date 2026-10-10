@@ -2,7 +2,8 @@
 /**
  * Small print at the end of the main column on every app page: the site
  * links and copyright that used to live in AppFooter. It sits inside <main>
- * (after the page content, before the tab bar offset), so it is reached at
+ * (after the page content and rail), pinned to the viewport bottom on short
+ * pages by the sticky-footer rules in app.css, so it is reached at
  * the end of the scroll on every width and does not compete with the nav.
  */
 import { SITE_LINKS } from "./nav";
@@ -20,9 +21,12 @@ import { SITE_LINKS } from "./nav";
 </footer>
 
 <style>
-  /* .container supplies the same gutter and max width as the page sections. */
+  /* .container supplies the same gutter and max width as the page sections.
+     margin-top: auto pins it to the bottom of <main> (a flex column, or the
+     last grid row on rail pages) when the page is shorter than the viewport. */
   .app-site-footer {
-    margin-top: var(--space-48);
+    margin-top: auto;
+    padding-top: var(--space-48);
   }
 
   .app-site-footer__inner {

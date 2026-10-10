@@ -21,6 +21,24 @@ body.app-shell {
   --app-tabbar-offset: calc(var(--app-tabbar-h) + env(safe-area-inset-bottom));
   background-color: var(--color-bg);
   padding-inline-start: var(--app-sidebar-w);
+  /* Sticky footer: <main> fills the viewport so AppSiteFooter (margin-top:
+     auto) rests on the bottom edge of short pages and follows the content
+     on long ones. Body padding (tab bar) is inside the min-height. */
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+/* Zero-specificity so page rules (e.g. .chat-main, the rail grid) win. */
+:where(body.app-shell) > :where(main) {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Flex items with `margin-inline: auto` (.container) would shrink to fit. */
+:where(body.app-shell > main) > :where(*) {
+  width: 100%;
 }
 
 @media (max-width: 1099px) {
@@ -50,7 +68,12 @@ body.app-shell {
 .app-shell__main--rail {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
   gap: var(--space-24);
+}
+
+.app-shell__main--rail > .app-site-footer {
+  align-self: end;
 }
 
 .app-shell__content {
@@ -68,7 +91,23 @@ body.app-shell {
 @media (min-width: 1280px) {
   .app-shell__main--rail {
     grid-template-columns: minmax(0, 1fr) var(--app-rail-w);
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "content rail"
+      "footer rail";
     align-items: start;
+  }
+
+  .app-shell__main--rail > .app-shell__content {
+    grid-area: content;
+  }
+
+  .app-shell__main--rail > .app-shell__rail {
+    grid-area: rail;
+  }
+
+  .app-shell__main--rail > .app-site-footer {
+    grid-area: footer;
   }
 
   .app-shell__rail {

@@ -58,15 +58,12 @@ interface Props {
   chrome?: "app" | "auth";
   /** Column layout for app chrome; defaults to "rail" when a `rail` slot is passed. */
   shell?: AppShell;
-  /**
-   * @deprecated No effect since T8: the app shell has no footer (the
-   * sidebar carries its links). Kept so existing pages compile unchanged.
-   */
+  /** Site links row at the end of <main> (AppSiteFooter); false hides it (chat). */
   footer?: boolean;
   scripts?: LegacyScript[];
 }
 
-const { title, description, bodyClass, mainClass, chrome = "app", shell, scripts = [] } = Astro.props;
+const { title, description, bodyClass, mainClass, chrome = "app", shell, footer = true, scripts = [] } = Astro.props;
 
 const isApp = chrome === "app";
 const hasRail = Astro.slots.has("rail");
@@ -80,7 +77,7 @@ const mainClasses = [withRail && "app-shell__main--rail", mainClass].filter(Bool
 // slots are not dropped. Fragment renders nothing for auth chrome.
 const Top = isApp ? AppChrome : AuthHeader;
 const Bottom = isApp ? AppTabBar : Fragment;
-const SiteFooter = isApp ? AppSiteFooter : Fragment;
+const SiteFooter = isApp && footer ? AppSiteFooter : Fragment;
 
 // Canonical load order (matches the legacy pages). `defer` scripts run
 // after parsing, before the page module and before DOMContentLoaded.
@@ -116,11 +113,11 @@ const legacy = ORDER.filter((s) => scripts.includes(s.name)).map((s) => ({
       <Fragment>
         <div class="app-shell__content">
           <slot />
-          <SiteFooter />
         </div>
         <aside class="app-shell__rail" aria-label="Panel lateral">
           <slot name="rail" />
         </aside>
+        <SiteFooter />
       </Fragment>
     ) : (
       <Fragment>
