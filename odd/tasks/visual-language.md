@@ -47,7 +47,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 - [x] T9 App primitives restyle (buttons, badges, forms, modal, toast, toggle, PillTabs). Route: delegated. Commit 8f8fe42. Visual pass approved by user 2026-10-10.
 - [x] T10a Adopt: home, comunidad, notificaciones. Route: delegated. Commit 7981622. Parent screenshot pass (headless system Chromium, 1440/1024/390): impact stat labels overflowed the 320px rail tiles; fixed inline with a container query that stacks chip above figure (≤340px). Home empty-state 🌱 renders as a missing glyph only because the host has no emoji font (T11 replaces it). User visual pass pending.
 - [x] T10b-1 Adopt: perfil, gamification, dashboard, settings. Route: delegated. Commit 7e5b254. Parent spot check: perfil 1440 screenshot OK, test 32/32. User visual pass pending.
-- [x] T10b-2 Adopt: busqueda, detalle, chat, publicar, auth. Route: delegated. Commit COMMIT_PENDING. User visual pass pending.
+- [x] T10b-2 Adopt: busqueda, detalle, chat, publicar, auth. Route: delegated. Commit c74e836. User visual pass pending.
 - [ ] T11 Empty/loading/error states (Skeleton, EmptyState, ErrorState). Route: delegated.
 - [ ] T12 Public Q&A on `detalle` (decided 2026-10-10): neighbors ask under a listing, owner and neighbors reply, one reply level, "Autor" badge on owner replies; reuses Avatar, chat bubbles, Badge; mock data + Store persistence like chat. Route: delegated.
 - [ ] T13 Cleanup (drop Pacifico, hard-shadow tokens, docs). Route: delegated.
