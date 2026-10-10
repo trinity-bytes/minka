@@ -1,14 +1,35 @@
 ---
-/** "Impacto real": three counting stats. */
+/** "Impacto real": three stat rings that close their circle and count up. */
 import SectionHead from "../ui/SectionHead.astro";
-import Stat from "../ui/Stat.astro";
 import LandingSection from "./LandingSection.astro";
+import StatRing from "./StatRing.astro";
 
 const stats = [
-  { value: 1250, suffix: "+", srLabel: "Más de 1,250", label: "Trueques completados", note: "¡y sumando!" },
-  { value: 500, suffix: " kg", srLabel: "500 kilogramos", label: "Residuos evitados", note: "que no llegaron al relleno" },
-  { value: 750, suffix: "+", srLabel: "Más de 750", label: "Miembros activos", note: "y creciendo cada semana" },
-];
+  {
+    value: 1250,
+    suffix: "+",
+    srLabel: "Más de 1,250",
+    label: "Trueques completados",
+    note: "¡y sumando!",
+    tone: "brand",
+  },
+  {
+    value: 500,
+    suffix: "kg",
+    srLabel: "500 kilogramos",
+    label: "Residuos evitados",
+    note: "que no llegaron al relleno",
+    tone: "lavender",
+  },
+  {
+    value: 750,
+    suffix: "+",
+    srLabel: "Más de 750",
+    label: "Miembros activos",
+    note: "y creciendo cada semana",
+    tone: "ink",
+  },
+] as const;
 ---
 
 <LandingSection id="impacto" folio="03" compactTop>
@@ -20,25 +41,22 @@ const stats = [
     Lima ya está <em>girando</em>
   </SectionHead>
   <div class="impact">
-    {
-      stats.map((stat, i) => (
-        <Stat {...stat} data-reveal style={i ? `--reveal-delay: ${i * 120}ms` : undefined} />
-      ))
-    }
+    {stats.map((stat, i) => <StatRing {...stat} delay={i * 140} />)}
   </div>
 </LandingSection>
 
 <style>
   .impact {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+    align-items: start;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 720px) {
     .impact {
-      grid-template-columns: 1fr;
-      gap: 44px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
     }
   }
 </style>

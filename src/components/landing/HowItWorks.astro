@@ -1,27 +1,36 @@
 ---
-/** "Cómo funciona": three numbered step cards joined by a dashed connector. */
-import Card from "../ui/Card.astro";
+/**
+ * "Cómo funciona": three solid-color step cards that stack while scrolling.
+ * Each list item is `position: sticky` with an incremental top offset, so
+ * the next card slides over the previous one. Where scroll-driven animations
+ * are supported (and motion is allowed), covered cards recede: they scale
+ * down slightly and dim, driven by the list's view timeline. Small or short
+ * viewports and reduced motion get a plain vertical list.
+ */
 import SectionHead from "../ui/SectionHead.astro";
 import LandingSection from "./LandingSection.astro";
-import { asset } from "../../lib/url";
 
+/* Stroke glyphs (24x24, currentColor) drawn for these cards. */
 const steps = [
   {
-    icon: "publicar.svg",
+    tone: "ink",
     title: "Publica tu oferta",
     text: "Sube fotos de lo que ya no uses: ropa, libros, electrónica, muebles. Dale una segunda vida a tus cosas.",
+    glyph: ["M3.5 8.5h3.2l1.8-2.8h7l1.8 2.8h3.2v10.8h-17z", "M12 16.6a3.3 3.3 0 1 0 0-6.6 3.3 3.3 0 0 0 0 6.6z"],
   },
   {
-    icon: "conectar.svg",
+    tone: "lavender",
     title: "Conecta con vecinos",
     text: "Explora ofertas cerca de ti, chatea con otros usuarios y encuentra el intercambio perfecto para ambos.",
+    glyph: ["M3.5 4.5h12v8.5H9l-3.8 3v-3H3.5z", "M18.5 8.5h2v8.5h-1.7v3l-3.8-3H11v-1.5"],
   },
   {
-    icon: "intercambio.svg",
+    tone: "brand",
     title: "Intercambia y celebra",
     text: "Coordina el encuentro, completa el trueque y gana eco-puntos. Así cuidamos el planeta juntos.",
+    glyph: ["M4 8h15.5", "M15.5 4l4 4-4 4", "M20 16H4.5", "M8.5 12l-4 4 4 4"],
   },
-];
+] as const;
 ---
 
 <LandingSection id="como-funciona" folio="01">
@@ -32,125 +41,282 @@ const steps = [
   >
     Tres pasos y ya estás <em>truequeando</em>
   </SectionHead>
-  <div class="steps">
-    <svg class="steps__connector" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M40,45 C260,85 420,8 600,45 C780,82 940,8 1160,45"></path>
-    </svg>
+
+  <ol class="stack" role="list" style={`--cards: ${steps.length}`}>
     {
-      steps.map((step, i) => (
-        <Card
-          as="article"
-          radius="xl"
-          shadow="md"
-          interactive
-          class="step"
-          data-reveal
-          style={i ? `--reveal-delay: ${i * 120}ms` : undefined}
-        >
-          <div class="step__num">{String(i + 1).padStart(2, "0")}</div>
-          <div class="step__icon" aria-hidden="true">
-            <img src={asset(`images/icons/${step.icon}`)} loading="lazy" decoding="async" alt="" />
-          </div>
-          <h3 class="step__title">{step.title}</h3>
-          <p class="step__text">{step.text}</p>
-        </Card>
-      ))
+      steps.map((step, i) => {
+        const num = String(i + 1).padStart(2, "0");
+        return (
+          <li class="stack__item" style={`--i: ${i}`}>
+            <article class:list={["step-card", `step-card--${step.tone}`]} aria-labelledby={`paso-${num}`}>
+              <div class="step-card__body">
+                <p class="step-card__kicker">Paso {num}</p>
+                <h3 class="step-card__title" id={`paso-${num}`}>
+                  {step.title}
+                </h3>
+                <p class="step-card__text">{step.text}</p>
+              </div>
+              <div class="step-card__visual" aria-hidden="true">
+                <span class="step-card__numeral">{num}</span>
+                <span class="step-card__disc">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    {step.glyph.map((d) => (
+                      <path d={d} />
+                    ))}
+                  </svg>
+                </span>
+              </div>
+            </article>
+          </li>
+        );
+      })
     }
-  </div>
+  </ol>
 </LandingSection>
 
 <style>
-  .steps {
+  .stack {
+    /* Sticky geometry: first card sticks just below the floating header,
+       each following card a step lower so the previous edges stay visible. */
+    --stack-top: 104px;
+    --stack-step: 22px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 7vh;
+  }
+
+  .stack__item {
+    position: sticky;
+    top: calc(var(--stack-top) + var(--i) * var(--stack-step));
+    /* Deeper cards end slightly smaller than the ones above them. */
+    --recede-scale: calc(1 - (var(--cards) - 1 - var(--i)) * 0.045);
+  }
+
+  .step-card {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-  }
-
-  .steps__connector {
-    position: absolute;
-    left: 4%;
-    right: 4%;
-    top: -34px;
-    width: 92%;
-    height: 90px;
-    z-index: 0;
-  }
-
-  .steps__connector path {
-    stroke: var(--color-ink-2);
-    stroke-width: 3;
-    stroke-dasharray: 8 10;
-    opacity: 0.55;
-    fill: none;
-    stroke-linecap: round;
-  }
-
-  .steps .step {
-    z-index: 1;
-    padding: 34px 30px 30px;
-    --card-hover-rotate: -0.4deg;
-  }
-
-  /* The connector is child 1, so this is the second card (legacy parity). */
-  .steps .step:nth-child(3) {
-    transform: rotate(0.6deg);
-    --card-hover-rotate: 0.2deg;
-  }
-
-  .step__num {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-weight: 480;
-    font-variation-settings: var(--font-display-axes);
-    font-size: 3.4rem;
-    line-height: 1;
-    color: var(--color-primary);
-    margin-bottom: 16px;
-  }
-
-  .step__icon {
-    display: inline-flex;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
     align-items: center;
-    justify-content: center;
-    width: 72px;
-    height: 72px;
-    background: var(--color-mint);
-    border: var(--border-ink);
-    border-radius: 50%;
-    box-shadow: var(--shadow-hard-sm);
-    margin-bottom: 20px;
+    gap: 32px;
+    /* Never taller than the space left under the stacked offsets. */
+    min-height: min(30rem, calc(100svh - var(--stack-top) - var(--cards) * var(--stack-step) - 24px));
+    padding: clamp(32px, 4.4vw, 64px);
+    border-radius: var(--radius-bento);
+    background: var(--card-bg);
+    color: var(--card-fg);
+    transform-origin: 50% 0;
+    /* Clip the giant numeral to the card. */
+    overflow: clip;
   }
 
-  .step__icon img {
-    width: 40px;
-    height: 40px;
+  /* Palette pairs: paper on ink, on-lavender on lavender, on-brand on green. */
+  .step-card--ink {
+    --card-bg: var(--color-ink);
+    --card-fg: var(--color-paper);
+    --card-muted: color-mix(in srgb, var(--color-paper) 80%, var(--color-ink));
+    --card-accent: var(--color-brand);
+    --disc-bg: var(--color-brand);
+    --disc-fg: var(--color-on-brand);
   }
 
-  .step__title {
-    font-family: var(--font-display);
-    font-weight: 620;
-    font-variation-settings: var(--font-display-axes-text);
-    font-size: 1.45rem;
-    color: var(--color-ink);
-    margin: 0 0 12px;
+  .step-card--lavender {
+    --card-bg: var(--color-lavender);
+    --card-fg: var(--color-on-lavender);
+    --card-muted: var(--color-on-lavender);
+    --card-accent: var(--color-on-lavender);
+    --disc-bg: var(--color-on-lavender);
+    --disc-fg: var(--color-lavender);
   }
 
-  .step__text {
-    font-size: 1rem;
-    color: var(--color-ink-2);
+  .step-card--brand {
+    --card-bg: var(--color-brand);
+    --card-fg: var(--color-on-brand);
+    --card-muted: var(--color-on-brand);
+    --card-accent: var(--color-on-brand);
+    --disc-bg: var(--color-card);
+    --disc-fg: var(--color-ink);
+  }
+
+  .step-card__body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .step-card__kicker {
     margin: 0;
+    padding: 6px 14px;
+    border: 1.5px solid currentColor;
+    border-radius: var(--radius-chip);
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--card-accent);
   }
 
-  @media (max-width: 1024px) {
-    .steps__connector {
-      display: none;
+  .step-card__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(2.3rem, 4.6vw, 4.2rem);
+    line-height: var(--font-display-leading);
+    letter-spacing: var(--font-display-tracking);
+    word-spacing: 0.06em;
+    color: inherit;
+    text-wrap: balance;
+  }
+
+  .step-card__text {
+    margin: 0;
+    max-width: 32rem;
+    font-size: 1.12rem;
+    line-height: 1.55;
+    color: var(--card-muted);
+    text-wrap: pretty;
+  }
+
+  .step-card__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    align-self: stretch;
+  }
+
+  .step-card__numeral {
+    position: absolute;
+    right: -0.06em;
+    bottom: -0.2em;
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: var(--font-display-axes);
+    font-size: clamp(9rem, 19vw, 17rem);
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    color: var(--card-fg);
+    opacity: 0.12;
+    user-select: none;
+  }
+
+  .step-card__disc {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(128px, 14vw, 188px);
+    aspect-ratio: 1;
+    border-radius: var(--radius-full);
+    background: var(--disc-bg);
+    color: var(--disc-fg);
+  }
+
+  .step-card__disc svg {
+    width: 44%;
+    height: 44%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  :global(body.high-contrast) .step-card {
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  @media (forced-colors: active) {
+    .step-card,
+    .step-card__disc {
+      border: 2px solid CanvasText;
+    }
+  }
+
+  /* Covered cards recede (scale + dim) across the list's exit-crossing:
+     card i animates during its slice i/N..(i+1)/N, which is when the next
+     card slides over it. The last card never recedes. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (min-width: 641px) and (min-height: 621px) {
+      .stack {
+        view-timeline: --steps-stack block;
+      }
+
+      .stack__item:not(:last-child) .step-card {
+        /* Longhands on purpose: the CSS minifier folds `animation` +
+           `animation-timeline` into one shorthand that browsers reject. */
+        animation-name: step-recede;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --steps-stack;
+        animation-range:
+          exit-crossing calc(var(--i) / var(--cards) * 100%)
+          exit-crossing calc((var(--i) + 1) / var(--cards) * 100%);
+      }
+    }
+  }
+
+  @keyframes step-recede {
+    to {
+      scale: var(--recede-scale);
+      filter: brightness(0.82);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .step-card {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
     }
 
-    .steps {
-      grid-template-columns: 1fr;
-      max-width: 560px;
-      margin: 0 auto;
+    .step-card__numeral {
+      display: none;
+    }
+  }
+
+  /* Phones, short viewports and reduced motion: a plain list. Cards keep
+     their colors but do not stick, so none can exceed the viewport. */
+  @media (max-width: 640px), (max-height: 620px), (prefers-reduced-motion: reduce) {
+    .stack {
+      gap: 16px;
+    }
+
+    .stack__item {
+      position: static;
+    }
+
+    .step-card {
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .step-card {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+      padding: 28px 24px 30px;
+      border-radius: var(--radius-card);
+    }
+
+    .step-card__visual {
+      order: -1;
+      justify-items: start;
+    }
+
+    .step-card__disc {
+      width: 72px;
+    }
+
+    .step-card__title {
+      font-size: clamp(2rem, 9vw, 2.5rem);
+    }
+
+    .step-card__text {
+      font-size: 1rem;
     }
   }
 </style>
