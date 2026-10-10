@@ -78,6 +78,12 @@ const { id, folio, band, compactTop = false, class: className } = Astro.props;
     user-select: none;
   }
 
+  /* On the ink band the folio is a faint paper numeral instead. */
+  .band--ink[data-folio]::before {
+    color: var(--color-paper);
+    opacity: 0.07;
+  }
+
   .band {
     position: relative;
     padding: 90px 0 100px;

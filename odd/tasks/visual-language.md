@@ -90,5 +90,7 @@ Stored in Engram topic `odd/visual-language/references` (Dribbble branding board
 
 - 2026-10-10 T7b review (user; route inline, one file): the 7% paper watermark had too little contrast and read as a smudge; with the small logo it was also redundant. The small footer logo is removed and the giant wordmark is now the regular white-on-ink logo at full strength (paper glyphs, brand leaf), still cropped by the bottom edge, and it is the footer home link (aria-label "Mink'a, inicio"). HC: solid ink; forced colors: CanvasText. Checks: build 16 pages OK; check 0 errors.
 
+- 2026-10-10 folio review (user; route inline, mechanical): only 4 sections were numbered, so Showcase and Video read as a different part of the page. Folios now run 01-06 in page order: HowItWorks 01, Benefits 02, Showcase 03 (faint paper numeral on the ink band), Video 04 (new `folio` pass-through prop, set only from index so about stays unnumbered), Impact 05, Testimonials 06; the closing CTA stays unnumbered. Checks: build OK; check 0 errors; dist/index.html folios 01..06 in order, about 0.
+
 ## Next step
 User visual check of T7b, then propose the landing PR slice into develop (feature-branch-chain), then T8. Reminder: PR #2 (fix/minor-backlog) still open.
