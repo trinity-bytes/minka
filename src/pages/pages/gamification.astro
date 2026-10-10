@@ -7,8 +7,15 @@
  * Logic: src/scripts/pages/gamification.js (guarded: requires a session);
  * it renders badges, rows and cards as HTML strings, so their CSS is
  * global (src/styles/pages/gamification.css).
+ *
+ * Visual language (T10b): PageHead title, a brand-green points block and a
+ * white badges card, pill tabs (gamification.js still drives them through
+ * .tab-btn[role=tab], aria-selected and .tab-content.active) and white
+ * rounded panels.
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
+import PageHead from "../../components/ui/PageHead.astro";
+import Toggle from "../../components/ui/Toggle.astro";
 import "../../styles/pages/gamification.css";
 
 const TABS = [
@@ -26,11 +33,12 @@ const TABS = [
   mainClass="gamification-main"
   scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
 >
-  <div class="container">
+  <PageHead title="Mis Eco-Puntos" titleKey="gami_title" />
+
+  <div class="container gamification">
     <!-- T24 - Lucero Pipa: Sección de Resumen de Puntos -->
-    <section class="gamification-header">
+    <section class="gamification-header" aria-label="Resumen de Eco-Puntos">
       <div class="points-summary">
-        <h1 data-i18n="gami_title">Mis Eco-Puntos</h1>
         <div class="points-display">
           <span class="points-value" id="user-points">0</span>
           <span class="points-label">pts</span>
@@ -38,7 +46,7 @@ const TABS = [
         <p class="points-level">Nivel: <span id="user-level">Novato</span></p>
       </div>
       <div class="badges-summary">
-        <h3 data-i18n="gami_badges">Mis Insignias</h3>
+        <h2 data-i18n="gami_badges">Mis Insignias</h2>
         <div class="badges-grid" id="user-badges">
           <!-- Badges rendered by gamification.js -->
         </div>
@@ -46,7 +54,7 @@ const TABS = [
     </section>
 
     <!-- T24 - Lucero Pipa: Navegación de Pestañas -->
-    <div class="gamification-tabs" role="tablist" aria-label="Secciones de Eco-Puntos">
+    <div class="gamification-tabs pill-tabs" role="tablist" aria-label="Secciones de Eco-Puntos">
       {
         TABS.map((t) => (
           <button
@@ -56,7 +64,7 @@ const TABS = [
             aria-selected={t.active ? "true" : "false"}
             aria-controls={t.id}
             tabindex={t.active ? 0 : -1}
-            class:list={["tab-btn", t.active && "active"]}
+            class:list={["tab-btn", "pill-tabs__tab", t.active && "active"]}
             data-tab={t.id}
             data-i18n={t.key}
           >
@@ -97,9 +105,8 @@ const TABS = [
       <div class="ranking-header">
         <h2 data-i18n="gami_ranking_title">Ranking Barrial</h2>
         <div class="ranking-controls">
-          <label>
-            <input type="checkbox" id="opt-out-ranking" /> No aparecer en rankings públicos
-          </label>
+          <label for="opt-out-ranking">No aparecer en rankings públicos</label>
+          <Toggle id="opt-out-ranking" />
         </div>
       </div>
       <div class="ranking-list" id="ranking-list">

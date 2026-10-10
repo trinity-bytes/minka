@@ -1,132 +1,170 @@
-/* T24 - Lucero Pipa: Estilos para Gamificación */
+/* T24 - Lucero Pipa: Estilos para Gamificación
+   Visual language (T10b): brand-green points block, white rounded cards on
+   the tinted app background, pill tabs (global .pill-tabs*), pill badges
+   and initials avatars. The page title is the only serif (ui/PageHead);
+   every other heading is Inter. Global on purpose: gamification.js renders
+   badges, rows and cards as HTML strings. */
 
 .gamification-main {
-  padding: 2rem 0;
-  background-color: var(--color-bg);
-  min-height: calc(100dvh - 80px);
+  padding-bottom: var(--space-48);
 }
 
-.gamification-header {
+.gamification-main :where(h2, h3, h4) {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.gamification {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  background: var(--color-surface);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-soft);
-  margin-bottom: 2rem;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--space-24);
+  padding-bottom: var(--space-24);
+}
+
+/* === Summary: points block + badges card === */
+.gamification-header {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) minmax(0, 2fr);
+  gap: var(--space-16);
+}
+
+.points-summary,
+.badges-summary {
+  border-radius: var(--radius-card);
+  padding: var(--space-24);
 }
 
 .points-summary {
-  flex: 1;
-  text-align: center;
-  border-right: 1px solid var(--color-gray-50);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-8);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
 }
 
 .points-display {
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin: 1rem 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.points-value {
+  font-size: clamp(2.75rem, 2rem + 2.5vw, 3.75rem);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
 }
 
 .points-label {
-  font-size: 1.5rem;
-  color: var(--color-gray-600);
+  font-size: 1.25rem;
 }
 
 .points-level {
-  font-size: 1.2rem;
-  color: var(--color-secondary);
-  font-weight: 600;
+  margin: 0;
+  width: fit-content;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-on-brand);
+  color: var(--color-brand);
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 .badges-summary {
-  flex: 2;
-  padding-left: 1rem;
+  background: var(--color-card);
+}
+
+.badges-summary h2 {
+  margin: 0 0 var(--space-16);
+  font-size: 1.15rem;
+  color: var(--color-ink);
 }
 
 .badges-grid {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: var(--space-12);
 }
 
 .badge-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80px;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-8);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
   text-align: center;
 }
 
 .badge-icon {
-  width: 50px;
-  height: 50px;
-  background: var(--color-gray-50);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: var(--color-gray-300);
-  margin-bottom: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--color-paper-2);
+  color: var(--color-gray-500);
+  font-size: 1.2rem;
 }
 
 .badge-item.earned .badge-icon {
-  background: var(--color-accent);
+  background: var(--color-lavender);
   color: var(--color-on-lavender); /* 8.05:1 */
 }
 
 .badge-name {
+  color: var(--color-ink-2);
   font-size: 0.8rem;
-  color: var(--color-gray-600);
-}
-
-/* Tabs */
-.gamification-tabs {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-gray-50);
-  padding-bottom: 0.5rem;
-  overflow-x: auto;
-}
-
-.tab-btn {
-  background: none;
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
   font-weight: 600;
-  color: var(--color-gray-600);
-  cursor: pointer;
-  border-bottom: 3px solid transparent;
-  transition: all 0.3s ease;
+  line-height: 1.3;
 }
 
-.tab-btn.active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-  text-decoration: underline;
-  text-underline-offset: 6px;
+.badge-item.earned .badge-name {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+/* === Tabs (pill row) and panels === */
+.gamification-tabs {
+  max-width: 100%;
 }
 
 .tab-content {
   display: none;
-  background: var(--color-surface);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-soft);
+  padding: var(--space-24);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
 }
 
 .tab-content.active {
   display: block;
 }
 
-/* Earn Table */
+.tab-content:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.tab-content h2 {
+  margin: 0 0 var(--space-16);
+  font-size: 1.15rem;
+  color: var(--color-ink);
+}
+
+.tab-content > p {
+  margin: 0;
+  color: var(--color-ink-2);
+}
+
+/* Earn table */
+.earn-table-container {
+  overflow-x: auto;
+}
+
 .earn-table {
   width: 100%;
   border-collapse: collapse;
@@ -134,192 +172,332 @@
 
 .earn-table th,
 .earn-table td {
-  padding: 1rem;
+  padding: var(--space-12) var(--space-16);
+  border-bottom: 1px solid var(--color-gray-100);
   text-align: left;
-  border-bottom: 1px solid var(--color-gray-50);
-}
-
-.earn-table__points {
-  color: var(--color-primary);
-  font-weight: bold;
+  color: var(--color-ink);
 }
 
 .earn-table th {
-  background-color: var(--color-surface);
-  font-weight: 600;
+  color: var(--color-ink-2);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-/* Rewards Grid */
+.earn-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.earn-table td:last-child {
+  color: var(--color-ink-2);
+}
+
+.earn-table__points {
+  font-weight: 800;
+}
+
+.earn-table td.earn-table__points {
+  color: var(--color-primary);
+}
+
+/* Rewards grid */
 .rewards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--space-12);
+  margin-top: var(--space-16);
 }
 
 .reward-card {
-  border: 1px solid var(--color-gray-50);
-  border-radius: 8px;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.2s;
-}
-
-.reward-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lift);
+  align-items: flex-start;
+  gap: var(--space-8);
+  padding: var(--space-20);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
 }
 
 .reward-icon {
-  font-size: 3rem;
-  color: var(--color-secondary);
-  margin-bottom: 1rem;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-mint);
+  color: var(--color-ink);
+  font-size: 1.2rem;
+}
+
+.reward-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-ink);
+}
+
+.reward-card p {
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.9rem;
 }
 
 .reward-cost {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-lavender-soft);
+  color: var(--color-on-lavender);
+  font-size: 0.82rem;
   font-weight: 700;
-  color: var(--color-primary);
-  margin: 0.5rem 0;
 }
 
 .btn-redeem {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
   margin-top: auto;
-}
-
-.btn-redeem:disabled {
-  background-color: var(--color-gray-300);
-  cursor: not-allowed;
+  align-self: stretch;
 }
 
 /* Ranking */
+.ranking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+}
+
+.ranking-header h2 {
+  margin: 0;
+}
+
+.ranking-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.ranking-controls > label {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .ranking-list {
-  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .ranking-item {
   display: flex;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--color-gray-50);
-}
-
-.ranking-position {
-  font-size: 1.5rem;
-  font-weight: 700;
-  width: 40px;
-  color: var(--color-secondary);
-}
-
-.ranking-user {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.ranking-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-lg);
 }
 
 /* Own entry (formerly an inline style rendered by gamification.js) */
 .ranking-item.highlight {
-  background-color: var(--color-success-soft);
+  background: var(--color-mint);
 }
 
-.ranking-empty {
-  text-align: center;
-  padding: 2rem;
-  color: var(--color-gray-600);
+.ranking-position {
+  width: 2rem;
+  flex-shrink: 0;
+  color: var(--color-ink);
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  flex: 1;
+  min-width: 0;
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+/* Initials avatar (same tints as ui/Avatar, which is scoped). */
+.ranking-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-mint);
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ranking-item.highlight .ranking-avatar--mint {
+  background: var(--color-card);
+}
+
+.ranking-avatar--brand {
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+
+.ranking-avatar--alt {
+  background: var(--color-paper-2);
+}
+
+.ranking-avatar--lavender {
+  background: var(--color-lavender);
+  color: var(--color-on-lavender);
+}
+
+.ranking-avatar--lavender-soft {
+  background: var(--color-lavender-soft);
+  color: var(--color-on-lavender);
 }
 
 .ranking-points {
-  font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-ink);
+  font-weight: 800;
+  white-space: nowrap;
 }
 
-.ranking-controls {
-  margin-bottom: 1rem;
-}
-
-.ranking-controls label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0;
-  cursor: pointer;
-}
-
-.ranking-controls input[type="checkbox"] {
-  width: auto;
+.ranking-empty {
   margin: 0;
+  padding: var(--space-24);
+  color: var(--color-ink-2);
+  text-align: center;
 }
 
 /* History */
 .history-list {
-  list-style: none;
+  margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .history-item {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px solid var(--color-gray-50);
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-12) 0;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.history-item:last-child {
+  border-bottom: none;
 }
 
 .history-action {
-  font-weight: 500;
+  color: var(--color-ink);
+  font-weight: 600;
 }
 
 .history-date {
-  font-size: 0.85rem;
-  color: var(--color-gray-600);
   display: block;
+  color: var(--color-ink-2);
+  font-size: 0.85rem;
 }
 
 .history-points {
-  font-weight: 700;
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .history-points.positive {
-  color: var(--color-success);
+  background: var(--color-mint);
+  color: var(--color-ink);
 }
 
 .history-points.negative {
-  color: var(--color-error);
+  background: var(--color-paper-2);
+  color: var(--color-error-ink);
+}
+
+/* === High contrast / forced colors === */
+body.high-contrast .points-summary,
+body.high-contrast .badges-summary,
+body.high-contrast .badge-item,
+body.high-contrast .tab-content,
+body.high-contrast .reward-card,
+body.high-contrast .ranking-item.highlight,
+body.high-contrast .history-points,
+body.high-contrast .reward-cost,
+body.high-contrast .points-level {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .badge-item.earned .badge-icon {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .badge-icon,
+body.high-contrast .reward-icon,
+body.high-contrast .ranking-avatar {
+  outline: 2px solid var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .points-summary,
+  .badges-summary,
+  .badge-item,
+  .tab-content,
+  .reward-card,
+  .ranking-item.highlight,
+  .history-points,
+  .reward-cost,
+  .points-level {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* === Responsive === */
+@media (max-width: 900px) {
+  .gamification-header {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .gamification-header {
-    flex-direction: column;
-    text-align: center;
+  .points-summary,
+  .badges-summary,
+  .tab-content {
+    padding: var(--space-20);
   }
 
-  .points-summary {
-    border-right: none;
-    border-bottom: 1px solid var(--color-gray-50);
-    padding-bottom: 1rem;
-    width: 100%;
+  .earn-table th,
+  .earn-table td {
+    padding: var(--space-12) var(--space-8);
+  }
+}
+
+@media (max-width: 480px) {
+  .points-summary,
+  .badges-summary,
+  .tab-content {
+    padding: var(--space-16);
   }
 
-  .badges-summary {
-    padding-left: 0;
-    width: 100%;
+  .ranking-item {
+    padding: var(--space-12) var(--space-8);
   }
 
-  .badges-grid {
-    justify-content: center;
+  /* Fit the four tabs on a phone instead of scrolling the last one away. */
+  .gamification-tabs .pill-tabs__tab {
+    padding-inline: 12px;
+    font-size: 0.86rem;
   }
 }

@@ -76,7 +76,7 @@ function loadSessions() {
     .map(
       (session) => `
     <div class="session-item" id="session-${session.id}">
-      <div class="session-icon">
+      <div class="session-icon" aria-hidden="true">
         <i class="fas ${
           session.device.includes("Mobile") || session.device.includes("iPhone")
             ? "fa-mobile-alt"
@@ -95,7 +95,7 @@ function loadSessions() {
         !session.current
           ? `
         <button type="button" class="btn-icon" data-logout-session="${session.id}" aria-label="Cerrar sesión">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       `
           : ""

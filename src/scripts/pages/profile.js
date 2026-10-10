@@ -1,5 +1,7 @@
 // T13 - Lucero Pipa: Lógica de perfil e identidad simulada
 // T35 - Leonardo Chavez: Gestión de reputación
+import { avatarTone, initials } from "../lib/avatar.js";
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const demoUser = {
@@ -106,7 +108,11 @@ document.addEventListener("DOMContentLoaded", () => {
     banner.className = "form__hint profile-readonly-banner";
     banner.setAttribute("role", "status");
     banner.textContent = `Estás viendo el perfil público de ${userId}. La edición está deshabilitada.`;
-    const main = document.querySelector("main") || document.body;
+    // Rail pages wrap the page in .app-shell__content (main is a grid).
+    const main =
+      document.querySelector(".app-shell__content") ||
+      document.querySelector("main") ||
+      document.body;
     main.prepend(banner);
   }
 
@@ -149,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         item.images ? item.images[0] : "../assets/images/items/default.svg"
       }" alt="${item.title}" />
       <div class="profile-item-info">
-        <h4>${item.title}</h4>
+        <h3>${item.title}</h3>
         <span class="badge">${statusText}</span>
       </div>
     </div>
@@ -169,8 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
         // Update tabs
-        tabs.forEach((t) => t.classList.remove("modal__tab--active"));
+        tabs.forEach((t) => {
+          t.classList.remove("modal__tab--active");
+          t.setAttribute("aria-pressed", "false");
+        });
         tab.classList.add("modal__tab--active");
+        tab.setAttribute("aria-pressed", "true");
 
         // Update sections
         const target = tab.dataset.verifyTab;
@@ -408,14 +418,16 @@ document.addEventListener("DOMContentLoaded", () => {
         profileBadge.textContent = window.I18n
           ? window.I18n.t("profile.badges.verifiedAdvanced")
           : "Raíz Verificada";
-        profileBadge.classList.add("profile-card__badge--verified");
-        profileBadge.style.backgroundColor = "var(--color-primary-darker)";
+        profileBadge.classList.add(
+          "profile-card__badge--verified",
+          "profile-card__badge--advanced"
+        );
       } else {
         profileBadge.textContent = window.I18n
           ? window.I18n.t("profile.badges.verifiedBasic")
           : "Brote Verificado";
         profileBadge.classList.add("profile-card__badge--verified");
-        profileBadge.style.backgroundColor = ""; // Reset to default verified color
+        profileBadge.classList.remove("profile-card__badge--advanced");
       }
     }
   };
@@ -639,15 +651,17 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="review-card">
       <div class="review-header">
         <div class="review-author">
-          <img src="${review.avatar}" alt="${
-          review.author
-        }" class="review-avatar">
+          <span class="review-avatar review-avatar--${avatarTone(
+            review.author
+          )}" aria-hidden="true">${initials(review.author)}</span>
           <div class="review-meta">
             <span class="review-name">${review.author}</span>
             <span class="review-date">${review.date}</span>
           </div>
         </div>
-        <div class="review-rating">
+        <div class="review-rating" role="img" aria-label="${
+          review.rating
+        } de 5 estrellas">
           ${Array(5)
             .fill(0)
             .map(
@@ -662,8 +676,8 @@ document.addEventListener("DOMContentLoaded", () => {
         review.canAppeal
           ? `
         <div class="review-actions">
-          <button type="button" class="btn-appeal" data-appeal-review="${review.id}">
-            <i class="fas fa-flag"></i> ${
+          <button type="button" class="btn btn-ghost btn-sm btn-appeal" data-appeal-review="${review.id}">
+            <i class="fas fa-flag" aria-hidden="true"></i> ${
               window.I18n
                 ? window.I18n.t("profile.messages.appealAction")
                 : "Apelar reseña"

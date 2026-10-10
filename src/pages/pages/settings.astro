@@ -8,9 +8,16 @@
  * T29 - Lucero Pipa: privacy and availability (HU25, HU26).
  * Logic: src/scripts/pages/settings.js (guarded: requires a session). The
  * saved accessibility prefs are applied on every page by BaseLayout.
+ *
+ * Visual language (T10b): PageHead title + subtitle, white rounded cards
+ * with IconChips, shared switches (ui/Toggle keeps the ids, role=switch
+ * and aria-labels settings.js and BaseLayout rely on) and pill fields.
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
 import Button from "../../components/ui/Button.astro";
+import IconChip from "../../components/ui/IconChip.astro";
+import PageHead from "../../components/ui/PageHead.astro";
+import Toggle from "../../components/ui/Toggle.astro";
 import Modal from "../../components/ui/Modal.astro";
 import "../../styles/pages/settings.css";
 
@@ -33,17 +40,19 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
   mainClass="settings-main"
   scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
 >
-  <div class="container">
-    <section class="settings-header">
-      <h1 data-i18n="settings_title">Configuración y Accesibilidad</h1>
-      <p data-i18n="settings_subtitle">Personaliza tu experiencia en Mink'a.</p>
-    </section>
+  <PageHead
+    title="Configuración y Accesibilidad"
+    titleKey="settings_title"
+    subtitle="Personaliza tu experiencia en Mink'a."
+    subtitleKey="settings_subtitle"
+  />
 
+  <div class="container settings">
     <div class="settings-grid">
       <!-- T27 - Miguel Sanca: Preferencias de Idioma (HU49) -->
       <section class="settings-card">
         <div class="settings-card__header">
-          <div class="settings-icon" aria-hidden="true"><i class="fas fa-language"></i></div>
+          <IconChip tone="mint" size="sm" class="settings-icon"><i class="fas fa-language"></i></IconChip>
           <h2 data-i18n="language_title">Idioma</h2>
         </div>
         <div class="settings-card__body">
@@ -59,7 +68,7 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
       <!-- T27 - Miguel Sanca: Accesibilidad Visual (HU48) -->
       <section class="settings-card">
         <div class="settings-card__header">
-          <div class="settings-icon" aria-hidden="true"><i class="fas fa-eye"></i></div>
+          <IconChip tone="lavender" size="sm" class="settings-icon"><i class="fas fa-eye"></i></IconChip>
           <h2 data-i18n="visual_title">Accesibilidad Visual</h2>
         </div>
         <div class="settings-card__body">
@@ -68,15 +77,7 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
               <strong data-i18n="contrast_label">Alto Contraste</strong>
               <p data-i18n="contrast_desc">Aumenta el contraste para mejorar la legibilidad.</p>
             </div>
-            <label class="switch">
-              <input
-                type="checkbox"
-                role="switch"
-                id="high-contrast-toggle"
-                aria-label="Alto contraste"
-              />
-              <span class="slider round"></span>
-            </label>
+            <Toggle id="high-contrast-toggle" label="Alto contraste" />
           </div>
 
           <div class="setting-row">
@@ -85,9 +86,9 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
               <p data-i18n="font_size_desc">Ajusta el tamaño del texto.</p>
             </div>
             <div class="font-controls">
-              <Button appearance="flat" variant="outline" class="btn-sm" id="font-decrease">A-</Button>
-              <Button appearance="flat" variant="outline" class="btn-sm" id="font-reset">A</Button>
-              <Button appearance="flat" variant="outline" class="btn-sm" id="font-increase">A+</Button>
+              <Button appearance="flat" variant="outline" size="sm" id="font-decrease">A-</Button>
+              <Button appearance="flat" variant="outline" size="sm" id="font-reset">A</Button>
+              <Button appearance="flat" variant="outline" size="sm" id="font-increase">A+</Button>
             </div>
           </div>
 
@@ -96,15 +97,7 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
               <strong data-i18n="low_data_label">Modo Bajo Consumo</strong>
               <p data-i18n="low_data_desc">Reduce calidad de imágenes y desactiva animaciones.</p>
             </div>
-            <label class="switch">
-              <input
-                type="checkbox"
-                role="switch"
-                id="low-data-toggle"
-                aria-label="Modo bajo consumo"
-              />
-              <span class="slider round"></span>
-            </label>
+            <Toggle id="low-data-toggle" label="Modo bajo consumo" />
           </div>
         </div>
       </section>
@@ -112,7 +105,7 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
       <!-- T29 - Lucero Pipa: Privacidad y Disponibilidad (HU25, HU26) -->
       <section class="settings-card">
         <div class="settings-card__header">
-          <div class="settings-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></div>
+          <IconChip tone="brand" size="sm" class="settings-icon"><i class="fas fa-user-shield"></i></IconChip>
           <h2 data-i18n="privacy_title">Privacidad y Disponibilidad</h2>
         </div>
         <div class="settings-card__body">
@@ -134,15 +127,7 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
               <strong>Ocultar distrito exacto</strong>
               <p>Muestra solo una ubicación aproximada en tu perfil.</p>
             </div>
-            <label class="switch">
-              <input
-                type="checkbox"
-                role="switch"
-                id="hide-district-toggle"
-                aria-label="Ocultar distrito exacto"
-              />
-              <span class="slider round"></span>
-            </label>
+            <Toggle id="hide-district-toggle" label="Ocultar distrito exacto" />
           </div>
 
           <div class="setting-row">
@@ -170,7 +155,7 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
       <!-- T28 - Leonardo Chavez: Seguridad y Sesiones (HU23, HU24) -->
       <section class="settings-card">
         <div class="settings-card__header">
-          <div class="settings-icon" aria-hidden="true"><i class="fas fa-lock"></i></div>
+          <IconChip tone="ink" size="sm" class="settings-icon"><i class="fas fa-lock"></i></IconChip>
           <h2 data-i18n="security_title">Seguridad</h2>
         </div>
         <div class="settings-card__body">
@@ -188,7 +173,7 @@ const SLOTS = ["Mañana", "Tarde", "Noche"];
 
           <h3>Sesiones Activas</h3>
           <div id="sessions-list" class="sessions-list"></div>
-          <button type="button" class="btn btn-text text-danger" id="logout-all-sessions">
+          <button type="button" class="btn btn-ghost btn-sm text-danger" id="logout-all-sessions">
             Cerrar todas las demás sesiones
           </button>
         </div>
