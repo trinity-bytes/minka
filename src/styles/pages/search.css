@@ -1,11 +1,11 @@
 /* T15 - Andy Salcedo: Estilos de buscador y filtros */
 /* T30 - Andy Salcedo: Estilos de búsqueda avanzada */
-/* Visual language T10d-2: a standard search results page, no cards and no
-   tinted panels. Query bar (pill field, active filter chips, saved
+/* Visual language T10d-2: a standard search results page, no tinted
+   panels; only the results are cards (user review 2026-10-11). Query bar (pill field, active filter chips, saved
    searches) on top; a summary row (serif title, result count with the
    query echo, sort); then a plain filter column (collapsible groups split
-   by hairlines) beside the results grid, where each result is a photo tile
-   with its text below on the page. The title is the only serif. Global
+   by hairlines) beside the results grid, where each result is a white card
+   (photo on top, text below). The title is the only serif. Global
    (not scoped) on purpose: search.js renders the results, filter chips and
    saved searches as HTML strings. Fields and buttons come from the app
    primitives (app.css). */
@@ -422,11 +422,11 @@
   color: var(--color-ink-2);
 }
 
-/* === Results: photo tile + text below, on the page === */
+/* === Results: white cards (photo on top, text below) === */
 .results__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(14.5rem, 1fr));
-  gap: var(--space-32) var(--space-20);
+  gap: var(--space-20);
 }
 
 /* Empty states render inside the grid: give them the white surface. */
@@ -441,12 +441,20 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+
+.result-card:hover {
+  border-color: var(--color-ink-2);
 }
 
 .result-card__tile {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-card);
   background: var(--color-paper-2);
 }
 
@@ -471,7 +479,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: var(--space-12) var(--space-4) 0;
+  padding: var(--space-12) var(--space-16) var(--space-16);
 }
 
 .result-card__title {
@@ -506,7 +514,7 @@
 
 .result-card__link:focus-visible::after {
   outline: 2px solid var(--color-ink);
-  outline-offset: 4px;
+  outline-offset: -2px;
 }
 
 .result-card__meta,
@@ -622,7 +630,7 @@
 }
 
 /* === High contrast / forced colors === */
-body.high-contrast .result-card__tile,
+body.high-contrast .result-card,
 body.high-contrast .results__grid > .empty-state,
 body.high-contrast .saved-search-tag,
 body.high-contrast .item-card__favorite,
@@ -654,7 +662,7 @@ body.high-contrast .filters__toggle-count {
 }
 
 @media (forced-colors: active) {
-  .result-card__tile,
+  .result-card,
   .results__grid > .empty-state,
   .saved-search-tag,
   .filter-chip,
