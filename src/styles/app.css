@@ -408,6 +408,13 @@ body.high-contrast .btn-ink {
   --btn-fg: var(--color-hc-paper);
 }
 
+/* global.css paints every HC link blue with !important; link-buttons
+   (e.g. state actions) keep their button text color instead. */
+body.high-contrast a.btn {
+  color: var(--btn-fg) !important;
+  text-decoration: none;
+}
+
 body.high-contrast .btn:focus-visible {
   outline: 3px solid var(--color-hc-ink);
 }
