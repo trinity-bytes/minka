@@ -2,7 +2,7 @@
    One white surface fills the main column (AppLayout footer={false}): the
    conversation list pane and the conversation pane are joined edge to edge
    by a hairline, with the card radius on the outer corners only. The
-   message area sits on the tinted app background; the partner's bubbles
+   message area sits on its own warm neutral canvas; the partner's bubbles
    are white, own bubbles use the brand fill with --color-on-brand text.
    No ink borders or offset shadows (high contrast restores outlines).
    Global (not scoped) on purpose: chat.js renders the rows, bubbles,
@@ -42,6 +42,8 @@
   overflow: hidden;
   border-radius: var(--radius-card);
   background: var(--color-card);
+  /* Message canvas: warm neutral, distinct from the green-tinted app bg. */
+  --chat-canvas: #f3efe8;
 }
 
 /* === Initials avatar (same tints as ui/Avatar; set by chat.js) === */
@@ -399,7 +401,7 @@
   min-height: 0;
   padding: var(--space-20) var(--space-24);
   overflow-y: auto;
-  background: var(--color-bg);
+  background: var(--chat-canvas);
 }
 
 /* Tail-less bubbles; the sender-side corners tighten inside a group and
@@ -470,7 +472,7 @@
 .typing-indicator {
   flex-shrink: 0;
   padding: var(--space-4) var(--space-24) var(--space-8);
-  background: var(--color-bg);
+  background: var(--chat-canvas);
   color: var(--color-ink-2);
   font-size: 0.82rem;
   font-style: italic;
