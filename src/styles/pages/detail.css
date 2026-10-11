@@ -644,6 +644,207 @@
   color: var(--color-ink);
 }
 
+/* === Public Q&A (T12): plain comment rows on the page, threads split by
+   hairlines, one reply level indented under the question text. No card
+   surface, no chat bubbles. === */
+.qa {
+  padding-top: var(--space-56);
+}
+
+.qa > * {
+  max-width: 48rem;
+}
+
+/* The form, prompt, list and empty state are toggled with [hidden]; their
+   display rules below must not override it. */
+.qa [hidden] {
+  display: none;
+}
+
+.qa__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4) var(--space-12);
+  margin-bottom: var(--space-16);
+}
+
+.qa__head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-ink);
+}
+
+.qa__count {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-ink-2);
+}
+
+.qa-form {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.qa-form--ask {
+  margin-bottom: var(--space-24);
+}
+
+.qa-form__label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.qa-form__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-8) var(--space-12);
+}
+
+.qa-form__error {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.qa-form__count {
+  margin-right: auto;
+  font-size: 0.85rem;
+  color: var(--color-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.qa-form__count.is-over {
+  font-weight: 700;
+  color: var(--color-error);
+}
+
+.qa-login {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+  margin: 0 0 var(--space-24);
+  color: var(--color-ink-2);
+}
+
+.qa-login a {
+  font-weight: 700;
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.qa-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.qa-thread {
+  padding-block: var(--space-20);
+  border-top: 1px solid var(--color-border);
+}
+
+.qa-post {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: var(--space-12);
+  border-radius: var(--radius-md);
+}
+
+.qa-post:focus {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 6px;
+}
+
+.qa-post__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-8);
+  margin: 0 0 2px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.qa-post__name {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.qa-post__head .qa-post__badge.pill-badge {
+  padding: 1px 8px;
+  font-size: 0.7rem;
+}
+
+.qa-post__time {
+  font-size: 0.85rem;
+  color: var(--color-ink-2);
+}
+
+.qa-post__text {
+  margin: 0;
+  color: var(--color-ink);
+  line-height: 1.55;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* Reads as a text link; a button because it opens the inline form. */
+.qa-post__reply {
+  min-height: 24px;
+  margin-top: var(--space-4);
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.qa-post__reply:hover,
+.qa-post__reply[aria-expanded="true"] {
+  color: var(--color-ink);
+}
+
+.qa-post__reply:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.qa-replies {
+  display: grid;
+  gap: var(--space-16);
+  margin: var(--space-16) 0 0;
+  padding: 0 0 0 44px;
+  list-style: none;
+}
+
+.qa-form--reply {
+  margin: var(--space-16) 0 0 44px;
+}
+
+.qa-form--reply textarea {
+  min-height: 72px;
+}
+
+.qa-empty {
+  padding-block: var(--space-16);
+  border-top: 1px solid var(--color-border);
+}
+
 /* === Exchange pass: a ticket with a brand strip, a real QR, a perforated
    tear line and a stub. The code box stays dark-on-white in every mode. === */
 /* The notches are real cut-outs (transparent radial gradients on the main
@@ -1437,7 +1638,44 @@ body.high-contrast .sticky-cta a.btn-primary {
   color: var(--color-hc-paper) !important;
 }
 
+
+/* Q&A in high contrast: black dividers and text, ink link-buttons. */
+body.high-contrast .qa-list,
+body.high-contrast .qa-thread,
+body.high-contrast .qa-empty {
+  border-color: var(--color-hc-ink);
+  border-width: 2px;
+}
+
+body.high-contrast .qa__count,
+body.high-contrast .qa-form__count,
+body.high-contrast .qa-post__time,
+body.high-contrast .qa-post__reply,
+body.high-contrast .qa-login,
+body.high-contrast .qa-login a {
+  color: var(--color-hc-ink);
+}
+
 @media (forced-colors: active) {
+  .qa-list,
+  .qa-thread,
+  .qa-empty {
+    border-color: CanvasText;
+  }
+
+  .qa-post:focus,
+  .qa-post__reply:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .qa-post__reply {
+    color: LinkText;
+  }
+
+  .qa-post .avatar {
+    border: 1px solid CanvasText;
+  }
+
   .product__panel,
   .qr-pass,
   .qr-dialog__close,

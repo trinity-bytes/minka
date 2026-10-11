@@ -1,7 +1,7 @@
 ---
 /**
- * Listing detail: gallery, description, owner, facts, exchange QR, item
- * timeline, owner/visitor actions and similar listings. Port of
+ * Listing detail: gallery, description, owner, facts, exchange QR, public
+ * Q&A, item timeline, owner/visitor actions and similar listings. Port of
  * public/pages/detalle.html.
  * T25 - Ronel Rojas: environmental metrics when a trade closes.
  * T31 - Andy Salcedo: location sharing and distance.
@@ -15,6 +15,7 @@ import Gallery from "../../components/detail/Gallery.astro";
 import ReactionBar from "../../components/detail/ReactionBar.astro";
 import SellerCard from "../../components/detail/SellerCard.astro";
 import QrPassDialog from "../../components/detail/QrPassDialog.astro";
+import QaSection from "../../components/detail/QaSection.astro";
 import OfflineModal from "../../components/detail/OfflineModal.astro";
 import RatingModal from "../../components/exchange/RatingModal.astro";
 import ReportModal from "../../components/exchange/ReportModal.astro";
@@ -134,6 +135,9 @@ const FACTS = [
       <SellerCard />
     </article>
   </section>
+
+  <!-- Public questions under the listing (T12). -->
+  <QaSection />
 
   <!-- Below the product: the item history (T33). The exchange pass opens in
        a dialog from the CTA row (T10d-5). -->

@@ -9,6 +9,7 @@ import { ECO_FACTORS } from "../../lib/eco";
 import { token } from "../tokens";
 import { avatarTone, initials } from "../lib/avatar.js";
 import { escapeHtml } from "../lib/html.js";
+import { mountQa } from "../lib/qa-view.js";
 import { qrMatrix, qrPath, logoArea, drawQr, codeIssuedAt } from "../lib/qr.js";
 import { LOGOMARK } from "../../assets/brand/paths";
 
@@ -173,6 +174,7 @@ function init() {
   setupShare(item);
   setupQrDialog();
   renderSimilar(item);
+  mountQa({ item, session: window.Session ? Session.getSession() : null }); // T12
   const ownerLink = document.getElementById("owner-profile-link");
   if (ownerLink) {
     ownerLink.href = `perfil.html?user=${encodeURIComponent(ownerId)}`;
