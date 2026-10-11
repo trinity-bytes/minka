@@ -15,6 +15,7 @@ import AppLayout from "../../components/layout/AppLayout.astro";
 import Button from "../../components/ui/Button.astro";
 import ChartCard from "../../components/dashboard/ChartCard.astro";
 import KpiTile from "../../components/dashboard/KpiTile.astro";
+import EmptyState from "../../components/ui/EmptyState.astro";
 import PageHead from "../../components/ui/PageHead.astro";
 import "../../styles/pages/dashboard.css";
 
@@ -66,12 +67,13 @@ const PERIODS = [
       </div>
     </section>
 
-    <div id="no-data-message" class="no-data-container" hidden>
-      <div class="no-data-content">
-        <i class="fas fa-leaf no-data-icon" aria-hidden="true"></i>
-        <h2 data-i18n="dash_empty">Sin actividad registrada</h2>
-        <p>No hay datos de impacto para el periodo y filtros seleccionados.</p>
-      </div>
+    <div id="no-data-message" hidden>
+      <EmptyState
+        icon="fa-chart-line"
+        title="Sin actividad registrada"
+        titleKey="dash_empty"
+        text="No hay datos de impacto para el periodo y filtros seleccionados."
+      />
     </div>
 
     <!-- T26 - Miguel Sanca: KPIs -->

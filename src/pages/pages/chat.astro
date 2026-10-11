@@ -21,6 +21,7 @@
 import AppLayout from "../../components/layout/AppLayout.astro";
 import RatingModal from "../../components/exchange/RatingModal.astro";
 import ReportModal from "../../components/exchange/ReportModal.astro";
+import Skeleton from "../../components/ui/Skeleton.astro";
 import "../../styles/pages/chat.css";
 ---
 
@@ -48,7 +49,9 @@ import "../../styles/pages/chat.css";
             />
           </div>
         </div>
-        <ul class="thread-list" id="thread-list"></ul>
+        <ul class="thread-list" id="thread-list" aria-busy="true">
+          <Skeleton variant="row" count={5} label="Cargando conversaciones…" tag="li" />
+        </ul>
       </aside>
 
       <section class="conversation" aria-label="Conversación seleccionada">

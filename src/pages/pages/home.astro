@@ -10,6 +10,7 @@ import CategoryNav from "../../components/home/CategoryNav.astro";
 import ChallengeBand from "../../components/home/ChallengeBand.astro";
 import HomeSearch from "../../components/home/HomeSearch.astro";
 import ImpactCard from "../../components/home/ImpactCard.astro";
+import Skeleton from "../../components/ui/Skeleton.astro";
 import PageHead from "../../components/ui/PageHead.astro";
 import { url } from "../../lib/url";
 import "../../styles/pages/home.css";
@@ -54,7 +55,9 @@ import "../../styles/pages/home.css";
         </a>
       </div>
       <div class="popular-viewport">
-        <div class="popular-grid" id="popular-list"></div>
+        <div class="popular-grid" id="popular-list" aria-busy="true">
+          <Skeleton variant="card" count={3} label="Cargando publicaciones…" />
+        </div>
       </div>
     </div>
   </section>

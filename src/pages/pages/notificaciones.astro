@@ -19,6 +19,7 @@ import Button from "../../components/ui/Button.astro";
 import Card from "../../components/ui/Card.astro";
 import CardSection from "../../components/ui/CardSection.astro";
 import PageHead from "../../components/ui/PageHead.astro";
+import Skeleton from "../../components/ui/Skeleton.astro";
 import Toggle from "../../components/ui/Toggle.astro";
 import PrefToggle from "../../components/notifications/PrefToggle.astro";
 import "../../styles/pages/notifications.css";
@@ -98,7 +99,9 @@ const TIPS = [
           </div>
         </div>
       </div>
-      <div class="card__body" id="notifications-list" aria-live="polite"></div>
+      <div class="card__body" id="notifications-list" aria-live="polite" aria-busy="true">
+        <Skeleton variant="row" count={4} label="Cargando notificaciones…" />
+      </div>
     </Card>
   </section>
 

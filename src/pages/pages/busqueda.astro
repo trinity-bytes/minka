@@ -15,6 +15,7 @@
 import AppLayout from "../../components/layout/AppLayout.astro";
 import FiltersPanel from "../../components/search/FiltersPanel.astro";
 import SearchBar from "../../components/search/SearchBar.astro";
+import Skeleton from "../../components/ui/Skeleton.astro";
 import "../../styles/pages/search.css";
 
 const sortOptions = [
@@ -44,7 +45,7 @@ const sortOptions = [
   <div class="container search-summary">
     <div class="search-summary__text">
       <h1 class="search-summary__title">Resultados de búsqueda</h1>
-      <p class="search-summary__count" id="results-count" role="status">0 resultados</p>
+      <p class="search-summary__count" id="results-count" role="status">Cargando resultados…</p>
     </div>
     <div class="search-summary__sort">
       <label for="filter-sort" data-i18n="search_filter_sort">Ordenar por</label>
@@ -65,7 +66,9 @@ const sortOptions = [
 
     <section class="results" aria-labelledby="results-title">
       <h2 class="sr-only" id="results-title" data-i18n="search_results_title">Resultados</h2>
-      <div class="results__grid" id="results-list"></div>
+      <div class="results__grid" id="results-list" aria-busy="true">
+        <Skeleton variant="card" count={6} label="" />
+      </div>
     </section>
   </div>
 

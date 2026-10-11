@@ -3,6 +3,7 @@
  * Maneja puntos, insignias, ranking y catálogo de recompensas.
  */
 import { avatarTone, initials } from "../lib/avatar.js";
+import { renderEmptyState } from "../lib/states.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initGamification();
@@ -247,8 +248,12 @@ function renderRanking() {
   if (!container) return;
 
   if (MOCK_USER_DATA.optOutRanking) {
-    container.innerHTML =
-      '<p class="ranking-empty">Has decidido no participar en el ranking público.</p>';
+    container.innerHTML = renderEmptyState({
+      variant: "compact",
+      headingLevel: 3,
+      icon: "fa-eye-slash",
+      title: "Has decidido no participar en el ranking público",
+    });
     return;
   }
 

@@ -424,16 +424,11 @@
 
 /* === Results: white cards (photo on top, text below) === */
 .results__grid {
+  /* Loading cards mirror the square result photo. */
+  --skeleton-media-ratio: 1;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(14.5rem, 1fr));
   gap: var(--space-20);
-}
-
-/* Empty states render inside the grid: give them the white surface. */
-.results__grid > .empty-state {
-  grid-column: 1 / -1;
-  border-radius: var(--radius-card);
-  background: var(--color-card);
 }
 
 .result-card {
@@ -631,7 +626,6 @@
 
 /* === High contrast / forced colors === */
 body.high-contrast .result-card,
-body.high-contrast .results__grid > .empty-state,
 body.high-contrast .saved-search-tag,
 body.high-contrast .item-card__favorite,
 body.high-contrast .filter-chip--clear,
@@ -663,7 +657,6 @@ body.high-contrast .filters__toggle-count {
 
 @media (forced-colors: active) {
   .result-card,
-  .results__grid > .empty-state,
   .saved-search-tag,
   .filter-chip,
   .item-card__favorite {

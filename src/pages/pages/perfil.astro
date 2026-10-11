@@ -16,6 +16,7 @@ import Button from "../../components/ui/Button.astro";
 import IconChip from "../../components/ui/IconChip.astro";
 import Modal from "../../components/ui/Modal.astro";
 import PageHead from "../../components/ui/PageHead.astro";
+import Skeleton from "../../components/ui/Skeleton.astro";
 import { asset, url } from "../../lib/url";
 import "../../styles/pages/profile.css";
 
@@ -166,8 +167,8 @@ const APPEAL_REASONS = [
       <!-- T14 - Ronel Rojas: Listado de publicaciones del usuario -->
       <section class="profile-items" aria-labelledby="my-items-title">
         <h2 id="my-items-title" class="profile-items__title" data-i18n="profile.myItems">Mis Publicaciones</h2>
-        <div id="my-items-list" class="profile-items__list">
-          <p class="form__hint" data-i18n="profile.noItems">No tienes publicaciones activas.</p>
+        <div id="my-items-list" class="profile-items__list" aria-busy="true">
+          <Skeleton variant="row" count={2} label="Cargando publicaciones…" />
         </div>
       </section>
     </div>

@@ -368,13 +368,6 @@
   white-space: nowrap;
 }
 
-.ranking-empty {
-  margin: 0;
-  padding: var(--space-24);
-  color: var(--color-ink-2);
-  text-align: center;
-}
-
 /* History */
 .history-list {
   margin: 0;

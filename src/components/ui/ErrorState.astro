@@ -19,6 +19,8 @@ interface Action {
 
 interface Props {
   title: string;
+  /** i18n key put on the title as data-i18n (translated by core/i18n.js). */
+  titleKey?: string;
   text?: string;
   icon?: string;
   variant?: "panel" | "compact";

@@ -1,4 +1,6 @@
 // T22 - Miguel Sanca: Sistema de notificaciones con feed y preferencias
+import { renderEmptyState } from "../lib/states.js";
+
 (function () {
   // Persistencia centralizada en core/store.js (window.Store)
 
@@ -116,6 +118,16 @@
   function bindEvents() {
     ui.filterUnread?.addEventListener("change", renderFeed);
     ui.filterType?.addEventListener("change", renderFeed);
+    // Delegated: the empty state (and its button) is re-rendered each time.
+    ui.list?.addEventListener("click", (e) => {
+      if (!e.target.closest("[data-clear-filters]")) return;
+      if (ui.filterUnread) ui.filterUnread.checked = false;
+      // Go through the visible type pills so their pressed state follows.
+      const allPill = document.querySelector('[data-type-filter] button[data-value="all"]');
+      if (allPill) allPill.click();
+      else if (ui.filterType) ui.filterType.value = "all";
+      renderFeed();
+    });
     ui.markAll?.addEventListener("click", markAllRead);
     ui.clearRead?.addEventListener("click", clearRead);
     document.addEventListener("languageChanged", renderFeed);
@@ -133,6 +145,7 @@
 
   function renderFeed() {
     if (!ui.list) return;
+    ui.list.removeAttribute("aria-busy");
     const onlyUnread = ui.filterUnread?.checked;
     const typeFilter = ui.filterType?.value || "all";
 
@@ -144,7 +157,19 @@
     });
 
     if (!filtered.length) {
-      ui.list.innerHTML = `<p class="empty">${I18n.t("notif_empty")}</p>`;
+      const filtering = onlyUnread || typeFilter !== "all";
+      ui.list.innerHTML = renderEmptyState({
+        variant: "compact",
+        headingLevel: 3,
+        icon: filtering ? "fa-filter" : "fa-bell-slash",
+        title: I18n.t("notif_empty"),
+        text: filtering
+          ? "Ninguna notificación coincide con los filtros elegidos."
+          : "Te avisaremos aquí cuando haya mensajes, coincidencias o recordatorios.",
+        actions: filtering
+          ? [{ label: "Limpiar filtros", icon: "fa-filter-circle-xmark", data: { "clear-filters": "" } }]
+          : [],
+      });
       return;
     }
 

@@ -412,6 +412,8 @@
 }
 
 .popular-grid {
+  /* Loading cards mirror the ~240x176 card photo. */
+  --skeleton-media-ratio: 240 / 176;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--space-16);
@@ -422,6 +424,11 @@
   overflow: hidden;
   /* room for the hover lift and soft shadow */
   padding: var(--space-8) var(--space-4) var(--space-16);
+}
+
+/* Edge fade only while the marquee runs; static grids, skeletons and
+   empty/error states keep crisp edges. */
+.popular-viewport:has(.is-carousel) {
   mask-image: linear-gradient(
     90deg,
     transparent,

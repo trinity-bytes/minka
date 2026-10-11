@@ -83,59 +83,15 @@
   gap: var(--space-16);
 }
 
-/* === Empty state (T11 replaces it with the shared EmptyState) === */
-.no-data-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-  padding: var(--space-32);
-  border-radius: var(--radius-card);
-  background: var(--color-card);
-  text-align: center;
-}
-
-.no-data-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-12);
-  color: var(--color-ink-2);
-}
-
-.no-data-icon {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-full);
-  background: var(--color-mint);
-  color: var(--color-ink);
-  font-size: 1.6rem;
-}
-
-.no-data-content h2 {
-  margin: 0;
-  color: var(--color-ink);
-  font-size: 1.25rem;
-}
-
-.no-data-content p {
-  max-width: 400px;
-  margin: 0;
-}
-
 /* === High contrast / forced colors === */
-body.high-contrast .dashboard-filters,
-body.high-contrast .no-data-container {
+body.high-contrast .dashboard-filters {
   background: var(--color-hc-paper);
   color: var(--color-hc-ink);
   outline: 2px solid var(--color-hc-ink);
 }
 
 @media (forced-colors: active) {
-  .dashboard-filters,
-  .no-data-container {
+  .dashboard-filters {
     border: 1px solid CanvasText;
   }
 }

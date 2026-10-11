@@ -3,6 +3,7 @@
 // globals Session, Store, Toast and I18n loaded as classic scripts by
 // AppLayout (core/guard.js redirects guests to auth before this runs).
 import { buildSearchUrl } from "../lib/search-params.js";
+import { renderEmptyState, renderErrorState } from "../lib/states.js";
 
 const userNameEl = document.getElementById("home-username");
 const popularListEl = document.getElementById("popular-list");
@@ -54,24 +55,32 @@ document.addEventListener("languageChanged", () => {
   setWelcomeName();
 });
 
-function renderEmptyState() {
+function renderEmptyPopular() {
   popularListEl.classList.remove("is-carousel");
-  popularListEl.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-state__icon" aria-hidden="true">🌱</div>
-      <h3>Todavía no hay publicaciones</h3>
-      <p>Publica tu primer objeto o carga datos de ejemplo para explorar la demo.</p>
-      <div class="empty-state__actions">
-        <a class="btn btn-primary" href="publicar.html">Publicar mi primer objeto</a>
-        <button class="btn btn-secondary" type="button" id="seed-demo-btn">
-          Cargar datos de ejemplo
-        </button>
-      </div>
-    </div>`;
+  popularListEl.innerHTML = renderEmptyState({
+    icon: "fa-seedling",
+    headingLevel: 3,
+    title: "Todavía no hay publicaciones",
+    text: "Publica tu primer objeto o carga datos de ejemplo para explorar la demo.",
+    actions: [
+      { label: "Publicar mi primer objeto", href: "publicar.html", variant: "primary" },
+      { label: "Cargar datos de ejemplo", id: "seed-demo-btn" },
+    ],
+  });
   document.getElementById("seed-demo-btn")?.addEventListener("click", () => {
     Store.seedDemo();
     renderPopular();
     if (window.Toast) Toast.show("Datos de ejemplo cargados.", "success");
+  });
+}
+
+function renderPopularError() {
+  popularListEl.classList.remove("is-carousel");
+  popularListEl.innerHTML = renderErrorState({
+    headingLevel: 3,
+    title: "No pudimos cargar las publicaciones",
+    text: "Hubo un problema al leer los datos guardados en este navegador.",
+    retry: { label: "Reintentar", icon: "fa-rotate-right", data: { retry: "" } },
   });
 }
 
@@ -95,26 +104,31 @@ function setupCarousel(count) {
 function renderPopular() {
   if (!popularListEl) return;
 
+  // The server-rendered skeleton marks the region busy until this render.
+  popularListEl.removeAttribute("aria-busy");
+
   let allItems = [];
+  let cardsHtml = "";
   try {
     allItems = window.Store ? Store.getItems() : [];
+    cardsHtml = renderPopularCards(allItems);
   } catch (error) {
-    popularListEl.innerHTML = `
-      <div class="error-state">
-        <div class="error-state__icon" aria-hidden="true">⚠️</div>
-        <h3>Error al cargar</h3>
-        <p>No pudimos leer las publicaciones.</p>
-        <button class="btn btn-secondary" type="button" data-reload>Reintentar</button>
-      </div>`;
+    console.warn("No se pudieron cargar las publicaciones", error);
+    renderPopularError();
     return;
   }
 
   if (allItems.length === 0) {
-    renderEmptyState();
+    renderEmptyPopular();
     return;
   }
 
-  popularListEl.innerHTML = allItems
+  popularListEl.innerHTML = cardsHtml;
+  setupCarousel(allItems.length);
+}
+
+function renderPopularCards(allItems) {
+  return allItems
     .map(
       (item) => `
         <article class="popular-card is-entering" aria-label="${
@@ -159,8 +173,6 @@ function renderPopular() {
       `
     )
     .join("");
-
-  setupCarousel(allItems.length);
 }
 
 // Escuchar cambios de idioma para re-renderizar las tarjetas
@@ -171,8 +183,8 @@ document.addEventListener("languageChanged", () => {
 // Cards are rendered via innerHTML: one delegated listener handles retry,
 // favorites (without navigating), inner links and whole-card navigation.
 popularListEl?.addEventListener("click", (e) => {
-  if (e.target.closest("[data-reload]")) {
-    location.reload();
+  if (e.target.closest("[data-retry]")) {
+    renderPopular();
     return;
   }
   const favBtn = e.target.closest("[data-fav-id]");

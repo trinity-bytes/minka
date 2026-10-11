@@ -6,6 +6,7 @@
 // scripts, with the DOM parsed. Globals used: Store, Modal.
 import { token, withAlpha } from "../tokens";
 import { avatarTone, formatCount, initials } from "../lib/avatar.js";
+import { renderEmptyState } from "../lib/states.js";
 import {
   filterThreads,
   groupPositions,
@@ -191,11 +192,23 @@ function handleUrlParams() {
 }
 
 function renderThreads() {
+  // The server-rendered skeleton marks the list busy until this render.
+  els.list.removeAttribute("aria-busy");
   // Re-rendering replaces the rows: remember a focused row to restore it.
   const focusedId = document.activeElement?.closest?.("#thread-list .thread")?.dataset.id;
   const visible = filterThreads(threads, listQuery);
   if (!visible.length) {
-    els.list.innerHTML = `<li class="thread-list__empty">No hay conversaciones que coincidan.</li>`;
+    const searching = listQuery.trim() !== "";
+    els.list.innerHTML = `<li class="thread-list__empty">${renderEmptyState({
+      variant: "compact",
+      headingLevel: 2,
+      icon: searching ? "fa-magnifying-glass" : "fa-comments",
+      title: searching
+        ? "No hay conversaciones que coincidan"
+        : "Todavía no tienes conversaciones",
+      text: searching ? "Prueba con otro nombre o publicación." : "Escribe a un vecino desde una publicación.",
+      actions: searching ? [{ label: "Borrar búsqueda", variant: "ghost", data: { "clear-search": "" } }] : [],
+    })}</li>`;
     return;
   }
 
@@ -394,6 +407,13 @@ function attachThreadSearch() {
   input.addEventListener("input", () => {
     listQuery = input.value;
     renderThreads();
+  });
+  els.list.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-clear-search]")) return;
+    input.value = "";
+    listQuery = "";
+    renderThreads();
+    input.focus();
   });
 }
 

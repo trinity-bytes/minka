@@ -131,3 +131,9 @@ test("renderSkeleton can omit the status label", () => {
   const html = renderSkeleton({ variant: "tile", count: 1, label: "" });
   assert.doesNotMatch(html, /skeleton-status/);
 });
+
+test("titleKey adds a data-i18n hook to the title so the i18n layer can translate it", () => {
+  const html = renderEmptyState({ title: "Sin actividad registrada", titleKey: "dash_empty" });
+  assert.match(html, /<h2 class="state__title" data-i18n="dash_empty">Sin actividad registrada<\/h2>/);
+  assert.match(renderEmptyState({ title: "T", titleKey: `x" y` }), /data-i18n="x&quot; y"/);
+});

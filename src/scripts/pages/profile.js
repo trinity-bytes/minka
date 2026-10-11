@@ -1,6 +1,7 @@
 // T13 - Lucero Pipa: Lógica de perfil e identidad simulada
 // T35 - Leonardo Chavez: Gestión de reputación
 import { avatarTone, initials } from "../lib/avatar.js";
+import { renderEmptyState } from "../lib/states.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -118,6 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderMyItems() {
     if (!myItemsList) return;
+    // The server-rendered skeleton marks the list busy until this render.
+    myItemsList.removeAttribute("aria-busy");
     // Perfil propio: mis publicaciones. Perfil público (?user=): las de ese owner.
     const sessionUser = getSessionUser();
     const myId = viewedUserId || sessionUser?.id || sessionUser?.email || "demo";
@@ -129,17 +132,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const message = window.I18n
         ? window.I18n.t("profile.noItems")
         : "No tienes publicaciones activas.";
-      const cta = viewedUserId
-        ? ""
-        : `<div class="empty-state__actions">
-            <a class="btn btn-primary" href="publicar.html">Publicar mi primer objeto</a>
-          </div>`;
-      myItemsList.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state__icon" aria-hidden="true">📦</div>
-          <p>${message}</p>
-          ${cta}
-        </div>`;
+      myItemsList.innerHTML = renderEmptyState({
+        variant: "compact",
+        headingLevel: 3,
+        icon: "fa-box-open",
+        title: message.replace(/\.$/, ""),
+        actions: viewedUserId
+          ? []
+          : [{ label: "Publicar mi primer objeto", href: "publicar.html", variant: "primary" }],
+      });
       return;
     }
 

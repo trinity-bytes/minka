@@ -53,10 +53,11 @@ function renderState(kind, options, defaults) {
   const tag = headingTag(options.headingLevel);
   const role = defaults.role ? ` role="${defaults.role}"` : "";
   const actions = (options.actions || []).filter((a) => a && a.label);
+  const i18n = options.titleKey ? ` data-i18n="${escapeHtml(options.titleKey)}"` : "";
   return [
     `<div class="state state--${kind} state--${variant}"${role}>`,
     `<span class="state__icon" aria-hidden="true"><i class="fa-solid ${icon}"></i></span>`,
-    `<${tag} class="state__title">${escapeHtml(options.title)}</${tag}>`,
+    `<${tag} class="state__title"${i18n}>${escapeHtml(options.title)}</${tag}>`,
     options.text ? `<p class="state__text">${escapeHtml(options.text)}</p>` : "",
     actions.length
       ? `<div class="state__actions">${actions.map(renderStateAction).join("")}</div>`
@@ -70,7 +71,7 @@ function renderState(kind, options, defaults) {
  * `variant: "compact"` inside an existing card or list pane (no surface of
  * its own), the default "panel" when it stands alone on the page background.
  * @param {{title: string, text?: string, icon?: string, variant?: string,
- *   headingLevel?: 2|3|4, actions?: object[]}} options
+ *   headingLevel?: 2|3|4, titleKey?: string, actions?: object[]}} options
  */
 export function renderEmptyState(options) {
   return renderState("empty", options, { icon: "fa-inbox" });
@@ -81,7 +82,7 @@ export function renderEmptyState(options) {
  * role="alert" for states injected after load; pass false when the state
  * is part of the initial markup.
  * @param {{title: string, text?: string, icon?: string, variant?: string,
- *   headingLevel?: 2|3|4, retry?: object, actions?: object[], alert?: boolean}} options
+ *   headingLevel?: 2|3|4, titleKey?: string, retry?: object, actions?: object[], alert?: boolean}} options
  */
 export function renderErrorState(options) {
   const actions = [...(options.retry ? [options.retry] : []), ...(options.actions || [])];

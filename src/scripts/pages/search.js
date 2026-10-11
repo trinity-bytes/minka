@@ -4,6 +4,7 @@
 // ES module bundled by src/pages/pages/busqueda.astro; relies on the legacy
 // globals Store, Toast and I18n loaded as classic scripts by AppLayout.
 import { escapeHtml } from "../lib/html.js";
+import { renderEmptyState } from "../lib/states.js";
 import {
   SEARCH_DEFAULTS,
   filtersToParams,
@@ -316,18 +317,16 @@ function syncUI() {
 
 function renderEmptyCatalog() {
   el.count.textContent = resultsSummary(0, state.query);
-  el.results.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-state__icon" aria-hidden="true">🔍</div>
-      <h3>Todavía no hay publicaciones</h3>
-      <p>Publica tu primer objeto o carga datos de ejemplo para explorar la demo.</p>
-      <div class="empty-state__actions">
-        <a class="btn btn-primary" href="publicar.html">Publicar mi primer objeto</a>
-        <button class="btn btn-secondary" type="button" id="seed-demo-btn">
-          Cargar datos de ejemplo
-        </button>
-      </div>
-    </div>`;
+  el.results.innerHTML = renderEmptyState({
+    icon: "fa-seedling",
+    headingLevel: 3,
+    title: "Todavía no hay publicaciones",
+    text: "Publica tu primer objeto o carga datos de ejemplo para explorar la demo.",
+    actions: [
+      { label: "Publicar mi primer objeto", href: "publicar.html", variant: "primary" },
+      { label: "Cargar datos de ejemplo", id: "seed-demo-btn" },
+    ],
+  });
   document.getElementById("seed-demo-btn")?.addEventListener("click", () => {
     Store.seedDemo();
     render();
@@ -336,6 +335,8 @@ function renderEmptyCatalog() {
 }
 
 function render() {
+  // The server-rendered skeleton marks the results busy until this render.
+  el.results.removeAttribute("aria-busy");
   const allItems = Store.getItems();
   const favorites = getFavorites(); // T30
 
@@ -379,17 +380,15 @@ function render() {
   el.count.textContent = resultsSummary(sorted.length, el.query.value || state.query);
 
   if (sorted.length === 0) {
-    el.results.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state__icon" aria-hidden="true">🤷</div>
-        <h3>Sin resultados con estos filtros</h3>
-        <p>Prueba con otros términos o restablece los filtros.</p>
-        <div class="empty-state__actions">
-          <button class="btn btn-secondary" type="button" id="empty-reset-filters">
-            Restablecer filtros
-          </button>
-        </div>
-      </div>`;
+    el.results.innerHTML = renderEmptyState({
+      icon: "fa-magnifying-glass",
+      headingLevel: 3,
+      title: "Sin resultados con estos filtros",
+      text: "Prueba con otros términos o limpia los filtros.",
+      actions: [
+        { label: "Limpiar filtros", id: "empty-reset-filters", icon: "fa-filter-circle-xmark" },
+      ],
+    });
     document
       .getElementById("empty-reset-filters")
       ?.addEventListener("click", () => el.reset?.click());
