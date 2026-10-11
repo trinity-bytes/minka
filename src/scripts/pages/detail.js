@@ -171,6 +171,7 @@ function init() {
   }
   setupStickyCta(item);
   setupShare(item);
+  setupQrDialog();
   renderSimilar(item);
   const ownerLink = document.getElementById("owner-profile-link");
   if (ownerLink) {
@@ -748,6 +749,28 @@ function drawQrCanvas(matrix, clear) {
   qrCtx.fillStyle = token("--color-brand");
   qrCtx.fill(new Path2D(LOGOMARK.leaf));
   qrCtx.restore();
+}
+
+// Exchange pass dialog (T10d-5): native <dialog> opened with showModal().
+// Escape closes natively; the close button and a click on the backdrop (the
+// dialog element itself, outside its content) close it too. Focus goes back
+// to the trigger on every close path.
+function setupQrDialog() {
+  const dialog = document.getElementById("qr-dialog");
+  const trigger = document.getElementById("qr-pass-open");
+  const closeBtn = document.getElementById("qr-dialog-close");
+  if (!dialog || !trigger || typeof dialog.showModal !== "function") return;
+
+  trigger.addEventListener("click", () => {
+    if (dialog.open) return;
+    dialog.showModal();
+    closeBtn?.focus();
+  });
+  closeBtn?.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener("close", () => trigger.focus());
 }
 
 function openModal(modal) {

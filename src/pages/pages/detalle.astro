@@ -14,7 +14,7 @@ import Button from "../../components/ui/Button.astro";
 import Gallery from "../../components/detail/Gallery.astro";
 import ReactionBar from "../../components/detail/ReactionBar.astro";
 import SellerCard from "../../components/detail/SellerCard.astro";
-import QrCard from "../../components/detail/QrCard.astro";
+import QrPassDialog from "../../components/detail/QrPassDialog.astro";
 import OfflineModal from "../../components/detail/OfflineModal.astro";
 import RatingModal from "../../components/exchange/RatingModal.astro";
 import ReportModal from "../../components/exchange/ReportModal.astro";
@@ -33,8 +33,8 @@ const FACTS = [
 // Standard product page (T10d-1): gallery left; the listing content sits
 // unboxed on the page to its right (meta line, title, condition,
 // description, inline actions), then ONE neutral panel groups the exchange
-// options, then the CTA row and the owner line. The exchange pass and the
-// item history follow below.
+// options, then the CTA row and the owner line. The item history follows
+// below; the exchange pass opens in a dialog from the CTA row (T10d-5).
 ---
 
 <AppLayout
@@ -118,7 +118,14 @@ const FACTS = [
           id="action-contact"
           data-i18n="detail_contact">Contactar</Button
         >
-        <Button appearance="flat" variant="secondary" size="lg" href="#qr-pass">
+        <Button
+          appearance="flat"
+          variant="secondary"
+          size="lg"
+          id="qr-pass-open"
+          aria-haspopup="dialog"
+          aria-controls="qr-dialog"
+        >
           <i class="fas fa-qrcode" aria-hidden="true"></i>
           <span>Ver pase QR</span>
         </Button>
@@ -128,14 +135,13 @@ const FACTS = [
     </article>
   </section>
 
-  <!-- Below the product: the item history (T33) and the exchange pass. -->
-  <section class="container detail-more" aria-label="Historial y pase de intercambio">
+  <!-- Below the product: the item history (T33). The exchange pass opens in
+       a dialog from the CTA row (T10d-5). -->
+  <section class="container detail-more" aria-label="Historial del objeto">
     <section class="detail-timeline" aria-labelledby="timeline-title">
       <h2 id="timeline-title" data-i18n="detail_timeline_title">Historial del Objeto</h2>
       <ul class="timeline" id="item-timeline"></ul>
     </section>
-
-    <QrCard />
   </section>
 
   <!-- Chunk 4.8: Similares de la misma categoría -->
@@ -156,6 +162,7 @@ const FACTS = [
         data-i18n="detail_contact">Contactar</Button
       >
     </div>
+    <QrPassDialog />
     <OfflineModal />
     <RatingModal />
     <ReportModal />

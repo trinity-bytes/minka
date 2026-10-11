@@ -628,13 +628,14 @@
   --seller-avatar-fg: var(--color-on-lavender);
 }
 
-/* === Below the product: history | exchange pass === */
+/* === Below the product: the item history (the exchange pass lives in a
+   dialog since T10d-5) === */
 .detail-more {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
-  gap: var(--space-48);
-  align-items: start;
   padding-top: var(--space-56);
+}
+
+.detail-timeline {
+  max-width: 48rem;
 }
 
 .detail-timeline h2 {
@@ -650,7 +651,6 @@
   --pass-pad: var(--space-20);
   position: relative;
   container-type: inline-size;
-  margin-top: var(--space-8);
   border-radius: var(--radius-lg);
   background: var(--color-card);
 }
@@ -867,6 +867,82 @@
   color: var(--color-ink);
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
   font-size: 0.8rem;
+}
+
+/* === Exchange pass dialog (T10d-5): native <dialog>, the ticket on a
+   page-colored panel (so the perforation notches read as holes), a dimmed
+   backdrop and a close pill above the ticket. The panel fills the dialog
+   box; detail.js treats a click whose target is the dialog as a backdrop
+   click. === */
+.qr-dialog {
+  width: min(25rem, calc(100vw - var(--space-32)));
+  max-width: none;
+  max-height: calc(100dvh - var(--space-32));
+  /* The global reset zeroes margins; auto restores the native centering. */
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xl);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+}
+
+.qr-dialog::backdrop {
+  background: var(--color-scrim, rgb(10 29 19 / 0.5));
+  backdrop-filter: blur(3px);
+}
+
+/* No page scroll behind the open dialog. */
+:root:has(.qr-dialog[open]) {
+  overflow: hidden;
+}
+
+.qr-dialog__panel {
+  max-height: calc(100dvh - var(--space-32));
+  padding: var(--space-12) var(--space-16) var(--space-16);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.qr-dialog__bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-8);
+}
+
+.qr-dialog__close.modal__close {
+  margin: 0;
+  background: var(--color-card);
+}
+
+/* A larger code in the dialog: more pixels per module for scanners. */
+.qr-dialog .qr-pass__code {
+  width: min(100%, 264px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .qr-dialog[open] {
+    animation: qr-dialog-in var(--dur-base, 0.24s) var(--ease-out, ease-out);
+  }
+
+  .qr-dialog[open]::backdrop {
+    animation: qr-backdrop-in var(--dur-base, 0.24s) ease-out;
+  }
+}
+
+@keyframes qr-dialog-in {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+
+@keyframes qr-backdrop-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .qr-actions {
@@ -1176,8 +1252,7 @@
 
 /* === Responsive === */
 @media (max-width: 1100px) {
-  .product,
-  .detail-more {
+  .product {
     gap: var(--space-32);
   }
 }
@@ -1185,8 +1260,7 @@
 /* Phones and narrow tablets: gallery, then the content, then the history
    and the pass in one column. */
 @media (max-width: 900px) {
-  .product,
-  .detail-more {
+  .product {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1196,11 +1270,6 @@
 
   .detail-more {
     padding-top: var(--space-40);
-  }
-
-  .qr-pass {
-    width: 100%;
-    max-width: 26rem;
   }
 }
 
@@ -1312,6 +1381,12 @@ body.high-contrast .qr-pass {
   --pass-notch: var(--color-hc-paper);
 }
 
+body.high-contrast .qr-dialog {
+  border: 2px solid var(--color-hc-ink);
+  background: var(--color-hc-paper);
+  box-shadow: none;
+}
+
 body.high-contrast .qr-pass__tear {
   border-top-color: var(--color-hc-ink);
 }
@@ -1362,6 +1437,7 @@ body.high-contrast .sticky-cta a.btn-primary {
 @media (forced-colors: active) {
   .product__panel,
   .qr-pass,
+  .qr-dialog__close,
   .manage-menu,
   .reaction__tip,
   .similar-card__tile,
@@ -1374,6 +1450,14 @@ body.high-contrast .sticky-cta a.btn-primary {
 
   .reaction + .reaction::before {
     background: CanvasText;
+  }
+
+  .qr-dialog {
+    border: 2px solid CanvasText;
+  }
+
+  .qr-dialog__close:focus-visible {
+    outline-color: Highlight;
   }
 
   .gallery__thumbs img.is-active {
