@@ -23,16 +23,18 @@ import EcoModal from "../../components/detail/EcoModal.astro";
 import { url } from "../../lib/url";
 import "../../styles/pages/detail.css";
 
+// Panel facts; the specs detail.js appends (Marca, Modelo, Color) join
+// these rows inside `.detail-info`.
 const FACTS = [
-  { label: "Estado", id: "item-condition" },
-  { label: "Ubicación", id: "item-location" },
   { label: "Disponibilidad", id: "item-availability" },
-  { label: "Reputación", id: "item-rating" },
+  { label: "Ubicación", id: "item-location" },
 ];
 
-// Specs appended by detail.js (Marca, Modelo, Color) join these rows.
-// Actions live in the reaction bar under the gallery (ReactionBar); the
-// decision panel keeps one primary action, "Contactar" (T10c-1).
+// Standard product page (T10d-1): gallery left; the listing content sits
+// unboxed on the page to its right (meta line, title, condition,
+// description, inline actions), then ONE neutral panel groups the exchange
+// options, then the CTA row and the owner line. The exchange pass and the
+// item history follow below.
 ---
 
 <AppLayout
@@ -51,41 +53,49 @@ const FACTS = [
     ]}
   />
 
-  <section class="container detail-hero">
-    <p class="detail-hero__eyebrow">Publicación activa</p>
-    <h1 id="item-title">Título del ítem</h1>
-    <p class="detail-hero__meta" id="item-meta">Categoría · Ubicación · Estado</p>
-  </section>
+  <section class="container product" aria-label="Ficha de publicación">
+    <div class="product__media">
+      <Gallery />
+    </div>
 
-  <!-- Two zones (T10c-1): the listing tells the item story on one white
-       surface; the tinted decision panel holds facts, the only primary
-       action, the owner and the exchange pass. -->
-  <section class="detail-layout" aria-label="Ficha de publicación">
-    <div class="container detail-grid">
-      <article class="listing" aria-labelledby="item-title">
-        <div class="listing__media">
-          <Gallery />
-          <ReactionBar />
+    <article class="product__info" aria-labelledby="item-title">
+      <div class="product__meta">
+        <p class="detail-hero__eyebrow">Publicación activa</p>
+        <span class="product__rating">
+          <span class="sr-only">Reputación:</span>
+          <span id="item-rating">—</span>
+        </span>
+        <span class="product__meta-text" id="item-meta">Categoría · Ubicación</span>
+      </div>
+
+      <h1 id="item-title">Título del ítem</h1>
+      <p class="product__lead">
+        <strong id="item-condition">—</strong>
+        <span aria-hidden="true">·</span>
+        <span>Para trueque</span>
+      </p>
+
+      <div class="product__description detail-description">
+        <h2 class="sr-only" id="description-title" data-i18n="detail_description">Descripción</h2>
+        <p id="item-description">
+          Descripción del objeto. Se actualizará con datos simulados en el script.
+        </p>
+        <div class="tag-list" id="item-tags"></div>
+      </div>
+
+      <ReactionBar />
+
+      <!-- The page's one grouped panel: how the exchange happens + facts. -->
+      <section class="product__panel" aria-labelledby="summary-title">
+        <h2 class="sr-only" id="summary-title">Opciones de intercambio</h2>
+        <div class="product__group">
+          <h3 class="product__label">Modo de entrega</h3>
+          <ul class="mode-list" id="item-modes" role="list">
+            <li class="mode-pill">A coordinar por chat</li>
+          </ul>
         </div>
-
-        <section class="listing__section detail-description" aria-labelledby="description-title">
-          <h2 id="description-title" data-i18n="detail_description">Descripción</h2>
-          <p id="item-description">
-            Descripción del objeto. Se actualizará con datos simulados en el script.
-          </p>
-          <div class="tag-list" id="item-tags"></div>
-        </section>
-
-        <!-- T33 - Miguel Sanca: Historial de Trazabilidad (HU40) -->
-        <section class="listing__section detail-timeline" aria-labelledby="timeline-title">
-          <h2 id="timeline-title" data-i18n="detail_timeline_title">Historial del Objeto</h2>
-          <ul class="timeline" id="item-timeline"></ul>
-        </section>
-      </article>
-
-      <aside class="decision" aria-label="Resumen y acciones">
-        <section class="detail-summary decision__section" aria-labelledby="summary-title">
-          <h2 class="decision__label" id="summary-title">Ficha del objeto</h2>
+        <div class="product__group">
+          <h3 class="product__label">Ficha del objeto</h3>
           <div class="detail-info">
             {
               FACTS.map((f) => (
@@ -96,23 +106,36 @@ const FACTS = [
               ))
             }
           </div>
-          <div class="detail-cta">
-            <Button
-              appearance="flat"
-              variant="primary"
-              size="lg"
-              href={url("pages/chat.html")}
-              id="action-contact"
-              data-i18n="detail_contact">Contactar</Button
-            >
-          </div>
-        </section>
+        </div>
+      </section>
 
-        <SellerCard />
+      <div class="detail-cta">
+        <Button
+          appearance="flat"
+          variant="primary"
+          size="lg"
+          href={url("pages/chat.html")}
+          id="action-contact"
+          data-i18n="detail_contact">Contactar</Button
+        >
+        <Button appearance="flat" variant="secondary" size="lg" href="#qr-pass">
+          <i class="fas fa-qrcode" aria-hidden="true"></i>
+          <span>Ver pase QR</span>
+        </Button>
+      </div>
 
-        <QrCard />
-      </aside>
-    </div>
+      <SellerCard />
+    </article>
+  </section>
+
+  <!-- Below the product: the item history (T33) and the exchange pass. -->
+  <section class="container detail-more" aria-label="Historial y pase de intercambio">
+    <section class="detail-timeline" aria-labelledby="timeline-title">
+      <h2 id="timeline-title" data-i18n="detail_timeline_title">Historial del Objeto</h2>
+      <ul class="timeline" id="item-timeline"></ul>
+    </section>
+
+    <QrCard />
   </section>
 
   <!-- Chunk 4.8: Similares de la misma categoría -->

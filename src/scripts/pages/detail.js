@@ -8,6 +8,7 @@
 import { ECO_FACTORS } from "../../lib/eco";
 import { token } from "../tokens";
 import { avatarTone, initials } from "../lib/avatar.js";
+import { escapeHtml } from "../lib/html.js";
 import { qrMatrix, qrPath, logoArea, drawQr, codeIssuedAt } from "../lib/qr.js";
 import { LOGOMARK } from "../../assets/brand/paths";
 
@@ -227,7 +228,8 @@ function renderDetail(item) {
   if (qrPassItem) qrPassItem.textContent = item.title;
   const breadcrumbCurrent = document.getElementById("breadcrumb-current");
   if (breadcrumbCurrent) breadcrumbCurrent.textContent = item.title;
-  el.meta.textContent = `${item.category} · ${item.location} · ${item.condition}`;
+  // Condition has its own line under the title (T10d-1).
+  el.meta.textContent = `${item.category} · ${item.location}`;
   el.description.textContent = item.description;
   el.condition.textContent = item.condition;
   el.location.textContent = item.location;
@@ -238,7 +240,7 @@ function renderDetail(item) {
     Object.entries(item.specs).forEach(([key, value]) => {
       const row = document.createElement("div");
       row.className = "info-row";
-      row.innerHTML = `<span>${key}</span><strong>${value}</strong>`;
+      row.innerHTML = `<span>${escapeHtml(key)}</span><strong>${escapeHtml(value)}</strong>`;
       el.specsContainer.appendChild(row);
     });
   }
@@ -257,7 +259,16 @@ function renderDetail(item) {
 
   if (Array.isArray(item.tags)) {
     el.tags.innerHTML = item.tags
-      .map((tag) => `<span class="badge">${tag}</span>`)
+      .map((tag) => `<span class="badge">${escapeHtml(tag)}</span>`)
+      .join("");
+  }
+
+  // Delivery modes (publicar checkboxes) as read-only pills in the panel;
+  // the placeholder "A coordinar por chat" stays when there are none.
+  const modes = document.getElementById("item-modes");
+  if (modes && Array.isArray(item.mode) && item.mode.length) {
+    modes.innerHTML = item.mode
+      .map((mode) => `<li class="mode-pill">${escapeHtml(mode)}</li>`)
       .join("");
   }
 
@@ -287,7 +298,7 @@ function setupGallery(images, title) {
   thumbs.innerHTML = images
     .map(
       (src, idx) =>
-        `<img src="${src}" alt="Vista ${idx + 1}" data-idx="${idx}" loading="lazy" decoding="async" />`
+        `<img src="${escapeHtml(src)}" alt="Vista ${idx + 1}" data-idx="${idx}" loading="lazy" decoding="async" />`
     )
     .join("");
   // Con una sola foto no hay nada que navegar
@@ -387,12 +398,16 @@ function renderSimilar(item) {
       <a class="similar-card is-entering" href="detalle.html?id=${encodeURIComponent(
         s.id
       )}">
-        <img src="${
-          s.images?.[0] || "../assets/images/items/default.svg"
-        }" alt="${s.title}" loading="lazy" decoding="async" />
+        <span class="similar-card__tile">
+          <img src="${escapeHtml(
+            s.images?.[0] || "../assets/images/items/default.svg"
+          )}" alt="" loading="lazy" decoding="async" />
+        </span>
         <div class="similar-card__body">
-          <h3>${s.title}</h3>
-          <span class="badge">${s.category}</span>
+          <h3>${escapeHtml(s.title)}</h3>
+          <span class="similar-card__meta">${escapeHtml(s.category)}${
+            s.location ? ` · ${escapeHtml(s.location)}` : ""
+          }</span>
         </div>
       </a>`
     )

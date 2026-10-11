@@ -1,21 +1,20 @@
 ---
 /**
- * Owner ("Publicador") block of the detail decision panel: initials avatar,
- * name, location, rating and a link to the owner's profile. Name, location,
- * rating, the avatar initials and tint (#seller-avatar) and the profile href
- * are filled in by src/scripts/pages/detail.js. The avatar uses the
- * page-level `.seller-avatar--<tone>` classes (detail.css) so the script can
- * retint it. A section of the panel surface, not a card (T10c-1).
+ * Owner line of the detail page (T10d-1): a plain row on the page, no card.
+ * Initials avatar, "Publicado por" + name, rating and location, and a text
+ * link to the owner's profile. Name, location, rating, the avatar initials
+ * and tint (#seller-avatar) and the profile href are filled in by
+ * src/scripts/pages/detail.js. The avatar uses the page-level
+ * `.seller-avatar--<tone>` classes (detail.css) so the script can retint it.
  */
-import Button from "../ui/Button.astro";
 import { url } from "../../lib/url";
 import { avatarTone, initials } from "../../scripts/lib/avatar.js";
 
 const PLACEHOLDER = "Usuario Demo";
 ---
 
-<section class="seller-card decision__section" aria-labelledby="seller-title">
-  <h2 class="decision__label" id="seller-title" data-i18n="detail_publisher">Publicador</h2>
+<section class="seller-card" aria-labelledby="seller-title">
+  <h2 class="sr-only" id="seller-title" data-i18n="detail_publisher">Publicador</h2>
   <div class="seller">
     <span
       class:list={["seller-avatar", `seller-avatar--${avatarTone(PLACEHOLDER)}`]}
@@ -23,17 +22,16 @@ const PLACEHOLDER = "Usuario Demo";
       aria-hidden="true">{initials(PLACEHOLDER)}</span
     >
     <div class="seller__info">
-      <strong id="seller-name">{PLACEHOLDER}</strong>
-      <span id="seller-location">Lima, Perú</span>
-      <span id="seller-rating"><i class="fas fa-star" aria-hidden="true"></i> 4.5</span>
+      <span class="seller__by">Publicado por <strong id="seller-name">{PLACEHOLDER}</strong></span>
+      <span class="seller__meta">
+        <span id="seller-rating"><i class="fas fa-star" aria-hidden="true"></i> 4.5</span>
+        <span aria-hidden="true">·</span>
+        <span id="seller-location">Lima, Perú</span>
+      </span>
     </div>
-    <Button
-      appearance="flat"
-      variant="secondary"
-      size="sm"
-      href={url("pages/perfil.html")}
-      id="owner-profile-link"
-      data-i18n="detail_view_profile">Ver perfil</Button
-    >
+    <a class="seller__link" href={url("pages/perfil.html")} id="owner-profile-link">
+      <span data-i18n="detail_view_profile">Ver perfil</span>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
   </div>
 </section>

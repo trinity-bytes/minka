@@ -2,16 +2,16 @@
 /* T18 - Leonardo Chavez: Estilos de modales de rating y reporte */
 /* T23 - Ronel Rojas: Variantes de badge para estados (now in app.css) */
 /* T33 - Timeline Styles */
-/* Visual language (T10b-2, T10c-1): two zones with distinct roles instead of
-   equal cards. The listing (white, main column) tells the item story on one
-   surface: gallery, the reaction bar right under the photo, description
-   and history split by dividers. The decision panel (mint, side column)
-   holds the facts, the only primary action ("Contactar"), the owner and the
-   exchange pass ticket. The listing title is the only serif (same voice as
-   ui/PageHead; the h1 keeps its own markup because detail.js rewrites
-   #item-title and `.detail-hero__eyebrow`). Global (not scoped) on
-   purpose: detail.js renders the timeline, tags, spec rows, thumbnails and
-   similar cards as HTML strings. */
+/* Visual language T10d-1: a standard product page instead of a stack of
+   cards. Gallery (main photo + thumbnail strip) on the left; the listing
+   content sits directly on the page to its right: meta line, title,
+   condition line, description, an inline row of icon + text actions split
+   by thin dividers, then ONE neutral panel (white with a hairline, never
+   mint) grouping the delivery modes and the facts, the CTA row and the
+   owner line. The exchange pass ticket and the item history follow below.
+   The title is the only serif. Global (not scoped) on purpose: detail.js
+   renders the timeline, tags, spec rows, modes, thumbnails and similar
+   listings as HTML strings. */
 
 .detail-main :where(h2, h3, h4) {
   font-family: var(--font-primary);
@@ -19,14 +19,88 @@
   letter-spacing: -0.01em;
 }
 
-/* === Title block (mirrors ui/PageHead) === */
-.detail-hero {
+/* === Layout: gallery | info === */
+.product {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: var(--space-48);
+  align-items: start;
+  padding-top: var(--space-16);
+}
+
+.product__media,
+.product__info {
+  min-width: 0;
+}
+
+.product__info {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-8);
-  padding-top: var(--space-16);
-  padding-bottom: var(--space-24);
+  gap: var(--space-16);
+}
+
+/* === Gallery: big rounded photo + thumbnail strip === */
+.gallery {
+  border-radius: var(--radius-card);
+}
+
+.gallery__main {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: min(640px, 78svh);
+  border-radius: var(--radius-card);
+  background: var(--color-paper-2);
+  object-fit: cover;
+}
+
+.gallery__thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-12);
+  margin-top: var(--space-12);
+}
+
+.gallery__thumbs[hidden] {
+  display: none;
+}
+
+.gallery__thumbs img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  object-fit: cover;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+
+.gallery__thumbs img:hover {
+  border-color: var(--color-gray-300);
+}
+
+/* Selected thumb: outlined, like a standard product gallery. */
+.gallery__thumbs img.is-active {
+  border-color: var(--color-ink);
+  box-shadow: inset 0 0 0 1px var(--color-ink);
+}
+
+.gallery:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 4px;
+}
+
+/* === Info column: meta line, title, condition, description === */
+.product__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-12);
+  color: var(--color-ink-2);
+  font-size: 0.9rem;
 }
 
 .detail-hero__eyebrow {
@@ -40,239 +114,192 @@
   line-height: 1.3;
 }
 
-.detail-hero h1 {
+.product__rating {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.product__rating .fa-star,
+#seller-rating .fa-star {
+  color: var(--color-warning);
+}
+
+.product__info h1 {
   margin: 0;
   font-family: var(--font-display);
   font-weight: var(--font-display-weight);
   font-variation-settings: var(--font-display-axes-text);
-  font-size: clamp(1.75rem, 1.1rem + 1.8vw, 2.5rem);
-  line-height: 1.05;
+  font-size: clamp(1.9rem, 1.2rem + 1.9vw, 2.75rem);
+  line-height: 1.04;
   letter-spacing: var(--font-display-tracking);
   color: var(--color-ink);
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
 
-.detail-hero__meta {
-  margin: 0;
+/* Plays the role of the price line. */
+.product__lead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin: calc(-1 * var(--space-8)) 0 0;
   color: var(--color-ink-2);
+  font-size: 1.1rem;
 }
 
-/* === Layout: listing + decision panel === */
-.detail-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(20rem, 1fr);
-  gap: var(--space-24);
-  align-items: start;
+.product__lead strong {
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
-.listing {
-  min-width: 0;
-  border-radius: var(--radius-card);
-  background: var(--color-card);
-}
-
-.listing__section {
-  margin: 0 var(--space-24);
-  padding: var(--space-24) 0;
-  border-top: 1px solid var(--color-gray-100);
-}
-
-.listing__section h2 {
-  margin: 0 0 var(--space-12);
-  font-size: 1.15rem;
-  color: var(--color-ink);
-}
-
-.listing__section > p {
+.product__description p {
+  max-width: 62ch;
   margin: 0;
   color: var(--color-ink-2);
   line-height: 1.6;
+  text-wrap: pretty;
 }
 
-.decision {
+.tag-list {
   display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: var(--space-8) var(--space-20) var(--space-20);
-  border-radius: var(--radius-card);
-  background: var(--color-mint);
-}
-
-/* Sticky only when the whole panel fits the viewport. */
-@media (min-width: 961px) and (min-height: 1180px) {
-  .decision {
-    position: sticky;
-    top: var(--space-24);
-  }
-}
-
-.decision__section {
-  padding: var(--space-16) 0;
-}
-
-.decision__section + .decision__section {
-  border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
-}
-
-.decision__label {
-  margin: 0 0 var(--space-8);
-  color: var(--color-ink-2);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* === Media: gallery inset in the listing, concentric radius === */
-.listing__media {
-  --gallery-pad: 10px;
-  padding: var(--gallery-pad) var(--gallery-pad) var(--space-12);
-}
-
-.gallery {
-  border-radius: calc(var(--radius-card) - var(--gallery-pad));
-}
-
-.gallery__main {
-  display: block;
-  width: 100%;
-  max-height: 460px;
-  border-radius: calc(var(--radius-card) - var(--gallery-pad));
-  object-fit: cover;
-}
-
-.gallery__thumbs {
-  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-8);
-  margin-top: var(--space-8);
-  overflow-x: auto;
-  scrollbar-width: thin;
+  margin-top: var(--space-12);
 }
 
-.gallery__thumbs[hidden] {
+.tag-list:empty {
   display: none;
 }
 
-.gallery__thumbs img {
-  flex: none;
-  width: 104px;
-  height: 76px;
-  border: 2px solid transparent;
-  border-radius: var(--radius-md);
-  object-fit: cover;
-  cursor: pointer;
-  opacity: 0.75;
-  transition:
-    opacity var(--dur-fast) var(--ease-standard),
-    border-color var(--dur-fast) var(--ease-standard);
-}
-
-.gallery__thumbs img:hover {
-  opacity: 1;
-}
-
-.gallery__thumbs img.is-active {
-  border-color: var(--color-ink);
-  opacity: 1;
-}
-
-.gallery:focus-visible {
-  outline: 2px solid var(--color-ink);
-  outline-offset: 3px;
-}
-
-/* === Reaction bar: round icon actions under the photo === */
+/* === Action row: inline icon + text actions split by thin dividers ===
+   Narrow columns (< 560px) switch to five equal cells with the icon above
+   the label, still split by dividers. */
 .reactions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-8);
-  margin-top: var(--space-12);
-  padding: 0 var(--space-8);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) repeat(2, minmax(0, 1fr));
+  padding: var(--space-4) 0;
+  border-block: 1px solid var(--color-border);
 }
 
 .reactions__group {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
+  display: contents;
 }
 
 .reaction {
   position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.reaction + .reaction,
+.reactions__group + .reactions__group .reaction:first-child {
+  border-left: 1px solid var(--color-border);
 }
 
 .reaction__btn {
-  --reaction-bg: var(--color-paper-2);
-  --reaction-fg: var(--color-ink);
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-4);
   border: 0;
-  border-radius: var(--radius-full);
-  background: var(--reaction-bg);
-  color: var(--reaction-fg);
-  font-size: 1.05rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
   cursor: pointer;
 }
 
-.reaction__btn--brand {
-  --reaction-bg: var(--color-brand);
-  --reaction-fg: var(--color-on-brand);
+.reaction__btn .fas {
+  color: var(--color-ink-2);
+  font-size: 1rem;
 }
 
-.reaction__btn--lavender {
-  --reaction-bg: var(--color-lavender);
-  --reaction-fg: var(--color-on-lavender);
-}
-
-.reaction__btn--mint {
-  --reaction-bg: var(--color-mint);
-}
-
-.reaction__btn--ink {
-  --reaction-bg: var(--color-ink);
-  --reaction-fg: var(--color-card);
-}
-
-.reaction__btn:hover {
-  background: color-mix(in srgb, var(--reaction-bg) 88%, var(--color-ink));
-}
-
-.reaction__btn--ink:hover,
+.reaction__btn:hover,
 .reaction--menu.is-open .reaction__btn {
-  background: var(--color-ink-2);
+  background: var(--color-paper-2);
 }
 
 .reaction__btn:focus-visible {
   outline: 2px solid var(--color-ink);
-  outline-offset: 3px;
+  outline-offset: -2px;
+}
+
+@container (min-width: 560px) {
+  .reactions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: var(--space-8) 0;
+    border-block: 0;
+  }
+
+  .reactions__group {
+    display: flex;
+    align-items: center;
+  }
+
+  .reactions__group--end {
+    margin-left: auto;
+  }
+
+  .reaction + .reaction,
+  .reactions__group + .reactions__group .reaction:first-child {
+    border-left: 0;
+  }
+
+  .reaction + .reaction::before {
+    content: "";
+    align-self: center;
+    width: 1px;
+    height: 18px;
+    margin-inline: var(--space-4);
+    background: var(--color-border);
+  }
+
+  .reaction__btn {
+    flex-direction: row;
+    gap: var(--space-8);
+    width: auto;
+    min-height: 44px;
+    padding: 0 var(--space-12);
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .reactions__group:first-child .reaction:first-child .reaction__btn {
+    padding-left: 0;
+  }
+
+  .reactions__group:first-child .reaction:first-child .reaction__btn:hover {
+    background: transparent;
+    text-decoration: underline;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .reaction__btn {
-    transition:
-      scale var(--dur-fast) var(--ease-standard),
-      background-color var(--dur-fast) var(--ease-standard);
-  }
-
-  .reaction__btn:hover {
-    scale: 1.1;
+    transition: background-color var(--dur-fast) var(--ease-standard);
   }
 
   .reaction__btn:active {
-    scale: 0.96;
+    scale: 0.97;
   }
 }
 
-/* Tooltip: above the button, on hover and keyboard focus. The invisible
+/* Tooltip: above the action, on hover and keyboard focus. The invisible
    bridge keeps it hoverable (WCAG 1.4.13); Escape adds .is-tip-dismissed.
-   Edge buttons anchor it to their side so it never leaves the bar. */
+   Edge actions anchor it to their side so it never leaves the viewport. */
 .reaction__tip {
   position: absolute;
-  bottom: calc(100% + 10px);
+  bottom: calc(100% + 8px);
   left: 50%;
   z-index: 5;
   width: max-content;
@@ -285,6 +312,7 @@
   font-weight: 600;
   line-height: 1.35;
   text-align: left;
+  white-space: normal;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -359,7 +387,7 @@
   display: none;
 }
 
-/* Phones: open upward over the photo, clear of the fixed bottom bars. */
+/* Phones: open upward, clear of the fixed bottom bars. */
 @media (max-width: 768px) {
   .manage-menu {
     top: auto;
@@ -433,22 +461,53 @@
   background: color-mix(in srgb, var(--color-error) 10%, var(--color-card));
 }
 
-/* === Tags, facts === */
-.tag-list {
+/* === The one grouped panel: neutral white with a hairline === */
+.product__panel {
+  padding: var(--space-4) var(--space-24);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+}
+
+.product__group {
+  padding: var(--space-20) 0;
+}
+
+.product__group + .product__group {
+  border-top: 1px solid var(--color-border);
+}
+
+.product__label {
+  margin: 0 0 var(--space-12);
+  color: var(--color-ink);
+  font-size: 0.95rem;
+}
+
+.detail-main .product__label {
+  font-weight: 700;
+}
+
+.mode-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-8);
-  margin-top: var(--space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.tag-list:empty {
-  display: none;
+.mode-pill {
+  padding: 7px 16px;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-full);
+  color: var(--color-ink);
+  font-size: 0.88rem;
+  font-weight: 600;
 }
 
 .detail-info {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .info-row {
@@ -456,13 +515,9 @@
   justify-content: space-between;
   align-items: baseline;
   gap: var(--space-16);
-  padding: var(--space-10) 0;
+  padding: var(--space-8) 0;
   font-size: 0.92rem;
   color: var(--color-ink-2);
-}
-
-.info-row + .info-row {
-  border-top: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
 }
 
 .info-row strong {
@@ -470,23 +525,27 @@
   text-align: right;
 }
 
-.info-row .fa-star,
-#seller-rating .fa-star {
-  color: var(--color-warning);
-}
-
-/* The page's only primary action. */
+/* === CTA row: the page's only primary action + the pass link === */
 .detail-cta {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  margin-top: var(--space-16);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
 }
 
 .detail-cta .btn {
-  width: 100%;
+  flex: 1 1 12rem;
 }
 
-/* === Owner === */
+.detail-cta .btn-primary {
+  flex-grow: 1.4;
+}
+
+/* === Owner line (no card) === */
+.seller-card {
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--color-border);
+}
+
 .seller {
   display: flex;
   align-items: center;
@@ -503,9 +562,36 @@
   color: var(--color-ink-2);
 }
 
-.seller__info strong {
-  font-size: 1rem;
+.seller__by strong {
   color: var(--color-ink);
+}
+
+.seller__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.seller__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 44px;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.seller__link .fas {
+  font-size: 0.8rem;
+}
+
+.seller__link:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 /* Initials avatar (same tints as ui/Avatar; retinted by detail.js). */
@@ -513,12 +599,12 @@
   display: inline-grid;
   place-items: center;
   flex: none;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-full);
   background: var(--seller-avatar-bg, var(--color-mint));
   color: var(--seller-avatar-fg, var(--color-ink));
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -542,10 +628,25 @@
   --seller-avatar-fg: var(--color-on-lavender);
 }
 
+/* === Below the product: history | exchange pass === */
+.detail-more {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+  gap: var(--space-48);
+  align-items: start;
+  padding-top: var(--space-56);
+}
+
+.detail-timeline h2 {
+  margin: 0 0 var(--space-16);
+  font-size: 1.25rem;
+  color: var(--color-ink);
+}
+
 /* === Exchange pass: a ticket with a brand strip, a real QR, a perforated
    tear line and a stub. The code box stays dark-on-white in every mode. === */
 .qr-pass {
-  --pass-notch: var(--color-mint);
+  --pass-notch: var(--color-bg); /* the page background around the ticket */
   --pass-pad: var(--space-20);
   position: relative;
   container-type: inline-size;
@@ -857,9 +958,9 @@
   color: var(--color-ink-2);
 }
 
-/* === Similar listings (Chunk 4.8) === */
+/* === Similar listings (Chunk 4.8): photo tile + text below, no card === */
 .similar-section {
-  padding-top: var(--space-32);
+  padding-top: var(--space-56);
 }
 
 .similar-section[hidden] {
@@ -874,52 +975,67 @@
 
 .similar-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  gap: var(--space-16);
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--space-24) var(--space-16);
   margin-top: var(--space-16);
 }
 
 .similar-card {
-  --tile-pad: 8px;
   display: block;
-  padding: var(--tile-pad);
   border-radius: var(--radius-card);
-  background: var(--color-card);
   color: inherit;
   text-decoration: none;
-  transition: box-shadow var(--dur-fast) var(--ease-standard);
-}
-
-.similar-card:hover {
-  box-shadow: var(--shadow-lift);
 }
 
 .similar-card:focus-visible {
   outline: 2px solid var(--color-ink);
-  outline-offset: 3px;
+  outline-offset: 4px;
+}
+
+.similar-card__tile {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-paper-2);
 }
 
 .similar-card img {
   display: block;
   width: 100%;
-  height: 150px;
-  border-radius: calc(var(--radius-card) - var(--tile-pad));
-  background: var(--color-paper);
+  aspect-ratio: 4 / 3;
   object-fit: cover;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .similar-card img {
+    transition: scale var(--dur-base) var(--ease-standard);
+  }
+
+  .similar-card:hover img {
+    scale: 1.03;
+  }
 }
 
 .similar-card__body {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-8);
-  padding: var(--space-12) var(--space-8) var(--space-8);
+  gap: 2px;
+  padding: var(--space-12) var(--space-4) 0;
 }
 
 .similar-card__body h3 {
   margin: 0;
   font-size: 1rem;
   color: var(--color-ink);
+}
+
+.similar-card:hover h3 {
+  text-decoration: underline;
+}
+
+.similar-card__meta {
+  color: var(--color-ink-2);
+  font-size: 0.86rem;
 }
 
 /* === Mobile sticky CTA (Chunk 4.8): floating white bar above the tab bar
@@ -1059,90 +1175,32 @@
 }
 
 /* === Responsive === */
-@media (max-width: 960px) {
-  .detail-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-12);
-  }
-
-  /* One column: photos + reactions, summary + CTA, description, owner,
-     pass, history. Both zones dissolve into their sections (each keeps its
-     zone surface) and only the visual order changes; the description and
-     history hold no focusable elements, so focus order still follows it. */
-  .listing,
-  .decision {
-    display: contents;
-  }
-
-  .listing > *,
-  .decision > .decision__section {
-    margin: 0;
-    border-radius: var(--radius-card);
-  }
-
-  .listing > * {
-    background: var(--color-card);
-  }
-
-  .listing__section {
-    padding: var(--space-20);
-    border-top: 0;
-  }
-
-  .decision > .decision__section {
-    padding: var(--space-16) var(--space-20) var(--space-20);
-    background: var(--color-mint);
-  }
-
-  .decision__section + .decision__section {
-    border-top: 0;
-  }
-
-  .qr-pass {
-    --pass-notch: var(--color-bg);
-    margin-top: 0;
-    border-radius: var(--radius-card);
-  }
-
-  .qr-pass__strip {
-    border-radius: var(--radius-card) var(--radius-card) 0 0;
-  }
-
-  .listing__media {
-    order: 1;
-  }
-
-  .detail-summary {
-    order: 2;
-  }
-
-  .detail-description {
-    order: 3;
-  }
-
-  .seller-card {
-    order: 4;
-  }
-
-  .qr-pass {
-    order: 5;
-  }
-
-  .detail-timeline {
-    order: 6;
-  }
-
-  body.high-contrast .listing > *,
-  body.high-contrast .decision > .decision__section {
-    background: var(--color-hc-paper);
-    outline: 2px solid var(--color-hc-ink);
+@media (max-width: 1100px) {
+  .product,
+  .detail-more {
+    gap: var(--space-32);
   }
 }
 
-@media (max-width: 960px) and (forced-colors: active) {
-  .listing > *,
-  .decision > .decision__section {
-    border: 1px solid CanvasText;
+/* Phones and narrow tablets: gallery, then the content, then the history
+   and the pass in one column. */
+@media (max-width: 900px) {
+  .product,
+  .detail-more {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product {
+    gap: var(--space-24);
+  }
+
+  .detail-more {
+    padding-top: var(--space-40);
+  }
+
+  .qr-pass {
+    width: 100%;
+    max-width: 26rem;
   }
 }
 
@@ -1153,9 +1211,16 @@
   }
 
   .gallery__main {
-    max-height: 300px;
+    aspect-ratio: 4 / 3;
   }
 
+  .gallery__thumbs {
+    gap: var(--space-8);
+  }
+
+  .product__panel {
+    padding-inline: var(--space-20);
+  }
 }
 
 @media (max-width: 480px) {
@@ -1165,32 +1230,47 @@
 }
 
 /* === High contrast / forced colors === */
-body.high-contrast .listing,
-body.high-contrast .decision,
+body.high-contrast .product__panel,
 body.high-contrast .qr-pass,
 body.high-contrast .qr-pass__strip,
 body.high-contrast .manage-menu,
-body.high-contrast .similar-card,
+body.high-contrast .similar-card__tile,
 body.high-contrast .sticky-cta,
 body.high-contrast .eco-metric,
 body.high-contrast .detail-hero__eyebrow,
-body.high-contrast .seller-avatar {
+body.high-contrast .seller-avatar,
+body.high-contrast .mode-pill {
   background: var(--color-hc-paper);
   color: var(--color-hc-ink);
   outline: 2px solid var(--color-hc-ink);
 }
 
-/* Reaction discs and tooltips: white with a black ring / black with white
-   text; the danger item keeps its meaning through the icon and label. */
-body.high-contrast .reaction__btn {
-  --reaction-bg: var(--color-hc-paper);
-  --reaction-fg: var(--color-hc-ink);
-  outline: 2px solid var(--color-hc-ink);
+body.high-contrast .reactions,
+body.high-contrast .reaction + .reaction,
+body.high-contrast .reactions__group + .reactions__group .reaction:first-child,
+body.high-contrast .product__group + .product__group,
+body.high-contrast .seller-card,
+body.high-contrast .gallery__thumbs img {
+  border-color: var(--color-hc-ink);
+}
+
+body.high-contrast .reaction + .reaction::before {
+  background: var(--color-hc-ink);
+}
+
+body.high-contrast .reaction__btn,
+body.high-contrast .reaction__btn .fas {
+  color: var(--color-hc-ink);
 }
 
 body.high-contrast .reaction__btn:hover,
 body.high-contrast .reaction--menu.is-open .reaction__btn {
   background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .reaction__btn:hover .fas,
+body.high-contrast .reaction--menu.is-open .reaction__btn .fas {
   color: var(--color-hc-paper);
 }
 
@@ -1207,7 +1287,9 @@ body.high-contrast .manage-menu__item,
 body.high-contrast .manage-menu__item .fas,
 body.high-contrast .qr-pass__strip *,
 body.high-contrast .info-row strong,
-body.high-contrast .decision__label {
+body.high-contrast .product__lead strong,
+body.high-contrast .product__label,
+body.high-contrast .seller__link {
   color: var(--color-hc-ink);
 }
 
@@ -1253,7 +1335,7 @@ body.high-contrast .eco-metric * {
 }
 
 body.high-contrast .gallery__thumbs img.is-active {
-  border-color: var(--color-hc-ink);
+  box-shadow: inset 0 0 0 2px var(--color-hc-ink);
 }
 
 body.high-contrast .timeline::before {
@@ -1278,17 +1360,25 @@ body.high-contrast .sticky-cta a.btn-primary {
 }
 
 @media (forced-colors: active) {
-  .listing,
-  .decision,
+  .product__panel,
   .qr-pass,
   .manage-menu,
   .reaction__tip,
-  .reaction__btn,
-  .similar-card,
+  .similar-card__tile,
   .sticky-cta,
   .eco-metric,
-  .seller-avatar {
+  .seller-avatar,
+  .mode-pill {
     border: 1px solid CanvasText;
+  }
+
+  .reaction + .reaction::before {
+    background: CanvasText;
+  }
+
+  .gallery__thumbs img.is-active {
+    outline: 2px solid CanvasText;
+    outline-offset: -2px;
   }
 
   .timeline-item.completed .timeline-marker {
@@ -1314,5 +1404,14 @@ body.high-contrast .sticky-cta a.btn-primary {
   .qr-pass .qr-pass__strip .logotype path.logotype__glyphs,
   .qr-pass .qr-pass__strip .logotype path.logotype__leaf {
     fill: CanvasText;
+  }
+}
+
+/* Wide screens: the gallery stays in view while the longer info column
+   scrolls past it (standard product page behavior). */
+@media (min-width: 901px) and (min-height: 760px) {
+  .product__media {
+    position: sticky;
+    top: var(--space-24);
   }
 }

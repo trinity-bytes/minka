@@ -1,9 +1,11 @@
 ---
 /**
- * Listing reaction bar (visual-language T10c-1): round icon buttons right
- * under the gallery, each with an accessible name (visually hidden label,
- * kept on the legacy i18n key) and a tooltip on hover and keyboard focus
- * that explains the action in one phrase. Escape hides a visible tooltip
+ * Listing action row (visual-language T10c-1, restyled in T10d-1 as the
+ * inline icon + text actions of a standard product page, split by thin
+ * dividers). Each button shows a short visible label (aria-hidden) and keeps
+ * its accessible name on a visually hidden span with the legacy i18n key;
+ * the visible label is always contained in that name (WCAG 2.5.3). A
+ * tooltip on hover and keyboard focus explains the action in one phrase. Escape hides a visible tooltip
  * (WCAG 1.4.13). Owner management actions live behind "Gestionar", a
  * disclosure menu built on scripts/menu-disclosure (focus moves in, Tab is
  * contained, Escape / outside click close it, focus returns to the toggle).
@@ -12,13 +14,14 @@
  * owns what each action does. Styles live in src/styles/pages/detail.css.
  */
 type Tone = "brand" | "lavender" | "mint" | "neutral";
-type Reaction = { id: string; key: string; label: string; icon: string; tone: Tone; tip: string };
+type Reaction = { id: string; key: string; label: string; short: string; icon: string; tone: Tone; tip: string };
 
 const EXCHANGE: Reaction[] = [
   {
     id: "action-share",
     key: "common_share",
     label: "Compartir",
+    short: "Compartir",
     icon: "fa-share-nodes",
     tone: "brand",
     tip: "Compartir: envía o copia el enlace de esta publicación",
@@ -28,6 +31,7 @@ const EXCHANGE: Reaction[] = [
     id: "action-offline-close",
     key: "detail_action_offline",
     label: "Cierre Offline (Código)",
+    short: "Cierre offline",
     icon: "fa-key",
     tone: "lavender",
     tip: "Cierre offline: confirma el intercambio con un código",
@@ -36,6 +40,7 @@ const EXCHANGE: Reaction[] = [
     id: "action-rate",
     key: "common_rate_title",
     label: "Calificar intercambio",
+    short: "Calificar",
     icon: "fa-star",
     tone: "mint",
     tip: "Calificar: puntúa cómo fue el intercambio",
@@ -46,6 +51,7 @@ const REPORT: Reaction = {
   id: "action-report",
   key: "detail_action_report",
   label: "Reportar publicación",
+  short: "Reportar",
   icon: "fa-flag",
   tone: "neutral",
   tip: "Reportar: avisa si algo no está bien",
@@ -80,6 +86,9 @@ const DELETE: ManageAction = {
             aria-describedby={`${r.id}-tip`}
           >
             <i class:list={["fas", r.icon]} aria-hidden="true" />
+            <span class="reaction__label" aria-hidden="true">
+              {r.short}
+            </span>
             <span class="sr-only" data-i18n={r.key}>
               {r.label}
             </span>
@@ -101,6 +110,7 @@ const DELETE: ManageAction = {
         aria-describedby={`${REPORT.id}-tip`}
       >
         <i class:list={["fas", REPORT.icon]} aria-hidden="true"></i>
+        <span class="reaction__label" aria-hidden="true">{REPORT.short}</span>
         <span class="sr-only" data-i18n={REPORT.key}>{REPORT.label}</span>
       </button>
       <span class="reaction__tip" role="tooltip" id={`${REPORT.id}-tip`}>{REPORT.tip}</span>
@@ -116,6 +126,7 @@ const DELETE: ManageAction = {
         aria-describedby="action-manage-tip"
       >
         <i class="fas fa-sliders" aria-hidden="true"></i>
+        <span class="reaction__label" aria-hidden="true">Gestionar</span>
         <span class="sr-only">Gestionar publicación</span>
       </button>
       <span class="reaction__tip" role="tooltip" id="action-manage-tip">

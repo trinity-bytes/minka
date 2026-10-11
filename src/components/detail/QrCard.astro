@@ -1,6 +1,7 @@
 ---
 /**
- * Exchange pass (visual-language T10c-1): a ticket-like card with a brand
+ * Exchange pass (visual-language T10c-1; `#qr-pass` is the target of the
+ * "Ver pase QR" link in the detail CTA row, T10d-1): a ticket-like card with a brand
  * strip, the item title, a status pill, a real scannable QR (error
  * correction H, Mink'a leaf in a white square at the center), a perforated
  * divider and a stub with the code, its issue date (when the code carries
@@ -17,7 +18,7 @@ import Logotype from "../brand/Logotype.astro";
 import Logomark from "../brand/Logomark.astro";
 ---
 
-<section class="qr-pass" aria-labelledby="qr-pass-title">
+<section class="qr-pass" id="qr-pass" tabindex="-1" aria-labelledby="qr-pass-title">
   <div class="qr-pass__strip">
     <Logotype tone="ink" leaf="ink" size={22} label="Mink'a" />
     <span class="qr-pass__kind">Pase de intercambio</span>
