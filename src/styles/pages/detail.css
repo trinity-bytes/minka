@@ -646,13 +646,22 @@
 
 /* === Exchange pass: a ticket with a brand strip, a real QR, a perforated
    tear line and a stub. The code box stays dark-on-white in every mode. === */
+/* The notches are real cut-outs (transparent radial gradients on the main
+   part's bottom corners and the stub's top corners), so the ticket reads
+   as perforated on any surface, including the dialog backdrop. */
 .qr-pass {
-  --pass-notch: var(--color-bg); /* the page background around the ticket */
   --pass-pad: var(--space-20);
+  --pass-notch-r: 11px;
   position: relative;
   container-type: inline-size;
   border-radius: var(--radius-lg);
-  background: var(--color-card);
+  filter: drop-shadow(0 18px 40px rgb(10 29 19 / 0.28));
+}
+
+.qr-pass__strip-end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
 }
 
 .qr-pass__strip {
@@ -683,6 +692,9 @@
   align-items: center;
   gap: var(--space-12);
   padding: var(--space-16) var(--pass-pad) var(--space-20);
+  background:
+    radial-gradient(circle at 0 100%, transparent var(--pass-notch-r), var(--color-card) calc(var(--pass-notch-r) + 0.5px)) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 100%, transparent var(--pass-notch-r), var(--color-card) calc(var(--pass-notch-r) + 0.5px)) right / 51% 100% no-repeat;
 }
 
 .qr-pass__heading {
@@ -794,31 +806,13 @@
   text-align: center;
 }
 
-/* Perforation: dashed line between two notches cut in the panel color. */
+/* Perforation: dashed line between the two cut-out notches. It sits on a
+   card-colored band that stops short of the notches. */
 .qr-pass__tear {
-  position: relative;
   height: 0;
-  margin: 0 var(--space-16);
+  margin: 0 var(--pass-notch-r);
   border-top: 2px dashed var(--color-gray-200);
-}
-
-.qr-pass__tear::before,
-.qr-pass__tear::after {
-  content: "";
-  position: absolute;
-  top: -12px;
-  width: 22px;
-  height: 22px;
-  border-radius: var(--radius-full);
-  background: var(--pass-notch);
-}
-
-.qr-pass__tear::before {
-  left: calc(-1 * var(--space-16) - 11px);
-}
-
-.qr-pass__tear::after {
-  right: calc(-1 * var(--space-16) - 11px);
+  background: var(--color-card);
 }
 
 .qr-pass__stub {
@@ -826,6 +820,10 @@
   flex-direction: column;
   gap: var(--space-12);
   padding: var(--space-16) var(--pass-pad) var(--space-20);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background:
+    radial-gradient(circle at 0 0, transparent var(--pass-notch-r), var(--color-card) calc(var(--pass-notch-r) + 0.5px)) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 0, transparent var(--pass-notch-r), var(--color-card) calc(var(--pass-notch-r) + 0.5px)) right / 51% 100% no-repeat;
 }
 
 .qr-pass__meta {
@@ -869,11 +867,10 @@
   font-size: 0.8rem;
 }
 
-/* === Exchange pass dialog (T10d-5): native <dialog>, the ticket on a
-   page-colored panel (so the perforation notches read as holes), a dimmed
-   backdrop and a close pill above the ticket. The panel fills the dialog
-   box; detail.js treats a click whose target is the dialog as a backdrop
-   click. === */
+/* === Exchange pass dialog (T10d-5): native <dialog> with no surface of
+   its own: the ticket floats on the dimmed backdrop and carries the close
+   button in its brand strip. The panel fills the dialog box; detail.js
+   treats a click whose target is the dialog as a backdrop click. === */
 .qr-dialog {
   width: min(25rem, calc(100vw - var(--space-32)));
   max-width: none;
@@ -882,11 +879,9 @@
   margin: auto;
   padding: 0;
   border: 0;
-  border-radius: var(--radius-xl);
-  background: var(--color-bg);
+  background: transparent;
   color: var(--color-ink);
-  box-shadow: var(--shadow-modal);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .qr-dialog::backdrop {
@@ -901,20 +896,34 @@
 
 .qr-dialog__panel {
   max-height: calc(100dvh - var(--space-32));
-  padding: var(--space-12) var(--space-16) var(--space-16);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
 
-.qr-dialog__bar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: var(--space-8);
+/* 44px target, pulled into the strip padding so the strip keeps its height. */
+.qr-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -10px -14px -10px 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
 }
 
-.qr-dialog__close.modal__close {
-  margin: 0;
-  background: var(--color-card);
+.qr-dialog__close:hover {
+  background: rgb(10 29 19 / 0.1);
+}
+
+.qr-dialog__close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
 }
 
 /* A larger code in the dialog: more pixels per module for scanners. */
@@ -1378,13 +1387,7 @@ body.high-contrast .manage-menu__item:focus-visible .fas {
 }
 
 body.high-contrast .qr-pass {
-  --pass-notch: var(--color-hc-paper);
-}
-
-body.high-contrast .qr-dialog {
-  border: 2px solid var(--color-hc-ink);
-  background: var(--color-hc-paper);
-  box-shadow: none;
+  filter: none;
 }
 
 body.high-contrast .qr-pass__tear {
@@ -1450,10 +1453,6 @@ body.high-contrast .sticky-cta a.btn-primary {
 
   .reaction + .reaction::before {
     background: CanvasText;
-  }
-
-  .qr-dialog {
-    border: 2px solid CanvasText;
   }
 
   .qr-dialog__close:focus-visible {

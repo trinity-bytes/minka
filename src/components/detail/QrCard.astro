@@ -6,7 +6,8 @@
  * correction H, Mink'a leaf in a white square at the center), a perforated
  * divider and a stub with the code, its issue date (when the code carries
  * one) and download / share / reissue actions (T33 - Miguel Sanca: reissue,
- * HU39).
+ * HU39). The `strip-end` slot sits after the "Pase de intercambio" label
+ * (the dialog puts its close button there).
  *
  * src/scripts/pages/detail.js draws the modules into #qr-modules, places the
  * logo through the `--qr-logo-*` custom properties on #qr-image, fills
@@ -21,7 +22,10 @@ import Logomark from "../brand/Logomark.astro";
 <section class="qr-pass" id="qr-pass" aria-labelledby="qr-pass-title">
   <div class="qr-pass__strip">
     <Logotype tone="ink" leaf="ink" size={22} label="Mink'a" />
-    <span class="qr-pass__kind">Pase de intercambio</span>
+    <div class="qr-pass__strip-end">
+      <span class="qr-pass__kind">Pase de intercambio</span>
+      <slot name="strip-end" />
+    </div>
   </div>
 
   <div class="qr-pass__main">
