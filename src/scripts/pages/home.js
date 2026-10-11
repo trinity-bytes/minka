@@ -2,6 +2,7 @@
 // ES module bundled by src/pages/pages/home.astro; relies on the legacy
 // globals Session, Store, Toast and I18n loaded as classic scripts by
 // AppLayout (core/guard.js redirects guests to auth before this runs).
+import { buildSearchUrl } from "../lib/search-params.js";
 
 const userNameEl = document.getElementById("home-username");
 const popularListEl = document.getElementById("popular-list");
@@ -223,9 +224,28 @@ if (searchForm && searchInput) {
       : "Buscar objetos, categorías, ubicaciones...";
   });
 
-  // Validación antes de enviar
+  // Quick filter chips (T10d-2): toggle buttons under the search bar.
+  const chips = Array.from(document.querySelectorAll("[data-filter-chip]"));
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const pressed = chip.getAttribute("aria-pressed") === "true";
+      chip.setAttribute("aria-pressed", String(!pressed));
+    });
+  });
+  const pressedChips = () =>
+    chips
+      .filter((chip) => chip.getAttribute("aria-pressed") === "true")
+      .map((chip) => chip.dataset.filterChip);
+
+  // Validación antes de enviar; con filtros elegidos basta con ellos.
   searchForm.addEventListener("submit", (e) => {
     const query = searchInput.value.trim();
+    const selected = pressedChips();
+    if (query || selected.length) {
+      e.preventDefault();
+      window.location.href = buildSearchUrl(searchForm.action, query, selected);
+      return;
+    }
     if (!query) {
       e.preventDefault();
       searchInput.focus();

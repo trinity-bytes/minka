@@ -93,6 +93,90 @@
   flex-shrink: 0;
 }
 
+/* Quick filter chips under the bar (T10d-2): toggle buttons whose state
+   travels to busqueda as URL params. Pressed = ink fill. */
+.home-search-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.home-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-12);
+}
+
+.home-filters__label {
+  color: var(--color-ink-2);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.home-filters__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 36px;
+  padding: 0 var(--space-16) 0 var(--space-12);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  color: var(--color-ink);
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-chip .fas {
+  color: var(--color-ink-2);
+  font-size: 0.8rem;
+}
+
+.home-chip:hover {
+  border-color: var(--color-ink-2);
+}
+
+.home-chip[aria-pressed="true"] {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.home-chip[aria-pressed="true"] .fas {
+  color: var(--color-brand);
+}
+
+.home-chip:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .home-chip {
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-chip {
+    transition:
+      background-color var(--dur-fast) var(--ease-standard),
+      border-color var(--dur-fast) var(--ease-standard);
+  }
+}
+
 /* Category pills: shared `.pill-tabs` row in link mode. */
 .home-cats {
   display: flex;
@@ -478,6 +562,21 @@ body.high-contrast .home-challenge__bar {
   outline: 2px solid var(--color-hc-ink);
 }
 
+body.high-contrast .home-chip {
+  border-color: var(--color-hc-ink);
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .home-chip .fas {
+  color: inherit;
+}
+
+body.high-contrast .home-chip[aria-pressed="true"] {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
 body.high-contrast .impact-progress__fill,
 body.high-contrast .home-challenge__fill {
   background: var(--color-hc-ink);
@@ -488,6 +587,16 @@ body.high-contrast .impact-link:focus-visible {
 }
 
 @media (forced-colors: active) {
+  .home-chip[aria-pressed="true"] {
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .home-chip[aria-pressed="true"] .fas {
+    color: HighlightText;
+  }
+
   .popular-card,
   .impact-stat,
   .impact-progress__bar,
@@ -515,6 +624,24 @@ body.high-contrast .impact-link:focus-visible {
 
   .home-search__publish {
     min-height: 48px;
+  }
+
+  /* Phones: bar, then its filter chips, then Publicar. */
+  .home-search {
+    display: contents;
+  }
+
+  .home-search__form {
+    order: 1;
+  }
+
+  .home-filters {
+    order: 2;
+    padding-left: 0;
+  }
+
+  .home-search__publish {
+    order: 3;
   }
 
   .popular-head {

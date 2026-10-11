@@ -1,25 +1,28 @@
 ---
 /**
- * Reference map (static demo image): the second section of the search
- * tools panel, under the filters. Styles live in
- * src/styles/pages/search.css.
+ * Reference map (static demo image): the last group of the search filter
+ * column, closed by default so it never pushes the filters down (T10d-2).
+ * Styles live in src/styles/pages/search.css.
  */
 import { Picture } from "astro:assets";
 import map from "../../assets/images/mapa-ejemplo-minka.png";
 ---
 
-<section class="map-panel tools__section" aria-labelledby="map-panel-title">
-  <h2 class="tools__label" id="map-panel-title">Mapa</h2>
-  <p class="map-panel__desc">Se muestran los distritos de referencia según la distancia.</p>
-  <div class="map-panel__body">
+<details class="filter-group map-panel">
+  <summary class="filter-group__summary">
+    <span>Mapa de distritos</span>
+    <i class="fas fa-chevron-down filter-group__chevron" aria-hidden="true"></i>
+  </summary>
+  <div class="filter-group__body">
+    <p class="map-panel__desc">Se muestran los distritos de referencia según la distancia.</p>
     <Picture
       src={map}
       formats={["avif", "webp"]}
-      widths={[400, 640, 1000]}
-      sizes="(max-width: 1199px) 100vw, 340px"
+      widths={[320, 640]}
+      sizes="(max-width: 768px) 100vw, 280px"
       alt="Mapa referencial"
       class="map-panel__image"
       loading="lazy"
     />
   </div>
-</section>
+</details>

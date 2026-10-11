@@ -10,8 +10,9 @@
  * that live under that section (`aria-current="true"`).
  */
 export const NAV_SECTIONS = /** @type {const} */ ({
-  home: ["home"],
-  search: ["busqueda", "detalle"],
+  // The search flow has no nav item since T10d-2: búsqueda is reached from
+  // the home search bar, so it and detalle count as part of Inicio.
+  home: ["home", "busqueda", "detalle"],
   publish: ["publicar"],
   community: ["comunidad", "gamification"],
   chats: ["chat"],

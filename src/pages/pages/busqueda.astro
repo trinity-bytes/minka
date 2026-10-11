@@ -3,22 +3,25 @@
  * Search page: query, filters, saved searches and results. Port of
  * public/pages/busqueda.html. Logic: src/scripts/pages/search.js.
  *
- * Layout (visual-language T10c-2): two zones with distinct roles. The
- * main column (query bar, active filters, saved searches, results) sits
- * on the neutral page background and holds the content: result cards are
- * the only white cards. The tools panel (filters + map) is one tinted
- * aside with kicker-labelled sections, the same language as the detalle
- * decision panel. No shell rail: it stacks under the page below 1280px and
- * the filters must stay above the results. Below 1200px the panel unwraps
- * (`display: contents`) so the order is query / filters / results / map;
- * the map holds no focusables, so focus order still matches.
+ * Layout (visual-language T10d-2, standard search results page): the query
+ * bar with its active filter chips and saved searches on top, then a
+ * summary row (title, result count with the query echo, sort), then a
+ * plain filter column (collapsible groups split by hairlines, no tinted
+ * card; the reference map is its last, closed group) beside the results
+ * grid (photo tile with the text below it, on the page). The page has no
+ * nav item: it is reached from the home search bar, which carries the
+ * query and its quick filter chips as URL params (search-params.js).
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
 import FiltersPanel from "../../components/search/FiltersPanel.astro";
-import MapPanel from "../../components/search/MapPanel.astro";
 import SearchBar from "../../components/search/SearchBar.astro";
-import PageHead from "../../components/ui/PageHead.astro";
 import "../../styles/pages/search.css";
+
+const sortOptions = [
+  { value: "relevance", label: "Relevancia", i18n: "search_sort_relevance" },
+  { value: "distance", label: "Menor distancia", i18n: "search_sort_distance" },
+  { value: "rating", label: "Mayor reputación", i18n: "search_sort_rating" },
+];
 ---
 
 <AppLayout
@@ -28,38 +31,42 @@ import "../../styles/pages/search.css";
   mainClass="search-main"
   scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
 >
-  <PageHead
-    title="Busca y filtra trueques"
-    titleKey="search_hero_title"
-    hint="Filtra por categoría, reputación y cercanía."
-    hintKey="search_hero_subtitle"
-  />
-
-  <div class="search-layout">
-    <div class="container search-grid">
-      <div class="search-query">
-        <SearchBar />
-        <div id="active-filters" class="filter-chips" aria-label="Filtros activos"></div>
-        <!-- T30 - Andy Salcedo: Lista de Búsquedas Guardadas (HU32) -->
-        <div id="saved-searches-container" class="saved-searches hidden">
-          <h2 data-i18n="search_saved_title">Búsquedas Guardadas</h2>
-          <ul id="saved-searches-list"></ul>
-        </div>
-      </div>
-
-      <aside class="search-tools" aria-label="Herramientas de búsqueda">
-        <FiltersPanel />
-        <MapPanel />
-      </aside>
-
-      <section class="results" aria-labelledby="results-title" aria-live="polite">
-        <div class="results__header">
-          <h2 id="results-title" data-i18n="search_results_title">Resultados</h2>
-          <p id="results-count">0 <span data-i18n="search_results_count">resultados</span></p>
-        </div>
-        <div class="results__grid" id="results-list"></div>
-      </section>
+  <div class="container search-query">
+    <SearchBar />
+    <div id="active-filters" class="filter-chips" aria-label="Filtros activos"></div>
+    <!-- T30 - Andy Salcedo: Lista de Búsquedas Guardadas (HU32) -->
+    <div id="saved-searches-container" class="saved-searches hidden">
+      <h2 data-i18n="search_saved_title">Búsquedas Guardadas</h2>
+      <ul id="saved-searches-list"></ul>
     </div>
+  </div>
+
+  <div class="container search-summary">
+    <div class="search-summary__text">
+      <h1 class="search-summary__title">Resultados de búsqueda</h1>
+      <p class="search-summary__count" id="results-count" role="status">0 resultados</p>
+    </div>
+    <div class="search-summary__sort">
+      <label for="filter-sort" data-i18n="search_filter_sort">Ordenar por</label>
+      <select id="filter-sort">
+        {
+          sortOptions.map((option) => (
+            <option value={option.value} data-i18n={option.i18n}>
+              {option.label}
+            </option>
+          ))
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="container search-grid">
+    <FiltersPanel />
+
+    <section class="results" aria-labelledby="results-title">
+      <h2 class="sr-only" id="results-title" data-i18n="search_results_title">Resultados</h2>
+      <div class="results__grid" id="results-list"></div>
+    </section>
   </div>
 
   <script>

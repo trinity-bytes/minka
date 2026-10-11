@@ -17,20 +17,22 @@ test("pageSlug returns an empty string for the site root", () => {
 
 test("navCurrent marks the item whose own page is open as the current page", () => {
   assert.equal(navCurrent("home", "/minka/pages/home.html"), "page");
-  assert.equal(navCurrent("search", "/minka/pages/busqueda"), "page");
   assert.equal(navCurrent("profile", "/minka/pages/perfil.html"), "page");
 });
 
 test("navCurrent marks the parent section for pages without their own item", () => {
-  assert.equal(navCurrent("search", "/minka/pages/detalle.html"), "true");
+  // The search flow (busqueda, detalle) lives under Inicio since T10d-2:
+  // búsqueda has no nav item and is reached from the home search bar.
+  assert.equal(navCurrent("home", "/minka/pages/busqueda"), "true");
+  assert.equal(navCurrent("home", "/minka/pages/detalle.html"), "true");
   assert.equal(navCurrent("profile", "/minka/pages/settings.html"), "true");
   assert.equal(navCurrent("profile", "/minka/pages/dashboard.html"), "true");
   assert.equal(navCurrent("community", "/minka/pages/gamification.html"), "true");
 });
 
 test("navCurrent leaves unrelated items and unknown keys unmarked", () => {
-  assert.equal(navCurrent("home", "/minka/pages/busqueda.html"), undefined);
-  assert.equal(navCurrent("search", "/minka/pages/home.html"), undefined);
+  assert.equal(navCurrent("community", "/minka/pages/busqueda.html"), undefined);
+  assert.equal(navCurrent("search", "/minka/pages/busqueda.html"), undefined);
   assert.equal(navCurrent("nope", "/minka/pages/home.html"), undefined);
   assert.equal(navCurrent("home", "/minka/"), undefined);
 });

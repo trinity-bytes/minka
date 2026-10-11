@@ -1,13 +1,16 @@
 ---
 /**
- * Search filters: the first section of the tinted tools panel on wide
- * screens, a tinted block above the results otherwise (collapsible on
- * phones with JS). Element ids and the `.filters` hook are the contract
- * with src/scripts/pages/search.js.
+ * Search filter column (T10d-2): a plain column beside the results, no
+ * tinted card; each filter is a collapsible group split by hairlines and
+ * the reference map is the last, closed group. On phones the whole column
+ * collapses behind the toggle (JS). Element ids and the `.filters` hook
+ * are the contract with src/scripts/pages/search.js; sort lives in the
+ * page summary row (busqueda.astro).
  */
 import Button from "../ui/Button.astro";
 import CategorySelect from "./CategorySelect.astro";
 import FilterGroup from "./FilterGroup.astro";
+import MapPanel from "./MapPanel.astro";
 import { pickCategories } from "../../lib/categories";
 
 const includeCategories = pickCategories([
@@ -20,17 +23,11 @@ const includeCategories = pickCategories([
 ]);
 // Legacy parity: "Otros" cannot be excluded.
 const excludeCategories = includeCategories.filter((c) => c.value !== "Otros");
-
-const sortOptions = [
-  { value: "relevance", label: "Relevancia", i18n: "search_sort_relevance" },
-  { value: "distance", label: "Menor distancia", i18n: "search_sort_distance" },
-  { value: "rating", label: "Mayor reputación", i18n: "search_sort_rating" },
-];
 ---
 
-<section class="filters tools__section" aria-labelledby="filters-title">
+<section class="filters" aria-labelledby="filters-title">
   <div class="filters__header">
-    <h2 class="tools__label" id="filters-title" data-i18n="search_filters_title">Filtros</h2>
+    <h2 class="filters__title" id="filters-title" data-i18n="search_filters_title">Filtros</h2>
     <button type="button" class="filters__reset" id="reset-filters" data-i18n="search_filters_reset">
       Limpiar
     </button>
@@ -112,16 +109,6 @@ const sortOptions = [
       </div>
     </FilterGroup>
 
-    <FilterGroup for="filter-sort" label="Ordenar por" labelKey="search_filter_sort">
-      <select id="filter-sort">
-        {
-          sortOptions.map((option) => (
-            <option value={option.value} data-i18n={option.i18n}>
-              {option.label}
-            </option>
-          ))
-        }
-      </select>
-    </FilterGroup>
+    <MapPanel />
   </div>
 </section>

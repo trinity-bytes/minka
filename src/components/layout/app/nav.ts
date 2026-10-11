@@ -64,10 +64,12 @@ const ITEMS: Record<NavKey, NavItem> = {
   },
 };
 
-/** Desktop sidebar order. */
+/**
+ * Desktop sidebar order. Búsqueda has no entry (T10d-2): the search page is
+ * reached from the home search bar and its quick filter chips.
+ */
 export const SIDEBAR_ITEMS: NavItem[] = [
   ITEMS.home,
-  ITEMS.search,
   ITEMS.publish,
   ITEMS.community,
   ITEMS.notifications,
@@ -75,17 +77,22 @@ export const SIDEBAR_ITEMS: NavItem[] = [
   ITEMS.profile,
 ];
 
-/** Mobile bottom tab bar (user decision 2026-10-10): Publicar in the middle. */
+/**
+ * Mobile bottom tab bar (user decision 2026-10-10, revised in T10d-2):
+ * Inicio · Comunidad · Publicar (raised disc, middle) · Chats · Perfil.
+ * Búsqueda left the bar (reached from the home search), so Chats moved
+ * here from the slim header to keep the disc centered.
+ */
 export const TAB_ITEMS: NavItem[] = [
   ITEMS.home,
-  ITEMS.search,
-  ITEMS.publish,
   ITEMS.community,
+  ITEMS.publish,
+  ITEMS.chats,
   { ...ITEMS.profile, authOnly: false },
 ];
 
-/** Mobile slim header shortcuts. */
-export const HEADER_ITEMS: NavItem[] = [ITEMS.notifications, ITEMS.chats];
+/** Mobile slim header shortcuts (Chats lives in the tab bar since T10d-2). */
+export const HEADER_ITEMS: NavItem[] = [ITEMS.notifications];
 
 export const LOGIN_HREF = url("pages/auth.html");
 
