@@ -4,6 +4,7 @@
 // AppLayout (core/guard.js redirects guests to auth before this runs).
 import { buildSearchUrl } from "../lib/search-params.js";
 import { renderEmptyState, renderErrorState } from "../lib/states.js";
+import { renderPopularCard } from "../lib/popular-card.js";
 
 const userNameEl = document.getElementById("home-username");
 const popularListEl = document.getElementById("popular-list");
@@ -128,51 +129,11 @@ function renderPopular() {
 }
 
 function renderPopularCards(allItems) {
-  return allItems
-    .map(
-      (item) => `
-        <article class="popular-card is-entering" aria-label="${
-          item.title
-        }" data-item-id="${item.id}">
-          <div class="popular-card__media">
-            <img src="${item.images ? item.images[0] : item.image}" alt="${
-        item.title
-      }" loading="lazy" decoding="async" width="400" height="200" />
-            <button class="fav-toggle" type="button" aria-pressed="${
-              window.Store ? Store.isFavorite(item.id) : false
-            }" aria-label="Marcar como favorito" data-fav-id="${item.id}">
-              <i class="fas fa-heart" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div class="popular-card__body">
-            <h3 class="popular-card__title">${item.title}</h3>
-            <div class="popular-card__meta">
-              <span class="badge">${item.category}</span>
-              <span><i class="fas fa-map-marker-alt"></i> ${
-                item.location
-              }</span>
-              <span><i class="fas fa-ruler"></i> ${item.distanceKm} km</span>
-              <span><i class="fas fa-star"></i> ${(item.rating || 5).toFixed(
-                1
-              )}</span>
-            </div>
-            <div class="popular-card__footer">
-              <a class="btn btn-secondary" href="busqueda.html?category=${encodeURIComponent(
-                item.category
-              )}">${
-        window.I18n ? window.I18n.t("card_view_similar") : "Ver similar"
-      }</a>
-              <a class="btn btn-primary" href="detalle.html?id=${
-                item.id
-              }">${
-        window.I18n ? window.I18n.t("card_view_detail") : "Ver detalle"
-      }</a>
-            </div>
-          </div>
-        </article>
-      `
-    )
-    .join("");
+  const options = {
+    isFavorite: (id) => (window.Store ? Store.isFavorite(id) : false),
+    t: window.I18n ? (key) => window.I18n.t(key) : undefined,
+  };
+  return allItems.map((item) => renderPopularCard(item, options)).join("");
 }
 
 // Escuchar cambios de idioma para re-renderizar las tarjetas
