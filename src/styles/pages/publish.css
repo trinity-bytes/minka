@@ -3,9 +3,10 @@
 /* Visual language (T10b-2, T10c-2): two zones with distinct roles. The
    form is one white sheet with numbered steps split by dividers (fields
    and switch from the app primitives, pill delivery mode chips, a dashed
-   photo drop area); the mint side panel previews the listing and holds the
-   actions, "Publicar" being the only primary button (same panel language
-   as the detalle decision panel). The page
+   photo drop area); the side panel previews the listing and holds the
+   actions, "Publicar" being the only primary button. Since T10d-3 the
+   panel is a neutral white card with a hairline border (the mint tint read
+   as a second green zone), the same neutral as the detalle panel. The page
    title is the only serif (ui/PageHead); every other heading is Inter.
    Global (not scoped) on purpose: publish.js renders the dynamic fields
    and photo previews as HTML strings. */
@@ -276,14 +277,15 @@
   white-space: nowrap;
 }
 
-/* === Side panel: listing preview + actions (mint) === */
+/* === Side panel: listing preview + actions (neutral, T10d-3) === */
 .publish-summary {
   display: flex;
   flex-direction: column;
   min-width: 0;
   padding: var(--space-8) var(--space-24) var(--space-24);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  background: var(--color-mint);
+  background: var(--color-card);
 }
 
 /* Sticky only when the whole panel fits the viewport. */
@@ -307,9 +309,11 @@
   text-transform: uppercase;
 }
 
-/* White tile that reads like the future listing card. */
+/* Outlined tile that reads like the future listing card (the panel is
+   already white, so the tile is drawn by its hairline). */
 .summary-preview {
   padding: var(--space-16) var(--space-20) var(--space-8);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-card);
 }

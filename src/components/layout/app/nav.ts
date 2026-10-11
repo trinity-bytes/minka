@@ -66,11 +66,12 @@ const ITEMS: Record<NavKey, NavItem> = {
 
 /**
  * Desktop sidebar order. Búsqueda has no entry (T10d-2): the search page is
- * reached from the home search bar and its quick filter chips.
+ * reached from the home search bar and its quick filter chips. Publicar
+ * has none either (T10d-3): it is reached from its dedicated home button
+ * (and the raised disc of the phone tab bar).
  */
 export const SIDEBAR_ITEMS: NavItem[] = [
   ITEMS.home,
-  ITEMS.publish,
   ITEMS.community,
   ITEMS.notifications,
   ITEMS.chats,
