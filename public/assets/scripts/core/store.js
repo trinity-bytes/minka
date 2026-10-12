@@ -16,6 +16,7 @@
     chatThread: "minka_chat_thread",
     chatMessages: "minka_chat_messages",
     chatDynamicThreads: "minka_chat_dynamic_threads",
+    questions: "minka_questions",
     notifications: "minka_notifications",
     notifPreferences: "minka_notif_preferences",
     gamification: "minka_gamification",
@@ -145,6 +146,19 @@
       const all = read(KEYS.chatMessages, {});
       all[threadId] = msgs;
       return write(KEYS.chatMessages, all);
+    },
+    // ── Q&A pública de publicaciones (un mapa por id de publicación) ──
+    /** Preguntas guardadas de una publicación, o null si no hay (usar semillas). */
+    getQuestions(itemId) {
+      const all = read(KEYS.questions, {});
+      const list = all && typeof all === "object" ? all[itemId] : null;
+      return Array.isArray(list) ? list : null;
+    },
+    saveQuestions(itemId, questions) {
+      const all = read(KEYS.questions, {});
+      const map = all && typeof all === "object" && !Array.isArray(all) ? all : {};
+      map[itemId] = questions;
+      return write(KEYS.questions, map);
     },
     getDynamicThreads() {
       return read(KEYS.chatDynamicThreads, []);

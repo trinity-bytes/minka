@@ -1,0 +1,39 @@
+---
+/**
+ * Shared error state (T11): icon, title, text and a retry action. Rendered
+ * statically it carries no role (it is part of the page from the start);
+ * pass `alert` only when the component is revealed after load. Scripts that
+ * inject an error use renderErrorState (alert by default) from
+ * src/scripts/lib/states.js, which also produces this markup.
+ */
+import { renderErrorState } from "../../scripts/lib/states.js";
+
+interface Action {
+  label: string;
+  href?: string;
+  id?: string;
+  variant?: "primary" | "secondary" | "ghost" | "outline" | "ink";
+  icon?: string;
+  data?: Record<string, string>;
+}
+
+interface Props {
+  title: string;
+  /** i18n key put on the title as data-i18n (translated by core/i18n.js). */
+  titleKey?: string;
+  text?: string;
+  /** i18n key put on the text as data-i18n. */
+  textKey?: string;
+  icon?: string;
+  variant?: "panel" | "compact";
+  headingLevel?: 2 | 3 | 4;
+  retry?: Action;
+  actions?: Action[];
+  alert?: boolean;
+}
+
+const { alert = false, ...rest } = Astro.props;
+const html = renderErrorState({ ...rest, alert });
+---
+
+<Fragment set:html={html} />

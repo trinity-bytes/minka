@@ -2,9 +2,12 @@
 /**
  * Dialog shell driven by the legacy core/modal.js (Modal.open/close, focus
  * trap, Escape, and any [data-close-modal] click). Styling: `.modal*` in
- * src/styles/app.css, so it requires a page built on AppLayout.
+ * src/styles/app.css, so it requires a page built on AppLayout: white card
+ * (--radius-xl), soft flat shadow, scrim, 44px icon-pill close button.
  * Default slot: the dialog body. `footer` slot: optional .modal__footer.
  */
+import Icon from "./Icon.astro";
+
 interface Props {
   id: string;
   title: string;
@@ -12,7 +15,7 @@ interface Props {
   titleKey?: string;
   /** Heading level of the title. */
   level?: 2 | 3;
-  /** Close button glyph: "times" (×) or the Font Awesome "xmark" icon. */
+  /** Close button glyph: "times" (inline SVG cross) or the Font Awesome "xmark" icon. */
   closeIcon?: "times" | "xmark";
   closeLabel?: string;
 }
@@ -36,7 +39,7 @@ const hasFooter = Astro.slots.has("footer");
     <header class="modal__header">
       <Heading id={titleId} class="modal__title" data-i18n={titleKey}>{title}</Heading>
       <button class="modal__close" type="button" data-close-modal={id} aria-label={closeLabel}>
-        {closeIcon === "xmark" ? <i class="fa-solid fa-xmark" aria-hidden="true" /> : "×"}
+        {closeIcon === "xmark" ? <i class="fa-solid fa-xmark" aria-hidden="true" /> : <Icon name="close" size={20} />}
       </button>
     </header>
     <div class="modal__body">

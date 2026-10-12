@@ -1,0 +1,48 @@
+---
+/**
+ * Headline split into words that rise in one after another when the element
+ * scrolls into view (reveal.ts adds `.is-visible`; styles live in global.css
+ * under "Word reveal"). Screen readers get the full sentence once from a
+ * visually hidden copy; the animated words are aria-hidden.
+ *
+ * Mark key words with asterisks (`text="Dale *otra vida*"`) or `keys`; they
+ * fade from a light tint into `--word-key-color` (defaults to brand text green).
+ */
+import type { HTMLAttributes } from "astro/types";
+import { splitWords } from "../../scripts/lib/words.js";
+
+type Tag = "h1" | "h2" | "h3" | "p" | "span";
+
+interface Props extends Omit<HTMLAttributes<"h2">, "style"> {
+  style?: string;
+  text: string;
+  as?: Tag;
+  keys?: string[];
+  /** Extra delay before the first word, in ms (e.g. to follow a sticker). */
+  delay?: number;
+}
+
+const { text, as: Tag = "h2", keys, delay = 0, class: className, style, ...rest } = Astro.props;
+const { text: sentence, words } = splitWords(text, { keys });
+const delayStyle = delay ? `--word-delay: ${delay}ms;` : "";
+---
+
+<Tag
+  class:list={["word-reveal", className]}
+  data-reveal="words"
+  style={`${delayStyle}${style ?? ""}` || undefined}
+  {...rest}
+>
+  <span class="sr-only">{sentence}</span>
+  <span class="word-reveal__words" aria-hidden="true">
+    {
+      words.map((word) => (
+        <Fragment>
+          <span class:list={["word", word.key && "word--key"]} style={`--i: ${word.index}`}>
+            <span class="word__inner">{word.text}</span>
+          </span>{" "}
+        </Fragment>
+      ))
+    }
+  </span>
+</Tag>

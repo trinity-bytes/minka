@@ -1,0 +1,73 @@
+---
+/**
+ * Initials avatar on a tinted circle. The tint is derived from the name so a
+ * person keeps the same color everywhere; `tone` overrides it. The full name
+ * is the accessible label unless `decorative` (e.g. next to a visible name).
+ */
+import type { HTMLAttributes } from "astro/types";
+import { avatarTone, initials, type AvatarTone } from "../../scripts/lib/avatar.js";
+
+interface Props extends HTMLAttributes<"span"> {
+  name: string;
+  tone?: AvatarTone;
+  size?: "sm" | "md" | "lg";
+  decorative?: boolean;
+}
+
+const { name, tone, size = "md", decorative = false, class: className, ...rest } = Astro.props;
+const resolved = tone ?? avatarTone(name);
+const a11y = decorative ? { "aria-hidden": "true" as const } : { role: "img" as const, "aria-label": name };
+---
+
+<span class:list={["avatar", `avatar--${resolved}`, `avatar--${size}`, className]} {...a11y} {...rest}>
+  {initials(name)}
+</span>
+
+<style>
+  .avatar {
+    --avatar-size: 40px;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border-radius: var(--radius-full);
+    background: var(--avatar-bg);
+    color: var(--avatar-fg, var(--color-ink));
+    font-family: var(--font-primary);
+    font-size: calc(var(--avatar-size) * 0.38);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .avatar--sm {
+    --avatar-size: 32px;
+  }
+  .avatar--lg {
+    --avatar-size: 56px;
+  }
+
+  .avatar--mint {
+    --avatar-bg: var(--color-mint);
+  }
+  .avatar--brand {
+    --avatar-bg: var(--color-brand);
+  }
+  .avatar--alt {
+    --avatar-bg: var(--color-paper-2);
+  }
+  .avatar--lavender {
+    --avatar-bg: var(--color-lavender);
+    --avatar-fg: var(--color-on-lavender);
+  }
+  .avatar--lavender-soft {
+    --avatar-bg: var(--color-lavender-soft);
+    --avatar-fg: var(--color-on-lavender);
+  }
+
+  :global(body.high-contrast) .avatar {
+    outline: 2px solid var(--color-hc-ink);
+  }
+</style>

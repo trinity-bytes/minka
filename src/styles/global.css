@@ -63,7 +63,7 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 640;
+  font-weight: var(--font-title-weight);
   line-height: 1.15;
   color: var(--color-ink);
   letter-spacing: -0.01em;
@@ -71,7 +71,6 @@ h4 {
 
 h1 {
   font-size: 3rem;
-  font-weight: 680;
   margin-bottom: var(--space-24);
 }
 
@@ -98,21 +97,23 @@ label {
   margin-bottom: var(--space-8);
 }
 
-/* Editorial display voice (hero, section and CTA titles). */
+/* Poster display voice (hero, section and CTA titles): Fraunces Black,
+   fully soft, tight leading. Emphasis keeps the same weight. */
 .display {
   font-family: var(--font-display);
-  font-weight: 640;
+  font-weight: var(--font-display-weight);
   font-variation-settings: var(--font-display-axes);
   color: var(--color-ink);
-  letter-spacing: -0.015em;
-  line-height: 1.02;
+  letter-spacing: var(--font-display-tracking);
+  line-height: var(--font-display-leading);
+  text-wrap: balance;
   margin: 0;
 }
 
 .display em,
 .display i {
   font-style: italic;
-  font-weight: 500;
+  font-weight: inherit;
   color: var(--color-primary);
 }
 
@@ -122,7 +123,7 @@ label {
   top: -100%;
   left: var(--space-16);
   background: var(--color-primary-darker);
-  color: var(--color-white);
+  color: var(--color-card);
   padding: var(--space-8) var(--space-16);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   z-index: var(--z-skip-link);
@@ -179,24 +180,90 @@ label {
 }
 
 /* === Reveal on scroll (driven by src/scripts/reveal.ts) ===
-   Parity note: in the legacy landing.css these rules came last in the
-   cascade and silently replaced the tilt/hover transforms of every revealed
-   element (photos, frames, cards, notes). `!important` reproduces that
-   rendered result now that component styles are scoped (higher specificity).
-   Switching to the `translate` property would let tilts compose instead;
-   deferred to the visual-language feature. */
-[data-reveal] {
+   Elements rise with the independent `translate` property, so component
+   tilts and hovers declared with `transform` compose instead of being wiped.
+   An animation (not a transition) is used so component transitions on the
+   same element (e.g. hover on transform) cannot cancel the entrance; the
+   backwards fill hands control back to component styles once it ends. */
+[data-reveal]:not(.is-visible) {
   opacity: 0;
-  transform: translateY(28px) !important;
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: var(--reveal-delay, 0ms);
+  translate: 0 28px;
 }
 
 [data-reveal].is-visible {
+  animation: reveal-rise var(--dur-reveal) var(--ease-out) var(--reveal-delay, 0ms) backwards;
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* === Word reveal (src/components/ui/WordReveal.astro) ===
+   The container stays put; each word rises from below its own line box,
+   staggered by its `--i` index. Key words then fade from a light tint into
+   their final color. */
+[data-reveal="words"]:not(.is-visible),
+[data-reveal="words"].is-visible {
   opacity: 1;
-  transform: translateY(0) !important;
+  translate: none;
+  animation: none;
+}
+
+.word-reveal__words .word {
+  display: inline-block;
+  /* Room for descenders and Fraunces overshoot while clipping the rise. */
+  padding-block: 0.08em 0.14em;
+  margin-block: -0.08em -0.14em;
+  overflow: clip;
+  vertical-align: top;
+}
+
+.word-reveal__words .word__inner {
+  display: inline-block;
+}
+
+.word-reveal__words .word--key {
+  color: var(--word-key-color, var(--color-primary));
+}
+
+[data-reveal="words"]:not(.is-visible) .word__inner {
+  translate: 0 110%;
+}
+
+[data-reveal="words"].is-visible .word__inner {
+  --word-start: calc(var(--word-delay, 0ms) + var(--i, 0) * var(--stagger-word));
+  animation: word-rise var(--dur-word) var(--ease-out) var(--word-start) backwards;
+}
+
+[data-reveal="words"].is-visible .word--key .word__inner {
+  animation:
+    word-rise var(--dur-word) var(--ease-out) var(--word-start) backwards,
+    word-tint var(--dur-slow) var(--ease-standard) calc(var(--word-start) + var(--dur-word) * 0.6) backwards;
+}
+
+@keyframes word-rise {
+  from {
+    translate: 0 110%;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes word-tint {
+  from {
+    color: color-mix(in srgb, var(--word-key-color, var(--color-primary)) 28%, var(--word-key-tint, #ffffff));
+  }
+  to {
+    color: var(--word-key-color, var(--color-primary));
+  }
 }
 
 /* === Reduced motion === */
@@ -210,10 +277,13 @@ label {
     scroll-behavior: auto !important;
   }
 
-  [data-reveal] {
-    opacity: 1;
-    transform: none !important;
-    transition: none;
+  /* Static final state: no rise, no stagger, key words already colored.
+     Only opacity/translate/animation are reset, so tilts on transform stay. */
+  [data-reveal],
+  [data-reveal] .word__inner {
+    opacity: 1 !important;
+    translate: none !important;
+    animation: none !important;
   }
 }
 
@@ -225,13 +295,21 @@ label {
 
 /* High contrast: black text on white, strong borders, AAA dark green. */
 body.high-contrast {
+  --color-ink: var(--color-hc-ink);
+  --color-ink-2: var(--color-hc-ink-2);
   --color-primary: var(--color-hc-primary);
   --color-primary-dark: var(--color-hc-primary-dark);
-  --color-primary-ink: var(--color-hc-primary);
   --color-text: var(--color-hc-ink);
   --color-text-secondary: var(--color-hc-ink-2);
   --color-gray-600: var(--color-hc-ink-2);
   --color-border: var(--color-hc-ink);
+  /* Lavender fills re-point ink to this token locally; keep it black here. */
+  --color-on-lavender: var(--color-hc-ink);
+  --color-on-brand: var(--color-hc-ink);
+  /* --border-ink resolves on :root against the hairline border; restore
+     strong outlines for high contrast (the flat theme dropped them). */
+  --border-ink: 2px solid var(--color-hc-ink);
+  --border-ink-thin: 1.5px solid var(--color-hc-ink);
   background-color: var(--color-hc-paper) !important;
   color: var(--color-hc-ink) !important;
 }

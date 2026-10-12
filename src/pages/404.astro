@@ -3,11 +3,16 @@
  * Not-found page. Emitted as dist/404.html, which GitHub Pages serves for
  * any missing path of the project site. Uses the landing shell; header and
  * footer anchors point back to the landing through `anchorBase`.
+ * Visual: a mint bento block with a giant Fraunces Black "404" whose zero
+ * is swapped for a brand leaf disc, plus tilted decorative icon chips.
+ * Nothing loops; the block only rises once on reveal.
  */
 import BaseLayout from "../components/layout/BaseLayout.astro";
 import SiteFooter from "../components/layout/SiteFooter.astro";
 import SiteHeader from "../components/layout/SiteHeader.astro";
 import Button from "../components/ui/Button.astro";
+import IconChip from "../components/ui/IconChip.astro";
+import Logomark from "../components/brand/Logomark.astro";
 import { url } from "../lib/url";
 
 const landing = url();
@@ -24,15 +29,30 @@ const landing = url();
 
   <section class="not-found">
     <div class="container">
-      <p class="not-found__code" aria-hidden="true">404</p>
-      <h1 class="not-found__title display">Esta página <em>no existe</em></h1>
-      <p class="not-found__text">
-        Puede que el enlace esté roto o que la página haya cambiado de lugar. Sigue truequeando desde
-        aquí:
-      </p>
-      <div class="not-found__actions">
-        <Button href={landing} variant="primary">Volver al inicio</Button>
-        <Button href={url("pages/busqueda.html")}>Buscar trueques</Button>
+      <div class="not-found__block" data-reveal>
+        <div class="not-found__chips" aria-hidden="true">
+          <IconChip icon="spark" tone="lavender" size="lg" class="not-found__chip not-found__chip--a" />
+          <IconChip icon="star" tone="ink" size="md" class="not-found__chip not-found__chip--b" />
+          <IconChip icon="people" tone="brand" size="md" class="not-found__chip not-found__chip--c" />
+        </div>
+        <p class="not-found__code display" aria-hidden="true">
+          <span>4</span><span class="not-found__zero"
+            ><span class="not-found__zero-text">0</span><Logomark
+              tone="current"
+              size={96}
+              class="not-found__leaf"
+            /></span
+          ><span>4</span>
+        </p>
+        <h1 class="not-found__title display">Esta página <em>no existe</em></h1>
+        <p class="not-found__text">
+          Puede que el enlace esté roto o que la página haya cambiado de lugar. Sigue truequeando
+          desde aquí:
+        </p>
+        <div class="not-found__actions">
+          <Button href={landing} variant="primary">Volver al inicio</Button>
+          <Button href={url("pages/busqueda.html")}>Buscar trueques</Button>
+        </div>
       </div>
     </div>
   </section>
@@ -41,43 +61,143 @@ const landing = url();
 </BaseLayout>
 
 <style>
+  /* Text pairs on mint (#d7f5e3): numeral and title ink 13.32:1, em
+     primary 4.62:1 (display size), body ink-2 6.98:1. */
   .not-found {
-    padding: 170px 0 110px;
+    padding: 140px 0 clamp(48px, 8vw, 96px);
+  }
+
+  .not-found__block {
+    position: relative;
+    overflow: clip;
+    border-radius: var(--radius-bento);
+    background: var(--color-mint);
+    color: var(--color-ink);
+    padding: clamp(48px, 7vw, 96px) clamp(24px, 6vw, 88px) clamp(56px, 8vw, 104px);
     text-align: center;
   }
 
   .not-found__code {
-    margin: 0;
-    font-family: var(--font-display);
-    font-variation-settings: var(--font-display-axes);
-    font-size: clamp(4rem, 12vw, 7rem);
-    line-height: 1;
-    color: var(--color-terra);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.02em;
+    margin: 0 0 8px;
+    font-size: clamp(7rem, 24vw, 15rem);
+    line-height: 0.85;
+  }
+
+  /* The zero becomes a tilted brand-green disc holding the leaf mark. The
+     "0" glyph stays in the DOM (visually hidden) so copy/paste reads 404. */
+  .not-found__zero {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 0.78em;
+    height: 0.78em;
+    margin-inline: 0.04em;
+    border-radius: var(--radius-full);
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+    transform: rotate(-12deg);
+  }
+
+  .not-found__zero-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .not-found__zero :global(.not-found__leaf) {
+    height: 0.48em;
+    width: auto;
   }
 
   .not-found__title {
-    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
     margin: 12px 0 18px;
+    word-spacing: 0.06em;
   }
 
   .not-found__text {
     max-width: 34rem;
     margin: 0 auto 32px;
     font-size: 1.1rem;
+    font-weight: 500;
     line-height: 1.6;
     color: var(--color-ink-2);
+    text-wrap: pretty;
   }
 
   .not-found__actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 16px;
+    gap: 14px;
+  }
+
+  /* Decorative tilted chips; tilt uses `transform` (reveal owns `translate`). */
+  .not-found__block :global(.not-found__chip) {
+    position: absolute;
+    transform: rotate(var(--chip-tilt, 0deg));
+  }
+
+  .not-found__block :global(.not-found__chip--a) {
+    --chip-tilt: 12deg;
+    top: 12%;
+    left: 9%;
+  }
+
+  .not-found__block :global(.not-found__chip--b) {
+    --chip-tilt: -14deg;
+    top: 18%;
+    right: 10%;
+  }
+
+  .not-found__block :global(.not-found__chip--c) {
+    --chip-tilt: 9deg;
+    bottom: 12%;
+    right: 16%;
   }
 
   @media (max-width: 640px) {
     .not-found {
-      padding: 132px 0 80px;
+      padding-top: 112px;
     }
+
+    .not-found__block {
+      border-radius: var(--radius-xl);
+    }
+
+    .not-found__block :global(.not-found__chip--a) {
+      top: 16px;
+      left: 16px;
+    }
+
+    .not-found__block :global(.not-found__chip--b) {
+      top: 20px;
+      right: 18px;
+    }
+
+    .not-found__block :global(.not-found__chip--c) {
+      display: none;
+    }
+  }
+
+  :global(body.high-contrast) .not-found__block {
+    background: var(--color-hc-paper);
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  :global(body.high-contrast) .not-found__zero {
+    background: var(--color-hc-paper);
+    color: var(--color-hc-ink);
+    outline: 0.04em solid var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .not-found__title :global(em) {
+    color: var(--color-hc-ink);
   }
 </style>

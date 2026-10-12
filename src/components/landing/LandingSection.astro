@@ -2,13 +2,13 @@
 /**
  * Landing section wrapper: vertical rhythm, centered container, optional
  * giant folio number ("01") behind the content, and the colored "band"
- * variant with a wavy top edge (showcase, final CTA).
+ * variant with a wavy top edge (showcase).
  */
 interface Props {
   id?: string;
   /** Giant decorative folio number, e.g. "01". */
   folio?: string;
-  band?: "ink" | "amber";
+  band?: "ink";
   /** Tighter top padding (sections following another section). */
   compactTop?: boolean;
   class?: string;
@@ -78,6 +78,12 @@ const { id, folio, band, compactTop = false, class: className } = Astro.props;
     user-select: none;
   }
 
+  /* On the ink band the folio is a faint paper numeral instead. */
+  .band--ink[data-folio]::before {
+    color: var(--color-paper);
+    opacity: 0.07;
+  }
+
   .band {
     position: relative;
     padding: 90px 0 100px;
@@ -103,12 +109,6 @@ const { id, folio, band, compactTop = false, class: className } = Astro.props;
     margin-top: 110px;
   }
 
-  .band--amber {
-    --band-bg: var(--color-accent);
-    text-align: center;
-    overflow: hidden;
-    margin-top: 110px;
-  }
 
   @media (max-width: 640px) {
     .section {
@@ -122,8 +122,7 @@ const { id, folio, band, compactTop = false, class: className } = Astro.props;
       opacity: 0.035;
     }
 
-    .band--ink,
-    .band--amber {
+    .band--ink {
       margin-top: 76px;
     }
   }

@@ -1,16 +1,15 @@
-/* Chat — layout editorial: el hilo de mensajes es el protagonista.
-   Columna izquierda: lista de conversaciones. Columna derecha:
-   header compacto / mensajes (flex 1) / extras plegables / composer. */
-/* Global (not scoped) on purpose: src/scripts/pages/chat.js renders the
-   threads, messages, templates and meeting chips as HTML strings. The page
-   renders no AppFooter (AppLayout footer={false}): in a messaging screen it
-   only takes useful height. The legacy page also loaded pages/home.css;
-   none of its selectors match. */
+/* Chat — standard two-pane messaging screen (visual language T10c-3).
+   One white surface fills the main column (AppLayout footer={false}): the
+   conversation list pane and the conversation pane are joined edge to edge
+   by a hairline, with the card radius on the outer corners only. The
+   message area sits on its own warm neutral canvas; the partner's bubbles
+   are white, own bubbles use the brand fill with --color-on-brand text.
+   No ink borders or offset shadows (high contrast restores outlines).
+   Global (not scoped) on purpose: chat.js renders the rows, bubbles,
+   quick replies and meeting chips as HTML strings. Phones show one pane
+   at a time (`.chat-shell.is-thread-open`, set by chat.js). */
 .chat-page {
-  background: var(--color-bg);
   height: 100dvh;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
 }
 
@@ -19,99 +18,281 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: var(--space-16) 0 var(--space-20);
+  padding: var(--space-24) 0;
+}
+
+.chat-main :where(h2, h3, h4) {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.chat-frame {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .chat-shell {
   flex: 1;
   min-height: 0;
-  width: 100%;
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: var(--space-16);
+  grid-template-columns: minmax(17rem, 340px) minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+  /* Message canvas: warm neutral, distinct from the green-tinted app bg. */
+  --chat-canvas: #f3efe8;
 }
 
-/* === Lista de conversaciones === */
-.threads {
-  background: var(--color-surface);
-  border: var(--border-ink);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-hard-sm);
-  padding: var(--space-16);
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.threads__header h2 {
-  font-size: 1.6rem;
-  margin-bottom: var(--space-12);
-}
-
-.thread-list {
-  list-style: none;
-  padding: 2px;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  overflow-y: auto;
-}
-
-.thread {
-  padding: var(--space-12);
-  border: 1.5px solid var(--color-gray-100);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  background: var(--color-surface);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.thread:hover {
-  border-color: var(--color-ink);
-}
-
-.thread--active {
-  border-color: var(--color-ink);
-  background: var(--color-mint);
-  box-shadow: 2px 2px 0 var(--color-ink);
-}
-
-.thread--active .thread__title::after {
-  content: " \2713";
-  color: var(--color-primary);
-}
-
-.thread__title {
+/* === Initials avatar (same tints as ui/Avatar; set by chat.js) === */
+.chat-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--chat-avatar-bg, var(--color-mint));
+  color: var(--chat-avatar-fg, var(--color-ink));
+  font-size: 0.95rem;
   font-weight: 700;
+  line-height: 1;
+}
+
+.chat-avatar--md {
+  width: 44px;
+  height: 44px;
+}
+
+.chat-avatar--brand {
+  --chat-avatar-bg: var(--color-brand);
+  --chat-avatar-fg: var(--color-on-brand);
+}
+
+.chat-avatar--alt {
+  --chat-avatar-bg: var(--color-paper-2);
+}
+
+.chat-avatar--lavender {
+  --chat-avatar-bg: var(--color-lavender);
+  --chat-avatar-fg: var(--color-on-lavender);
+}
+
+.chat-avatar--lavender-soft {
+  --chat-avatar-bg: var(--color-lavender-soft);
+  --chat-avatar-fg: var(--color-on-lavender);
+}
+
+/* === Conversation list pane === */
+.threads {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-inline-end: 1px solid var(--color-border);
+}
+
+.threads__header {
+  flex-shrink: 0;
+  padding: var(--space-20) var(--space-20) var(--space-12);
+}
+
+/* Page title: the Fraunces title voice of ui/PageHead, at pane-title size. */
+.threads__header h1 {
+  margin: 0 0 var(--space-12);
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-variation-settings: var(--font-display-axes-text);
+  font-size: 1.6rem;
+  line-height: 1.05;
+  letter-spacing: var(--font-display-tracking);
   color: var(--color-ink);
 }
 
-.thread__meta {
-  color: var(--color-ink-2);
-  font-size: 0.85rem;
+.threads__search {
+  position: relative;
 }
 
-/* === Conversación === */
-.conversation {
-  background: var(--color-surface);
-  border: var(--border-ink);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-hard-sm);
+.threads__search i {
+  position: absolute;
+  top: 50%;
+  left: var(--space-16);
+  color: var(--color-gray-500);
+  font-size: 0.85rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.threads__search input,
+.composer input[type="text"] {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.threads__search input {
+  padding-inline: 40px var(--space-16);
+  font-size: 0.9rem;
+}
+
+.threads__search input:hover,
+.composer input[type="text"]:hover {
+  border-color: var(--color-gray-400);
+}
+
+.threads__search input:focus,
+.composer input[type="text"]:focus {
+  border-color: var(--color-ink);
+  background: var(--color-card);
+}
+
+.threads__search input::placeholder,
+.composer input[type="text"]::placeholder {
+  color: var(--color-gray-500);
+}
+
+.thread-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
   min-height: 0;
+  margin: 0;
+  padding: var(--space-4) var(--space-12) var(--space-12);
+  overflow-y: auto;
+  list-style: none;
+}
+
+.thread__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  padding: var(--space-12);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.thread__btn:hover {
+  background: var(--color-paper);
+}
+
+.thread--active .thread__btn {
+  background: var(--color-mint);
+}
+
+/* A mint avatar would vanish on the mint active row. */
+.thread--active .chat-avatar--mint {
+  --chat-avatar-bg: var(--color-card);
+}
+
+.thread__btn:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: -2px;
+}
+
+.thread__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.thread__top,
+.thread__bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.thread__bottom {
+  align-items: center;
+}
+
+.thread__title {
+  overflow: hidden;
+  font-weight: 700;
+  color: var(--color-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread__time {
+  flex: none;
+  color: var(--color-gray-600);
+  font-size: 0.75rem;
+}
+
+.thread__item,
+.thread__preview {
+  overflow: hidden;
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread__item {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.thread__preview {
+  min-width: 0;
+  color: var(--color-gray-600);
+}
+
+.thread--unread .thread__preview {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.thread--unread .thread__time {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.thread__unread {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding-inline: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* === Conversation pane === */
+.conversation {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
 }
 
 .conversation__header {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: var(--space-12);
-  padding: var(--space-12) var(--space-16);
-  border-bottom: 2px solid var(--color-ink);
-  background: var(--color-paper-2);
-  flex-shrink: 0;
+  padding: var(--space-12) var(--space-20);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .icon-btn.conversation__back {
@@ -123,108 +304,170 @@
   min-width: 0;
 }
 
-.conversation__eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 700;
-  font-size: 0.72rem;
-  color: var(--color-primary);
+.conversation__info h2 {
   margin: 0;
-  white-space: nowrap;
   overflow: hidden;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--color-ink);
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.conversation__info h3 {
-  font-size: 1.15rem;
+.conversation__eyebrow,
+.conversation__meta {
   margin: 0;
-  line-height: 1.3;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversation__eyebrow {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .conversation__meta {
   color: var(--color-ink-2);
-  font-size: 0.82rem;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.conversation__meta .fa-star {
+  color: var(--color-warning);
 }
 
 .conversation__actions {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: var(--space-8);
-  flex-shrink: 0;
+  gap: var(--space-4);
 }
 
-.btn-rate {
-  padding: 8px 14px;
-}
-
-/* === Botón de icono compartido (header y composer) === */
+/* === Icon buttons: round, 44px === */
 .icon-btn {
-  width: 38px;
-  height: 38px;
-  flex-shrink: 0;
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid var(--color-ink);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid transparent;
   border-radius: var(--radius-full);
-  background: var(--color-surface);
+  background: var(--color-paper);
   color: var(--color-ink);
+  font: inherit;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
+}
+
+/* Header actions: quiet until hovered, as in standard messaging headers. */
+.icon-btn--plain {
+  background: transparent;
+  color: var(--color-ink-2);
 }
 
 .icon-btn:hover {
   background: var(--color-mint);
+  color: var(--color-ink);
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
 }
 
 .icon-btn.is-muted {
   background: var(--color-warning-soft);
+  color: var(--color-warning-ink);
 }
 
-/* === Mensajes: el área que manda === */
+/* === Messages === */
 .messages {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: var(--space-16);
-  background: var(--color-bg);
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: var(--space-10);
+  gap: 2px;
+  min-height: 0;
+  padding: var(--space-20) var(--space-24);
+  overflow-y: auto;
+  background: var(--chat-canvas);
 }
 
+/* Tail-less bubbles; the sender-side corners tighten inside a group and
+   at its end, so a run of messages reads as one stack. */
 .message {
-  max-width: 72%;
-  padding: var(--space-10) 14px;
-  border: 1.5px solid var(--color-ink);
-  border-radius: 16px 16px 16px 4px;
-  background: var(--color-surface);
-  box-shadow: 2px 2px 0 color-mix(in srgb, var(--color-ink) 18%, transparent);
+  --bubble-r: 18px;
+  --bubble-tight: 6px;
+  max-width: min(70%, 34rem);
+  padding: var(--space-8) var(--space-12) 6px;
+  border-radius: var(--bubble-r);
+  background: var(--color-card);
+  color: var(--color-ink);
+  line-height: 1.45;
+}
+
+.message--start:not(:first-child) {
+  margin-top: var(--space-12);
+}
+
+.message:not(.message--me):not(.message--start) {
+  border-top-left-radius: var(--bubble-tight);
+}
+
+.message:not(.message--me).message--end {
+  border-bottom-left-radius: var(--bubble-tight);
 }
 
 .message--me {
-  margin-left: auto;
-  background: var(--color-mint);
-  border-radius: 16px 16px 4px 16px;
+  align-self: flex-end;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+
+.message--me:not(.message--start) {
+  border-top-right-radius: var(--bubble-tight);
+}
+
+.message--me.message--end {
+  border-bottom-right-radius: var(--bubble-tight);
+}
+
+.message:not(.message--me) {
+  align-self: flex-start;
+}
+
+.message__text {
+  overflow-wrap: anywhere;
 }
 
 .message__meta {
-  font-size: 0.75rem;
-  color: var(--color-ink-2);
-  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  margin-top: 2px;
+  color: var(--color-gray-600);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
 }
 
-/* T34 - Ronel Rojas: typing indicator, read receipts and photos (HU43/44),
-   merged from the legacy pages/chat-improvements.css patch. */
+.message--me .message__meta,
+.message--me .message__status {
+  color: color-mix(in srgb, var(--color-on-brand) 72%, transparent);
+}
+
+/* T34 - Ronel Rojas: typing indicator, read receipts and photos (HU43/44). */
 .typing-indicator {
   flex-shrink: 0;
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  padding: var(--space-4) var(--space-24) var(--space-8);
+  background: var(--chat-canvas);
+  color: var(--color-ink-2);
+  font-size: 0.82rem;
   font-style: italic;
 }
 
@@ -233,127 +476,247 @@
 }
 
 .message__status {
-  font-size: 0.75rem;
-  margin-left: 0.5rem;
-  color: var(--color-text-secondary);
+  color: var(--color-gray-600);
+  font-size: 0.72rem;
 }
 
-.message__status.read {
-  color: var(--color-primary);
+.message--me .message__status.read {
+  color: var(--color-on-brand);
+}
+
+.message--photo {
+  padding: 4px 4px 6px;
+}
+
+.message--photo .message__meta {
+  padding-inline: var(--space-8);
 }
 
 .message__image {
-  max-width: 200px;
-  border-radius: var(--radius-md);
-  margin-top: 0.5rem;
-  border: 1px solid var(--color-border);
+  display: block;
+  max-width: min(240px, 100%);
+  border-radius: 14px;
 }
 
-.message--me .message__image {
-  border-color: var(--color-primary-light);
-}
-
-/* === Extras plegables: puntos de encuentro + respuestas rápidas === */
-.conversation__extras {
-  flex-shrink: 0;
-  border-top: 1px solid var(--color-gray-100);
-  padding: var(--space-8) var(--space-16) 0;
+/* === Footer: quick replies, extras panel and composer bar === */
+.conversation__footer {
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   gap: var(--space-8);
-}
-
-.meeting summary {
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-ink-2);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 0;
-}
-
-.meeting summary:hover {
-  color: var(--color-ink);
-}
-
-.meeting__chips {
-  margin-top: var(--space-8);
-  display: flex;
-  gap: var(--space-8);
-  flex-wrap: wrap;
-}
-
-.meeting-chip {
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  border: 1.5px solid var(--color-gray-200);
-  background: var(--color-surface);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  color: var(--color-ink);
-}
-
-.meeting-chip:hover {
-  border-color: var(--color-ink);
-  background: var(--color-mint);
+  padding: var(--space-8) var(--space-16) var(--space-16);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-card);
 }
 
 .template-list {
   display: flex;
   gap: var(--space-8);
+  padding: 2px 2px var(--space-4);
   overflow-x: auto;
-  padding-bottom: var(--space-4);
   scrollbar-width: thin;
 }
 
+.meeting-chip,
 .template {
-  padding: 6px 12px;
+  flex: none;
+  min-height: 36px;
+  padding: var(--space-4) 14px;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  border: 1.5px solid var(--color-gray-200);
-  background: var(--color-surface);
-  cursor: pointer;
-  font-size: 0.85rem;
-  white-space: nowrap;
+  background: var(--color-card);
   color: var(--color-ink);
-  transition: all 0.15s ease;
+  font-family: var(--font-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard);
 }
 
 .template:hover {
-  border-color: var(--color-ink);
+  border-color: var(--color-mint);
   background: var(--color-mint);
 }
 
-/* === Composer === */
-.composer {
-  flex-shrink: 0;
+.meeting-chip {
+  border-color: transparent;
+  background: var(--color-lavender-soft);
+  color: var(--color-on-lavender);
+}
+
+.meeting-chip:hover {
+  background: var(--color-lavender);
+}
+
+.meeting-chip:focus-visible,
+.template:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* Lives in the composer right after the "+" (focus order: "+", extras,
+   field, send) and is drawn as a full-width row above the bar. */
+.conversation__extras {
+  order: -1;
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
+}
+
+.conversation__extras[hidden] {
+  display: none;
+}
+
+.extras__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.extras__action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 44px;
+  padding: var(--space-4) var(--space-16) var(--space-4) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.extras__action:hover {
+  background: var(--color-mint);
+}
+
+.extras__action:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.extras__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+}
+
+.extras__icon--lavender {
+  background: var(--color-lavender);
+  color: var(--color-on-lavender);
+}
+
+.extras__icon--mint {
+  background: var(--color-mint);
+  color: var(--color-ink);
+}
+
+.extras__action:hover .extras__icon--mint {
+  background: var(--color-card);
+}
+
+.meeting__title {
   display: flex;
   align-items: center;
   gap: var(--space-8);
-  padding: var(--space-12) var(--space-16) var(--space-16);
+  margin: 0 0 var(--space-8);
+  color: var(--color-ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.meeting__title i {
+  color: var(--color-primary);
+}
+
+.meeting__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.composer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
 }
 
 .composer input[type="text"] {
   flex: 1;
   min-width: 0;
-  padding: 10px 16px;
-  border-radius: var(--radius-full);
-  border: 1.5px solid var(--color-ink);
-  background: var(--color-surface);
-  font: inherit;
-  color: var(--color-ink);
+  padding-inline: var(--space-20);
 }
 
-.composer input[type="text"]::placeholder {
-  color: var(--color-gray-400);
+.composer__more .fa-plus {
+  transition: rotate var(--dur-fast) var(--ease-standard);
 }
 
-/* === Móvil: lista ⇄ conversación como dos pantallas === */
+.composer__more.is-open {
+  background: var(--color-ink);
+  color: var(--color-card);
+}
+
+.composer__more.is-open .fa-plus {
+  rotate: 45deg;
+}
+
+.icon-btn.composer__send {
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+
+.icon-btn.composer__send:hover {
+  background: var(--color-ink);
+  color: var(--color-card);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .composer__more .fa-plus,
+  .thread__btn,
+  .icon-btn {
+    transition: none;
+  }
+}
+
+/* === Phones: list and conversation as two full screens === */
 @media (max-width: 768px) {
+  .chat-main {
+    padding: 0;
+  }
+
+  .chat-frame.container {
+    padding: 0;
+  }
+
   .chat-shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 0;
+  }
+
+  .threads {
+    border-inline-end: 0;
+  }
+
+  .threads__header {
+    padding: var(--space-16) var(--space-16) var(--space-8);
+  }
+
+  /* Extra bottom room: the raised Publicar disc overlaps the tab bar top. */
+  .thread-list {
+    padding: var(--space-4) var(--space-8) var(--space-32);
   }
 
   .conversation {
@@ -370,28 +733,150 @@
 
   .icon-btn.conversation__back {
     display: inline-flex;
+    margin-inline-start: calc(var(--space-8) * -1);
   }
 
-  .btn-rate__label {
-    display: none;
+  .conversation__header {
+    gap: var(--space-8);
+    padding: var(--space-8) var(--space-12);
   }
 
-  .btn-rate {
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-full);
+  .conversation__header .chat-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.85rem;
+  }
+
+  .conversation__actions {
+    gap: 0;
+  }
+
+  .conversation__actions .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .messages {
+    padding: var(--space-16) var(--space-12);
   }
 
   .message {
-    max-width: 85%;
+    max-width: 82%;
   }
 
-  /* Folded from the legacy core/responsive.css */
-  .chat-main {
-    min-height: 400px;
+  .typing-indicator {
+    padding-inline: var(--space-12);
+  }
+
+  .conversation__footer {
+    padding: var(--space-8) var(--space-12) var(--space-24);
+  }
+
+  .composer {
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 400px) {
+  .conversation__meta {
+    display: none;
+  }
+}
+
+/* === High contrast / forced colors === */
+body.high-contrast .chat-shell {
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .threads {
+  border-inline-end: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .conversation__header,
+body.high-contrast .conversation__footer {
+  border-color: var(--color-hc-ink);
+  border-width: 2px;
+}
+
+body.high-contrast .message,
+body.high-contrast .message--me,
+body.high-contrast .icon-btn,
+body.high-contrast .meeting-chip,
+body.high-contrast .template,
+body.high-contrast .extras__action,
+body.high-contrast .extras__icon,
+body.high-contrast .chat-avatar {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .threads__search input,
+body.high-contrast .composer input[type="text"] {
+  border: 2px solid var(--color-hc-ink);
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+}
+
+/* Own bubbles: a thicker sender-side rule tells them apart without color. */
+body.high-contrast .message--me {
+  border-inline-end: 6px solid var(--color-hc-ink);
+}
+
+body.high-contrast .message__meta,
+body.high-contrast .message--me .message__meta,
+body.high-contrast .message--me .message__status,
+body.high-contrast .conversation__eyebrow,
+body.high-contrast .meeting__title i,
+body.high-contrast .thread__item,
+body.high-contrast .thread__preview,
+body.high-contrast .thread__time {
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .icon-btn.composer__send,
+body.high-contrast .composer__more.is-open,
+body.high-contrast .thread__unread {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .thread--active .thread__btn {
+  background: var(--color-hc-ink);
+}
+
+body.high-contrast .thread--active .thread__text * {
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .thread--active .thread__unread {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .messages,
+body.high-contrast .typing-indicator,
+body.high-contrast .conversation__extras {
+  background: var(--color-hc-paper);
+}
+
+@media (forced-colors: active) {
+  .chat-shell,
+  .message,
+  .icon-btn,
+  .meeting-chip,
+  .template,
+  .extras__action,
+  .thread__unread,
+  .conversation__extras {
+    border: 1px solid CanvasText;
+  }
+
+  .message--me {
+    border-inline-end-width: 6px;
+  }
+
+  .thread--active .thread__btn {
+    outline: 2px solid Highlight;
   }
 }

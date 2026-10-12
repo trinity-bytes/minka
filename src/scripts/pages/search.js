@@ -3,6 +3,15 @@
 // Los datos demo viven en Store.seedDemo(); la búsqueda lee solo Store.getItems().
 // ES module bundled by src/pages/pages/busqueda.astro; relies on the legacy
 // globals Store, Toast and I18n loaded as classic scripts by AppLayout.
+import { escapeHtml } from "../lib/html.js";
+import { tr } from "../lib/i18n.js";
+import { renderEmptyState } from "../lib/states.js";
+import {
+  SEARCH_DEFAULTS,
+  filtersToParams,
+  parseSearchParams,
+  resultsSummary,
+} from "../lib/search-params.js";
 
 // T31 - Distritos de referencia. Declared before the initial render():
 // a restored district filter reads DISTRICT_KM during that first render,
@@ -33,15 +42,9 @@ const DISTRICT_KM = {
   Lince: 4,
 };
 
-const DEFAULT_FILTERS = Object.freeze({
-  query: "",
-  category: "",
-  exclude: "", // T30 - Exclusiones
-  userLocation: "", // T31
-  minRating: 0,
-  maxDistance: 15,
-  sort: "relevance",
-});
+// query, category, exclude (T30), userLocation (T31), minRating,
+// maxDistance, sort: shared with the home search (lib/search-params.js).
+const DEFAULT_FILTERS = SEARCH_DEFAULTS;
 
 const state = { ...DEFAULT_FILTERS };
 
@@ -73,28 +76,16 @@ loadSearchHistory(); // T30
 attachEvents();
 render();
 
-// Permite llegar con ?q= y ?category= desde home u otras páginas
+// Llegada con filtros en la URL (búsqueda desde home con sus chips, o una
+// URL compartida, Chunk 4.7): la URL manda y reemplaza los filtros
+// guardados, para que la búsqueda de home no herede filtros viejos.
 function applyUrlParams() {
-  const params = new URLSearchParams(window.location.search);
-  const q = params.get("q");
-  const category = params.get("category");
-  if (q) {
-    state.query = q.trim().toLowerCase();
-    el.query.value = q;
-    addToHistory(state.query);
-  }
-  if (category) {
-    state.category = category;
-    el.category.value = category;
-  }
-  // Filtros completos compartibles por URL (Chunk 4.7)
-  if (params.get("exclude")) state.exclude = params.get("exclude");
-  if (params.get("district")) state.userLocation = params.get("district");
-  if (params.get("rating")) state.minRating = Number(params.get("rating")) || 0;
-  if (params.get("distance"))
-    state.maxDistance = Number(params.get("distance")) || 15;
-  if (params.get("sort")) state.sort = params.get("sort");
-  if ([...params.keys()].length) syncUI();
+  const { filters, hasParams } = parseSearchParams(window.location.search);
+  if (!hasParams) return;
+  Object.assign(state, filters, { query: filters.query.toLowerCase() });
+  syncUI();
+  el.query.value = filters.query; // keep the typed casing in the field
+  addToHistory(state.query);
 }
 
 function attachEvents() {
@@ -255,15 +246,7 @@ function persist() {
 
 // URLs compartibles: el estado completo de filtros vive en la query string
 function syncUrl() {
-  const params = new URLSearchParams();
-  if (state.query) params.set("q", state.query);
-  if (state.category) params.set("category", state.category);
-  if (state.exclude) params.set("exclude", state.exclude);
-  if (state.userLocation) params.set("district", state.userLocation);
-  if (state.minRating > 0) params.set("rating", state.minRating);
-  if (state.maxDistance !== 15) params.set("distance", state.maxDistance);
-  if (state.sort !== "relevance") params.set("sort", state.sort);
-  const qs = params.toString();
+  const qs = filtersToParams(state).toString();
   history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
 }
 
@@ -290,8 +273,8 @@ function renderChips() {
     .map(
       (chip) => `
       <button class="filter-chip" type="button" data-chip="${chip.key}"
-        aria-label="Quitar filtro ${chip.label}">
-        ${chip.label} <span aria-hidden="true">×</span>
+        aria-label="Quitar filtro ${escapeHtml(chip.label)}">
+        ${escapeHtml(chip.label)} <span aria-hidden="true">×</span>
       </button>`
     )
     .join("");
@@ -334,21 +317,24 @@ function syncUI() {
 }
 
 function renderEmptyCatalog() {
-  el.count.textContent = `0 ${
-    window.I18n ? window.I18n.t("search_results_count") : "resultados"
-  }`;
-  el.results.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-state__icon" aria-hidden="true">🔍</div>
-      <h3>Todavía no hay publicaciones</h3>
-      <p>Publica tu primer objeto o carga datos de ejemplo para explorar la demo.</p>
-      <div class="empty-state__actions">
-        <a class="btn btn-primary" href="publicar.html">Publicar mi primer objeto</a>
-        <button class="btn btn-secondary" type="button" id="seed-demo-btn">
-          Cargar datos de ejemplo
-        </button>
-      </div>
-    </div>`;
+  el.count.textContent = resultsSummary(0, state.query, tr);
+  el.results.innerHTML = renderEmptyState({
+    icon: "fa-seedling",
+    headingLevel: 3,
+    title: tr("state_no_items_title", "Todavía no hay publicaciones"),
+    text: tr(
+      "state_no_items_text",
+      "Publica tu primer objeto o carga datos de ejemplo para explorar la demo."
+    ),
+    actions: [
+      {
+        label: tr("state_publish_first", "Publicar mi primer objeto"),
+        href: "publicar.html",
+        variant: "primary",
+      },
+      { label: tr("state_load_demo", "Cargar datos de ejemplo"), id: "seed-demo-btn" },
+    ],
+  });
   document.getElementById("seed-demo-btn")?.addEventListener("click", () => {
     Store.seedDemo();
     render();
@@ -357,6 +343,8 @@ function renderEmptyCatalog() {
 }
 
 function render() {
+  // The server-rendered skeleton marks the results busy until this render.
+  el.results.removeAttribute("aria-busy");
   const allItems = Store.getItems();
   const favorites = getFavorites(); // T30
 
@@ -397,22 +385,22 @@ function render() {
     sorted.sort((a, b) => b.rating - a.rating);
   }
 
-  el.count.textContent = `${sorted.length} ${
-    window.I18n ? window.I18n.t("search_results_count") : "resultados"
-  }`;
+  el.count.textContent = resultsSummary(sorted.length, el.query.value || state.query, tr);
 
   if (sorted.length === 0) {
-    el.results.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state__icon" aria-hidden="true">🤷</div>
-        <h3>Sin resultados con estos filtros</h3>
-        <p>Prueba con otros términos o restablece los filtros.</p>
-        <div class="empty-state__actions">
-          <button class="btn btn-secondary" type="button" id="empty-reset-filters">
-            Restablecer filtros
-          </button>
-        </div>
-      </div>`;
+    el.results.innerHTML = renderEmptyState({
+      icon: "fa-magnifying-glass",
+      headingLevel: 3,
+      title: tr("state_no_results_title", "Sin resultados con estos filtros"),
+      text: tr("state_no_results_text", "Prueba con otros términos o limpia los filtros."),
+      actions: [
+        {
+          label: tr("state_clear_filters", "Limpiar filtros"),
+          id: "empty-reset-filters",
+          icon: "fa-filter-circle-xmark",
+        },
+      ],
+    });
     document
       .getElementById("empty-reset-filters")
       ?.addEventListener("click", () => el.reset?.click());
@@ -431,43 +419,34 @@ function render() {
         if (Number(displayDist) === 0) displayDist = 0.5;
       }
 
+      // Photo tile + text below on the page (T10d-2); the title link is
+      // stretched over the tile, the favorite button sits above it.
+      const src = item.images ? item.images[0] : item.image;
       return `
-        <article class="result-card is-entering" aria-label="${item.title}">
-          <div style="position: relative;">
-            <img src="${item.images ? item.images[0] : item.image}" alt="${
-        item.title
-      }" class="result-card__img" loading="lazy" decoding="async" style="object-fit: cover;" />
-            <button class="item-card__favorite ${
+        <article class="result-card is-entering">
+          <div class="result-card__tile">
+            <img src="${escapeHtml(src)}" alt="" class="result-card__img" loading="lazy" decoding="async" />
+            <button type="button" class="item-card__favorite ${
               isFav ? "active" : ""
-            }" aria-pressed="${isFav}" data-fav-id="${item.id}" aria-label="${
+            }" aria-pressed="${isFav}" data-fav-id="${escapeHtml(item.id)}" aria-label="${
         isFav ? "Quitar de favoritos" : "Añadir a favoritos"
       }">
               <i class="fas fa-heart" aria-hidden="true"></i>
             </button>
           </div>
           <div class="result-card__body">
-            <h3 class="result-card__title">${item.title}</h3>
-            <div class="result-card__meta">
-              <span class="badge">${item.category}</span>
-              <span>${item.location}</span>
-              <span>${displayDist} km</span>
-              <span><i class="fa-solid fa-star star-rating"></i> ${item.rating.toFixed(
-                1
-              )}</span>
-            </div>
-            <div class="result-card__tags">
-              Tags: ${item.tags ? item.tags.join(", ") : ""}
-            </div>
-            <div class="result-card__footer">
-              <div class="result-card__actions">
-                <a class="btn btn-secondary" href="detalle.html?id=${
-                  item.id
-                }">${
-        window.I18n ? window.I18n.t("card_view_detail") : "Ver detalle"
-      }</a>
-                <a class="btn btn-primary" href="chat.html">Quiero intercambiar</a>
-              </div>
-            </div>
+            <h3 class="result-card__title">
+              <a class="result-card__link" href="detalle.html?id=${encodeURIComponent(
+                item.id
+              )}">${escapeHtml(item.title)}</a>
+            </h3>
+            <p class="result-card__meta">${escapeHtml(item.category)} · ${escapeHtml(
+        item.location
+      )} · ${displayDist} km</p>
+            <p class="result-card__rating">
+              <i class="fa-solid fa-star star-rating" aria-hidden="true"></i>
+              <span class="sr-only">Reputación:</span> ${Number(item.rating || 0).toFixed(1)}
+            </p>
           </div>
         </article>
       `;
@@ -551,9 +530,9 @@ function loadSavedSearches() {
   el.savedSearchesList.innerHTML = searches
     .map(
       (s) => `
-    <li class="saved-search-tag" data-saved-search="${s.id}">
-      <span>${s.query || "Todo"} ${s.category ? `(${s.category})` : ""}</span>
-      <span class="saved-search-remove" data-remove-saved-search="${s.id}">&times;</span>
+    <li class="saved-search-tag">
+      <button type="button" class="saved-search-apply" data-saved-search="${escapeHtml(s.id)}">${escapeHtml(s.query || "Todo")} ${s.category ? `(${escapeHtml(s.category)})` : ""}</button>
+      <button type="button" class="saved-search-remove" data-remove-saved-search="${s.id}" aria-label="Quitar búsqueda guardada"><span aria-hidden="true">&times;</span></button>
     </li>
   `
     )
@@ -594,6 +573,6 @@ function loadSearchHistory() {
   if (!el.historyList) return;
   const history = Store.getSearchHistory().slice(0, 5);
   el.historyList.innerHTML = history
-    .map((term) => `<option value="${term}">`)
+    .map((term) => `<option value="${escapeHtml(term)}">`)
     .join("");
 }

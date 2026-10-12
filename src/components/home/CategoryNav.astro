@@ -1,6 +1,8 @@
 ---
 /**
- * "Explore by category" chips linking to the search page pre-filtered.
+ * "Explore by category" pills linking to the search page pre-filtered.
+ * Uses the shared `.pill-tabs*` row (src/styles/app.css) in link mode; no
+ * pill is current because the home page itself is not filtered.
  */
 import { pickCategories } from "../../lib/categories";
 import { url } from "../../lib/url";
@@ -10,15 +12,19 @@ const categories = pickCategories(["Libros", "Ropa y accesorios", "Electrónica"
 
 <nav class="home-cats" aria-label="Explorar por categoría">
   <span class="home-cats__label" data-i18n="home_explore_label">Explora por categoría:</span>
-  {
-    categories.map((category) => (
-      <a
-        class="home-cat-chip"
-        href={url(`pages/busqueda.html?category=${encodeURIComponent(category.value)}`)}
-        data-i18n={category.homeKey}
-      >
-        {category.label}
-      </a>
-    ))
-  }
+  <ul class="pill-tabs home-cats__list" role="list">
+    {
+      categories.map((category) => (
+        <li>
+          <a
+            class="pill-tabs__tab home-cat-chip"
+            href={url(`pages/busqueda.html?category=${encodeURIComponent(category.value)}`)}
+            data-i18n={category.homeKey}
+          >
+            {category.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </nav>

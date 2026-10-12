@@ -8,6 +8,7 @@ import Button from "../ui/Button.astro";
 ---
 
 <div class="search-bar" role="search">
+  <i class="fas fa-magnifying-glass search-bar__icon" aria-hidden="true"></i>
   <input
     type="search"
     id="search-query"
@@ -19,8 +20,7 @@ import Button from "../ui/Button.astro";
   <datalist id="search-history-list"></datalist>
   <Button
     appearance="flat"
-    variant="outline"
-    size="sm"
+    variant="secondary"
     id="clear-history-btn"
     title="Borrar historial de búsqueda"
     aria-label="Borrar historial de búsqueda"
@@ -28,8 +28,14 @@ import Button from "../ui/Button.astro";
     <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
   </Button>
   <Button appearance="flat" variant="primary" id="search-btn" data-i18n="search_btn">Buscar</Button>
-  <Button appearance="flat" variant="outline" id="save-search-btn" title="Guardar esta búsqueda">
-    <i class="far fa-bookmark"></i>
+  <Button
+    appearance="flat"
+    variant="secondary"
+    id="save-search-btn"
+    title="Guardar esta búsqueda"
+    aria-label="Guardar esta búsqueda"
+  >
+    <i class="far fa-bookmark" aria-hidden="true"></i>
   </Button>
   <span id="save-search-feedback" class="form__success" role="status" aria-live="polite"></span>
 </div>

@@ -1,9 +1,12 @@
 ---
 /**
- * Live summary of the publish form. Each value (#summary-*) is updated by
- * src/scripts/pages/publish.js (updateSummary).
+ * Live summary of the publish form, first section of the neutral side panel
+ * (T10c-2): kicker label, then a white preview tile that reads like the
+ * listing card (title first and large, then the label/value rows). Each
+ * value (#summary-*) is updated by src/scripts/pages/publish.js
+ * (updateSummary).
  */
-const ROWS = [
+const [TITLE, ...ROWS] = [
   { id: "title", key: "publish.summary.itemTitle", label: "Título:", value: "—" },
   { id: "category", key: "publish.summary.category", label: "Categoría:", value: "—" },
   { id: "location", key: "publish.summary.location", label: "Ubicación:", value: "—" },
@@ -13,16 +16,22 @@ const ROWS = [
 ];
 ---
 
-<div class="summary-card">
-  <h3 data-i18n="publish.summary.title">Resumen rápido</h3>
-  <ul class="summary-list">
-    {
-      ROWS.map((r) => (
-        <li>
-          <strong data-i18n={r.key}>{r.label}</strong> <span id={`summary-${r.id}`}>{r.value}</span>
-        </li>
-      ))
-    }
-  </ul>
-  <p class="form__hint" data-i18n="publish.summary.qrHint">El QR se generará automáticamente al publicar.</p>
-</div>
+<section class="summary-card" aria-labelledby="summary-heading">
+  <h2 class="summary-card__label" id="summary-heading" data-i18n="publish.summary.title">Resumen rápido</h2>
+  <div class="summary-preview">
+    <p class="summary-preview__title">
+      <strong data-i18n={TITLE.key}>{TITLE.label}</strong>
+      <span id={`summary-${TITLE.id}`}>{TITLE.value}</span>
+    </p>
+    <ul class="summary-list">
+      {
+        ROWS.map((r) => (
+          <li>
+            <strong data-i18n={r.key}>{r.label}</strong> <span id={`summary-${r.id}`}>{r.value}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <p class="summary-card__hint" data-i18n="publish.summary.qrHint">El QR se generará automáticamente al publicar.</p>
+</section>

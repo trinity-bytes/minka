@@ -1,0 +1,37 @@
+---
+/**
+ * Shared empty state (T11): Font Awesome icon, title, optional text and
+ * actions. Markup comes from renderEmptyState in src/scripts/lib/states.js,
+ * the same renderer page scripts use for client-rendered lists, so both
+ * paths emit identical classes. `variant="compact"` sits inside an existing
+ * card or pane (no surface); the default "panel" stands on the page
+ * background as one white card. Styles: src/styles/states.css.
+ */
+import { renderEmptyState } from "../../scripts/lib/states.js";
+
+interface Action {
+  label: string;
+  href?: string;
+  id?: string;
+  variant?: "primary" | "secondary" | "ghost" | "outline" | "ink";
+  icon?: string;
+  data?: Record<string, string>;
+}
+
+interface Props {
+  title: string;
+  /** i18n key put on the title as data-i18n (translated by core/i18n.js). */
+  titleKey?: string;
+  text?: string;
+  /** i18n key put on the text as data-i18n. */
+  textKey?: string;
+  icon?: string;
+  variant?: "panel" | "compact";
+  headingLevel?: 2 | 3 | 4;
+  actions?: Action[];
+}
+
+const html = renderEmptyState(Astro.props);
+---
+
+<Fragment set:html={html} />

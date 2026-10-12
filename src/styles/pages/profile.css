@@ -1,127 +1,63 @@
 /* T13 - Lucero Pipa: Estilos específicos de perfil
-   Rediseño "Trueque Editorial": tarjetas de tinta, papel crema y acentos. */
-/* Global (not scoped) on purpose: src/scripts/pages/profile.js renders the
-   item and review cards as HTML strings. Port of the legacy
-   pages/profile.css plus the profile parts of core/components.css
-   (.section-header) and core/responsive.css. The legacy page also loaded
-   pages/detail.css; none of its selectors match this page. */
-:root {
-  color-scheme: light;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: var(--space-48);
-}
-
-.section-header__subtitle {
-  font-size: 1.125rem;
-  color: var(--color-gray-600);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.profile-page {
-  background: var(--color-paper);
-  min-height: 100dvh;
-}
+   Visual language (T10b): white rounded cards on the tinted app background,
+   flat rows, pill badges and initials avatars. The page title is the only
+   serif (ui/PageHead); every other heading is Inter. Global (not scoped) on
+   purpose: src/scripts/pages/profile.js renders the item and review cards
+   as HTML strings. */
 
 .profile-page__main {
   padding-bottom: var(--space-48);
 }
 
+.profile-page__main :where(h2, h3, h4) {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
 .profile {
-  padding: var(--space-40) 0 var(--space-64);
-  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  padding-bottom: var(--space-24);
 }
 
 .profile__grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: var(--space-32);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: var(--space-24);
   align-items: start;
 }
 
-.profile-left-column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-24);
-}
-
-/* === Tarjeta editorial base (resumen, publicaciones, reseñas, formulario) === */
+/* === Card surfaces (summary, form, listings, rail blocks) === */
 .profile-card,
 .profile-items,
 .profile-reviews,
-.profile-form {
+.profile-form,
+.profile-links {
+  border-radius: var(--radius-card);
   background: var(--color-card);
-  border: var(--border-ink);
-  border-radius: var(--radius-lg);
   padding: var(--space-24);
-  box-shadow: var(--shadow-hard-sm);
-}
-
-.profile-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-  box-shadow: var(--shadow-hard-md);
 }
 
 .profile-items__title {
-  margin-bottom: var(--space-16);
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-16);
+  font-size: 1.15rem;
   color: var(--color-ink);
 }
 
-.profile-items__list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-12);
-}
-
-.profile-item-card {
-  display: flex;
+/* === Summary card === */
+.profile-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+  gap: var(--space-24);
   align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-12);
-  border: 1.5px solid var(--color-ink);
-  border-radius: var(--radius-md);
-  background: var(--color-paper);
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.profile-item-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow-hard-sm);
-}
-
-.profile-item-card img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--color-ink);
-}
-
-.profile-item-info {
-  flex: 1;
-}
-
-.profile-item-info h4 {
-  font-size: 1rem;
-  margin-bottom: var(--space-4);
-  color: var(--color-ink);
 }
 
 .profile-card__header {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--space-16);
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-20);
   align-items: center;
 }
 
@@ -137,50 +73,64 @@
   height: 104px;
   border-radius: 50%;
   object-fit: cover;
-  border: var(--border-ink);
   background: var(--color-mint);
-  box-shadow: var(--shadow-hard-sm);
 }
 
 .profile-card__info {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-4);
+  min-width: 0;
 }
 
-.profile-card__info h3 {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  letter-spacing: -0.01em;
+.profile-card__info h2 {
+  margin: 0 0 var(--space-4);
+  font-size: 1.4rem;
   color: var(--color-ink);
+  overflow-wrap: anywhere;
 }
 
 .profile-card__meta {
   margin: 0;
-  color: var(--color-gray-600);
+  color: var(--color-ink-2);
   font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
+/* Verification state as a pill badge (warning -> mint -> ink). */
 .profile-card__badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-4);
   width: fit-content;
+  margin-top: var(--space-8);
   padding: 4px 12px;
-  border: 1.5px solid var(--color-ink);
   border-radius: var(--radius-full);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--color-ink);
   background: var(--color-warning-soft);
+  color: var(--color-warning-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .profile-card__badge--verified {
-  color: var(--color-ink);
   background: var(--color-mint);
+  color: var(--color-ink);
 }
 
-/* === Progreso de perfil === */
+.profile-card__badge--advanced {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.profile-card__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+/* === Profile progress === */
 .profile-progress {
   display: flex;
   flex-direction: column;
@@ -190,129 +140,67 @@
 .profile-progress__top {
   display: flex;
   justify-content: space-between;
-  font-weight: 700;
+  gap: var(--space-12);
   color: var(--color-ink);
-}
-
-.profile-progress__top #profile-progress-value {
-  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
 .profile-progress__bar {
   width: 100%;
-  height: 14px;
-  background: var(--color-paper-2);
-  border: 1.5px solid var(--color-ink);
+  height: 10px;
   border-radius: var(--radius-full);
+  background: var(--color-paper-2);
   overflow: hidden;
 }
 
 .profile-progress__fill {
   height: 100%;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--color-primary),
-    var(--color-primary) 8px,
-    var(--color-primary-dark) 8px,
-    var(--color-primary-dark) 16px
-  );
   border-radius: var(--radius-full);
-  transition: width 0.3s ease;
+  background: var(--color-brand);
+  transition: width var(--dur-base, 0.3s) var(--ease-standard, ease);
 }
 
-.profile-card__actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-12);
-}
-
-/* === Accesos rápidos (gamificación, dashboard, configuración) === */
-.profile-quicklink {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-10) var(--space-12);
-  border: 1.5px solid var(--color-ink);
-  border-radius: var(--radius-md);
-  background: var(--color-paper);
-  color: var(--color-ink);
-  font-weight: 600;
-  text-decoration: none;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.profile-quicklink:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow-hard-sm);
-  color: var(--color-ink);
-}
-
-.profile-quicklink__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  border: 1.5px solid var(--color-ink);
-  border-radius: var(--radius-sm);
-  color: var(--color-ink);
-}
-
-.profile-quicklink__icon--amber {
-  background: var(--color-warning-soft);
-}
-
-.profile-quicklink__icon--mint {
-  background: var(--color-mint);
-}
-
-.profile-quicklink__icon--terra {
-  background: var(--color-terra-soft);
-}
-
-.profile-quicklink__arrow {
-  margin-left: auto;
-  font-size: 0.85rem;
-  color: var(--color-gray-500);
-  transition: transform 0.15s ease;
-}
-
-.profile-quicklink:hover .profile-quicklink__arrow {
-  transform: translateX(3px);
-  color: var(--color-ink);
-}
-
-/* === Formulario === */
+/* === Form === */
 .profile-form {
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
 }
 
+.profile-form .form__group {
+  gap: 6px;
+  margin: 0;
+}
+
+/* Global element margins (label, p, small) would double the group gap. */
+.profile-form .form__group > * {
+  margin: 0;
+}
+
+/* Reserve no space for an empty error line; it appears on validation. */
+.profile-form .form__error:empty {
+  display: none;
+}
+
 .profile-form__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--space-12);
-  padding-top: var(--space-8);
-  border-top: 1.5px dashed var(--color-gray-200);
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--color-gray-100);
 }
 
 .profile-form__footer .form__hint {
   display: flex;
   align-items: center;
   gap: var(--space-8);
-  color: var(--color-gray-600);
-  font-size: 0.9rem;
-}
-
-.profile-form__footer .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
+  flex: 1 1 14rem;
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.88rem;
 }
 
 .required {
@@ -323,38 +211,135 @@
 .form__char-count {
   display: flex;
   justify-content: flex-end;
-  font-size: 0.85rem;
-  color: var(--color-gray-600);
   margin-top: 4px;
+  color: var(--color-ink-2);
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
 .form__char-count.warning {
-  color: var(--color-warning);
+  color: var(--color-warning-ink);
 }
 
 .form__char-count.error {
   color: var(--color-error);
 }
 
-/* Banner de perfil público (solo lectura) */
-.profile-readonly-banner {
-  max-width: 1200px;
-  margin: var(--space-16) auto 0;
-  padding: var(--space-10) var(--space-16);
-  border: 1.5px solid var(--color-ink);
-  border-radius: var(--radius-md);
-  background: var(--color-warning-soft);
+/* === Listings === */
+.profile-items__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.profile-item-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.profile-item-card:hover {
+  background: var(--color-mint);
+}
+
+.profile-item-card:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.profile-item-card img {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: calc(var(--radius-lg) - var(--space-8));
+}
+
+.profile-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-item-info h3 {
+  margin: 0 0 var(--space-4);
+  font-size: 0.98rem;
   color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Read-only public profile banner (prepended by profile.js). */
+.profile-readonly-banner {
+  margin: var(--space-24) 40px 0;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-lg);
+  background: var(--color-warning-soft);
+  color: var(--color-warning-ink);
   font-weight: 600;
 }
 
-/* === Reseñas y reputación === */
+/* === Rail: quick links === */
+.profile-links {
+  padding: var(--space-8);
+}
+
+.profile-links ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-quicklink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 52px;
+  padding: var(--space-8) var(--space-12) var(--space-8) var(--space-8);
+  border-radius: var(--radius-full);
+  color: var(--color-ink);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.profile-quicklink:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.profile-quicklink:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.profile-quicklink__arrow {
+  margin-left: auto;
+  color: var(--color-ink-2);
+  font-size: 0.8rem;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .profile-quicklink:hover .profile-quicklink__arrow {
+    transform: translateX(3px);
+  }
+}
+
+/* === Rail: reviews and reputation === */
 .profile-reviews__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-12);
+  flex-wrap: wrap;
+  gap: var(--space-8) var(--space-12);
   margin-bottom: var(--space-16);
 }
 
@@ -365,91 +350,109 @@
 .reputation-score {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-4);
   padding: 4px 12px;
-  border: 1.5px solid var(--color-ink);
   border-radius: var(--radius-full);
-  background: var(--color-warning-soft);
-}
-
-.reputation-score .fa-star {
-  color: var(--color-accent);
+  background: var(--color-lavender-soft);
+  color: var(--color-on-lavender);
+  font-size: 0.85rem;
 }
 
 .reputation-score__value {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--color-ink);
-}
-
-.reputation-score__count {
-  color: var(--color-gray-600);
-  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .reviews-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-8);
 }
 
 .review-card {
-  padding: var(--space-16);
-  border: 1.5px solid var(--color-ink);
-  border-radius: var(--radius-md);
-  background: var(--color-paper);
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
+  padding: var(--space-16);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
 }
 
 .review-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-12);
+  flex-wrap: wrap;
+  gap: var(--space-8);
 }
 
 .review-author {
   display: flex;
   align-items: center;
   gap: var(--space-8);
+  min-width: 0;
 }
 
+/* Initials avatar (same tints as ui/Avatar, which is scoped). */
 .review-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1.5px solid var(--color-ink);
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
   background: var(--color-mint);
+  color: var(--color-ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.review-avatar--brand {
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+
+.review-avatar--alt {
+  background: var(--color-paper-2);
+}
+
+.review-avatar--lavender {
+  background: var(--color-lavender);
+  color: var(--color-on-lavender);
+}
+
+.review-avatar--lavender-soft {
+  background: var(--color-lavender-soft);
+  color: var(--color-on-lavender);
 }
 
 .review-meta {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .review-name {
-  font-weight: 700;
   color: var(--color-ink);
+  font-size: 0.92rem;
+  font-weight: 700;
 }
 
 .review-date {
-  font-size: 0.82rem;
-  color: var(--color-gray-500);
+  color: var(--color-ink-2);
+  font-size: 0.8rem;
 }
 
 .review-rating {
-  color: var(--color-accent);
-  font-size: 0.9rem;
+  color: var(--color-ink);
+  font-size: 0.8rem;
   letter-spacing: 2px;
 }
 
 .review-content {
   margin: 0;
   color: var(--color-ink-2);
+  font-size: 0.92rem;
   line-height: 1.5;
 }
 
@@ -459,51 +462,20 @@
 }
 
 .btn-appeal {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  padding: var(--space-8) var(--space-12);
-  border: 1.5px solid var(--color-terra);
-  border-radius: var(--radius-full);
-  background: transparent;
-  color: var(--color-terra);
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+  color: var(--color-error);
 }
 
-.btn-appeal:hover {
-  background: var(--color-terra-soft);
-}
-
-/* === Modal de verificación de identidad === */
-/* Level tabs: the legacy sheets never styled .modal__tab nor hid
-   .verify-section.hidden, so both levels showed at once and the tabs
-   rendered as bare native buttons (bug fix). */
+/* === Identity modal === */
+/* Level switch: pill group; the active level is the ink pill (profile.js
+   toggles .modal__tab--active and aria-pressed). */
 .verification-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-8);
-}
-
-.modal__tab {
-  padding: var(--space-8) var(--space-12);
-  border: var(--border-ink-thin);
-  border-radius: var(--radius-full);
+  margin-bottom: var(--space-16);
   background: var(--color-paper);
-  color: var(--color-ink);
-  font: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
 }
 
-.modal__tab:hover,
-.modal__tab--active {
-  background: var(--color-mint);
+.verification-tabs .modal__tab--active {
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
 .verify-section.hidden {
@@ -524,42 +496,141 @@
 }
 
 .identity-step__icon {
-  width: 38px;
-  height: 38px;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1.5px solid var(--color-ink);
   background: var(--color-mint);
   color: var(--color-ink);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-family: var(--font-display);
+  font-weight: 800;
 }
 
 .identity-step__title {
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
+  font-family: var(--font-primary);
+  font-weight: 800;
+  font-size: 1rem;
 }
 
 .identity-step__text {
   margin: 0;
-  color: var(--color-gray-600);
+  color: var(--color-ink-2);
 }
 
 .identity-actions {
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
-  margin-top: var(--space-8);
+  margin-top: var(--space-16);
+}
+
+/* === High contrast / forced colors === */
+body.high-contrast .profile-card,
+body.high-contrast .profile-items,
+body.high-contrast .profile-reviews,
+body.high-contrast .profile-form,
+body.high-contrast .profile-links,
+body.high-contrast .profile-item-card,
+body.high-contrast .review-card,
+body.high-contrast .profile-card__badge,
+body.high-contrast .reputation-score,
+body.high-contrast .profile-progress__bar,
+body.high-contrast .profile-readonly-banner,
+body.high-contrast .verification-tabs {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .profile-progress__fill,
+body.high-contrast .verification-tabs .modal__tab--active {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .review-avatar {
+  outline: 2px solid var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .profile-card,
+  .profile-items,
+  .profile-reviews,
+  .profile-form,
+  .profile-links,
+  .profile-item-card,
+  .review-card,
+  .profile-card__badge,
+  .profile-progress__bar {
+    border: 1px solid CanvasText;
+  }
+
+  .profile-progress__fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .verification-tabs .modal__tab--active {
+    border-color: Highlight;
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* === Responsive === */
+@media (max-width: 1200px) {
+  .profile-readonly-banner {
+    margin-inline: 24px;
+  }
+}
+
+@media (max-width: 1099px) {
+  .profile-card {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-card__side .btn {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .profile__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .profile__grid {
-    grid-template-columns: 1fr;
+  .profile-card,
+  .profile-items,
+  .profile-reviews,
+  .profile-form {
+    padding: var(--space-20);
+  }
+
+  .profile-card__avatar img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-readonly-banner {
+    margin-inline: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card,
+  .profile-items,
+  .profile-reviews,
+  .profile-form {
+    padding: var(--space-16);
   }
 
   .profile-card__header {
     grid-template-columns: 1fr;
+    justify-items: center;
     text-align: center;
   }
 
@@ -567,45 +638,12 @@
     align-items: center;
   }
 
-  .profile-card__badge {
-    margin-inline: auto;
-  }
-
-  .profile-reviews__header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .profile-form__footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .profile-card__avatar img {
-    width: 80px;
-    height: 80px;
-  }
-}
-
-@media (max-width: 480px) {
-  .section-header {
-    margin-bottom: var(--space-32);
+    width: 72px;
+    height: 72px;
   }
 
-  .profile-card,
-  .profile-form {
-    padding: var(--space-16);
-  }
-
-  .profile-card__avatar img {
-    width: 64px;
-    height: 64px;
-  }
-}
-
-@media (max-width: 360px) {
-  .profile-card__avatar img {
-    width: 56px;
-    height: 56px;
+  .profile-readonly-banner {
+    margin-inline: 12px;
   }
 }

@@ -3,13 +3,17 @@
  * About us: public marketing page in the landing family (SiteHeader /
  * SiteFooter, landing sections). Port of public/pages/about.html, keeping
  * its copy and team video; nav and footer anchors point back to the
- * landing through `anchorBase`.
+ * landing through `anchorBase`. Visual: the hero is a mint bento block
+ * (Fraunces Black title, faint leaf watermark, tilted decorative icon
+ * chips); video and closing CTA reuse the landing sections.
  */
 import BaseLayout from "../../components/layout/BaseLayout.astro";
 import SiteFooter from "../../components/layout/SiteFooter.astro";
 import SiteHeader from "../../components/layout/SiteHeader.astro";
 import FinalCta from "../../components/landing/FinalCta.astro";
 import VideoSection from "../../components/landing/VideoSection.astro";
+import Logomark from "../../components/brand/Logomark.astro";
+import IconChip from "../../components/ui/IconChip.astro";
 import { url } from "../../lib/url";
 
 const landing = url();
@@ -25,11 +29,21 @@ const landing = url();
 
   <section class="about-hero">
     <div class="container">
-      <h1 class="about-hero__title display" data-reveal>Sobre <em>Nosotros</em></h1>
-      <p class="about-hero__subtitle" data-reveal>
-        Conoce al equipo apasionado que está trabajando para transformar la economía de Lima a
-        través del trueque y la colaboración comunitaria.
-      </p>
+      <div class="about-hero__block" data-reveal>
+        <Logomark tone="current" size={420} class="about-hero__mark" />
+        <div class="about-hero__chips" aria-hidden="true">
+          <IconChip icon="people" tone="brand" size="lg" class="about-hero__chip about-hero__chip--a" />
+          <IconChip icon="leaf" tone="ink" size="lg" class="about-hero__chip about-hero__chip--b" />
+          <IconChip icon="spark" tone="lavender" size="lg" class="about-hero__chip about-hero__chip--c" />
+        </div>
+        <div class="about-hero__body">
+          <h1 class="about-hero__title display">Sobre <em>Nosotros</em></h1>
+          <p class="about-hero__subtitle">
+            Conoce al equipo apasionado que está trabajando para transformar la economía de Lima a
+            través del trueque y la colaboración comunitaria.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -56,28 +70,121 @@ const landing = url();
 </BaseLayout>
 
 <style>
-  /* Clears the fixed SiteHeader, like the landing hero. */
+  /* Clears the fixed SiteHeader, like the landing hero. Text pairs on mint
+     (#d7f5e3): title ink 13.32:1, em primary 4.62:1 (display size),
+     subtitle ink-2 6.98:1. */
   .about-hero {
-    padding: 170px 0 0;
+    padding: 140px 0 0;
+  }
+
+  .about-hero__block {
+    position: relative;
+    overflow: clip;
+    border-radius: var(--radius-bento);
+    background: var(--color-mint);
+    color: var(--color-ink);
+    padding: clamp(64px, 9vw, 120px) clamp(24px, 6vw, 88px);
     text-align: center;
   }
 
-  .about-hero__title {
-    font-size: clamp(2.6rem, 6vw, 4.6rem);
-    margin-bottom: 24px;
+  /* Giant faint leaf cropped by the top-left corner of the block. */
+  .about-hero__block :global(.about-hero__mark) {
+    position: absolute;
+    left: -6%;
+    top: -28%;
+    height: 120%;
+    width: auto;
+    color: var(--color-primary);
+    opacity: 0.08;
+    rotate: -18deg;
+    pointer-events: none;
   }
 
-  .about-hero__subtitle {
-    font-size: 1.16rem;
-    line-height: 1.65;
-    color: var(--color-ink-2);
+  /* Decorative tilted chips; tilt uses `transform` (reveal owns `translate`). */
+  .about-hero__block :global(.about-hero__chip) {
+    position: absolute;
+    transform: rotate(var(--chip-tilt, 0deg));
+  }
+
+  .about-hero__block :global(.about-hero__chip--a) {
+    --chip-tilt: -10deg;
+    top: 14%;
+    right: 9%;
+  }
+
+  .about-hero__block :global(.about-hero__chip--b) {
+    --chip-tilt: 8deg;
+    bottom: 14%;
+    left: 7%;
+  }
+
+  .about-hero__block :global(.about-hero__chip--c) {
+    --chip-tilt: 14deg;
+    bottom: 18%;
+    right: 14%;
+  }
+
+  .about-hero__body {
+    position: relative;
     max-width: 800px;
     margin: 0 auto;
   }
 
+  .about-hero__title {
+    font-size: clamp(3rem, 8vw, 6.4rem);
+    margin-bottom: 28px;
+    word-spacing: 0.06em;
+  }
+
+  .about-hero__subtitle {
+    font-size: 1.16rem;
+    font-weight: 500;
+    line-height: 1.65;
+    color: var(--color-ink-2);
+    max-width: 640px;
+    margin: 0 auto;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 900px) {
+    .about-hero__block :global(.about-hero__chip--c) {
+      display: none;
+    }
+  }
+
   @media (max-width: 640px) {
     .about-hero {
-      padding-top: 132px;
+      padding-top: 112px;
     }
+
+    .about-hero__block {
+      border-radius: var(--radius-xl);
+      padding-bottom: 116px;
+    }
+
+    .about-hero__block :global(.about-hero__chip--a) {
+      top: auto;
+      bottom: 32px;
+      right: 22%;
+    }
+
+    .about-hero__block :global(.about-hero__chip--b) {
+      bottom: 32px;
+      left: 22%;
+    }
+  }
+
+  :global(body.high-contrast) .about-hero__block {
+    background: var(--color-hc-paper);
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  :global(body.high-contrast) .about-hero__title :global(em) {
+    color: var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .about-hero__block :global(.about-hero__mark) {
+    display: none;
   }
 </style>

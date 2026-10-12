@@ -1,0 +1,229 @@
+---
+/**
+ * Landing stat drawn as a ring: the arc closes a full circle (the trueque
+ * "closing the loop") while the number counts up inside it. Both start from
+ * the shared reveal observer (`data-reveal` + the `reveal:visible` event from
+ * src/scripts/reveal.ts), once. The ring and the visual number are
+ * aria-hidden; `srLabel` carries the accessible value. The final number is
+ * rendered in the HTML, so no-JS and reduced motion show it without counting.
+ */
+import type { HTMLAttributes } from "astro/types";
+import { formatNumber } from "../../scripts/lib/stat-count.js";
+
+interface Props extends HTMLAttributes<"div"> {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  label: string;
+  note?: string;
+  /** Accessible reading of the value, e.g. "Más de 1,250". */
+  srLabel?: string;
+  tone?: "brand" | "lavender" | "ink";
+  /** Stagger in ms; delays the rise, the arc and the count together. */
+  delay?: number;
+}
+
+const {
+  value,
+  prefix = "",
+  suffix = "",
+  label,
+  note,
+  srLabel,
+  tone = "brand",
+  delay = 0,
+  class: className,
+  ...rest
+} = Astro.props;
+const formatted = formatNumber(value);
+---
+
+<div
+  class:list={["stat-ring", `stat-ring--${tone}`, className]}
+  data-reveal
+  data-delay={delay}
+  style={delay ? `--reveal-delay: ${delay}ms` : undefined}
+  {...rest}
+>
+  <div class="stat-ring__dial">
+    <svg class="stat-ring__svg" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+      <circle class="stat-ring__track" cx="60" cy="60" r="52"></circle>
+      <circle class="stat-ring__arc" cx="60" cy="60" r="52" pathLength="100"></circle>
+    </svg>
+    <p class="stat-ring__figure" aria-hidden="true">
+      {prefix && <span class="stat-ring__affix">{prefix}</span>}
+      <span class="stat-ring__value" data-count={value}>{formatted}</span>
+      {suffix && <span class="stat-ring__affix">{suffix}</span>}
+    </p>
+    <span class="sr-only">{srLabel ?? `${prefix}${formatted}${suffix}`}</span>
+  </div>
+  <p class="stat-ring__label">{label}</p>
+  {note && <p class="stat-ring__note">{note}</p>}
+</div>
+
+<script>
+  import { REVEAL_EVENT } from "../../scripts/reveal";
+  import { countAt, formatNumber } from "../../scripts/lib/stat-count.js";
+
+  const DURATION = 1600;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function count(out: HTMLElement, target: number, delay: number): void {
+    let start: number | null = null;
+    const step = (ts: number) => {
+      start ??= ts + delay;
+      const progress = (ts - start) / DURATION;
+      out.textContent = formatNumber(countAt(target, progress));
+      if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  // Reduced motion keeps the server-rendered final value (no counting).
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    document.querySelectorAll<HTMLElement>(".stat-ring").forEach((ring) => {
+      const out = ring.querySelector<HTMLElement>(".stat-ring__value");
+      // Already revealed before this script ran: leave the final value.
+      if (!out || ring.classList.contains("is-visible")) return;
+      const target = Number(out.dataset.count) || 0;
+      const delay = Number(ring.dataset.delay) || 0;
+      out.textContent = formatNumber(0);
+      ring.addEventListener(REVEAL_EVENT, () => count(out, target, delay), { once: true });
+    });
+  }
+</script>
+
+<style>
+  .stat-ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .stat-ring--brand {
+    --ring-arc: var(--color-brand);
+    --ring-track: var(--color-mint);
+  }
+  .stat-ring--lavender {
+    --ring-arc: var(--color-lavender-ink);
+    --ring-track: var(--color-lavender-soft);
+  }
+  .stat-ring--ink {
+    --ring-arc: var(--color-ink);
+    --ring-track: var(--color-gray-100);
+  }
+
+  .stat-ring__dial {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(100%, clamp(200px, 21vw, 264px));
+    aspect-ratio: 1;
+    /* The figure scales with the ring, so "1,250+" always fits inside. */
+    container-type: inline-size;
+  }
+
+  .stat-ring__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* Start the arc at 12 o'clock and draw clockwise. */
+    rotate: -90deg;
+    overflow: visible;
+  }
+
+  .stat-ring__track,
+  .stat-ring__arc {
+    fill: none;
+    stroke-width: 11;
+  }
+
+  .stat-ring__track {
+    stroke: var(--ring-track);
+  }
+
+  .stat-ring__arc {
+    stroke: var(--ring-arc);
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;
+  }
+
+  .stat-ring:not(.is-visible) .stat-ring__arc {
+    stroke-dashoffset: 100;
+  }
+
+  .stat-ring.is-visible .stat-ring__arc {
+    animation: stat-ring-draw 1600ms var(--ease-out) calc(var(--reveal-delay, 0ms) + 120ms) backwards;
+  }
+
+  @keyframes stat-ring-draw {
+    from {
+      stroke-dashoffset: 100;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .stat-ring__figure {
+    position: relative;
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: var(--font-display-weight);
+    font-variation-settings: var(--font-display-axes);
+    font-size: 19cqi;
+    line-height: 1;
+    letter-spacing: var(--font-display-tracking);
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .stat-ring__affix {
+    font-size: 0.55em;
+    letter-spacing: 0;
+    margin-inline: 0.06em;
+  }
+
+  .stat-ring__label {
+    margin: 22px 0 0;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--color-ink);
+  }
+
+  .stat-ring__note {
+    margin: 4px 0 0;
+    font-size: 0.98rem;
+    color: var(--color-ink-2);
+  }
+
+  :global(body.high-contrast) .stat-ring {
+    --ring-arc: var(--color-hc-ink);
+    --ring-track: var(--color-gray-200);
+  }
+
+  @media (forced-colors: active) {
+    .stat-ring__arc {
+      stroke: CanvasText;
+    }
+    .stat-ring__track {
+      stroke: GrayText;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stat-ring .stat-ring__arc,
+    .stat-ring:not(.is-visible) .stat-ring__arc {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

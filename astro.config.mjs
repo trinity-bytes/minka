@@ -13,11 +13,12 @@ export default defineConfig({
   build: {
     format: "file",
   },
-  // sitemap-index.xml for search consoles; the 404 page is not indexable.
+  // sitemap-index.xml for search consoles; the 404 page and the internal brand
+  // review board (/brand) are not indexable.
   // URLs get the ".html" suffix so they match each page canonical (format "file").
   integrations: [
     sitemap({
-      filter: (page) => !/\/404(\.html)?$/.test(page),
+      filter: (page) => !/\/(404|brand)(\.html|\/)?$/.test(page),
       serialize: (item) => (item.url.endsWith("/") ? item : { ...item, url: `${item.url}.html` }),
     }),
   ],

@@ -1,11 +1,16 @@
 ---
 /**
- * Final call to action on the amber band, with floating sparks. Defaults
- * are the landing copy; default slot overrides the title (may contain
- * <em>). `small` = "" hides the fine print.
+ * Final call to action as a bold closing bento block: lavender fill with
+ * violet ink (no green on lavender), a giant faint leaf watermark, a
+ * word-by-word headline and the fine print split into flat stickers.
+ * Defaults are the landing copy; the default slot overrides the title
+ * (may contain <em>, rendered as a plain heading). `small` = "" hides the
+ * fine print. Nothing loops: the words rise once on reveal.
  */
 import Button from "../ui/Button.astro";
-import Icon from "../ui/Icon.astro";
+import Sticker from "../ui/Sticker.astro";
+import WordReveal from "../ui/WordReveal.astro";
+import Logomark from "../brand/Logomark.astro";
 import LandingSection from "./LandingSection.astro";
 import { url } from "../../lib/url";
 
@@ -24,85 +29,132 @@ const {
 } = Astro.props;
 const hasTitle = Astro.slots.has("default");
 
-const sparks = [
-  { size: 34, mod: 1 },
-  { size: 24, mod: 2 },
-  { size: 18, mod: 3 },
-];
+// "A ✶ B ✶ C" becomes three stickers; text without separators stays one.
+const notes = small
+  .split("✶")
+  .map((note) => note.trim())
+  .filter(Boolean);
+const TILTS = ["-3deg", "2deg", "-1.5deg"];
 ---
 
-<LandingSection band="amber">
-  <Fragment slot="before">
-    {sparks.map((spark) => <Icon name="spark" size={spark.size} class={`cta__spark cta__spark--${spark.mod}`} />)}
-  </Fragment>
-  <h2 class="cta__title display" data-reveal>
-    {hasTitle ? <slot /> : <Fragment>¿Listo para hacer <em>girar</em> tus cosas?</Fragment>}
-  </h2>
-  <p class="cta__subtitle" data-reveal>{subtitle}</p>
-  <div data-reveal>
-    <Button href={ctaHref} variant="ink">{ctaLabel}</Button>
+<LandingSection class="closing">
+  <div class="cta" data-reveal>
+    <Logomark tone="current" size={520} class="cta__mark" />
+    <div class="cta__body">
+      {
+        hasTitle ? (
+          <h2 class="cta__title display">
+            <slot />
+          </h2>
+        ) : (
+          <WordReveal text="¿Listo para hacer *girar* tus cosas?" class="cta__title display" />
+        )
+      }
+      <p class="cta__subtitle">{subtitle}</p>
+      <div class="cta__action">
+        <Button href={ctaHref} variant="ink">{ctaLabel}</Button>
+      </div>
+      {
+        notes.length > 0 && (
+          <ul class="cta__notes" role="list">
+            {notes.map((note, i) => (
+              <li>
+                <Sticker tone="paper" style={`--sticker-rotate: ${TILTS[i % TILTS.length]}`}>
+                  {note}
+                </Sticker>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
   </div>
-  {small && <p class="cta__small" data-reveal>{small}</p>}
 </LandingSection>
 
 <style>
+  .cta {
+    position: relative;
+    overflow: clip;
+    padding: clamp(56px, 8vw, 110px) clamp(24px, 5vw, 72px);
+    border-radius: var(--radius-bento);
+    background: var(--color-lavender);
+    /* Re-point ink so every descendant (title, button, stickers) uses violet. */
+    --color-ink: var(--color-on-lavender);
+    --logo-leaf: var(--color-on-lavender);
+    color: var(--color-ink);
+    text-align: center;
+  }
+
+  /* Giant faint leaf, cropped by the block's bottom-right corner. */
+  .cta :global(.cta__mark) {
+    position: absolute;
+    right: -8%;
+    bottom: -30%;
+    height: 130%;
+    width: auto;
+    color: var(--color-on-lavender);
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  .cta__body {
+    position: relative;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
   .cta__title {
-    font-size: clamp(2.4rem, 5.6vw, 4.4rem);
-    margin-bottom: 22px;
+    font-size: clamp(2.5rem, 6.4vw, 5.2rem);
+    margin: 0 0 24px;
+    color: var(--color-ink);
+    text-wrap: balance;
+    word-spacing: 0.06em;
+    /* Key word: medium violet, 4.06:1 on lavender (large display text). */
+    --word-key-color: var(--color-lavender-ink);
+    --word-key-tint: var(--color-lavender);
+  }
+
+  .cta__title :global(em) {
+    color: var(--color-lavender-ink);
   }
 
   .cta__subtitle {
     font-size: 1.15rem;
     font-weight: 600;
-    color: color-mix(in srgb, var(--color-ink) 78%, transparent);
-    max-width: 560px;
-    margin: 0 auto 38px;
-  }
-
-  .cta__small {
-    margin-top: 22px;
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: color-mix(in srgb, var(--color-ink) 70%, transparent);
-  }
-
-  .cta__spark {
-    position: absolute;
     color: var(--color-ink);
-    opacity: 0.85;
+    max-width: 560px;
+    margin: 0 auto 36px;
+    text-wrap: pretty;
   }
 
-  .cta__spark--1 {
-    left: 8%;
-    top: 22%;
-    animation: spark 5s ease-in-out infinite;
+  .cta__notes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 14px;
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .cta__spark--2 {
-    right: 9%;
-    top: 30%;
-    animation: spark 5s ease-in-out 1.2s infinite;
-  }
-
-  .cta__spark--3 {
-    left: 14%;
-    bottom: 18%;
-    animation: spark 5s ease-in-out 2.4s infinite;
-  }
-
-  @keyframes spark {
-    0%,
-    100% {
-      transform: rotate(0deg) scale(1);
-    }
-    50% {
-      transform: rotate(24deg) scale(1.25);
+  @media (max-width: 640px) {
+    .cta :global(.cta__mark) {
+      right: -30%;
+      bottom: -12%;
+      height: 70%;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .cta__spark {
-      animation: none !important;
-    }
+  :global(body.high-contrast) .cta {
+    outline: 2px solid var(--color-hc-ink);
+    outline-offset: -2px;
+  }
+
+  :global(body.high-contrast) .cta__title {
+    --word-key-color: var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .cta__title :global(em) {
+    color: var(--color-hc-ink);
   }
 </style>

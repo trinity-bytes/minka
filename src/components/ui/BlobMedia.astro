@@ -1,0 +1,112 @@
+---
+/**
+ * Image cropped by an organic blob (CSS mask, stretched to the box). Pass
+ * `src` + `alt` to render an astro:assets <Picture>, or slot your own
+ * <Picture>/<Image>/<video>. `bleed` pushes the blob past its container
+ * edge(s) by `--blob-bleed`; the container must clip (overflow: hidden/clip)
+ * for the crop-off-the-edge look of the branding board.
+ */
+import type { HTMLAttributes } from "astro/types";
+import type { ImageMetadata } from "astro";
+import { Picture } from "astro:assets";
+
+type Side = "top" | "right" | "bottom" | "left";
+type Bleed = "none" | Side | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
+interface Props extends HTMLAttributes<"figure"> {
+  src?: ImageMetadata;
+  alt?: string;
+  /** Picture `sizes`; defaults to a mid-size column. */
+  sizes?: string;
+  widths?: number[];
+  loading?: "lazy" | "eager";
+  shape?: "a" | "b" | "c";
+  /** CSS aspect-ratio of the box, e.g. "1", "4 / 5". */
+  ratio?: string;
+  bleed?: Bleed;
+  /** Bleed distance (any CSS length), default 14%. */
+  bleedBy?: string;
+}
+
+// Normalized to a 200x200 box; preserveAspectRatio="none" lets them stretch.
+const SHAPES = {
+  a: "M197.8 136.1C189.2 162.7 146.1 191.3 116 197.8C85.7 204.5 34.8 195.4 16.4 175.4C-2.1 155.4 -3.7 106.8 5.3 77.7C14.3 48.6 43.3 7.7 70.3 1.2C97.4 -5.3 146.2 15.8 167.4 38.4C188.6 60.8 206.4 109.5 197.8 136.1Z",
+  b: "M146 186.8C121.6 199.8 74.2 205.2 50.9 193.6C27.4 182 12.4 144.3 5.7 117.4C-1 90.4 -4.4 51.2 10.5 31.7C25.5 12.1 66.4 1.1 95.2 0.1C124.2 -0.8 167.1 6.8 184 26C200.9 45.1 203.1 88 196.7 114.8C190.4 141.6 170.3 173.6 146 186.8Z",
+  c: "M188.4 164.7C174.8 183 140.4 187 115.1 192C90 196.8 56.1 206.2 37.3 194.1C18.5 182.1 6.8 145.5 2.5 119.7C-1.8 93.9 -1.6 58.2 11.6 39.2C24.8 20.1 56.6 10.8 81.5 5.7C106.2 0.4 140.8 -4.8 160.1 7.9C179.3 20.6 192.3 55.7 197 81.8C201.8 108 202.1 146.4 188.4 164.7Z",
+} as const;
+
+const {
+  src,
+  alt = "",
+  sizes = "(max-width: 640px) 80vw, 420px",
+  widths = [320, 480, 640, 880],
+  loading = "lazy",
+  shape = "a",
+  ratio = "1",
+  bleed = "none",
+  bleedBy = "14%",
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><path d="${SHAPES[shape]}"/></svg>`;
+const mask = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+const sides = bleed === "none" ? [] : bleed.split("-");
+const vars = [
+  `--blob-mask: ${mask}`,
+  `--blob-ratio: ${ratio}`,
+  `--blob-bleed: ${bleedBy}`,
+  typeof style === "string" ? style : "",
+]
+  .filter(Boolean)
+  .join("; ");
+---
+
+<figure
+  class:list={["blob-media", sides.map((side) => `blob-media--bleed-${side}`), className]}
+  style={vars}
+  {...rest}
+>
+  {
+    src ? (
+      <Picture src={src} alt={alt} formats={["avif", "webp"]} widths={widths} sizes={sizes} loading={loading} />
+    ) : (
+      <slot />
+    )
+  }
+</figure>
+
+<style>
+  .blob-media {
+    position: relative;
+    margin: 0;
+    aspect-ratio: var(--blob-ratio);
+    -webkit-mask: var(--blob-mask) center / 100% 100% no-repeat;
+    mask: var(--blob-mask) center / 100% 100% no-repeat;
+  }
+
+  .blob-media :global(picture),
+  .blob-media :global(img),
+  .blob-media :global(video) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Bleed: offset past the container edge (relative offsets keep the
+     `transform`/`translate` channels free for tilts and reveals). */
+  .blob-media--bleed-top {
+    top: calc(-1 * var(--blob-bleed));
+  }
+  .blob-media--bleed-bottom {
+    top: var(--blob-bleed);
+  }
+  .blob-media--bleed-left {
+    left: calc(-1 * var(--blob-bleed));
+  }
+  .blob-media--bleed-right {
+    left: var(--blob-bleed);
+  }
+</style>

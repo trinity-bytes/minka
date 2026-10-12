@@ -6,6 +6,7 @@
  * src/styles/pages/detail.css (formerly inline styles).
  */
 import Button from "../ui/Button.astro";
+import IconChip from "../ui/IconChip.astro";
 import Modal from "../ui/Modal.astro";
 
 const METRICS = [
@@ -21,9 +22,9 @@ const METRICS = [
     {
       METRICS.map((m) => (
         <div class:list={["eco-metric", `eco-metric--${m.tone}`]}>
-          <div class="eco-icon">
-            <i class:list={["fas", m.icon]} aria-hidden="true" />
-          </div>
+          <IconChip tone={m.tone === "co2" ? "brand" : "lavender"} class="eco-icon">
+            <i class:list={["fas", m.icon]} />
+          </IconChip>
           <div class="eco-data">
             <span class="eco-value" id={m.id}>
               {m.value}

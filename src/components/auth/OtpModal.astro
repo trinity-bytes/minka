@@ -40,26 +40,15 @@ import Button from "../ui/Button.astro";
 </div>
 
 <style>
+  /* Field surface comes from the app primitives; only the code look here. */
   #otp-input {
-    padding: var(--space-12);
-    border: var(--border-ink);
-    border-radius: var(--radius-sm);
     font-size: 1.25rem;
-    text-align: center;
+    font-weight: 700;
     letter-spacing: 0.5rem;
-    font-weight: 600;
+    text-align: center;
   }
 
-  #otp-input:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
-  }
-
-  #otp-error {
-    min-height: 18px;
-    font-size: 0.85rem;
-    color: var(--color-error);
-    margin-top: var(--space-4);
+  #otp-error:empty {
+    display: none;
   }
 </style>

@@ -1,0 +1,181 @@
+---
+/**
+ * "Chip drop": flat Sticker pills that fall into a pile and settle with a
+ * small bounce, like the word pills of the landing reference. Fake physics:
+ * every resting position and tilt is precomputed (deterministic, no JS
+ * engine), the fall is a CSS keyframe with a `linear()` bounce easing and a
+ * staggered delay, and it runs once when the pile scrolls into view through
+ * the shared reveal observer (`data-reveal` -> `.is-visible`).
+ *
+ * Geometry is expressed in container-query units of the pile (`cqi`), so the
+ * whole pile, chip font size included, scales as one picture and never
+ * overflows its cell; the pile is capped at 30rem wide. It stays a real list
+ * (DOM order = drop order) so assistive tech reads the values plainly.
+ * Reduced motion shows the final pile without the fall.
+ */
+import Sticker from "../ui/Sticker.astro";
+
+type Tone = "brand" | "lavender" | "lavender-soft" | "mint" | "ink" | "paper";
+
+interface Chip {
+  label: string;
+  tone: Tone;
+  /** Resting center x, in % of the pile width. */
+  x: number;
+  /** Resting center height above the floor, in % of the pile width. */
+  y: number;
+  /** Resting tilt in degrees. */
+  r: number;
+  /** Extra spin while falling, in degrees (settles to 0). */
+  spin: number;
+}
+
+interface Props {
+  label?: string;
+  class?: string;
+}
+
+/*
+ * Precomputed pile (font-size 4cqi, chip height ~9.4cqi). Widths were
+ * measured from Inter 800 uppercase (+5% margin); each center y is the
+ * rotated half-height above whatever the chip rests on, minus a little
+ * squash, so the chips read as stacked. Horizontal extents stay within
+ * 1.6..90 and the top of the pile at ~50, under the 54cqi stage height.
+ */
+const CHIPS: Chip[] = [
+  { label: "Sostenible", tone: "ink", x: 21, y: 5.7, r: -3, spin: -24 },
+  { label: "Local", tone: "lavender", x: 54, y: 5.6, r: 4, spin: 30 },
+  { label: "Vecinal", tone: "brand", x: 82, y: 15.8, r: -76, spin: -40 },
+  { label: "Cero residuos", tone: "mint", x: 27, y: 17.3, r: 6, spin: 22 },
+  { label: "Confiable", tone: "lavender-soft", x: 64, y: 18, r: -12, spin: -28 },
+  { label: "Circular", tone: "brand", x: 24, y: 30.4, r: -10, spin: -34 },
+  { label: "Solidario", tone: "ink", x: 52, y: 32.3, r: 9, spin: 26 },
+  { label: "Sin dinero", tone: "lavender", x: 38, y: 43.8, r: -5, spin: 18 },
+];
+
+const { label = "Valores de Mink'a", class: className } = Astro.props;
+---
+
+<div class:list={["chip-drop", className]} data-reveal="chips">
+  <ul class="chip-drop__stage" role="list" aria-label={label}>
+    {
+      CHIPS.map((chip, i) => (
+        <li
+          class="chip-drop__chip"
+          style={`--x: ${chip.x}; --y: ${chip.y}; --r: ${chip.r}deg; --spin: ${chip.spin}deg; --i: ${i}`}
+        >
+          <Sticker tone={chip.tone}>{chip.label}</Sticker>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .chip-drop {
+    container-type: inline-size;
+    width: 100%;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+
+  /* The pile itself is not revealed by the global rise; its chips fall. */
+  .chip-drop[data-reveal]:not(.is-visible),
+  .chip-drop[data-reveal].is-visible {
+    opacity: 1;
+    translate: none;
+    animation: none;
+  }
+
+  .chip-drop__stage {
+    position: relative;
+    height: 54cqi;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Zero-size anchor at the chip's resting center; the fall animates it. */
+  .chip-drop__chip {
+    position: absolute;
+    left: calc(var(--x) * 1cqi);
+    bottom: calc(var(--y) * 1cqi);
+    width: 0;
+    height: 0;
+  }
+
+  .chip-drop__chip :global(.sticker) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    translate: -50% 50%;
+    --sticker-rotate: var(--r);
+    font-size: 4cqi;
+    line-height: 1.15;
+    padding: 0.6em 1.15em;
+    letter-spacing: 0.06em;
+  }
+
+  .chip-drop:not(.is-visible) .chip-drop__chip {
+    visibility: hidden;
+  }
+
+  .chip-drop.is-visible .chip-drop__chip {
+    animation: chip-fall 1100ms var(--chip-ease) calc(260ms + var(--i) * 95ms) both;
+  }
+
+  /* Gravity then two damped bounces: quadratic fall to 50%, a dip of 8%
+     of the height, then 2.5% and 0.7%. */
+  .chip-drop {
+    --chip-ease: linear(
+      0,
+      0.01 5%,
+      0.04 10%,
+      0.09 15%,
+      0.16 20%,
+      0.25 25%,
+      0.36 30%,
+      0.49 35%,
+      0.64 40%,
+      0.81 45%,
+      1 50%,
+      0.94 56.25%,
+      0.92 62.5%,
+      0.94 68.75%,
+      1 75%,
+      0.981 78.75%,
+      0.975 82.5%,
+      0.981 86.25%,
+      1 90%,
+      0.995 92.5%,
+      0.993 95%,
+      0.995 97.5%,
+      1
+    );
+  }
+
+  @supports not (animation-timing-function: linear(0, 1)) {
+    .chip-drop {
+      /* Accelerating fall that lands without a bounce. */
+      --chip-ease: cubic-bezier(0.55, 0, 0.85, 0.35);
+    }
+  }
+
+  @keyframes chip-fall {
+    from {
+      translate: 0 calc((var(--y) + 90) * -1cqi);
+      rotate: var(--spin);
+    }
+    to {
+      translate: 0 0;
+      rotate: 0deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chip-drop .chip-drop__chip {
+      visibility: visible;
+      animation: none !important;
+    }
+  }
+</style>

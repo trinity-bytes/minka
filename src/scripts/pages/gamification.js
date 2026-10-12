@@ -2,6 +2,9 @@
  * T24 - Lucero Pipa: Lógica para Gamificación y Canjes
  * Maneja puntos, insignias, ranking y catálogo de recompensas.
  */
+import { avatarTone, initials } from "../lib/avatar.js";
+import { tr } from "../lib/i18n.js";
+import { renderEmptyState } from "../lib/states.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initGamification();
@@ -193,7 +196,7 @@ function renderBadges() {
             <div class="badge-item ${isEarned ? "earned" : ""}" title="${
       badge.description
     }">
-                <div class="badge-icon">
+                <div class="badge-icon" aria-hidden="true">
                     <i class="fas ${badge.icon}"></i>
                 </div>
                 <span class="badge-name">${badge.name}</span>
@@ -225,13 +228,13 @@ function renderRewards() {
     const canAfford = MOCK_USER_DATA.points >= reward.cost;
     return `
             <div class="reward-card">
-                <div class="reward-icon"><i class="fas ${
+                <div class="reward-icon" aria-hidden="true"><i class="fas ${
                   reward.icon
                 }"></i></div>
                 <h3>${reward.name}</h3>
                 <p>${reward.description}</p>
                 <div class="reward-cost">${reward.cost} pts</div>
-                <button type="button" class="btn-redeem"
+                <button type="button" class="btn btn-primary btn-sm btn-redeem"
                     data-redeem="${reward.id}"
                     ${!canAfford ? "disabled" : ""}>
                     ${canAfford ? "Canjear" : "Puntos insuficientes"}
@@ -246,8 +249,12 @@ function renderRanking() {
   if (!container) return;
 
   if (MOCK_USER_DATA.optOutRanking) {
-    container.innerHTML =
-      '<p class="ranking-empty">Has decidido no participar en el ranking público.</p>';
+    container.innerHTML = renderEmptyState({
+      variant: "compact",
+      headingLevel: 3,
+      icon: "fa-eye-slash",
+      title: tr("ranking_opt_out", "Has decidido no participar en el ranking público"),
+    });
     return;
   }
 
@@ -256,9 +263,9 @@ function renderRanking() {
         <div class="ranking-item ${user.isMe ? "highlight" : ""}">
             <div class="ranking-position">${user.position}</div>
             <div class="ranking-user">
-                <img src="${user.avatar}" alt="${
-      user.name
-    }" class="ranking-avatar">
+                <span class="ranking-avatar ranking-avatar--${avatarTone(
+                  user.name
+                )}" aria-hidden="true">${initials(user.name)}</span>
                 <span>${user.name} ${user.isMe ? "(Tú)" : ""}</span>
             </div>
             <div class="ranking-points">${user.points} pts</div>

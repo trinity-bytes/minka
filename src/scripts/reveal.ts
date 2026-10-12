@@ -2,14 +2,25 @@
  * Reveal-on-scroll for `[data-reveal]` elements: adds `.is-visible` once the
  * element enters the viewport. With reduced motion or no IntersectionObserver
  * everything is shown immediately.
+ *
+ * Each element also receives a non-bubbling `REVEAL_EVENT` when it becomes
+ * visible, so components can start JS-driven effects (e.g. StatRing's count)
+ * off the same observer instead of creating their own.
  */
+export const REVEAL_EVENT = "reveal:visible";
+
+function show(el: Element): void {
+  el.classList.add("is-visible");
+  el.dispatchEvent(new CustomEvent(REVEAL_EVENT));
+}
+
 export function initReveal(root: ParentNode = document): void {
   const els = root.querySelectorAll<HTMLElement>("[data-reveal]");
   if (!els.length) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduceMotion || !("IntersectionObserver" in window)) {
-    els.forEach((el) => el.classList.add("is-visible"));
+    els.forEach(show);
     return;
   }
 
@@ -17,7 +28,7 @@ export function initReveal(root: ParentNode = document): void {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
+          show(entry.target);
           observer.unobserve(entry.target);
         }
       });
