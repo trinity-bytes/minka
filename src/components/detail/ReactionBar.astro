@@ -1,0 +1,225 @@
+---
+/**
+ * Listing action row (visual-language T10c-1, restyled in T10d-1 as the
+ * inline icon + text actions of a standard product page, split by thin
+ * dividers). Each button shows a short visible label (aria-hidden) and keeps
+ * its accessible name on a visually hidden span with the legacy i18n key;
+ * the visible label is always contained in that name (WCAG 2.5.3). A
+ * tooltip on hover and keyboard focus explains the action in one phrase. Escape hides a visible tooltip
+ * (WCAG 1.4.13). Owner management actions live behind "Gestionar", a
+ * disclosure menu built on scripts/menu-disclosure (focus moves in, Tab is
+ * contained, Escape / outside click close it, focus returns to the toggle).
+ *
+ * Every button keeps the id src/scripts/pages/detail.js binds; the script
+ * owns what each action does. Styles live in src/styles/pages/detail.css.
+ */
+type Tone = "brand" | "lavender" | "mint" | "neutral";
+type Reaction = {
+  id: string;
+  key: string;
+  label: string;
+  short: string;
+  icon: string;
+  tone: Tone;
+  tip: string;
+  /** i18n key prefix: detail_reaction_<name> (short label), detail_tip_<name>. */
+  name: string;
+};
+
+const EXCHANGE: Reaction[] = [
+  {
+    id: "action-share",
+    key: "common_share",
+    label: "Compartir",
+    short: "Compartir",
+    icon: "fa-share-nodes",
+    tone: "brand",
+    tip: "Compartir: envía o copia el enlace de esta publicación",
+    name: "share",
+  },
+  // T33 - Miguel Sanca: offline close (HU41)
+  {
+    id: "action-offline-close",
+    key: "detail_action_offline",
+    label: "Cierre Offline (Código)",
+    short: "Cierre offline",
+    icon: "fa-key",
+    tone: "lavender",
+    tip: "Cierre offline: confirma el intercambio con un código",
+    name: "offline",
+  },
+  {
+    id: "action-rate",
+    key: "common_rate_title",
+    label: "Calificar intercambio",
+    short: "Calificar",
+    icon: "fa-star",
+    tone: "mint",
+    tip: "Calificar: puntúa cómo fue el intercambio",
+    name: "rate",
+  },
+];
+
+const REPORT: Reaction = {
+  id: "action-report",
+  key: "detail_action_report",
+  label: "Reportar publicación",
+  short: "Reportar",
+  icon: "fa-flag",
+  tone: "neutral",
+  tip: "Reportar: avisa si algo no está bien",
+  name: "report",
+};
+
+type ManageAction = { id: string; key: string; label: string; icon: string };
+const MANAGE: ManageAction[] = [
+  { id: "action-edit", key: "detail_action_edit", label: "Editar publicación", icon: "fa-pen" },
+  { id: "action-pause", key: "detail_action_pause", label: "Pausar publicación", icon: "fa-pause" },
+  { id: "action-reserve", key: "detail_action_reserve", label: "Marcar como reservada", icon: "fa-bookmark" },
+  { id: "action-activate", key: "detail_action_resume", label: "Reanudar publicación", icon: "fa-play" },
+  { id: "action-close", key: "detail_action_close", label: "Cerrar publicación", icon: "fa-box-archive" },
+];
+const DELETE: ManageAction = {
+  id: "action-delete",
+  key: "detail_action_delete",
+  label: "Eliminar publicación",
+  icon: "fa-trash",
+};
+---
+
+<div class="reactions" role="group" aria-labelledby="reactions-title">
+  <h2 class="sr-only" id="reactions-title" data-i18n="detail_actions_title">Acciones</h2>
+  <div class="reactions__group">
+    {
+      EXCHANGE.map((r) => (
+        <div class="reaction">
+          <button
+            type="button"
+            class:list={["reaction__btn", `reaction__btn--${r.tone}`]}
+            id={r.id}
+            aria-describedby={`${r.id}-tip`}
+          >
+            <i class:list={["fas", r.icon]} aria-hidden="true" />
+            <span class="reaction__label" aria-hidden="true" data-i18n={`detail_reaction_${r.name}`}>
+              {r.short}
+            </span>
+            <span class="sr-only" data-i18n={r.key}>
+              {r.label}
+            </span>
+          </button>
+          <span class="reaction__tip" role="tooltip" id={`${r.id}-tip`} data-i18n={`detail_tip_${r.name}`}>
+            {r.tip}
+          </span>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="reactions__group reactions__group--end">
+    <div class="reaction">
+      <button
+        type="button"
+        class:list={["reaction__btn", `reaction__btn--${REPORT.tone}`]}
+        id={REPORT.id}
+        aria-describedby={`${REPORT.id}-tip`}
+      >
+        <i class:list={["fas", REPORT.icon]} aria-hidden="true"></i>
+        <span class="reaction__label" aria-hidden="true" data-i18n={`detail_reaction_${REPORT.name}`}>
+          {REPORT.short}
+        </span>
+        <span class="sr-only" data-i18n={REPORT.key}>{REPORT.label}</span>
+      </button>
+      <span class="reaction__tip" role="tooltip" id={`${REPORT.id}-tip`} data-i18n={`detail_tip_${REPORT.name}`}>
+        {REPORT.tip}
+      </span>
+    </div>
+
+    <div class="reaction reaction--menu">
+      <button
+        type="button"
+        class="reaction__btn reaction__btn--ink"
+        id="action-manage"
+        aria-expanded="false"
+        aria-controls="manage-menu"
+        aria-describedby="action-manage-tip"
+      >
+        <i class="fas fa-sliders" aria-hidden="true"></i>
+        <span class="reaction__label" aria-hidden="true" data-i18n="detail_reaction_manage">Gestionar</span>
+        <span class="sr-only" data-i18n="detail_manage_title">Gestionar publicación</span>
+      </button>
+      <span class="reaction__tip" role="tooltip" id="action-manage-tip" data-i18n="detail_tip_manage">
+        Gestionar: editar, pausar, reservar, cerrar o eliminar
+      </span>
+      <div class="manage-menu" id="manage-menu" hidden>
+        <p class="manage-menu__label" aria-hidden="true" data-i18n="detail_manage_title">Gestionar publicación</p>
+        <ul class="manage-menu__list" role="list">
+          {
+            MANAGE.map((a) => (
+              <li>
+                <button type="button" class="manage-menu__item" id={a.id}>
+                  <i class:list={["fas", a.icon]} aria-hidden="true" />
+                  <span data-i18n={a.key}>{a.label}</span>
+                </button>
+              </li>
+            ))
+          }
+          <li class="manage-menu__danger">
+            <button type="button" class="manage-menu__item manage-menu__item--danger" id={DELETE.id}>
+              <i class:list={["fas", DELETE.icon]} aria-hidden="true"></i>
+              <span data-i18n={DELETE.key}>{DELETE.label}</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { createMenu } from "../../scripts/menu-disclosure";
+
+  const bar = document.querySelector<HTMLElement>(".reactions");
+  const toggle = document.getElementById("action-manage");
+  const panel = document.getElementById("manage-menu");
+
+  if (bar && toggle && panel) {
+    const wrapper = toggle.closest(".reaction");
+    const menu = createMenu({
+      toggle,
+      panel,
+      onChange: (open) => {
+        panel.hidden = !open;
+        wrapper?.classList.toggle("is-open", open);
+      },
+    });
+
+    // Close before detail.js runs the item's action (capture phase), so a
+    // modal opened by the action records the visible toggle as its trigger
+    // and returns focus there instead of to a hidden menu item.
+    panel.addEventListener(
+      "click",
+      (event) => {
+        if ((event.target as HTMLElement).closest("button")) menu.setOpen(false, { restoreFocus: true });
+      },
+      true,
+    );
+
+    document.addEventListener("click", (event) => {
+      const target = event.target as Node;
+      if (menu.isOpen() && !panel.contains(target) && !toggle.contains(target)) menu.setOpen(false);
+    });
+
+    // Escape dismisses a visible tooltip until the pointer or focus leaves.
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      bar.querySelectorAll<HTMLElement>(".reaction").forEach((reaction) => {
+        if (reaction.matches(":hover, :focus-within")) reaction.classList.add("is-tip-dismissed");
+      });
+    });
+    bar.querySelectorAll<HTMLElement>(".reaction").forEach((reaction) => {
+      const reset = () => reaction.classList.remove("is-tip-dismissed");
+      reaction.addEventListener("mouseleave", reset);
+      reaction.addEventListener("focusout", reset);
+    });
+  }
+</script>

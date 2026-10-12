@@ -3,14 +3,24 @@
  * Maneja la carga y aplicación de traducciones en toda la web.
  */
 
+// Saved language, read at load so module scripts that render before
+// DOMContentLoaded (src/scripts/lib/i18n.js tr()) already get it.
+function readSavedLanguage() {
+  try {
+    const prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
+    return (prefs && prefs.language) || "es";
+  } catch (error) {
+    return "es";
+  }
+}
+
 const I18n = {
-  currentLang: "es",
+  currentLang: readSavedLanguage(),
   missingKeys: [], // registro silencioso; log solo con minka_debug_i18n=1
 
   init: function () {
-    // 1. Cargar preferencia guardada o detectar navegador
-    const prefs = JSON.parse(localStorage.getItem("minka_preferences") || "{}");
-    this.currentLang = prefs.language || "es";
+    // 1. Cargar preferencia guardada
+    this.currentLang = readSavedLanguage();
 
     // 2. Aplicar idioma inicial
     this.applyLanguage(this.currentLang);

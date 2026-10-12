@@ -1,7 +1,8 @@
 ---
 /**
- * Clickable sticker that fills the login form with the demo credentials
- * (`[data-demo-fill]`, handled in src/scripts/pages/auth.js).
+ * Clickable chip that fills the login form with the demo credentials
+ * (`[data-demo-fill]`, handled in src/scripts/pages/auth.js). Flat
+ * lavender-soft pill with a lavender "Demo" tag (on-lavender text).
  */
 interface Props {
   email?: string;
@@ -13,45 +14,67 @@ const { email = "demo@minka.com", password = "demo1234" } = Astro.props;
 
 <button type="button" class="demo-chip" data-demo-fill>
   <span class="demo-chip__tag">Demo</span>
-  {email} · {password}
+  <span class="demo-chip__text">{email} · {password}</span>
 </button>
 
 <style>
   .demo-chip {
-    align-self: flex-start;
+    align-self: center;
     display: inline-flex;
     align-items: center;
     gap: var(--space-8);
-    border: 2px dashed var(--color-ink);
-    background: var(--color-warning-soft);
-    color: var(--color-ink);
+    max-width: 100%;
+    min-height: 44px;
+    padding: var(--space-4) var(--space-16) var(--space-4) var(--space-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    background: var(--color-lavender-soft);
+    color: var(--color-on-lavender);
+    font-family: var(--font-primary);
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.3;
     text-align: left;
-    padding: var(--space-8) var(--space-12);
-    border-radius: var(--radius-md);
     cursor: pointer;
-    transform: rotate(-1deg);
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
+    transition: background-color var(--dur-fast) var(--ease-standard);
   }
 
   .demo-chip:hover {
-    transform: rotate(0deg) translateY(-1px);
-    box-shadow: var(--shadow-hard-sm);
+    background: color-mix(in srgb, var(--color-lavender) 55%, var(--color-lavender-soft));
+  }
+
+  .demo-chip:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
   }
 
   .demo-chip__tag {
-    background: var(--color-accent);
-    color: var(--color-on-lavender);
-    border: 1.5px solid var(--color-on-lavender);
+    flex: none;
+    padding: 6px 12px;
     border-radius: var(--radius-full);
-    padding: 1px 8px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
+    background: var(--color-lavender);
+    color: var(--color-on-lavender);
+    font-size: 0.72rem;
+    font-weight: 800;
     letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .demo-chip__text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  :global(body.high-contrast) .demo-chip,
+  :global(body.high-contrast) .demo-chip__tag {
+    background: var(--color-hc-paper);
+    color: var(--color-hc-ink);
+    outline: 2px solid var(--color-hc-ink);
+  }
+
+  @media (forced-colors: active) {
+    .demo-chip {
+      border-color: ButtonText;
+    }
   }
 </style>

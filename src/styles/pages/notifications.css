@@ -1,30 +1,38 @@
-/* T22 - Miguel Sanca: Centro de notificaciones y preferencias */
-.notifications-page {
-  background: var(--color-surface);
-}
+/* T22 - Miguel Sanca: Centro de notificaciones y preferencias
+   Visual language (T10a): white rounded cards on the tinted app background,
+   flat rows, pill filters and switches. The page title is the only serif
+   (ui/PageHead); every other heading on the page is Inter. Feed rows are
+   rendered by notifications.js as HTML strings, so these rules are global. */
 
 .notifications-main {
-  padding-bottom: var(--space-64);
+  padding-bottom: var(--space-48);
+}
+
+.notifications-main :where(h2, h3, h4) {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .notifications-layout {
-  padding: 0 0 var(--space-32);
+  padding-bottom: var(--space-24);
 }
 
-.notifications-grid {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: var(--space-20);
-  align-items: start;
-}
-
-/* Surface comes from ui/Card; this page only sets the inner padding. */
-.notifications-page .card {
+/* Surface comes from ui/Card; this page only sets the inner spacing. */
+.feed-card,
+.prefs__card {
   padding: var(--space-24);
 }
 
-.notifications-page .card__header {
+.feed-card .card__header,
+.prefs__card .card__header {
   margin-bottom: var(--space-16);
+}
+
+.feed-card h2,
+.prefs__card h2 {
+  margin: 0;
+  font-size: 1.15rem;
 }
 
 .feed-card__header {
@@ -43,164 +51,276 @@
 
 .feed-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-8);
 }
 
-.btn-sm {
-  padding: var(--space-8) var(--space-16);
-  font-size: 0.85rem;
-}
-
+/* === Filters: type pills (button group) + unread switch === */
 .feed-filters {
   display: flex;
   align-items: center;
-  gap: var(--space-12);
+  justify-content: space-between;
   flex-wrap: wrap;
-  padding-top: var(--space-12);
-  border-top: 1px solid var(--color-gray-50);
-  width: 100%;
-}
-
-.feed-filters select,
-.feed-filters input[type="checkbox"] {
-  cursor: pointer;
-}
-
-.feed-filters span {
-  color: var(--color-gray-700);
-}
-
-.notification-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
   gap: var(--space-12);
-  padding: var(--space-12);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-12);
-  background: var(--color-white);
-  margin-bottom: var(--space-12);
+}
+
+/* Inside a white card the shared white track would vanish: tint it. */
+.feed-type-filter {
+  background: var(--color-paper);
+}
+
+.feed-type-filter .pill-tabs__tab[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.feed-unread {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.feed-unread label {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+/* === Feed rows === */
+.notification-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-12) var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.notification-item + .notification-item {
+  margin-top: var(--space-4);
+}
+
+.notification-item[data-href]:hover {
+  background: var(--color-paper);
 }
 
 .notification-item.is-unread {
-  border-color: color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
-  box-shadow: var(--shadow-sm);
-  font-weight: 600;
+  background: color-mix(in srgb, var(--color-mint) 55%, var(--color-card));
 }
 
-.notification-item.is-unread::before {
-  content: "";
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  flex-shrink: 0;
-  align-self: center;
+.notification-item.is-unread[data-href]:hover {
+  background: var(--color-mint);
 }
 
+/* Icon chip by type (fills from tokens; glyph pairs are text-safe). */
 .notification-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  --notif-chip-bg: var(--color-ink);
+  --notif-chip-fg: var(--color-brand);
+  position: relative;
   display: grid;
   place-items: center;
-  font-size: 1.1rem;
-}
-
-.notification-body h4 {
-  margin: 0 0 var(--space-4);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--notif-chip-bg);
+  color: var(--notif-chip-fg);
   font-size: 1rem;
 }
 
-.notification-body p {
-  margin: 0 0 var(--space-4);
+.notification-icon--message {
+  --notif-chip-bg: var(--color-lavender);
+  --notif-chip-fg: var(--color-on-lavender);
+}
+
+.notification-icon--match {
+  --notif-chip-bg: var(--color-brand);
+  --notif-chip-fg: var(--color-on-brand);
+}
+
+.notification-icon--reminder {
+  --notif-chip-bg: var(--color-warning-soft);
+  --notif-chip-fg: var(--color-warning-ink);
+}
+
+/* Unread dot on the chip corner (the "Nuevo" badge carries the text). */
+.notification-item.is-unread .notification-icon::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--color-card);
+  border-radius: 50%;
+  background: var(--color-error);
+}
+
+.notification-body {
+  min-width: 0;
 }
 
 .notification-meta {
   display: flex;
-  gap: var(--space-8);
-  color: var(--color-gray-600);
-  font-size: 0.9rem;
   flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+  margin-bottom: 6px;
+  color: var(--color-ink-2);
+  font-size: 0.85rem;
+}
+
+.notification-title {
+  margin: 0 0 2px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-ink);
+}
+
+.notification-item.is-unread .notification-title {
+  font-weight: 800;
+}
+
+.notification-body p {
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
 .notification-actions {
   display: flex;
-  gap: var(--space-8);
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
 }
 
-.notification-actions button {
-  border: none;
-  background: transparent;
-  color: var(--color-primary);
-  cursor: pointer;
-  font-weight: 600;
+.notification-actions .btn {
+  min-height: 36px;
+  padding-inline: var(--space-12);
 }
 
-.notification-actions button:hover {
-  text-decoration: underline;
-}
-
-.prefs {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-}
-
+/* === Rail: preferences and tips === */
 .pref-toggle,
 .pref-select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-8) 0;
+  gap: var(--space-16);
+  padding: var(--space-12) 0;
   border-bottom: 1px solid var(--color-gray-50);
+}
+
+.pref-toggle:first-child {
+  padding-top: 0;
 }
 
 .pref-toggle:last-child,
 .pref-select:last-child {
+  padding-bottom: 0;
   border-bottom: none;
 }
 
-.pref-toggle input,
+.pref-toggle label,
+.pref-select label {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.pref-select {
+  flex-wrap: wrap;
+}
+
 .pref-select select {
   width: auto;
+  min-width: 10rem;
+  border-radius: var(--radius-full);
 }
 
 .tips p {
   margin: 0 0 var(--space-8);
-  color: var(--color-gray-700);
+  color: var(--color-ink-2);
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
-.empty {
-  color: var(--color-gray-600);
-  padding: var(--space-12) 0;
+.tips p:last-child {
+  margin-bottom: 0;
 }
 
-@media (max-width: 1024px) {
-  .notifications-grid {
-    grid-template-columns: 1fr;
+/* === High contrast / forced colors === */
+body.high-contrast .notification-item,
+body.high-contrast .notification-item.is-unread,
+body.high-contrast .notification-icon,
+body.high-contrast .feed-type-filter {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .notification-item.is-unread {
+  outline-width: 3px;
+}
+
+body.high-contrast .feed-type-filter .pill-tabs__tab[aria-pressed="true"] {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+body.high-contrast .notification-item.is-unread .notification-icon::after {
+  background: var(--color-hc-ink);
+}
+
+@media (forced-colors: active) {
+  .notification-item,
+  .notification-icon {
+    border: 1px solid CanvasText;
+  }
+
+  .feed-type-filter .pill-tabs__tab[aria-pressed="true"] {
+    border-color: Highlight;
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .notification-item.is-unread .notification-icon::after {
+    background: CanvasText;
   }
 }
 
+/* === Responsive === */
 @media (max-width: 768px) {
+  .feed-card,
+  .prefs__card {
+    padding: var(--space-20);
+  }
+
   .notification-item {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: var(--space-12);
   }
 
   .notification-actions {
+    grid-column: 2;
     justify-content: flex-start;
-  }
-
-  /* Folded from the legacy core/responsive.css */
-  .notification-item {
-    gap: var(--space-8);
   }
 }
 
 @media (max-width: 480px) {
-  .notification-item {
-    padding: var(--space-8);
+  .feed-card,
+  .prefs__card {
+    padding: var(--space-16);
+  }
+
+  .feed-type-filter {
+    max-width: 100%;
   }
 }

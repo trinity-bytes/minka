@@ -62,8 +62,11 @@ src/
 │                             # (auth, busqueda, home, detalle, publicar, dashboard, comunidad,
 │                             #  notificaciones, gamification, perfil, settings, chat, about)
 ├── components/
-│   ├── layout/               # BaseLayout, AppLayout, SiteHeader/Footer, AppHeader/Footer, AuthHeader
-│   ├── ui/                   # Primitivas compartidas: Button, Card, Chip, Modal, PageHead, Stat, ...
+│   ├── layout/               # BaseLayout, AppLayout (sidebar + main + rail), AppSidebar, AppTabBar,
+│                             # AppHeader, SiteHeader/Footer, AuthHeader
+│   ├── brand/                # Logotype y Logomark (SVG)
+│   ├── ui/                   # Primitivas compartidas: Button, Badge, Avatar, Card, Modal, PageHead,
+│                             # EmptyState/ErrorState/Skeleton, Sticker, BlobMedia, ...
 │   └── landing/ auth/ search/ home/ detail/ publish/ dashboard/
 │       exchange/ notifications/   # Componentes por área
 ├── assets/images/            # Imágenes optimizadas con astro:assets (AVIF/WebP + srcset)
@@ -72,9 +75,11 @@ src/
 │   ├── fonts.css             # @font-face (WOFF2)
 │   ├── global.css            # Base, utilidades y preferencias de accesibilidad
 │   ├── app.css               # Estilos compartidos del shell de la app
+│   ├── states.css            # Estados vacío / error / carga compartidos
 │   └── pages/                # Estilos por página
 ├── scripts/
 │   ├── pages/                # Comportamiento por página (módulos ES)
+│   ├── lib/                  # Helpers puros con tests (estados, i18n tr(), Q&A, búsqueda, QR, ...)
 │   ├── menu-disclosure.ts    # Menú móvil accesible (Escape, foco, focus trap)
 │   ├── reveal.ts             # Animaciones de aparición
 │   └── tokens.ts             # Colores de tokens para canvas (Chart.js)
@@ -82,10 +87,12 @@ src/
 public/                       # Copiado tal cual a dist/
 ├── favicon.ico
 └── assets/
-    ├── fonts/                # Inter y Fraunces (variables), Pacifico; todo en WOFF2
-    ├── images/               # Imágenes con URL estable usadas desde JS (items, avatares, íconos, QR)
+    ├── fonts/                # Inter y Fraunces (variables) en WOFF2
+    ├── images/               # Imágenes con URL estable usadas desde JS (items, avatares)
     └── scripts/core/         # Scripts clásicos compartidos (store, session, guard, i18n, toast, modal)
 ```
+
+Lenguaje visual (tokens, tipografía, shell de la app, primitivas y checks visuales): [docs/visual-language.md](docs/visual-language.md).
 
 <a id="tecnologias-utilizadas"></a>
 
@@ -108,6 +115,7 @@ public/                       # Copiado tal cual a dist/
    - `npm run build`: genera el sitio estático en `dist/` (incluye `404.html` y `sitemap-index.xml`).
    - `npm run preview`: sirve `dist/` para validar el build.
    - `npm run check`: revisa tipos y plantillas con `astro check`.
+   - `npm test`: tests unitarios de los helpers (`node --test`, carpeta `tests/`).
 4. **Crea una rama de trabajo:** `git checkout -b feature/nueva-seccion`
 5. **Haz commit con convenciones claras** (ej. `feat: agrega sección de preguntas frecuentes`).
 6. **Publica en GitHub Pages:** al fusionar con la rama principal, el workflow ejecuta `npm ci && npm run build` y publica `dist/` en GitHub Pages.

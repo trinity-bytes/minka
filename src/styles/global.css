@@ -123,7 +123,7 @@ label {
   top: -100%;
   left: var(--space-16);
   background: var(--color-primary-darker);
-  color: var(--color-white);
+  color: var(--color-card);
   padding: var(--space-8) var(--space-16);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   z-index: var(--z-skip-link);
@@ -230,7 +230,7 @@ label {
 }
 
 .word-reveal__words .word--key {
-  color: var(--word-key-color, var(--color-primary-ink));
+  color: var(--word-key-color, var(--color-primary));
 }
 
 [data-reveal="words"]:not(.is-visible) .word__inner {
@@ -259,10 +259,10 @@ label {
 
 @keyframes word-tint {
   from {
-    color: color-mix(in srgb, var(--word-key-color, var(--color-primary-ink)) 28%, var(--word-key-tint, #ffffff));
+    color: color-mix(in srgb, var(--word-key-color, var(--color-primary)) 28%, var(--word-key-tint, #ffffff));
   }
   to {
-    color: var(--word-key-color, var(--color-primary-ink));
+    color: var(--word-key-color, var(--color-primary));
   }
 }
 
@@ -299,7 +299,6 @@ body.high-contrast {
   --color-ink-2: var(--color-hc-ink-2);
   --color-primary: var(--color-hc-primary);
   --color-primary-dark: var(--color-hc-primary-dark);
-  --color-primary-ink: var(--color-hc-primary);
   --color-text: var(--color-hc-ink);
   --color-text-secondary: var(--color-hc-ink-2);
   --color-gray-600: var(--color-hc-ink-2);

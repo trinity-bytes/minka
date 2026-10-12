@@ -1,7 +1,8 @@
 ---
 /**
- * Signed-in home: welcome hero with quick search and impact card, featured
- * challenge and popular listings. Port of public/pages/home.html.
+ * Signed-in home: welcome title with quick search and categories, popular
+ * listings, and a right rail with the impact card and the featured
+ * challenge. Port of public/pages/home.html.
  * Logic: src/scripts/pages/home.js (guarded: requires a session).
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
@@ -9,6 +10,8 @@ import CategoryNav from "../../components/home/CategoryNav.astro";
 import ChallengeBand from "../../components/home/ChallengeBand.astro";
 import HomeSearch from "../../components/home/HomeSearch.astro";
 import ImpactCard from "../../components/home/ImpactCard.astro";
+import Skeleton from "../../components/ui/Skeleton.astro";
+import PageHead from "../../components/ui/PageHead.astro";
 import { url } from "../../lib/url";
 import "../../styles/pages/home.css";
 ---
@@ -21,23 +24,20 @@ import "../../styles/pages/home.css";
   scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
 >
   <!-- T19 - Andy Salcedo: Hero bienvenida -->
-  <section class="home-hero">
-    <div class="container home-hero__grid">
-      <div class="home-hero__content">
-        <p class="home-hero__eyebrow" data-i18n="home_welcome_eyebrow">Bienvenido de nuevo</p>
-        <h1 id="home-username" data-i18n="home_welcome_user">Hola, Mink'a user</h1>
-        <p class="home-hero__subtitle" data-i18n="home_welcome_subtitle">
-          Explora trueques populares, publica algo nuevo o revisa tus chats pendientes. Todo está
-          listo para que sigas sumando impacto.
-        </p>
-        <HomeSearch />
-        <CategoryNav />
-      </div>
-      <ImpactCard />
-    </div>
-  </section>
+  <PageHead
+    title="Hola, Mink'a user"
+    titleKey="home_welcome_user"
+    titleId="home-username"
+    eyebrow="Bienvenido de nuevo"
+    eyebrowKey="home_welcome_eyebrow"
+    subtitle="Explora trueques populares, publica algo nuevo o revisa tus chats pendientes. Todo está listo para que sigas sumando impacto."
+    subtitleKey="home_welcome_subtitle"
+  />
 
-  <ChallengeBand />
+  <div class="container home-tools">
+    <HomeSearch />
+    <CategoryNav />
+  </div>
 
   <!-- T19 - Andy Salcedo: Populares -->
   <section class="popular" aria-label="Publicaciones populares">
@@ -49,16 +49,23 @@ import "../../styles/pages/home.css";
             Basadas en reputación, cercanía y actividad reciente.
           </p>
         </div>
-        <a class="popular-head__all" href={url("pages/busqueda.html")}>
+        <a class="btn btn-ghost btn-sm popular-head__all" href={url("pages/busqueda.html")}>
           <span data-i18n="home_popular_all">Ver todas</span>
           <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </a>
       </div>
       <div class="popular-viewport">
-        <div class="popular-grid" id="popular-list"></div>
+        <div class="popular-grid" id="popular-list" aria-busy="true">
+          <Skeleton variant="card" count={3} label="Cargando publicaciones…" />
+        </div>
       </div>
     </div>
   </section>
+
+  <Fragment slot="rail">
+    <ImpactCard />
+    <ChallengeBand />
+  </Fragment>
 
   <script>
     import "../../scripts/pages/home.js";

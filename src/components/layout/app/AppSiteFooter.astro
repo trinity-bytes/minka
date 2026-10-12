@@ -1,0 +1,90 @@
+---
+/**
+ * Small print at the end of the main column on every app page: the site
+ * links and copyright that used to live in AppFooter. It sits inside <main>
+ * (after the page content and rail), pinned to the viewport bottom on short
+ * pages by the sticky-footer rules in app.css, so it is reached at
+ * the end of the scroll on every width and does not compete with the nav.
+ */
+import { SITE_LINKS } from "./nav";
+---
+
+<footer class="container app-site-footer">
+  <div class="app-site-footer__inner">
+    <nav aria-label="Enlaces del sitio">
+      <ul role="list">
+        {SITE_LINKS.map((link) => <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>)}
+      </ul>
+    </nav>
+    <p>&copy; 2025 Mink'a. Trueque con propósito.</p>
+  </div>
+</footer>
+
+<style>
+  /* .container supplies the same gutter and max width as the page sections.
+     margin-top: auto pins it to the bottom of <main> (a flex column, or the
+     last grid row on rail pages) when the page is shorter than the viewport. */
+  .app-site-footer {
+    margin-top: auto;
+    padding-top: var(--space-48);
+  }
+
+  .app-site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8) var(--space-24);
+    padding-block: var(--space-16) var(--space-24);
+    border-top: 1px solid var(--color-gray-200);
+    font-family: var(--font-primary);
+    font-size: 0.8rem;
+    color: var(--color-gray-600);
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-16);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    color: var(--color-gray-600);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  a:hover {
+    color: var(--color-ink);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  p {
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  :global(body.high-contrast) .app-site-footer__inner {
+    border-top: 2px solid var(--color-hc-ink);
+    color: var(--color-hc-ink);
+  }
+
+  :global(body.high-contrast) .app-site-footer a:focus-visible {
+    outline-color: var(--color-hc-ink);
+  }
+
+  @media print {
+    .app-site-footer {
+      display: none;
+    }
+  }
+</style>

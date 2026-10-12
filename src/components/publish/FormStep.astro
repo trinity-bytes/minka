@@ -1,0 +1,33 @@
+---
+/**
+ * One numbered section of the publish sheet (T10c-2): step marker, Inter
+ * title, optional subtitle and the fields (default slot). Sections share
+ * one white surface and are split by dividers; styles live in
+ * src/styles/pages/publish.css.
+ */
+interface Props {
+  step: number;
+  id: string;
+  title: string;
+  /** i18n key for the title (legacy I18n runtime). */
+  titleKey?: string;
+  subtitle?: string;
+  subtitleKey?: string;
+}
+
+const { step, id, title, titleKey, subtitle, subtitleKey } = Astro.props;
+const titleId = `${id}-title`;
+---
+
+<section class="sheet__step" id={id} aria-labelledby={titleId}>
+  <header class="sheet__head">
+    <span class="sheet__num" aria-hidden="true">{step}</span>
+    <div class="sheet__text">
+      <h2 id={titleId} data-i18n={titleKey}>{title}</h2>
+      {subtitle && <p data-i18n={subtitleKey}>{subtitle}</p>}
+    </div>
+  </header>
+  <div class="sheet__body">
+    <slot />
+  </div>
+</section>

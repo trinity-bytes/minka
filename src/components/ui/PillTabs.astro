@@ -1,0 +1,144 @@
+---
+/**
+ * Row of pill tabs; the current one is the dark ink pill (styles: global
+ * `.pill-tabs*` in src/styles/app.css, so it requires a page built on
+ * AppLayout). Two modes, chosen from the items:
+ *
+ *  - Links (every item has `href`): a <nav> list of links, the current one
+ *    marked with aria-current="page" (or "true" for a section parent).
+ *  - Tabs (no `href`): a real WAI-ARIA tablist. Each item names its panel
+ *    with `controls` (the id of an element carrying role="tabpanel");
+ *    Left/Right/Home/End move between tabs with automatic activation, and
+ *    the script toggles aria-selected, the roving tabindex and the panels'
+ *    `hidden`. A "pilltabs:change" event (detail: { id, controls, index })
+ *    bubbles from the tablist so pages can react.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+export interface PillTab {
+  label: string;
+  /** Link mode: destination URL. */
+  href?: string;
+  /** Tab mode: id of the controlled tabpanel. */
+  controls?: string;
+  /** Tab id; defaults to `${idPrefix}-${index}`. */
+  id?: string;
+  /** Initially selected tab / current link. */
+  current?: boolean | "page" | "true";
+  /** i18n key for the label (legacy I18n runtime). */
+  i18n?: string;
+}
+
+interface Props extends HTMLAttributes<"div"> {
+  items: PillTab[];
+  /** Accessible name of the tablist or the nav. */
+  label: string;
+  /** Prefix for generated tab ids. */
+  idPrefix?: string;
+  /** Without the white track (pills sit directly on the page). */
+  plain?: boolean;
+}
+
+const { items, label, idPrefix = "pill-tab", plain = false, class: className, ...rest } = Astro.props;
+const isLinks = items.length > 0 && items.every((item) => item.href);
+const selectedIndex = Math.max(
+  0,
+  items.findIndex((item) => item.current),
+);
+const classes = ["pill-tabs", plain && "pill-tabs--plain", className];
+---
+
+{
+  isLinks ? (
+    <nav aria-label={label} {...rest}>
+      <ul class:list={classes} role="list">
+        {items.map((item) => (
+          <li>
+            <a
+              class="pill-tabs__tab"
+              href={item.href}
+              aria-current={item.current ? (item.current === "true" ? "true" : "page") : undefined}
+              data-i18n={item.i18n}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  ) : (
+    <div class:list={classes} role="tablist" aria-label={label} data-pill-tabs {...rest}>
+      {items.map((item, index) => {
+        const selected = index === selectedIndex;
+        return (
+          <button
+            type="button"
+            class="pill-tabs__tab"
+            role="tab"
+            id={item.id ?? `${idPrefix}-${index}`}
+            aria-selected={selected ? "true" : "false"}
+            aria-controls={item.controls}
+            tabindex={selected ? 0 : -1}
+            data-i18n={item.i18n}
+          >
+            {item.label}
+          </button>
+        );
+      })}
+    </div>
+  )
+}
+
+<script>
+  import { nextTabIndex } from "../../scripts/lib/tabs.js";
+
+  function select(list: HTMLElement, tabs: HTMLElement[], index: number, focus: boolean) {
+    tabs.forEach((tab, i) => {
+      const selected = i === index;
+      tab.setAttribute("aria-selected", selected ? "true" : "false");
+      tab.tabIndex = selected ? 0 : -1;
+      const panelId = tab.getAttribute("aria-controls");
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (panel) panel.hidden = !selected;
+    });
+    const tab = tabs[index];
+    if (focus) tab.focus();
+    list.dispatchEvent(
+      new CustomEvent("pilltabs:change", {
+        bubbles: true,
+        detail: { id: tab.id, controls: tab.getAttribute("aria-controls"), index },
+      }),
+    );
+  }
+
+  function init(list: HTMLElement) {
+    if (list.dataset.pillTabsReady) return;
+    list.dataset.pillTabsReady = "true";
+    const tabs = Array.from(list.querySelectorAll<HTMLElement>('[role="tab"]'));
+
+    // Sync panels with the server-rendered selection.
+    tabs.forEach((tab) => {
+      const panelId = tab.getAttribute("aria-controls");
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (panel) panel.hidden = tab.getAttribute("aria-selected") !== "true";
+    });
+
+    list.addEventListener("click", (event) => {
+      const tab = (event.target as Element).closest<HTMLElement>('[role="tab"]');
+      const index = tab ? tabs.indexOf(tab) : -1;
+      if (index >= 0) select(list, tabs, index, false);
+    });
+
+    list.addEventListener("keydown", (event) => {
+      const current = tabs.indexOf(document.activeElement as HTMLElement);
+      if (current < 0) return;
+      const rtl = getComputedStyle(list).direction === "rtl";
+      const next = nextTabIndex(current, event.key, tabs.length, { rtl });
+      if (next < 0) return;
+      event.preventDefault();
+      select(list, tabs, next, true);
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-pill-tabs]").forEach(init);
+</script>

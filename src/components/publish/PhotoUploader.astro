@@ -5,11 +5,13 @@
  * validation live in src/scripts/pages/publish.js (#item-photos,
  * #photo-preview, #photo-error).
  */
+import IconChip from "../ui/IconChip.astro";
 ---
 
 <div class="upload-area">
   <input type="file" id="item-photos" name="photos" accept="image/*" multiple aria-describedby="photo-help" />
   <label for="item-photos" class="upload-area__label">
+    <IconChip tone="lavender"><i class="fas fa-camera"></i></IconChip>
     <span class="upload-area__title" data-i18n="publish.photos.dragDrop">Arrastra o selecciona fotos</span>
     <span class="upload-area__hint" data-i18n="publish.photos.hint">Máximo 5 imágenes · 4MB c/u</span>
   </label>

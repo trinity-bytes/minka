@@ -2,28 +2,21 @@
 /**
  * Flat, tilted pill label (solid fill, no border or shadow). Consumers can
  * position it with their own class and change the tilt through
- * `--sticker-rotate`. Legacy tones map onto the new palette:
- * green -> mint, amber -> lavender, terra -> lavender-soft (renamed in T13).
+ * `--sticker-rotate`.
  */
 import type { HTMLAttributes } from "astro/types";
 
 type Tone = "paper" | "mint" | "brand" | "lavender" | "lavender-soft" | "ink";
-type LegacyTone = "green" | "amber" | "terra";
 
 interface Props extends HTMLAttributes<"span"> {
-  tone?: Tone | LegacyTone;
-  /** Handwritten (Pacifico) variant; legacy, dropped with Pacifico in T13. */
-  hand?: boolean;
+  tone?: Tone;
   as?: "span" | "p" | "div";
 }
 
-const LEGACY: Record<LegacyTone, Tone> = { green: "mint", amber: "lavender", terra: "lavender-soft" };
-
-const { tone = "paper", hand = false, as: Tag = "span", class: className, ...rest } = Astro.props;
-const resolved = tone in LEGACY ? LEGACY[tone as LegacyTone] : (tone as Tone);
+const { tone = "paper", as: Tag = "span", class: className, ...rest } = Astro.props;
 ---
 
-<Tag class:list={["sticker", `sticker--${resolved}`, hand && "sticker--hand", className]} {...rest}>
+<Tag class:list={["sticker", `sticker--${tone}`, className]} {...rest}>
   <slot />
 </Tag>
 
@@ -66,14 +59,6 @@ const resolved = tone in LEGACY ? LEGACY[tone as LegacyTone] : (tone as Tone);
   .sticker--ink {
     --sticker-bg: var(--color-ink);
     --sticker-fg: var(--color-brand);
-  }
-
-  .sticker--hand {
-    font-family: var(--font-accent);
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-    font-size: 1rem;
   }
 
   /* Without the old ink border, high contrast needs an explicit outline. */

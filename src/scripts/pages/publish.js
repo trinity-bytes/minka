@@ -4,6 +4,10 @@
 // globals Store, Session, Toast and I18n loaded as classic scripts by
 // AppLayout. Module scripts run before DOMContentLoaded, so the listener
 // below still fires.
+import { escapeHtml } from "../lib/html.js";
+import { tr } from "../lib/i18n.js";
+import { renderErrorState, renderSkeleton } from "../lib/states.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("publish-form");
   const fileInput = document.getElementById("item-photos");
@@ -100,6 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentCode = "";
   let dynamicData = {};
   let uploadedImages = [];
+  // Bumped on every new selection so readers of a replaced batch are ignored.
+  let readGeneration = 0;
 
   // Contadores de caracteres (título y notas)
   const bindCounter = (input, counterId, max) => {
@@ -115,6 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
   bindCounter(inputRefs.notes, "notes-counter", 300);
 
   fileInput.addEventListener("change", handleFiles);
+  previewGrid.addEventListener("click", (e) => {
+    if (e.target.closest("[data-pick-photos]")) fileInput.click();
+  });
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!validateForm()) return;
@@ -281,24 +290,77 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     const limited = files.slice(0, 5);
     previewGrid.innerHTML = "";
+    previewGrid.removeAttribute("aria-busy");
     uploadedImages = [];
+    const generation = ++readGeneration;
 
     if (!limited.length) {
       previewGrid.innerHTML = '<p class="form__hint">Aún no agregas fotos.</p>';
       return;
     }
 
-    limited.forEach((file) => {
+    // One skeleton tile per photo while FileReader decodes it (large phone
+    // photos take a noticeable moment); each tile is swapped for its
+    // preview, or dropped when the file cannot be read.
+    previewGrid.setAttribute("aria-busy", "true");
+    previewGrid.innerHTML = renderSkeleton({
+      variant: "tile",
+      count: limited.length,
+      label: "Cargando fotos…",
+    });
+    const slots = Array.from(previewGrid.querySelectorAll(".skeleton"));
+    let pending = limited.length;
+    const failed = [];
+
+    const settle = () => {
+      pending -= 1;
+      if (pending > 0) return;
+      previewGrid.querySelector(".skeleton-status")?.remove();
+      previewGrid.removeAttribute("aria-busy");
+      if (failed.length) {
+        previewGrid.insertAdjacentHTML(
+          "beforeend",
+          renderErrorState({
+            variant: "compact",
+            headingLevel: 3,
+            icon: "fa-image",
+            title:
+              failed.length === 1
+                ? tr("publish_photo_error_one", "No pudimos leer una foto")
+                : tr("publish_photo_error_many", "No pudimos leer {count} fotos", {
+                    count: failed.length,
+                  }),
+            text: tr(
+              "publish_photo_error_text",
+              "{files}. Vuelve a elegirlas o prueba con otra imagen.",
+              { files: failed.join(", ") }
+            ),
+            retry: { label: tr("publish_pick_photos", "Elegir fotos"), icon: "fa-rotate-right", data: { "pick-photos": "" } },
+          })
+        );
+      }
+      checkFormValidity();
+    };
+
+    limited.forEach((file, index) => {
       const reader = new FileReader();
       reader.onload = (e) => {
+        if (generation !== readGeneration) return;
         uploadedImages.push(e.target.result);
         const card = document.createElement("div");
         card.className = "preview-card";
         card.innerHTML = `
-          <img src="${e.target.result}" alt="${file.name}" />
-          <div class="preview-card__meta">${file.name}</div>
+          <img src="${e.target.result}" alt="${escapeHtml(file.name)}" />
+          <div class="preview-card__meta">${escapeHtml(file.name)}</div>
         `;
-        previewGrid.appendChild(card);
+        slots[index].replaceWith(card);
+        settle();
+      };
+      reader.onerror = () => {
+        if (generation !== readGeneration) return;
+        failed.push(file.name);
+        slots[index].remove();
+        settle();
       };
       reader.readAsDataURL(file);
     });

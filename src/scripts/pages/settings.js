@@ -3,6 +3,8 @@
  * Maneja idioma, alto contraste, modo bajo consumo y tamaño de fuente.
  * T29 - Lucero Pipa: Configuración de privacidad y verificación.
  */
+import { tr } from "../lib/i18n.js";
+import { renderEmptyState } from "../lib/states.js";
 
 // NOTA: El diccionario de traducciones se ha movido a translations.js
 // NOTA: La lógica de i18n se ha movido a i18n.js
@@ -67,8 +69,13 @@ function loadSessions() {
   const sessions = getSessions();
 
   if (!sessions.length) {
-    sessionsList.innerHTML =
-      '<p class="text-center">No hay otras sesiones activas.</p>';
+    sessionsList.innerHTML = renderEmptyState({
+      variant: "compact",
+      headingLevel: 3,
+      icon: "fa-laptop",
+      title: tr("settings_sessions_empty_title", "No hay otras sesiones activas"),
+      text: tr("settings_sessions_empty_text", "Solo este dispositivo tiene tu cuenta abierta."),
+    });
     return;
   }
 
@@ -76,7 +83,7 @@ function loadSessions() {
     .map(
       (session) => `
     <div class="session-item" id="session-${session.id}">
-      <div class="session-icon">
+      <div class="session-icon" aria-hidden="true">
         <i class="fas ${
           session.device.includes("Mobile") || session.device.includes("iPhone")
             ? "fa-mobile-alt"
@@ -95,7 +102,7 @@ function loadSessions() {
         !session.current
           ? `
         <button type="button" class="btn-icon" data-logout-session="${session.id}" aria-label="Cerrar sesión">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       `
           : ""

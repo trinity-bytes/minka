@@ -3,16 +3,16 @@
  * Button / link-button. Renders <a> when `href` is set, <button> otherwise.
  *
  * appearance:
- *  - "sticker" (default): editorial look of the landing (ink border + hard
- *    offset shadow). Variants: paper | primary | ink.
- *  - "flat": legacy app look. Emits the global classes `btn btn-<variant>`
+ *  - "sticker" (default): landing pill (no border, soft lift on hover).
+ *    Variants: paper | primary | ink (others fall back to paper).
+ *  - "flat": app pill. Emits the global classes `btn btn-<variant>`
  *    (+ btn-small / btn-large) from src/styles/app.css, so it only renders
  *    styled on pages built on AppLayout. Variants: primary | secondary |
- *    outline (paper = outline) | ink.
+ *    outline (paper = outline) | ghost | danger | ink.
  */
 import type { HTMLAttributes } from "astro/types";
 
-type Variant = "paper" | "primary" | "ink" | "secondary" | "outline";
+type Variant = "paper" | "primary" | "ink" | "secondary" | "outline" | "ghost" | "danger";
 
 interface Props extends Omit<HTMLAttributes<"a"> & HTMLAttributes<"button">, "type"> {
   href?: string;
@@ -42,6 +42,8 @@ const FLAT_VARIANT: Record<Variant, string> = {
   secondary: "btn-secondary",
   outline: "btn-outline",
   paper: "btn-outline",
+  ghost: "btn-ghost",
+  danger: "btn-danger",
   ink: "btn-ink",
 };
 const FLAT_SIZE = { sm: "btn-small", md: false, lg: "btn-large" } as const;
@@ -89,16 +91,19 @@ const classes =
     margin-right: var(--space-8);
   }
 
-  /* === Sticker (editorial) === */
+  /* === Sticker (landing pill) ===
+     Flat since T9: the hairline carried over from the editorial theme is
+     retired (transparent border keeps the size and shows under forced
+     colors); high contrast restores a 2px black outline below. */
   .btn--sticker {
     gap: var(--space-10);
     font-weight: 800;
     color: var(--color-ink);
     background: var(--color-card);
-    border: var(--border-ink);
+    border: 1px solid transparent;
     border-radius: var(--radius-btn);
     padding: 15px 28px;
-    box-shadow: var(--shadow-hard-btn);
+    box-shadow: none;
     transition:
       transform 0.15s ease,
       box-shadow 0.15s ease,
@@ -110,18 +115,18 @@ const classes =
     /* paper variant inherits the global link hover color (legacy parity) */
     color: var(--color-primary);
     transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard-btn-hover);
+    box-shadow: var(--shadow-lift);
   }
 
   .btn--sticker:active {
     transform: translate(2px, 2px);
-    box-shadow: var(--shadow-hard-xs);
+    box-shadow: none;
   }
 
   .btn--sticker.btn--primary,
   .btn--sticker.btn--primary:hover,
   .btn--sticker.btn--primary:focus-visible {
-    background: var(--color-primary-pop);
+    background: var(--color-brand);
     color: var(--color-on-brand);
   }
 
@@ -165,7 +170,7 @@ const classes =
     position: absolute;
     width: 18px;
     height: 18px;
-    border: 2.5px solid color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
+    border: 2.5px solid color-mix(in srgb, var(--color-brand) 30%, transparent);
     border-top-color: var(--color-primary);
     border-radius: 50%;
     animation: btn-spin 0.7s linear infinite;
@@ -174,6 +179,21 @@ const classes =
   @keyframes btn-spin {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  .btn--sticker:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  :global(body.high-contrast) .btn--sticker {
+    border: var(--border-ink);
+  }
+
+  @media (forced-colors: active) {
+    .btn--sticker {
+      border-color: ButtonText;
     }
   }
 </style>

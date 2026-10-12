@@ -1,5 +1,7 @@
 // T32 - Retos Comunitarios (HU38)
 // Estado persistido en Store: { challenges: [...], joined: [ids] }
+import { tr } from "../lib/i18n.js";
+import { renderEmptyState } from "../lib/states.js";
 
 // "YYYY-MM-DD" as a local calendar date. `new Date("2025-12-15")` is parsed
 // as UTC midnight, which shows the previous day in UTC-5 (Lima).
@@ -183,13 +185,13 @@ function renderChallenges() {
   );
 
   if (filtered.length === 0) {
-    el.grid.innerHTML = `
-      <div class="empty-state challenges-empty">
-        <i class="fas fa-map-marker-alt challenges-empty__icon" aria-hidden="true"></i>
-        <h3>No hay retos activos en ${currentUser.district}</h3>
-        <p>¡Prueba seleccionando otro distrito o vuelve pronto!</p>
-      </div>
-    `;
+    el.grid.innerHTML = renderEmptyState({
+      icon: "fa-map-location-dot",
+      title: tr("community_empty_title", "No hay retos activos en {district}", {
+        district: currentUser.district,
+      }),
+      text: tr("community_empty_text", "¡Prueba seleccionando otro distrito o vuelve pronto!"),
+    });
     return;
   }
 
@@ -238,7 +240,7 @@ function renderChallenges() {
         </div>
         <div class="challenge-card__footer">
           <div class="reward-badge">
-            <i class="fas fa-trophy"></i>
+            <i class="fas fa-trophy" aria-hidden="true"></i>
             <span>${challenge.reward} (+${challenge.points} pts)</span>
           </div>
           <button class="btn btn-primary btn-sm" data-join="${challenge.id}" ${

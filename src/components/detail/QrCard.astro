@@ -1,42 +1,91 @@
 ---
 /**
- * Exchange QR card: status badge, QR image (drawn on the hidden canvas by
- * src/scripts/pages/detail.js), code text and download / share / reissue
- * actions (T33 - Miguel Sanca: reissue, HU39).
+ * Exchange pass (visual-language T10c-1; shown inside QrPassDialog, opened
+ * by "Ver pase QR" in the detail CTA row since T10d-5): a ticket-like card with a brand
+ * strip, the item title, a status pill, a real scannable QR (error
+ * correction H, Mink'a leaf in a white square at the center), a perforated
+ * divider and a stub with the code, its issue date (when the code carries
+ * one) and download / share / reissue actions (T33 - Miguel Sanca: reissue,
+ * HU39). The `strip-end` slot sits after the "Pase de intercambio" label
+ * (the dialog puts its close button there).
+ *
+ * src/scripts/pages/detail.js draws the modules into #qr-modules, places the
+ * logo through the `--qr-logo-*` custom properties on #qr-image, fills
+ * #qr-pass-item, #qr-code-text, #qr-issued and #qr-status, and renders the
+ * downloadable PNG on the hidden #qr-canvas (src/scripts/lib/qr.js).
  */
 import Button from "../ui/Button.astro";
-import CardSection from "../ui/CardSection.astro";
-import { asset } from "../../lib/url";
+import Logotype from "../brand/Logotype.astro";
+import Logomark from "../brand/Logomark.astro";
 ---
 
-<CardSection
-  class="qr-card"
-  aria-label="Código QR de la publicación"
-  title="QR de intercambio"
-  titleKey="detail_qr_title"
-  headerClass="qr-card__header"
-  bodyClass="qr-card__body"
->
-  <span slot="header-extra" class="badge" id="qr-status">Pendiente</span>
-  <img
-    id="qr-image"
-    src={asset("images/QR-generico.svg")}
-    alt="QR de la publicación"
-    width="220"
-    height="220"
-    loading="lazy"
-  />
-  <canvas id="qr-canvas" width="220" height="220" aria-hidden="true" class="qr-canvas"></canvas>
-  <p class="qr-code" id="qr-code-text">Qr generico</p>
-  <div class="qr-actions">
-    <Button appearance="flat" variant="secondary" id="qr-download" disabled data-i18n="detail_qr_download">
-      Descargar
-    </Button>
-    <Button appearance="flat" variant="secondary" id="qr-share" disabled data-i18n="common_share">
-      Compartir
-    </Button>
-    <Button appearance="flat" variant="outline" id="qr-reissue" title="Reemitir QR perdido" aria-label="Reemitir QR perdido">
-      <i class="fas fa-sync-alt" aria-hidden="true"></i>
-    </Button>
+<section class="qr-pass" id="qr-pass" aria-labelledby="qr-pass-title">
+  <div class="qr-pass__strip">
+    <Logotype tone="ink" leaf="ink" size={22} label="Mink'a" />
+    <div class="qr-pass__strip-end">
+      <span class="qr-pass__kind">Pase de intercambio</span>
+      <slot name="strip-end" />
+    </div>
   </div>
-</CardSection>
+
+  <div class="qr-pass__main">
+    <div class="qr-pass__heading">
+      <div class="qr-pass__titles">
+        <h2 id="qr-pass-title" data-i18n="detail_qr_title">QR de intercambio</h2>
+        <p class="qr-pass__item" id="qr-pass-item">Título del ítem</p>
+      </div>
+      <span class="badge" id="qr-status">Pendiente</span>
+    </div>
+
+    <div class="qr-pass__code is-empty" id="qr-image" role="img" aria-label="QR de la publicación">
+      <svg class="qr-pass__svg" id="qr-svg" viewBox="0 0 41 41" aria-hidden="true" focusable="false">
+        <rect class="qr-pass__light" width="100%" height="100%"></rect>
+        <path class="qr-pass__dark" id="qr-modules" d=""></path>
+      </svg>
+      <span class="qr-pass__logo" aria-hidden="true">
+        <Logomark tone="brand" size={28} />
+      </span>
+      <span class="qr-pass__empty" aria-hidden="true">
+        <i class="fas fa-qrcode"></i>
+      </span>
+    </div>
+    <p class="qr-pass__hint">Muéstralo en el encuentro: al escanearlo se confirma el intercambio.</p>
+  </div>
+
+  <div class="qr-pass__tear" aria-hidden="true"></div>
+
+  <div class="qr-pass__stub">
+    <dl class="qr-pass__meta">
+      <div>
+        <dt>Código</dt>
+        <dd><code class="qr-code" id="qr-code-text">Qr generico</code></dd>
+      </div>
+      <div id="qr-issued-row" hidden>
+        <dt>Emitido</dt>
+        <dd id="qr-issued"></dd>
+      </div>
+    </dl>
+    <div class="qr-actions">
+      <Button appearance="flat" variant="secondary" size="sm" id="qr-download" disabled>
+        <i class="fas fa-download" aria-hidden="true"></i>
+        <span data-i18n="detail_qr_download">Descargar</span>
+      </Button>
+      <Button appearance="flat" variant="secondary" size="sm" id="qr-share" disabled>
+        <i class="fas fa-share-nodes" aria-hidden="true"></i>
+        <span data-i18n="common_share">Compartir</span>
+      </Button>
+      <Button
+        appearance="flat"
+        variant="ghost"
+        size="sm"
+        id="qr-reissue"
+        title="Reemitir QR perdido"
+        aria-label="Reemitir QR perdido"
+      >
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
+      </Button>
+    </div>
+  </div>
+
+  <canvas id="qr-canvas" width="656" height="656" aria-hidden="true" class="qr-canvas"></canvas>
+</section>

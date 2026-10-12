@@ -8,11 +8,20 @@
  * T34 - Ronel Rojas: watermarked photos and read receipts (HU43, HU44).
  * Logic: src/scripts/pages/chat.js (guarded: requires a session). Handoff
  * from detalle: `chat.html?thread=<itemId>&owner=<ownerId>`.
+ *
+ * Visual language (T10c-3): one standard two-pane messaging surface (white,
+ * panes joined by a hairline) that fills the main column (footer={false}).
+ * List pane: page h1 + search field + conversation rows (avatar, name, time,
+ * listing, last message, unread pill). Conversation pane: header (avatar,
+ * name h2, listing + meta, icon actions), message area on the tinted
+ * background, quick replies, a "+" extras panel (photo, location, meeting
+ * points) and the composer bar. Phones show one pane at a time
+ * (`.chat-shell.is-thread-open`, toggled by chat.js; #btn-back returns).
  */
 import AppLayout from "../../components/layout/AppLayout.astro";
-import Button from "../../components/ui/Button.astro";
 import RatingModal from "../../components/exchange/RatingModal.astro";
 import ReportModal from "../../components/exchange/ReportModal.astro";
+import Skeleton from "../../components/ui/Skeleton.astro";
 import "../../styles/pages/chat.css";
 ---
 
@@ -24,110 +33,138 @@ import "../../styles/pages/chat.css";
   footer={false}
   scripts={["translations", "i18n", "session", "store", "modal", "toast", "guard", "notif-badge"]}
 >
-  <section class="container chat-shell" aria-label="Mensajes">
-    <aside class="threads" aria-label="Conversaciones">
-      <div class="threads__header">
-        <h2 data-i18n="nav_chats">Chats</h2>
-      </div>
-      <ul class="thread-list" id="thread-list"></ul>
-    </aside>
-
-    <section class="conversation" aria-label="Conversación seleccionada">
-      <header class="conversation__header">
-        <button
-          type="button"
-          class="icon-btn conversation__back"
-          id="btn-back"
-          aria-label="Volver a la lista de chats"
-        >
-          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-        </button>
-        <div class="conversation__info">
-          <p class="conversation__eyebrow" id="conv-item">Publicación</p>
-          <h3 id="conv-user">Usuario</h3>
-          <p class="conversation__meta" id="conv-meta">Ubicación · Reputación</p>
+  <div class="container chat-frame">
+    <section class="chat-shell" aria-label="Mensajes">
+      <aside class="threads" aria-label="Conversaciones">
+        <div class="threads__header">
+          <h1 data-i18n="nav_chats">Chats</h1>
+          <div class="threads__search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="thread-search"
+              placeholder="Buscar conversación"
+              aria-label="Buscar conversación"
+              autocomplete="off"
+            />
+          </div>
         </div>
-        <div class="conversation__actions">
+        <ul class="thread-list" id="thread-list" aria-busy="true">
+          <Skeleton variant="row" count={5} label="Cargando conversaciones…" tag="li" />
+        </ul>
+      </aside>
+
+      <section class="conversation" aria-label="Conversación seleccionada">
+        <header class="conversation__header">
           <button
-            class="icon-btn"
             type="button"
-            id="btn-mute"
-            title="Silenciar"
-            aria-label="Silenciar conversación"
+            class="icon-btn icon-btn--plain conversation__back"
+            id="btn-back"
+            aria-label="Volver a la lista de chats"
           >
-            <i class="fa-solid fa-bell-slash"></i>
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
           </button>
-          <button
-            class="icon-btn"
-            type="button"
-            id="btn-report"
-            title="Reportar"
-            aria-label="Reportar usuario"
-          >
-            <i class="fa-solid fa-flag" aria-hidden="true"></i>
-          </button>
-          <Button appearance="flat" variant="primary" class="btn-rate" id="btn-rate">
-            <i class="fa-solid fa-star" aria-hidden="true"></i>
-            <span class="btn-rate__label">Calificar</span>
-          </Button>
+          <span class="chat-avatar chat-avatar--mint chat-avatar--md" id="conv-avatar" aria-hidden="true">U</span>
+          <div class="conversation__info">
+            <h2 id="conv-user">Usuario</h2>
+            <p class="conversation__eyebrow" id="conv-item">Publicación</p>
+            <p class="conversation__meta" id="conv-meta">Ubicación · Reputación</p>
+          </div>
+          <div class="conversation__actions">
+            <button
+              class="icon-btn icon-btn--plain"
+              type="button"
+              id="btn-mute"
+              title="Silenciar"
+              aria-label="Silenciar conversación"
+            >
+              <i class="fa-solid fa-bell-slash" aria-hidden="true"></i>
+            </button>
+            <button
+              class="icon-btn icon-btn--plain"
+              type="button"
+              id="btn-report"
+              title="Reportar"
+              aria-label="Reportar usuario"
+            >
+              <i class="fa-solid fa-flag" aria-hidden="true"></i>
+            </button>
+            <button class="icon-btn icon-btn--plain btn-rate" type="button" id="btn-rate" title="Calificar">
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              <span class="sr-only">Calificar</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="messages" id="messages" aria-live="polite"></div>
+
+        <!-- T34 - Ronel Rojas: Indicador de tipeo (HU44) -->
+        <div id="typing-indicator" class="typing-indicator hidden">
+          <span>Escribiendo...</span>
         </div>
-      </header>
 
-      <div class="messages" id="messages" aria-live="polite"></div>
+        <div class="conversation__footer">
+          <div class="templates" role="group" aria-label="Respuestas rápidas">
+            <div class="template-list" id="template-list"></div>
+          </div>
 
-      <!-- T34 - Ronel Rojas: Indicador de tipeo (HU44) -->
-      <div id="typing-indicator" class="typing-indicator hidden">
-        <span>Escribiendo...</span>
-      </div>
+          <form class="composer" id="composer" aria-label="Enviar mensaje">
+            <button
+              type="button"
+              class="icon-btn composer__more"
+              id="btn-extras"
+              aria-expanded="false"
+              aria-controls="chat-extras"
+              aria-label="Más opciones: foto, ubicación y puntos de encuentro"
+              title="Más opciones"
+            >
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </button>
+            <div class="conversation__extras" id="chat-extras" hidden>
+              <div class="extras__actions">
+                <!-- T34 - Ronel Rojas: Adjuntar foto (HU43) -->
+                <button type="button" class="extras__action" id="btn-attach-photo" title="Adjuntar foto">
+                  <span class="extras__icon extras__icon--lavender" aria-hidden="true"><i class="fa-solid fa-camera"></i></span>
+                  <span>Adjuntar foto</span>
+                </button>
+                <!-- T31 - Andy Salcedo: Compartir ubicación (HU45) -->
+                <button
+                  type="button"
+                  class="extras__action"
+                  id="btn-share-location"
+                  title="Compartir ubicación en tiempo real"
+                >
+                  <span class="extras__icon extras__icon--mint" aria-hidden="true"><i class="fa-solid fa-location-crosshairs"></i></span>
+                  <span>Compartir ubicación</span>
+                </button>
+              </div>
+              <div class="meeting">
+                <p class="meeting__title">
+                  <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                  <span data-i18n="chat_meeting_title">Puntos de encuentro sugeridos</span>
+                </p>
+                <div class="meeting__chips" id="meeting-list"></div>
+              </div>
+            </div>
+            <input type="file" id="file-input" accept="image/*" hidden />
 
-      <div class="conversation__extras">
-        <details class="meeting">
-          <summary>
-            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-            <span data-i18n="chat_meeting_title">Puntos de encuentro sugeridos</span>
-          </summary>
-          <div class="meeting__chips" id="meeting-list"></div>
-        </details>
-        <div class="templates" aria-label="Respuestas rápidas">
-          <div class="template-list" id="template-list"></div>
+            <input
+              type="text"
+              id="composer-input"
+              placeholder="Escribe un mensaje"
+              aria-label="Escribe un mensaje"
+              autocomplete="off"
+              required
+            />
+            <button type="submit" class="icon-btn composer__send" title="Enviar">
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+              <span class="sr-only" data-i18n="common_send">Enviar</span>
+            </button>
+          </form>
         </div>
-      </div>
-
-      <form class="composer" id="composer" aria-label="Enviar mensaje">
-        <!-- T31 - Andy Salcedo: Compartir ubicación (HU45) -->
-        <button
-          type="button"
-          class="icon-btn"
-          id="btn-share-location"
-          title="Compartir ubicación en tiempo real"
-          aria-label="Compartir ubicación en tiempo real"
-        >
-          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-        </button>
-        <!-- T34 - Ronel Rojas: Adjuntar foto (HU43) -->
-        <button
-          type="button"
-          class="icon-btn"
-          id="btn-attach-photo"
-          title="Adjuntar foto"
-          aria-label="Adjuntar foto"
-        >
-          <i class="fa-solid fa-camera" aria-hidden="true"></i>
-        </button>
-        <input type="file" id="file-input" accept="image/*" hidden />
-
-        <input
-          type="text"
-          id="composer-input"
-          placeholder="Escribe un mensaje"
-          aria-label="Escribe un mensaje"
-          autocomplete="off"
-          required
-        />
-        <Button appearance="flat" variant="primary" type="submit" data-i18n="common_send">Enviar</Button>
-      </form>
+      </section>
     </section>
-  </section>
+  </div>
 
   <Fragment slot="after-main">
     <ReportModal subject="user" />

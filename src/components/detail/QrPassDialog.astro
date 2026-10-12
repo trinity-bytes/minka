@@ -1,0 +1,28 @@
+---
+/**
+ * Exchange pass dialog (visual-language T10d-5): the "Ver pase QR" button in
+ * the detail CTA row (#qr-pass-open) opens the ticket (QrCard) in a native
+ * <dialog> with showModal(). The dialog itself is transparent: the ticket is
+ * the only surface, and its close button (#qr-dialog-close) sits in the
+ * ticket's brand strip. The dialog is labelled by the ticket title
+ * (#qr-pass-title); src/scripts/pages/detail.js wires the trigger, the close
+ * button, the backdrop click and returns focus to the trigger on close.
+ * Escape is native. Styles: .qr-dialog* in src/styles/pages/detail.css.
+ *
+ * The QR is drawn into the dialog's SVG on page load, so it is ready (and
+ * scannable) the moment the dialog opens.
+ */
+import QrCard from "./QrCard.astro";
+---
+
+<dialog class="qr-dialog" id="qr-dialog" aria-labelledby="qr-pass-title">
+  <!-- The panel fills the dialog box, so only a click on the backdrop has
+       the dialog itself as its target. -->
+  <div class="qr-dialog__panel">
+    <QrCard>
+      <button slot="strip-end" class="qr-dialog__close" type="button" id="qr-dialog-close" aria-label="Cerrar">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </QrCard>
+  </div>
+</dialog>

@@ -1,139 +1,215 @@
 /* T14 - Ronel Rojas: Estilos de publicación */
 /* T23 - Ronel Rojas: Switch toggle (now in app.css) y campos dinámicos */
-/* Global (not scoped) on purpose: src/scripts/pages/publish.js renders the
-   dynamic fields and photo previews as HTML strings. Card surfaces come
-   from the Card component. Folds the publish overrides of the legacy
-   core/responsive.css. Dropped from the legacy sheet: the QR card rules
-   (the QR UI moved to the detail page long ago; nothing here renders it),
-   which were the last use of Nunito (--font-secondary) on this page. The
-   legacy page also loaded pages/home.css; none of its selectors match. */
-.publish-page {
-  background: var(--color-surface);
-}
+/* Visual language (T10b-2, T10c-2): two zones with distinct roles. The
+   form is one white sheet with numbered steps split by dividers (fields
+   and switch from the app primitives, pill delivery mode chips, a dashed
+   photo drop area); the side panel previews the listing and holds the
+   actions, "Publicar" being the only primary button. Since T10d-3 the
+   panel is a neutral white card with a hairline border (the mint tint read
+   as a second green zone), the same neutral as the detalle panel. The page
+   title is the only serif (ui/PageHead); every other heading is Inter.
+   Global (not scoped) on purpose: publish.js renders the dynamic fields
+   and photo previews as HTML strings. */
 
-.publish-main {
-  padding-bottom: var(--space-64);
-}
-
-.publish-layout {
-  padding: 0 0 var(--space-32);
+.publish-main :where(h2, h3, h4) {
+  font-family: var(--font-primary);
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .publish-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--space-24);
+  grid-template-columns: minmax(0, 1.8fr) minmax(18rem, 1fr);
+  gap: var(--space-32);
   align-items: start;
 }
 
+/* === Form sheet: one white surface, numbered steps === */
 .publish-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-24);
-}
-
-.publish-card {
-  overflow: hidden;
-}
-
-.card__header {
-  padding: var(--space-24) var(--space-24) 0;
-}
-
-.card__header h2 {
-  margin-bottom: var(--space-8);
-}
-
-.card__header p {
-  margin-bottom: 0;
-}
-
-.card__body {
-  padding: var(--space-16) var(--space-24) var(--space-24);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-}
-
-.form__row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-16);
-}
-
-.form__group--inline {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-}
-
-.inline-label {
-  margin-bottom: 0;
-}
-
-.dynamic-field {
-  padding: var(--space-12);
-  border: 1px dashed var(--color-gray-100);
-  border-radius: var(--space-12);
+  min-width: 0;
+  border-radius: var(--radius-card);
   background: var(--color-card);
 }
 
-.form__hint--title {
-  font-weight: 700;
-  color: var(--color-secondary-dark);
-  margin-bottom: var(--space-8);
+.sheet__step {
+  margin: 0 var(--space-32);
+  padding: var(--space-32) 0;
 }
 
-/* === Delivery mode checkboxes (legacy .chip-group/.chip, renamed so they
-   cannot collide with the ui/Chip component) === */
-.mode-group {
+.sheet__step + .sheet__step {
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.sheet__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-16);
+  margin-bottom: var(--space-24);
+}
+
+.sheet__num {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-mint);
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.sheet__text {
+  min-width: 0;
+  padding-top: 5px;
+}
+
+.sheet__text h2 {
+  margin: 0 0 var(--space-4);
+  font-size: 1.15rem;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.sheet__text p {
+  margin: 0;
+  color: var(--color-ink-2);
+  font-size: 0.92rem;
+}
+
+.sheet__body {
   display: flex;
   flex-direction: column;
+  gap: var(--space-16);
+}
+
+.publish-form .form__group > * {
+  margin: 0;
+}
+
+.publish-form .form__error:empty,
+.summary-actions .form__success:empty {
+  display: none;
+}
+
+.publish-form .form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--space-16);
+}
+
+/* Reservation switch beside its label. */
+.reserve-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-12);
+  min-height: 44px;
+}
+
+.inline-label {
+  margin: 0;
+}
+
+#dynamic-fields:empty {
+  display: none;
+}
+
+.dynamic-field {
+  padding: var(--space-16);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
+}
+
+.form__hint--title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+/* === Delivery mode: pill checkbox chips (legacy .chip-group/.chip,
+   renamed so they cannot collide with ui/Chip). The native checkbox stays
+   focusable and announced; the chip shows its state. === */
+.mode-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
 }
 
 .mode-chip {
-  display: flex;
-  width: 100%;
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-12);
-  border: 1px solid var(--color-gray-100);
-  border-radius: var(--space-8);
-  background: var(--color-white);
-  box-shadow: var(--shadow-sm);
+  gap: var(--space-8);
+  min-height: 44px;
+  padding: var(--space-8) var(--space-16);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-full);
+  background: var(--color-card);
+  color: var(--color-ink);
+  font-size: 0.92rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.95rem;
-  font-weight: 500;
+  transition: background-color var(--dur-fast) var(--ease-standard);
 }
 
 .mode-chip input {
-  width: auto;
-  padding: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
-  accent-color: var(--color-primary);
-  flex-shrink: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.mode-chip span {
-  flex: 1;
-  white-space: nowrap;
+.mode-chip__check {
+  display: none;
+  font-size: 0.8rem;
 }
 
 .mode-chip:hover {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-md);
+  background: var(--color-paper);
+}
+
+.mode-chip:has(input:checked) {
+  border-color: transparent;
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.mode-chip:has(input:checked) .mode-chip__check {
+  display: inline;
+}
+
+.mode-chip:has(input:focus-visible) {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
 }
 
 /* === Photos === */
 .upload-area {
   position: relative;
-  border: 2px dashed var(--color-gray-100);
-  border-radius: var(--space-16);
-  padding: var(--space-24);
-  background: var(--color-card);
+  padding: var(--space-32) var(--space-24);
+  border: 2px dashed var(--color-gray-300);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
   text-align: center;
+  transition:
+    border-color var(--dur-fast) var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard);
+}
+
+.upload-area:hover {
+  border-color: var(--color-ink-2);
+  background: var(--color-paper-2);
+}
+
+.upload-area:has(input:focus-visible) {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
 }
 
 .upload-area input[type="file"] {
@@ -146,113 +222,271 @@
 .upload-area__label {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--space-8);
-  color: var(--color-secondary-dark);
+  margin: 0;
+  color: var(--color-ink);
   cursor: pointer;
 }
 
 .upload-area__title {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .upload-area__hint {
-  color: var(--color-gray-600);
-  font-size: 0.95rem;
+  color: var(--color-ink-2);
+  font-size: 0.9rem;
+}
+
+.upload-area .form__hint {
+  margin: var(--space-8) 0 0;
 }
 
 .preview-grid {
-  margin-top: var(--space-16);
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
   gap: var(--space-12);
+}
+
+.preview-grid:empty {
+  display: none;
 }
 
 .preview-card {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-50);
-  border-radius: var(--space-12);
+  --tile-pad: 6px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  padding: var(--tile-pad);
+  border-radius: var(--radius-lg);
+  background: var(--color-paper);
 }
 
 .preview-card img {
+  display: block;
   width: 100%;
   height: 120px;
+  border-radius: calc(var(--radius-lg) - var(--tile-pad));
   object-fit: cover;
-  display: block;
 }
 
 .preview-card__meta {
-  padding: var(--space-8) var(--space-12);
-  font-size: 0.85rem;
-  color: var(--color-gray-600);
+  padding: var(--space-8) var(--space-4) var(--space-4);
+  overflow: hidden;
+  color: var(--color-ink-2);
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.form__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-12);
-  align-items: center;
-}
-
-/* === Summary === */
+/* === Side panel: listing preview + actions (neutral, T10d-3) === */
 .publish-summary {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  min-width: 0;
+  padding: var(--space-8) var(--space-24) var(--space-24);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-card);
+}
+
+/* Sticky only when the whole panel fits the viewport. */
+@media (min-width: 1025px) and (min-height: 760px) {
+  .publish-summary {
+    position: sticky;
+    top: var(--space-24);
+  }
 }
 
 .summary-card {
-  background: var(--color-white);
-  border-radius: var(--space-16);
-  border: 1px solid var(--color-gray-50);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-20);
+  padding: var(--space-16) 0 var(--space-24);
 }
 
-.summary-card h3 {
-  margin-bottom: var(--space-8);
+.publish-main .summary-card__label {
+  margin: 0 0 var(--space-12);
+  color: var(--color-ink-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Outlined tile that reads like the future listing card (the panel is
+   already white, so the tile is drawn by its hairline). */
+.summary-preview {
+  padding: var(--space-16) var(--space-20) var(--space-8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+}
+
+.summary-preview__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.summary-preview__title strong {
+  color: var(--color-ink-2);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.summary-preview__title span {
+  color: var(--color-ink);
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .summary-list {
-  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-  color: var(--color-gray-800);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summary-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-12);
+  padding: var(--space-10) 0;
+  color: var(--color-ink);
+  font-size: 0.92rem;
+}
+
+.summary-list li + li {
+  border-top: 1px solid var(--color-gray-100);
 }
 
 .summary-list strong {
-  color: var(--color-secondary-dark);
+  flex: none;
+  color: var(--color-ink-2);
+  font-weight: 600;
+}
+
+.summary-list span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+  text-align: right;
+}
+
+.summary-card__hint {
+  margin: var(--space-16) 0 0;
+  color: var(--color-ink-2);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.summary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding-top: var(--space-24);
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+}
+
+.summary-actions .btn {
+  width: 100%;
+}
+
+.summary-actions .form__success {
+  margin: 0;
 }
 
 @media (max-width: 1024px) {
   .publish-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-24);
   }
+}
 
-  .form__actions {
-    flex-direction: column;
-    align-items: stretch;
+/* Stacked under the sheet on tablets: preview and actions side by side so
+   the buttons do not stretch across the whole panel. */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .publish-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+    column-gap: var(--space-24);
+    padding-block: var(--space-8) var(--space-24);
   }
 
   .summary-card {
-    position: relative;
+    padding-bottom: 0;
+  }
+
+  .summary-actions {
+    align-self: end;
+    padding-top: 0;
+    border-top: 0;
   }
 }
 
 @media (max-width: 768px) {
-  .form__row {
-    grid-template-columns: 1fr;
+  .publish-form .form__row {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .publish-form {
-    padding: var(--space-16);
+  .sheet__step {
+    margin: 0 var(--space-20);
+    padding: var(--space-24) 0;
+  }
+
+  .sheet__head {
+    gap: var(--space-12);
+    margin-bottom: var(--space-20);
+  }
+
+  .publish-summary {
+    padding: var(--space-4) var(--space-20) var(--space-20);
   }
 }
 
-@media (max-width: 480px) {
-  .publish-form {
-    padding: var(--space-12);
+/* === High contrast / forced colors === */
+body.high-contrast .publish-form,
+body.high-contrast .publish-summary,
+body.high-contrast .summary-preview,
+body.high-contrast .dynamic-field,
+body.high-contrast .upload-area,
+body.high-contrast .preview-card,
+body.high-contrast .mode-chip,
+body.high-contrast .sheet__num {
+  background: var(--color-hc-paper);
+  color: var(--color-hc-ink);
+  outline: 2px solid var(--color-hc-ink);
+}
+
+body.high-contrast .summary-card__label,
+body.high-contrast .summary-card__hint,
+body.high-contrast .summary-list strong,
+body.high-contrast .summary-preview__title strong {
+  color: var(--color-hc-ink);
+}
+
+body.high-contrast .mode-chip:has(input:checked) {
+  background: var(--color-hc-ink);
+  color: var(--color-hc-paper);
+}
+
+@media (forced-colors: active) {
+  .publish-form,
+  .publish-summary,
+  .summary-preview,
+  .dynamic-field,
+  .preview-card,
+  .mode-chip,
+  .sheet__num {
+    border: 1px solid CanvasText;
+  }
+
+  .mode-chip:has(input:checked) {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
   }
 }
