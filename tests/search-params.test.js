@@ -83,3 +83,15 @@ test("resultsSummary echoes the count and the query", () => {
   assert.equal(resultsSummary(1, ""), "1 resultado");
   assert.equal(resultsSummary(6, "bici"), "6 resultados para “bici”");
 });
+
+test("resultsSummary translates through the given tr()", () => {
+  const en = {
+    search_summary_one: "{count} result",
+    search_summary_other: "{count} results",
+    search_summary_query: "{summary} for “{query}”",
+  };
+  const tr = (key, fallback, vars) =>
+    (en[key] ?? fallback).replace(/\{(\w+)\}/g, (m, name) => (name in vars ? String(vars[name]) : m));
+  assert.equal(resultsSummary(1, "", tr), "1 result");
+  assert.equal(resultsSummary(6, "bici", tr), "6 results for “bici”");
+});

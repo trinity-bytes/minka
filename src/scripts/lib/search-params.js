@@ -108,13 +108,22 @@ export function buildSearchUrl(base, query, chipIds) {
   return qs ? `${base}?${qs}` : base;
 }
 
+/** Spanish-only translator: fills `{name}` placeholders in the fallback. */
+const spanish = (_key, fallback, vars = {}) =>
+  fallback.replace(/\{(\w+)\}/g, (match, name) => (name in vars ? String(vars[name]) : match));
+
 /**
  * "6 resultados para “bici”": the result count line of the search summary.
  * @param {number} count
  * @param {string} query
+ * @param {(key: string, fallback: string, vars?: object) => string} [tr]
+ *   translator, e.g. tr() from ./i18n.js (defaults to Spanish)
  */
-export function resultsSummary(count, query) {
-  const noun = count === 1 ? "resultado" : "resultados";
+export function resultsSummary(count, query, tr = spanish) {
+  const summary =
+    count === 1
+      ? tr("search_summary_one", "{count} resultado", { count })
+      : tr("search_summary_other", "{count} resultados", { count });
   const q = (query ?? "").trim();
-  return q ? `${count} ${noun} para “${q}”` : `${count} ${noun}`;
+  return q ? tr("search_summary_query", "{summary} para “{query}”", { summary, query: q }) : summary;
 }

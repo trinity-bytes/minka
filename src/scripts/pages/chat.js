@@ -6,6 +6,7 @@
 // scripts, with the DOM parsed. Globals used: Store, Modal.
 import { token, withAlpha } from "../tokens";
 import { avatarTone, formatCount, initials } from "../lib/avatar.js";
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState } from "../lib/states.js";
 import {
   filterThreads,
@@ -204,10 +205,12 @@ function renderThreads() {
       headingLevel: 2,
       icon: searching ? "fa-magnifying-glass" : "fa-comments",
       title: searching
-        ? "No hay conversaciones que coincidan"
-        : "Todavía no tienes conversaciones",
-      text: searching ? "Prueba con otro nombre o publicación." : "Escribe a un vecino desde una publicación.",
-      actions: searching ? [{ label: "Borrar búsqueda", variant: "ghost", data: { "clear-search": "" } }] : [],
+        ? tr("chat_empty_search_title", "No hay conversaciones que coincidan")
+        : tr("chat_empty_title", "Todavía no tienes conversaciones"),
+      text: searching
+        ? tr("chat_empty_search_text", "Prueba con otro nombre o publicación.")
+        : tr("chat_empty_text", "Escribe a un vecino desde una publicación."),
+      actions: searching ? [{ label: tr("chat_clear_search", "Borrar búsqueda"), variant: "ghost", data: { "clear-search": "" } }] : [],
     })}</li>`;
     return;
   }

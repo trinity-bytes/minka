@@ -14,7 +14,17 @@
  * owns what each action does. Styles live in src/styles/pages/detail.css.
  */
 type Tone = "brand" | "lavender" | "mint" | "neutral";
-type Reaction = { id: string; key: string; label: string; short: string; icon: string; tone: Tone; tip: string };
+type Reaction = {
+  id: string;
+  key: string;
+  label: string;
+  short: string;
+  icon: string;
+  tone: Tone;
+  tip: string;
+  /** i18n key prefix: detail_reaction_<name> (short label), detail_tip_<name>. */
+  name: string;
+};
 
 const EXCHANGE: Reaction[] = [
   {
@@ -25,6 +35,7 @@ const EXCHANGE: Reaction[] = [
     icon: "fa-share-nodes",
     tone: "brand",
     tip: "Compartir: envía o copia el enlace de esta publicación",
+    name: "share",
   },
   // T33 - Miguel Sanca: offline close (HU41)
   {
@@ -35,6 +46,7 @@ const EXCHANGE: Reaction[] = [
     icon: "fa-key",
     tone: "lavender",
     tip: "Cierre offline: confirma el intercambio con un código",
+    name: "offline",
   },
   {
     id: "action-rate",
@@ -44,6 +56,7 @@ const EXCHANGE: Reaction[] = [
     icon: "fa-star",
     tone: "mint",
     tip: "Calificar: puntúa cómo fue el intercambio",
+    name: "rate",
   },
 ];
 
@@ -55,6 +68,7 @@ const REPORT: Reaction = {
   icon: "fa-flag",
   tone: "neutral",
   tip: "Reportar: avisa si algo no está bien",
+  name: "report",
 };
 
 type ManageAction = { id: string; key: string; label: string; icon: string };
@@ -86,14 +100,14 @@ const DELETE: ManageAction = {
             aria-describedby={`${r.id}-tip`}
           >
             <i class:list={["fas", r.icon]} aria-hidden="true" />
-            <span class="reaction__label" aria-hidden="true">
+            <span class="reaction__label" aria-hidden="true" data-i18n={`detail_reaction_${r.name}`}>
               {r.short}
             </span>
             <span class="sr-only" data-i18n={r.key}>
               {r.label}
             </span>
           </button>
-          <span class="reaction__tip" role="tooltip" id={`${r.id}-tip`}>
+          <span class="reaction__tip" role="tooltip" id={`${r.id}-tip`} data-i18n={`detail_tip_${r.name}`}>
             {r.tip}
           </span>
         </div>
@@ -110,10 +124,14 @@ const DELETE: ManageAction = {
         aria-describedby={`${REPORT.id}-tip`}
       >
         <i class:list={["fas", REPORT.icon]} aria-hidden="true"></i>
-        <span class="reaction__label" aria-hidden="true">{REPORT.short}</span>
+        <span class="reaction__label" aria-hidden="true" data-i18n={`detail_reaction_${REPORT.name}`}>
+          {REPORT.short}
+        </span>
         <span class="sr-only" data-i18n={REPORT.key}>{REPORT.label}</span>
       </button>
-      <span class="reaction__tip" role="tooltip" id={`${REPORT.id}-tip`}>{REPORT.tip}</span>
+      <span class="reaction__tip" role="tooltip" id={`${REPORT.id}-tip`} data-i18n={`detail_tip_${REPORT.name}`}>
+        {REPORT.tip}
+      </span>
     </div>
 
     <div class="reaction reaction--menu">
@@ -126,14 +144,14 @@ const DELETE: ManageAction = {
         aria-describedby="action-manage-tip"
       >
         <i class="fas fa-sliders" aria-hidden="true"></i>
-        <span class="reaction__label" aria-hidden="true">Gestionar</span>
-        <span class="sr-only">Gestionar publicación</span>
+        <span class="reaction__label" aria-hidden="true" data-i18n="detail_reaction_manage">Gestionar</span>
+        <span class="sr-only" data-i18n="detail_manage_title">Gestionar publicación</span>
       </button>
-      <span class="reaction__tip" role="tooltip" id="action-manage-tip">
+      <span class="reaction__tip" role="tooltip" id="action-manage-tip" data-i18n="detail_tip_manage">
         Gestionar: editar, pausar, reservar, cerrar o eliminar
       </span>
       <div class="manage-menu" id="manage-menu" hidden>
-        <p class="manage-menu__label" aria-hidden="true">Gestionar publicación</p>
+        <p class="manage-menu__label" aria-hidden="true" data-i18n="detail_manage_title">Gestionar publicación</p>
         <ul class="manage-menu__list" role="list">
           {
             MANAGE.map((a) => (

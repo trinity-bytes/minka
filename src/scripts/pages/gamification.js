@@ -3,6 +3,7 @@
  * Maneja puntos, insignias, ranking y catálogo de recompensas.
  */
 import { avatarTone, initials } from "../lib/avatar.js";
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState } from "../lib/states.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -252,7 +253,7 @@ function renderRanking() {
       variant: "compact",
       headingLevel: 3,
       icon: "fa-eye-slash",
-      title: "Has decidido no participar en el ranking público",
+      title: tr("ranking_opt_out", "Has decidido no participar en el ranking público"),
     });
     return;
   }

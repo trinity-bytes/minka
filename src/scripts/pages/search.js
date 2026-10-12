@@ -4,6 +4,7 @@
 // ES module bundled by src/pages/pages/busqueda.astro; relies on the legacy
 // globals Store, Toast and I18n loaded as classic scripts by AppLayout.
 import { escapeHtml } from "../lib/html.js";
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState } from "../lib/states.js";
 import {
   SEARCH_DEFAULTS,
@@ -316,15 +317,22 @@ function syncUI() {
 }
 
 function renderEmptyCatalog() {
-  el.count.textContent = resultsSummary(0, state.query);
+  el.count.textContent = resultsSummary(0, state.query, tr);
   el.results.innerHTML = renderEmptyState({
     icon: "fa-seedling",
     headingLevel: 3,
-    title: "Todavía no hay publicaciones",
-    text: "Publica tu primer objeto o carga datos de ejemplo para explorar la demo.",
+    title: tr("state_no_items_title", "Todavía no hay publicaciones"),
+    text: tr(
+      "state_no_items_text",
+      "Publica tu primer objeto o carga datos de ejemplo para explorar la demo."
+    ),
     actions: [
-      { label: "Publicar mi primer objeto", href: "publicar.html", variant: "primary" },
-      { label: "Cargar datos de ejemplo", id: "seed-demo-btn" },
+      {
+        label: tr("state_publish_first", "Publicar mi primer objeto"),
+        href: "publicar.html",
+        variant: "primary",
+      },
+      { label: tr("state_load_demo", "Cargar datos de ejemplo"), id: "seed-demo-btn" },
     ],
   });
   document.getElementById("seed-demo-btn")?.addEventListener("click", () => {
@@ -377,16 +385,20 @@ function render() {
     sorted.sort((a, b) => b.rating - a.rating);
   }
 
-  el.count.textContent = resultsSummary(sorted.length, el.query.value || state.query);
+  el.count.textContent = resultsSummary(sorted.length, el.query.value || state.query, tr);
 
   if (sorted.length === 0) {
     el.results.innerHTML = renderEmptyState({
       icon: "fa-magnifying-glass",
       headingLevel: 3,
-      title: "Sin resultados con estos filtros",
-      text: "Prueba con otros términos o limpia los filtros.",
+      title: tr("state_no_results_title", "Sin resultados con estos filtros"),
+      text: tr("state_no_results_text", "Prueba con otros términos o limpia los filtros."),
       actions: [
-        { label: "Limpiar filtros", id: "empty-reset-filters", icon: "fa-filter-circle-xmark" },
+        {
+          label: tr("state_clear_filters", "Limpiar filtros"),
+          id: "empty-reset-filters",
+          icon: "fa-filter-circle-xmark",
+        },
       ],
     });
     document

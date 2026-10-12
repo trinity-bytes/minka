@@ -3,6 +3,7 @@
  * Maneja idioma, alto contraste, modo bajo consumo y tamaño de fuente.
  * T29 - Lucero Pipa: Configuración de privacidad y verificación.
  */
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState } from "../lib/states.js";
 
 // NOTA: El diccionario de traducciones se ha movido a translations.js
@@ -72,8 +73,8 @@ function loadSessions() {
       variant: "compact",
       headingLevel: 3,
       icon: "fa-laptop",
-      title: "No hay otras sesiones activas",
-      text: "Solo este dispositivo tiene tu cuenta abierta.",
+      title: tr("settings_sessions_empty_title", "No hay otras sesiones activas"),
+      text: tr("settings_sessions_empty_text", "Solo este dispositivo tiene tu cuenta abierta."),
     });
     return;
   }

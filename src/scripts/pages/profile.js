@@ -1,6 +1,7 @@
 // T13 - Lucero Pipa: Lógica de perfil e identidad simulada
 // T35 - Leonardo Chavez: Gestión de reputación
 import { avatarTone, initials } from "../lib/avatar.js";
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState } from "../lib/states.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -139,7 +140,13 @@ document.addEventListener("DOMContentLoaded", () => {
         title: message.replace(/\.$/, ""),
         actions: viewedUserId
           ? []
-          : [{ label: "Publicar mi primer objeto", href: "publicar.html", variant: "primary" }],
+          : [
+              {
+                label: tr("state_publish_first", "Publicar mi primer objeto"),
+                href: "publicar.html",
+                variant: "primary",
+              },
+            ],
       });
       return;
     }

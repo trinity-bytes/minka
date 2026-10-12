@@ -1,5 +1,6 @@
 // T32 - Retos Comunitarios (HU38)
 // Estado persistido en Store: { challenges: [...], joined: [ids] }
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState } from "../lib/states.js";
 
 // "YYYY-MM-DD" as a local calendar date. `new Date("2025-12-15")` is parsed
@@ -186,8 +187,10 @@ function renderChallenges() {
   if (filtered.length === 0) {
     el.grid.innerHTML = renderEmptyState({
       icon: "fa-map-location-dot",
-      title: `No hay retos activos en ${currentUser.district}`,
-      text: "¡Prueba seleccionando otro distrito o vuelve pronto!",
+      title: tr("community_empty_title", "No hay retos activos en {district}", {
+        district: currentUser.district,
+      }),
+      text: tr("community_empty_text", "¡Prueba seleccionando otro distrito o vuelve pronto!"),
     });
     return;
   }

@@ -5,6 +5,7 @@
 // AppLayout. Module scripts run before DOMContentLoaded, so the listener
 // below still fires.
 import { escapeHtml } from "../lib/html.js";
+import { tr } from "../lib/i18n.js";
 import { renderErrorState, renderSkeleton } from "../lib/states.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -325,10 +326,16 @@ document.addEventListener("DOMContentLoaded", () => {
             icon: "fa-image",
             title:
               failed.length === 1
-                ? "No pudimos leer una foto"
-                : `No pudimos leer ${failed.length} fotos`,
-            text: `${failed.join(", ")}. Vuelve a elegirlas o prueba con otra imagen.`,
-            retry: { label: "Elegir fotos", icon: "fa-rotate-right", data: { "pick-photos": "" } },
+                ? tr("publish_photo_error_one", "No pudimos leer una foto")
+                : tr("publish_photo_error_many", "No pudimos leer {count} fotos", {
+                    count: failed.length,
+                  }),
+            text: tr(
+              "publish_photo_error_text",
+              "{files}. Vuelve a elegirlas o prueba con otra imagen.",
+              { files: failed.join(", ") }
+            ),
+            retry: { label: tr("publish_pick_photos", "Elegir fotos"), icon: "fa-rotate-right", data: { "pick-photos": "" } },
           })
         );
       }

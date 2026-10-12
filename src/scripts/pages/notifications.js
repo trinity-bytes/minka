@@ -1,4 +1,5 @@
 // T22 - Miguel Sanca: Sistema de notificaciones con feed y preferencias
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState } from "../lib/states.js";
 
 (function () {
@@ -164,10 +165,13 @@ import { renderEmptyState } from "../lib/states.js";
         icon: filtering ? "fa-filter" : "fa-bell-slash",
         title: I18n.t("notif_empty"),
         text: filtering
-          ? "Ninguna notificación coincide con los filtros elegidos."
-          : "Te avisaremos aquí cuando haya mensajes, coincidencias o recordatorios.",
+          ? tr("notif_empty_filtered_text", "Ninguna notificación coincide con los filtros elegidos.")
+          : tr(
+              "notif_empty_text",
+              "Te avisaremos aquí cuando haya mensajes, coincidencias o recordatorios."
+            ),
         actions: filtering
-          ? [{ label: "Limpiar filtros", icon: "fa-filter-circle-xmark", data: { "clear-filters": "" } }]
+          ? [{ label: tr("state_clear_filters", "Limpiar filtros"), icon: "fa-filter-circle-xmark", data: { "clear-filters": "" } }]
           : [],
       });
       return;

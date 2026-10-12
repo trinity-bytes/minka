@@ -10,6 +10,7 @@
 // listing id under `minka_questions`. Store (public/assets/scripts/core) has
 // no Q&A accessor yet, so this module owns the key.
 import { avatarTone, initials, AVATAR_TONES } from "./avatar.js";
+import { tr } from "./i18n.js";
 import {
   QA_MAX_LENGTH,
   addQuestion,
@@ -53,15 +54,26 @@ function saveQuestions(itemId, questions) {
 
 const newId = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 
-const ERRORS = {
-  question: { empty: "Escribe una pregunta antes de publicar." },
-  reply: { empty: "Escribe una respuesta antes de publicar." },
-};
-
 function errorMessage(kind, result) {
-  if (result.error === "empty") return ERRORS[kind].empty;
-  return `Usa como máximo ${QA_MAX_LENGTH} caracteres (te sobran ${-result.remaining}).`;
+  if (result.error === "empty") {
+    return kind === "reply"
+      ? tr("qa_error_reply_empty", "Escribe una respuesta antes de publicar.")
+      : tr("qa_error_question_empty", "Escribe una pregunta antes de publicar.");
+  }
+  return tr("qa_error_too_long", "Usa como máximo {max} caracteres (te sobran {over}).", {
+    max: QA_MAX_LENGTH,
+    over: -result.remaining,
+  });
 }
+
+/** Localized count line: "Sin preguntas", "1 pregunta", "3 preguntas". */
+function countLabel(count) {
+  if (!count) return tr("qa_count_none", questionCountLabel(0));
+  if (count === 1) return tr("qa_count_one", questionCountLabel(1));
+  return tr("qa_count_other", "{count} preguntas", { count });
+}
+
+const neighbor = () => tr("qa_neighbor", "Vecino");
 
 /**
  * Character counter + validation shared by the ask and reply forms.
@@ -113,7 +125,7 @@ export function mountQa({ item, session }) {
 
   const ownerId = ownerIdOf(item);
   const userId = userIdOf(session);
-  const me = userId ? { id: userId, name: session.name || "Vecino" } : null;
+  const me = userId ? { id: userId, name: session.name || neighbor() } : null;
   let questions = loadQuestions(item);
   let openReply = null; // { questionId, form, trigger }
 
@@ -146,10 +158,14 @@ export function mountQa({ item, session }) {
     who.className = "qa-post__name";
     const prefix = document.createElement("span");
     prefix.className = "sr-only";
-    prefix.textContent = reply ? "Respuesta de " : "Pregunta de ";
-    who.append(prefix, document.createTextNode(entry.authorName || "Vecino"));
+    prefix.textContent = `${reply ? tr("qa_reply_by", "Respuesta de") : tr("qa_question_by", "Pregunta de")} `;
+    who.append(prefix, document.createTextNode(entry.authorName || neighbor()));
     head.append(who);
-    if (entry.isOwner) head.append(badgeTpl.content.firstElementChild.cloneNode(true));
+    if (entry.isOwner) {
+      const badge = badgeTpl.content.firstElementChild.cloneNode(true);
+      badge.textContent = tr("qa_author", "Autor");
+      head.append(badge);
+    }
     const time = document.createElement("time");
     time.className = "qa-post__time";
     const date = new Date(entry.createdAt);
@@ -178,8 +194,11 @@ export function mountQa({ item, session }) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "qa-post__reply";
-      button.textContent = "Responder";
-      button.setAttribute("aria-label", `Responder a ${thread.authorName || "Vecino"}`);
+      button.textContent = tr("qa_reply", "Responder");
+      button.setAttribute(
+        "aria-label",
+        tr("qa_reply_to", "Responder a {name}", { name: thread.authorName || neighbor() })
+      );
       button.setAttribute("aria-expanded", "false");
       button.addEventListener("click", () => toggleReply(thread, li, button));
       question.querySelector(".qa-post__body").append(button);
@@ -189,7 +208,10 @@ export function mountQa({ item, session }) {
       const replies = document.createElement("ol");
       replies.className = "qa-replies";
       replies.setAttribute("role", "list");
-      replies.setAttribute("aria-label", `Respuestas a ${thread.authorName || "Vecino"}`);
+      replies.setAttribute(
+        "aria-label",
+        tr("qa_replies_to", "Respuestas a {name}", { name: thread.authorName || neighbor() })
+      );
       thread.replies.forEach((r) => {
         const item = document.createElement("li");
         item.append(postNode(r, { reply: true }));
@@ -205,7 +227,7 @@ export function mountQa({ item, session }) {
     list.replaceChildren(...threads.map(threadNode));
     list.hidden = threads.length === 0;
     empty.hidden = threads.length > 0;
-    countEl.textContent = questionCountLabel(threads.length);
+    countEl.textContent = countLabel(threads.length);
     openReply = null;
   }
 
@@ -231,16 +253,21 @@ export function mountQa({ item, session }) {
     form.noValidate = true;
     form.innerHTML = `
       <label class="sr-only" for="qa-reply-text"></label>
-      <textarea id="qa-reply-text" name="text" rows="2" placeholder="Escribe tu respuesta"
+      <textarea id="qa-reply-text" name="text" rows="2"
         aria-describedby="qa-reply-count qa-reply-error"></textarea>
       <div class="qa-form__foot">
         <p class="qa-form__error" id="qa-reply-error" hidden></p>
         <span class="qa-form__count" id="qa-reply-count"></span>
-        <button class="btn btn-ghost" type="button" data-qa-cancel>Cancelar</button>
-        <button class="btn btn-primary" type="submit">Publicar respuesta</button>
+        <button class="btn btn-ghost" type="button" data-qa-cancel></button>
+        <button class="btn btn-primary" type="submit"></button>
       </div>`;
     const field = form.querySelector("textarea");
-    form.querySelector("label").textContent = `Tu respuesta a ${thread.authorName || "Vecino"}`;
+    form.querySelector("label").textContent = tr("qa_reply_label", "Tu respuesta a {name}", {
+      name: thread.authorName || neighbor(),
+    });
+    field.placeholder = tr("qa_reply_placeholder", "Escribe tu respuesta");
+    form.querySelector("[data-qa-cancel]").textContent = tr("common_cancel", "Cancelar");
+    form.querySelector("[type=submit]").textContent = tr("qa_reply_submit", "Publicar respuesta");
     trigger.setAttribute("aria-controls", form.id);
     trigger.setAttribute("aria-expanded", "true");
 
@@ -262,7 +289,7 @@ export function mountQa({ item, session }) {
         questions = addReply(questions, thread.id, { id, author: me, text, createdAt: Date.now() });
         saveQuestions(item.id, questions);
         render();
-        announce("Respuesta publicada.");
+        announce(tr("qa_posted_reply", "Respuesta publicada."));
         document.getElementById(`qa-${id}`)?.focus();
       },
     });
@@ -288,7 +315,7 @@ export function mountQa({ item, session }) {
         field.value = "";
         field.dispatchEvent(new Event("input"));
         render();
-        announce("Pregunta publicada.");
+        announce(tr("qa_posted_question", "Pregunta publicada."));
         document.getElementById(`qa-${id}`)?.focus();
       },
     });

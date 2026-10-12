@@ -3,6 +3,7 @@
 // globals Session, Store, Toast and I18n loaded as classic scripts by
 // AppLayout (core/guard.js redirects guests to auth before this runs).
 import { buildSearchUrl } from "../lib/search-params.js";
+import { tr } from "../lib/i18n.js";
 import { renderEmptyState, renderErrorState } from "../lib/states.js";
 import { renderPopularCard } from "../lib/popular-card.js";
 
@@ -61,11 +62,18 @@ function renderEmptyPopular() {
   popularListEl.innerHTML = renderEmptyState({
     icon: "fa-seedling",
     headingLevel: 3,
-    title: "Todavía no hay publicaciones",
-    text: "Publica tu primer objeto o carga datos de ejemplo para explorar la demo.",
+    title: tr("state_no_items_title", "Todavía no hay publicaciones"),
+    text: tr(
+      "state_no_items_text",
+      "Publica tu primer objeto o carga datos de ejemplo para explorar la demo."
+    ),
     actions: [
-      { label: "Publicar mi primer objeto", href: "publicar.html", variant: "primary" },
-      { label: "Cargar datos de ejemplo", id: "seed-demo-btn" },
+      {
+        label: tr("state_publish_first", "Publicar mi primer objeto"),
+        href: "publicar.html",
+        variant: "primary",
+      },
+      { label: tr("state_load_demo", "Cargar datos de ejemplo"), id: "seed-demo-btn" },
     ],
   });
   document.getElementById("seed-demo-btn")?.addEventListener("click", () => {
@@ -79,9 +87,12 @@ function renderPopularError() {
   popularListEl.classList.remove("is-carousel");
   popularListEl.innerHTML = renderErrorState({
     headingLevel: 3,
-    title: "No pudimos cargar las publicaciones",
-    text: "Hubo un problema al leer los datos guardados en este navegador.",
-    retry: { label: "Reintentar", icon: "fa-rotate-right", data: { retry: "" } },
+    title: tr("state_load_error_title", "No pudimos cargar las publicaciones"),
+    text: tr(
+      "state_load_error_text",
+      "Hubo un problema al leer los datos guardados en este navegador."
+    ),
+    retry: { label: tr("state_retry", "Reintentar"), icon: "fa-rotate-right", data: { retry: "" } },
   });
 }
 

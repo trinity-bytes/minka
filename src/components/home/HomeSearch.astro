@@ -58,14 +58,14 @@ import { HOME_FILTER_CHIPS } from "../../scripts/lib/search-params.js";
   </div>
 
   <div class="home-filters" role="group" aria-labelledby="home-filters-label">
-    <span class="home-filters__label" id="home-filters-label">Filtrar búsqueda:</span>
+    <span class="home-filters__label" id="home-filters-label" data-i18n="home_filters_label">Filtrar búsqueda:</span>
     <ul class="home-filters__list" role="list">
       {
         HOME_FILTER_CHIPS.map((chip) => (
           <li>
             <button type="button" class="home-chip" aria-pressed="false" data-filter-chip={chip.id}>
               <i class:list={["fas", chip.icon]} aria-hidden="true" />
-              <span>{chip.label}</span>
+              <span data-i18n={`home_chip_${chip.id}`}>{chip.label}</span>
             </button>
           </li>
         ))

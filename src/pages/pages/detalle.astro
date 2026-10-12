@@ -73,7 +73,7 @@ const FACTS = [
       <p class="product__lead">
         <strong id="item-condition">—</strong>
         <span aria-hidden="true">·</span>
-        <span>Para trueque</span>
+        <span data-i18n="detail_for_swap">Para trueque</span>
       </p>
 
       <div class="product__description detail-description">
@@ -90,13 +90,13 @@ const FACTS = [
       <section class="product__panel" aria-labelledby="summary-title">
         <h2 class="sr-only" id="summary-title">Opciones de intercambio</h2>
         <div class="product__group">
-          <h3 class="product__label">Modo de entrega</h3>
+          <h3 class="product__label" data-i18n="detail_delivery_mode">Modo de entrega</h3>
           <ul class="mode-list" id="item-modes" role="list">
             <li class="mode-pill">A coordinar por chat</li>
           </ul>
         </div>
         <div class="product__group">
-          <h3 class="product__label">Ficha del objeto</h3>
+          <h3 class="product__label" data-i18n="detail_facts">Ficha del objeto</h3>
           <div class="detail-info">
             {
               FACTS.map((f) => (
@@ -128,7 +128,7 @@ const FACTS = [
           aria-controls="qr-dialog"
         >
           <i class="fas fa-qrcode" aria-hidden="true"></i>
-          <span>Ver pase QR</span>
+          <span data-i18n="detail_qr_open">Ver pase QR</span>
         </Button>
       </div>
 

@@ -137,3 +137,9 @@ test("titleKey adds a data-i18n hook to the title so the i18n layer can translat
   assert.match(html, /<h2 class="state__title" data-i18n="dash_empty">Sin actividad registrada<\/h2>/);
   assert.match(renderEmptyState({ title: "T", titleKey: `x" y` }), /data-i18n="x&quot; y"/);
 });
+
+test("renderEmptyState puts textKey on the text as data-i18n", () => {
+  const html = renderEmptyState({ title: "Sin preguntas", text: "Pregunta algo.", textKey: "qa_empty_text" });
+  assert.match(html, /<p class="state__text" data-i18n="qa_empty_text">Pregunta algo.<\/p>/);
+  assert.doesNotMatch(renderEmptyState({ title: "x", text: "y" }), /state__text" data-i18n/);
+});
