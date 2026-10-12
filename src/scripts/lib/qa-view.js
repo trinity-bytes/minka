@@ -5,10 +5,9 @@
 // never parsed as HTML. Avatar and Badge are cloned from server-rendered
 // <template>s so their scoped component styles apply.
 //
-// Persistence follows the chat pattern (one JSON map in localStorage keyed by
-// conversation, read/write wrapped in try/catch); here the map is keyed by
-// listing id under `minka_questions`. Store (public/assets/scripts/core) has
-// no Q&A accessor yet, so this module owns the key.
+// Persistence goes through the legacy Store global (public/assets/scripts/core/
+// store.js, `minka_questions`: one map keyed by listing id, like chat messages).
+// Without Store the seeded questions still render, nothing is saved.
 import { avatarTone, initials, AVATAR_TONES } from "./avatar.js";
 import { tr } from "./i18n.js";
 import {
@@ -24,32 +23,15 @@ import {
   validateQaText,
 } from "./qa.js";
 
-const STORAGE_KEY = "minka_questions";
-
-function readAll() {
-  try {
-    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    return all && typeof all === "object" && !Array.isArray(all) ? all : {};
-  } catch {
-    return {};
-  }
-}
+const store = () => /** @type {any} */ (globalThis).Store;
 
 function loadQuestions(item) {
-  const stored = readAll()[item.id];
+  const stored = store()?.getQuestions(item.id);
   return Array.isArray(stored) ? stored : seedQuestions(item);
 }
 
 function saveQuestions(itemId, questions) {
-  try {
-    const all = readAll();
-    all[itemId] = questions;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-    return true;
-  } catch (error) {
-    console.warn("Q&A: no se pudo guardar", error);
-    return false;
-  }
+  return store()?.saveQuestions(itemId, questions) ?? false;
 }
 
 const newId = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
