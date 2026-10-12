@@ -164,7 +164,7 @@
 
 /* Legal links inside the terms checkbox */
 .form__checkbox a {
-  color: var(--color-primary-ink);
+  color: var(--color-primary);
   text-decoration: underline;
   text-underline-offset: 2px;
 }

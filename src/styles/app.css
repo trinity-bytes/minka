@@ -882,12 +882,12 @@ body.high-contrast .modal__close {
 }
 
 .rating-star.is-active {
-  color: var(--color-accent);
+  color: var(--color-lavender);
   transform: scale(1.1);
 }
 
 .rating-star:hover {
-  color: var(--color-accent);
+  color: var(--color-lavender);
 }
 
 @media (max-width: 768px) {
@@ -1066,7 +1066,7 @@ body.high-contrast :where(input[type="checkbox"], input[type="radio"]) {
 .form__link {
   border: none;
   background: none;
-  color: var(--color-primary-ink);
+  color: var(--color-primary);
   font-weight: 700;
   cursor: pointer;
   text-decoration: underline;

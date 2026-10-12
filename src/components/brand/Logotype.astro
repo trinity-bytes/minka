@@ -17,8 +17,6 @@ interface Props extends Omit<HTMLAttributes<"svg">, "role"> {
   leaf?: LeafTone;
   /** Rendered height: keyword or px. Width follows the aspect ratio. */
   size?: "sm" | "md" | "lg" | "xl" | number;
-  /** "lower" (mink'a, default) or "title" (Mink'a). */
-  variant?: keyof typeof LOGOTYPE;
   /** Accessible name; pass `decorative` to hide it from AT instead. */
   label?: string;
   decorative?: boolean;
@@ -30,14 +28,13 @@ const {
   tone = "brand",
   leaf = "auto",
   size = "md",
-  variant = "lower",
   label = "Mink'a",
   decorative = false,
   class: className,
   ...rest
 } = Astro.props;
 
-const art = LOGOTYPE[variant];
+const art = LOGOTYPE.lower;
 const height = typeof size === "number" ? size : SIZES[size];
 const leafTone = leaf === "auto" ? (tone === "ink" ? "brand" : tone) : leaf;
 const a11y = decorative

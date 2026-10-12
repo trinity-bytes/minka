@@ -14,7 +14,7 @@ export function url(path = ""): string {
   return `${BASE}/${clean}`;
 }
 
-/** Public asset URL, e.g. `asset("images/QR-generico.svg")`. */
+/** Public asset URL, e.g. `asset("images/avatars/avatar-user.svg")`. */
 export function asset(path: string): string {
   return url(`assets/${path.replace(/^\/+/, "")}`);
 }

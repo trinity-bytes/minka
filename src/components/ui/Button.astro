@@ -103,7 +103,7 @@ const classes =
     border: 1px solid transparent;
     border-radius: var(--radius-btn);
     padding: 15px 28px;
-    box-shadow: var(--shadow-hard-btn);
+    box-shadow: none;
     transition:
       transform 0.15s ease,
       box-shadow 0.15s ease,
@@ -115,18 +115,18 @@ const classes =
     /* paper variant inherits the global link hover color (legacy parity) */
     color: var(--color-primary);
     transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-hard-btn-hover);
+    box-shadow: var(--shadow-lift);
   }
 
   .btn--sticker:active {
     transform: translate(2px, 2px);
-    box-shadow: var(--shadow-hard-xs);
+    box-shadow: none;
   }
 
   .btn--sticker.btn--primary,
   .btn--sticker.btn--primary:hover,
   .btn--sticker.btn--primary:focus-visible {
-    background: var(--color-primary-pop);
+    background: var(--color-brand);
     color: var(--color-on-brand);
   }
 
@@ -170,7 +170,7 @@ const classes =
     position: absolute;
     width: 18px;
     height: 18px;
-    border: 2.5px solid color-mix(in srgb, var(--color-primary-pop) 30%, transparent);
+    border: 2.5px solid color-mix(in srgb, var(--color-brand) 30%, transparent);
     border-top-color: var(--color-primary);
     border-radius: 50%;
     animation: btn-spin 0.7s linear infinite;

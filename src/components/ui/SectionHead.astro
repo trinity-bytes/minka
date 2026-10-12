@@ -7,7 +7,7 @@ import Sticker from "./Sticker.astro";
 
 interface Props {
   eyebrow?: string;
-  eyebrowTone?: "paper" | "green" | "amber" | "terra";
+  eyebrowTone?: "paper" | "mint" | "lavender" | "lavender-soft";
   subtitle?: string;
   level?: 2 | 3;
   inverse?: boolean;
@@ -65,7 +65,7 @@ const Heading = `h${level}` as "h2" | "h3";
   }
 
   .section-head--inverse .section-head__title :global(em) {
-    color: var(--color-primary-pop);
+    color: var(--color-brand);
   }
 
   .section-head--inverse .section-head__subtitle {

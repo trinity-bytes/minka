@@ -39,7 +39,7 @@ const hasTitle = Astro.slots.has("default");
 ---
 
 <LandingSection id={id} folio={folio}>
-  <SectionHead eyebrow={eyebrow} eyebrowTone="green" subtitle={subtitle}>
+  <SectionHead eyebrow={eyebrow} eyebrowTone="mint" subtitle={subtitle}>
     {hasTitle ? <slot /> : <Fragment>La propuesta <em>Mink'a</em>, en video</Fragment>}
   </SectionHead>
   <div class="video" data-reveal>

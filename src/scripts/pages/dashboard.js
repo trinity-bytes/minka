@@ -38,7 +38,7 @@ Chart.register(
 
 // Canvas cannot read CSS custom properties: resolve the tokens per render.
 function chartColors() {
-  const co2 = token("--color-primary-pop");
+  const co2 = token("--color-brand");
   return {
     co2,
     co2Fill: withAlpha(co2, 0.1),

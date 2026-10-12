@@ -11,21 +11,21 @@ import appChat from "../../assets/images/landing/app-chat.png";
 const frames = [
   {
     position: "side-l",
-    sticker: { label: "Explora tu barrio", tone: "green", side: "l" },
+    sticker: { label: "Explora tu barrio", tone: "mint", side: "l" },
     url: "minka.pe/inicio",
     image: appHome,
     alt: "Pantalla de inicio de la app Mink'a con publicaciones populares y buscador",
   },
   {
     position: "main",
-    sticker: { label: "Tu impacto, en números", tone: "amber", side: "r" },
+    sticker: { label: "Tu impacto, en números", tone: "lavender", side: "r" },
     url: "minka.pe/impacto",
     image: appDashboard,
     alt: "Dashboard de impacto de Mink'a con CO₂ evitado, agua ahorrada y gráficos",
   },
   {
     position: "side-r",
-    sticker: { label: "Negocia por chat", tone: "terra", side: "r" },
+    sticker: { label: "Negocia por chat", tone: "lavender-soft", side: "r" },
     url: "minka.pe/chats",
     image: appChat,
     alt: "Chat de Mink'a para coordinar un trueque con puntos de encuentro sugeridos",
@@ -36,7 +36,7 @@ const frames = [
 <LandingSection id="plataforma" folio="03" band="ink" class="showcase">
   <SectionHead
     eyebrow="La app por dentro"
-    eyebrowTone="amber"
+    eyebrowTone="lavender"
     subtitle="Nada de maquetas: estas son las pantallas reales del prototipo que ya puedes probar."
     inverse
   >
@@ -88,7 +88,7 @@ const frames = [
     background: var(--color-card);
     border: var(--border-ink);
     border-radius: var(--radius-frame);
-    box-shadow: var(--shadow-hard-dark);
+    box-shadow: none;
     overflow: hidden;
     transition:
       transform 0.25s ease,
@@ -129,15 +129,15 @@ const frames = [
   }
 
   .frame__dot--r {
-    background: var(--color-terra);
+    background: var(--color-lavender-ink);
   }
 
   .frame__dot--y {
-    background: var(--color-accent);
+    background: var(--color-lavender);
   }
 
   .frame__dot--g {
-    background: var(--color-primary-pop);
+    background: var(--color-brand);
   }
 
   .frame__url {
