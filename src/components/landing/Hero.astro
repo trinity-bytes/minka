@@ -13,7 +13,6 @@ import IconChip from "../ui/IconChip.astro";
 import Sticker from "../ui/Sticker.astro";
 import WordReveal from "../ui/WordReveal.astro";
 import { Picture } from "astro:assets";
-import { url } from "../../lib/url";
 import bike from "../../assets/images/hero/bicicleta-vintage.jpg";
 import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
 import books from "../../assets/images/hero/set-libros.jpg";
@@ -42,7 +41,7 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
         Ahorro real para ti, menos residuos para la ciudad.
       </p>
       <div class="hero__cta" data-reveal style="--reveal-delay: 520ms">
-        <Button href={url("pages/auth.html")} variant="primary">Empieza a truequear</Button>
+        <Button href="#descargar" variant="primary">Empieza a truequear</Button>
         <Button href="#como-funciona">Ver cómo funciona ↓</Button>
       </div>
       <ul class="hero__stats" data-reveal style="--reveal-delay: 620ms">

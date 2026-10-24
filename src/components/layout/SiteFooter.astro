@@ -10,7 +10,6 @@
  */
 import Icon, { type IconName } from "../ui/Icon.astro";
 import Logotype from "../brand/Logotype.astro";
-import { url } from "../../lib/url";
 
 interface FooterLink {
   href?: string;
@@ -44,7 +43,7 @@ const {
     {
       title: "Empresa",
       links: [
-        { href: url("pages/about.html"), label: "Sobre nosotros" },
+        { label: "Sobre nosotros" },
         { label: "Contacto" },
         { label: "Prensa" },
         { label: "Carreras" },

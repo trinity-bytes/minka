@@ -5,14 +5,14 @@
  * word-by-word headline and the fine print split into flat stickers.
  * Defaults are the landing copy; the default slot overrides the title
  * (may contain <em>, rendered as a plain heading). `small` = "" hides the
- * fine print. Nothing loops: the words rise once on reveal.
+ * fine print. The action button renders only when both `ctaLabel` and
+ * `ctaHref` are passed. Nothing loops: the words rise once on reveal.
  */
 import Button from "../ui/Button.astro";
 import Sticker from "../ui/Sticker.astro";
 import WordReveal from "../ui/WordReveal.astro";
 import Logomark from "../brand/Logomark.astro";
 import LandingSection from "./LandingSection.astro";
-import { url } from "../../lib/url";
 
 interface Props {
   subtitle?: string;
@@ -23,8 +23,8 @@ interface Props {
 
 const {
   subtitle = "Crea tu cuenta y empieza a intercambiar hoy. Tu próximo tesoro está a una cuadra de distancia.",
-  ctaLabel = "Crear mi cuenta",
-  ctaHref = url("pages/auth.html"),
+  ctaLabel,
+  ctaHref,
   small = "Sin tarjeta ✶ Comunidad verificada ✶ Hecho en Lima",
 } = Astro.props;
 const hasTitle = Astro.slots.has("default");
@@ -37,7 +37,7 @@ const notes = small
 const TILTS = ["-3deg", "2deg", "-1.5deg"];
 ---
 
-<LandingSection class="closing">
+<LandingSection id="descargar" class="closing">
   <div class="cta" data-reveal>
     <Logomark tone="current" size={520} class="cta__mark" />
     <div class="cta__body">
@@ -51,9 +51,15 @@ const TILTS = ["-3deg", "2deg", "-1.5deg"];
         )
       }
       <p class="cta__subtitle">{subtitle}</p>
-      <div class="cta__action">
-        <Button href={ctaHref} variant="ink">{ctaLabel}</Button>
-      </div>
+      {
+        ctaLabel && ctaHref && (
+          <div class="cta__action">
+            <Button href={ctaHref} variant="ink">
+              {ctaLabel}
+            </Button>
+          </div>
+        )
+      }
       {
         notes.length > 0 && (
           <ul class="cta__notes" role="list">

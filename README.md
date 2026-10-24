@@ -26,7 +26,7 @@
 
 ## 📌 Descripción del Proyecto
 
-Mink’a es una plataforma digital orientada a la economía circular y el trueque comunitario. Esta landing page comunica la propuesta de valor de la solución, presenta beneficios claves y acompaña al usuario hacia el registro y la descarga del prototipo interactivo.
+Mink’a es una plataforma digital orientada a la economía circular y el trueque comunitario. Esta landing page comunica la propuesta de valor de la solución, presenta beneficios claves y acompaña al usuario hacia la descarga de la app Android.
 
 <a id="segmento-objetivo"></a>
 
@@ -58,41 +58,31 @@ Mink’a es una plataforma digital orientada a la economía circular y el truequ
 ```text
 astro.config.mjs              # Salida estática, base /minka, build.format "file", sitemap
 src/
-├── pages/                    # Rutas: index.astro (landing), 404.astro y pages/*.astro
-│                             # (auth, busqueda, home, detalle, publicar, dashboard, comunidad,
-│                             #  notificaciones, gamification, perfil, settings, chat, about)
+├── pages/                    # Rutas: index.astro (landing) y 404.astro
 ├── components/
-│   ├── layout/               # BaseLayout, AppLayout (sidebar + main + rail), AppSidebar, AppTabBar,
-│                             # AppHeader, SiteHeader/Footer, AuthHeader
+│   ├── layout/               # BaseLayout, SiteHeader, SiteFooter
 │   ├── brand/                # Logotype y Logomark (SVG)
-│   ├── ui/                   # Primitivas compartidas: Button, Badge, Avatar, Card, Modal, PageHead,
-│                             # EmptyState/ErrorState/Skeleton, Sticker, BlobMedia, ...
-│   └── landing/ auth/ search/ home/ detail/ publish/ dashboard/
-│       exchange/ notifications/   # Componentes por área
-├── assets/images/            # Imágenes optimizadas con astro:assets (AVIF/WebP + srcset)
+│   ├── ui/                   # Primitivas compartidas: Button, Avatar, Sticker, BlobMedia,
+│                             # IconChip, SectionHead, WordReveal, Icon
+│   └── landing/              # Secciones de la landing
+├── assets/
+│   ├── brand/                # Trazos del logo (paths.ts) y copias SVG sueltas
+│   └── images/               # Imágenes optimizadas con astro:assets (AVIF/WebP + srcset)
 ├── styles/
 │   ├── tokens.css            # Única fuente de design tokens
 │   ├── fonts.css             # @font-face (WOFF2)
-│   ├── global.css            # Base, utilidades y preferencias de accesibilidad
-│   ├── app.css               # Estilos compartidos del shell de la app
-│   ├── states.css            # Estados vacío / error / carga compartidos
-│   └── pages/                # Estilos por página
+│   └── global.css            # Base, utilidades y preferencias de accesibilidad
 ├── scripts/
-│   ├── pages/                # Comportamiento por página (módulos ES)
-│   ├── lib/                  # Helpers puros con tests (estados, i18n tr(), Q&A, búsqueda, QR, ...)
+│   ├── lib/                  # Helpers puros con tests (avatar, contador de stats, palabras)
 │   ├── menu-disclosure.ts    # Menú móvil accesible (Escape, foco, focus trap)
-│   ├── reveal.ts             # Animaciones de aparición
-│   └── tokens.ts             # Colores de tokens para canvas (Chart.js)
-└── lib/                      # Utilidades TS: url/asset con base, sesión, categorías, eco
+│   └── reveal.ts             # Animaciones de aparición
+└── lib/                      # url/asset con base
 public/                       # Copiado tal cual a dist/
 ├── favicon.ico
-└── assets/
-    ├── fonts/                # Inter y Fraunces (variables) en WOFF2
-    ├── images/               # Imágenes con URL estable usadas desde JS (items, avatares)
-    └── scripts/core/         # Scripts clásicos compartidos (store, session, guard, i18n, toast, modal)
+└── assets/fonts/             # Inter y Fraunces (variables) en WOFF2
 ```
 
-Lenguaje visual (tokens, tipografía, shell de la app, primitivas y checks visuales): [docs/visual-language.md](docs/visual-language.md).
+Lenguaje visual (tokens, tipografía, primitivas y checks visuales): [docs/visual-language.md](docs/visual-language.md).
 
 <a id="tecnologias-utilizadas"></a>
 

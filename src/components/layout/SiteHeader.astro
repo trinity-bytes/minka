@@ -3,13 +3,12 @@
  * Landing header: floating white pill (detached from the top edge) with the
  * logotype, pill anchor links and pill CTAs; it gains a soft shadow once the
  * page scrolls. Below 860px the links move into a dropdown panel driven by
- * menu-disclosure (focus trap, Escape, focus return). Other public pages
- * (about, 404) pass `anchorBase={url()}` so the anchors point back to the
+ * menu-disclosure (focus trap, Escape, focus return). The 404 page passes
+ * `anchorBase={url()}` so the anchors (CTA included) point back to the
  * landing.
  */
 import Button from "../ui/Button.astro";
 import Logotype from "../brand/Logotype.astro";
-import { url } from "../../lib/url";
 
 interface NavLink {
   href: string;
@@ -20,9 +19,6 @@ interface Props {
   links?: NavLink[];
   ctaHref?: string;
   ctaLabel?: string;
-  /** Secondary pill (sign in); pass an empty label to hide it. */
-  loginHref?: string;
-  loginLabel?: string;
   /** Logo target; defaults to the hero anchor. */
   homeHref?: string;
   /** Prefix for `#anchor` links when rendered outside the landing. */
@@ -36,15 +32,14 @@ const {
     { href: "#impacto", label: "Impacto" },
     { href: "#testimonios", label: "Testimonios" },
   ],
-  ctaHref = url("pages/auth.html"),
+  ctaHref = "#descargar",
   ctaLabel = "Empezar ahora",
-  loginHref = url("pages/auth.html"),
-  loginLabel = "Ingresar",
   anchorBase = "",
 } = Astro.props;
 const withBase = (href: string) => (href.startsWith("#") ? `${anchorBase}${href}` : href);
 const homeHref = withBase(Astro.props.homeHref ?? "#inicio");
 const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
+const cta = withBase(ctaHref);
 ---
 
 <header class="site-header" data-site-header>
@@ -56,15 +51,13 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
       {navLinks.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
       <!-- Mobile-only actions (inside the dropdown); desktop ones live in actions. -->
       <div class="site-nav__actions">
-        {loginLabel && <a href={loginHref} class="site-header__login">{loginLabel}</a>}
-        <Button href={ctaHref} variant="primary" size="sm" class="site-header__cta">
+        <Button href={cta} variant="primary" size="sm" class="site-header__cta">
           {ctaLabel}
         </Button>
       </div>
     </nav>
     <div class="site-header__actions">
-      {loginLabel && <a href={loginHref} class="site-header__login">{loginLabel}</a>}
-      <Button href={ctaHref} variant="primary" size="sm" class="site-header__cta">
+      <Button href={cta} variant="primary" size="sm" class="site-header__cta">
         {ctaLabel}
       </Button>
       <button
@@ -165,8 +158,7 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     gap: 4px;
   }
 
-  .site-nav__link,
-  .site-header__login {
+  .site-nav__link {
     display: inline-flex;
     align-items: center;
     padding: 10px 16px;
@@ -181,17 +173,9 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
   }
 
   .site-nav__link:hover,
-  .site-nav__link:focus-visible,
-  .site-header__login:hover,
-  .site-header__login:focus-visible {
+  .site-nav__link:focus-visible {
     background: var(--color-mint);
     color: var(--color-ink);
-  }
-
-  .site-header__login {
-    font-weight: 700;
-    color: var(--color-ink);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--color-ink) 16%, transparent);
   }
 
   .site-header__actions {
@@ -268,10 +252,6 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     .site-nav__link {
       padding: 10px 12px;
     }
-
-    .site-header__actions .site-header__login {
-      display: none;
-    }
   }
 
   @media (max-width: 860px) {
@@ -325,7 +305,6 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
       display: inline-block;
     }
 
-    .site-header__actions .site-header__login,
     .site-header__actions :global(.site-header__cta) {
       display: none;
     }
