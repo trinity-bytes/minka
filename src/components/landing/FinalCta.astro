@@ -2,30 +2,31 @@
 /**
  * Final call to action as a bold closing bento block: lavender fill with
  * violet ink (no green on lavender), a giant faint leaf watermark, a
- * word-by-word headline and the fine print split into flat stickers.
- * Defaults are the landing copy; the default slot overrides the title
- * (may contain <em>, rendered as a plain heading). `small` = "" hides the
- * fine print. The action button renders only when both `ctaLabel` and
- * `ctaHref` are passed. Nothing loops: the words rise once on reveal.
+ * word-by-word headline, the Google Play badge, the selling points split
+ * into flat stickers and the Android requirement. This is the #descargar
+ * target of every install link, so its badge is a static label until the
+ * listing exists (src/lib/store.ts). Defaults are the landing copy; the
+ * default slot overrides the title (may contain <em>, rendered as a plain
+ * heading). `small` = "" hides the stickers, `requirement` = "" the
+ * requirement line. Nothing loops: the words rise once on reveal.
  */
-import Button from "../ui/Button.astro";
 import Sticker from "../ui/Sticker.astro";
+import StoreBadge from "../ui/StoreBadge.astro";
 import WordReveal from "../ui/WordReveal.astro";
 import Logomark from "../brand/Logomark.astro";
 import LandingSection from "./LandingSection.astro";
+import { PLAY_STORE_URL } from "../../lib/store";
 
 interface Props {
   subtitle?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
   small?: string;
+  requirement?: string;
 }
 
 const {
-  subtitle = "Crea tu cuenta y empieza a intercambiar hoy. Tu próximo tesoro está a una cuadra de distancia.",
-  ctaLabel,
-  ctaHref,
-  small = "Sin tarjeta ✶ Comunidad verificada ✶ Hecho en Lima",
+  subtitle = "Descarga Mink'a gratis en Android y empieza a intercambiar hoy. Tu próximo tesoro está a una cuadra de distancia.",
+  small = "Gratis en Android ✶ Comunidad verificada ✶ Hecho en Lima",
+  requirement = "Requiere Android 8.0 o superior",
 } = Astro.props;
 const hasTitle = Astro.slots.has("default");
 
@@ -51,15 +52,9 @@ const TILTS = ["-3deg", "2deg", "-1.5deg"];
         )
       }
       <p class="cta__subtitle">{subtitle}</p>
-      {
-        ctaLabel && ctaHref && (
-          <div class="cta__action">
-            <Button href={ctaHref} variant="ink">
-              {ctaLabel}
-            </Button>
-          </div>
-        )
-      }
+      <div class="cta__action">
+        <StoreBadge href={PLAY_STORE_URL ?? undefined} />
+      </div>
       {
         notes.length > 0 && (
           <ul class="cta__notes" role="list">
@@ -73,6 +68,7 @@ const TILTS = ["-3deg", "2deg", "-1.5deg"];
           </ul>
         )
       }
+      {requirement && <p class="cta__requirement">{requirement}</p>}
     </div>
   </div>
 </LandingSection>
@@ -110,7 +106,7 @@ const TILTS = ["-3deg", "2deg", "-1.5deg"];
   }
 
   .cta__title {
-    font-size: clamp(2.5rem, 6.4vw, 5.2rem);
+    font-size: clamp(2.2rem, 4.6vw, 3.5rem);
     margin: 0 0 24px;
     color: var(--color-ink);
     text-wrap: balance;
@@ -125,12 +121,25 @@ const TILTS = ["-3deg", "2deg", "-1.5deg"];
   }
 
   .cta__subtitle {
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: 1.19rem;
+    line-height: 1.6;
     color: var(--color-ink);
-    max-width: 560px;
-    margin: 0 auto 36px;
+    max-width: 600px;
+    margin: 0 auto 28px;
     text-wrap: pretty;
+  }
+
+  /* Ink is re-pointed to violet in this block; the badge keeps a forest
+     pill (deep ink) as everywhere else. */
+  .cta__action :global(.store-badge--dark) {
+    background: var(--color-ink-deep);
+  }
+
+  .cta__requirement {
+    margin: 28px 0 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    color: var(--color-ink);
   }
 
   .cta__notes {
@@ -138,7 +147,7 @@ const TILTS = ["-3deg", "2deg", "-1.5deg"];
     flex-wrap: wrap;
     justify-content: center;
     gap: 12px 14px;
-    margin: 34px 0 0;
+    margin: 28px 0 0;
     padding: 0;
     list-style: none;
   }

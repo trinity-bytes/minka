@@ -1,19 +1,23 @@
 ---
 /**
- * Landing footer: brand blurb, link columns, copyright and social links.
- * Entries without an `href` (no destination exists yet) render as plain
- * text instead of dead `#` links. Other public pages (about) pass
- * `anchorBase={url()}` so `#anchor` links point back to the landing.
+ * Landing footer: brand blurb with the Google Play badge, link columns
+ * (`strong` links stand out), copyright and social links. Entries without
+ * an `href` (no destination exists yet) render as plain text instead of
+ * dead `#` links. The 404 page passes `anchorBase={url()}` so `#anchor`
+ * links point back to the landing.
  * Visual: one ink-deep bento block with rounded top corners, pill/disc
  * social buttons and a giant full-contrast lowercase logotype spanning
  * the width, cropped by the bottom edge; it is the only footer logo and links home.
  */
 import Icon, { type IconName } from "../ui/Icon.astro";
+import StoreBadge from "../ui/StoreBadge.astro";
 import Logotype from "../brand/Logotype.astro";
+import { INSTALL_HREF } from "../../lib/store";
 
 interface FooterLink {
   href?: string;
   label: string;
+  strong?: boolean;
 }
 
 interface FooterColumn {
@@ -37,7 +41,7 @@ const {
         { href: "#como-funciona", label: "Cómo funciona" },
         { href: "#beneficios", label: "Beneficios" },
         { href: "#plataforma", label: "La app" },
-        { href: "#testimonios", label: "Comunidad" },
+        { href: "#descargar", label: "Descargar la app", strong: true },
       ],
     },
     {
@@ -86,6 +90,7 @@ const social: { icon: IconName; label: string; href?: string }[] = [
             Plataforma de trueque para economía circular. Construyendo una Lima más sostenible, un
             intercambio a la vez.
           </p>
+          <StoreBadge theme="light" href={withBase(INSTALL_HREF)} />
         </div>
         {
           footerColumns.map((column) => (
@@ -93,7 +98,9 @@ const social: { icon: IconName; label: string; href?: string }[] = [
               <h3 class="site-footer__title">{column.title}</h3>
               <ul class="site-footer__links">
                 {column.links.map((link) => (
-                  <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>
+                  <li class:list={[link.strong && "is-strong"]}>
+                    {link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -149,11 +156,18 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     padding-bottom: 52px;
   }
 
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
   .site-footer__desc {
     color: color-mix(in srgb, var(--color-paper) 65%, transparent);
     font-size: 1rem;
     line-height: 1.6;
-    max-width: 300px;
+    max-width: 340px;
     margin: 0;
   }
 
@@ -182,6 +196,11 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     font-size: 0.96rem;
     text-decoration: none;
     transition: color var(--dur-fast) var(--ease-standard);
+  }
+
+  .site-footer__links .is-strong a {
+    color: var(--color-paper);
+    font-weight: 700;
   }
 
   .site-footer__links a:hover,
