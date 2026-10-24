@@ -211,20 +211,4 @@ const stars = Array.from({ length: RATING });
       margin-top: 0;
     }
   }
-
-  :global(body.high-contrast) .voice {
-    outline: 2px solid var(--color-hc-ink);
-    outline-offset: -2px;
-  }
-
-  :global(body.high-contrast) .voice--lavender {
-    --color-ink: var(--color-hc-ink);
-    --color-ink-2: var(--color-hc-ink);
-    --voice-accent: var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .voice--white,
-  :global(body.high-contrast) .voice--mint {
-    --voice-accent: var(--color-hc-ink);
-  }
 </style>

@@ -1,24 +1,17 @@
 ---
 /**
- * Button / link-button. Renders <a> when `href` is set, <button> otherwise.
- *
- * appearance:
- *  - "sticker" (default): landing pill (no border, soft lift on hover).
- *    Variants: paper | primary | ink (others fall back to paper).
- *  - "flat": app pill. Emits the global classes `btn btn-<variant>`
- *    (+ btn-small / btn-large) from src/styles/app.css, so it only renders
- *    styled on pages built on AppLayout. Variants: primary | secondary |
- *    outline (paper = outline) | ghost | danger | ink.
+ * Landing pill button. Renders <a> when `href` is set, <button> otherwise.
+ * No border, soft lift on hover. Variants: paper | primary | ink | outline
+ * (hairline ring with primary text, for low-emphasis actions).
  */
 import type { HTMLAttributes } from "astro/types";
 
-type Variant = "paper" | "primary" | "ink" | "secondary" | "outline" | "ghost" | "danger";
+type Variant = "paper" | "primary" | "ink" | "outline";
 
 interface Props extends Omit<HTMLAttributes<"a"> & HTMLAttributes<"button">, "type"> {
   href?: string;
   type?: "button" | "submit" | "reset";
   variant?: Variant;
-  appearance?: "sticker" | "flat";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 }
@@ -27,38 +20,20 @@ const {
   href,
   type = "button",
   variant = "paper",
-  appearance = "sticker",
   size = "md",
   loading = false,
   class: className,
   ...rest
 } = Astro.props;
 
-// Flat buttons emit the legacy app classes (btn-primary, btn-small, ...)
-// defined once in src/styles/app.css, which page scripts also use in the
-// markup they render. Flat therefore requires a page built on AppLayout.
-const FLAT_VARIANT: Record<Variant, string> = {
-  primary: "btn-primary",
-  secondary: "btn-secondary",
-  outline: "btn-outline",
-  paper: "btn-outline",
-  ghost: "btn-ghost",
-  danger: "btn-danger",
-  ink: "btn-ink",
-};
-const FLAT_SIZE = { sm: "btn-small", md: false, lg: "btn-large" } as const;
-
-const classes =
-  appearance === "flat"
-    ? ["btn", "btn--flat", FLAT_VARIANT[variant], FLAT_SIZE[size], loading && "is-loading", className]
-    : [
-        "btn",
-        `btn--${appearance}`,
-        `btn--${variant}`,
-        size !== "md" && `btn--${size}`,
-        loading && "is-loading",
-        className,
-      ];
+const classes = [
+  "btn",
+  "btn--sticker",
+  `btn--${variant}`,
+  size !== "md" && `btn--${size}`,
+  loading && "is-loading",
+  className,
+];
 ---
 
 {
@@ -74,9 +49,6 @@ const classes =
 }
 
 <style>
-  /* Scoped rules target sticker buttons only: flat buttons are styled by the
-     global legacy classes in src/styles/app.css, and a scoped `.btn` rule
-     would out-rank them (e.g. .btn-small sizing). */
   .btn--sticker {
     display: inline-flex;
     align-items: center;
@@ -94,7 +66,7 @@ const classes =
   /* === Sticker (landing pill) ===
      Flat since T9: the hairline carried over from the editorial theme is
      retired (transparent border keeps the size and shows under forced
-     colors); high contrast restores a 2px black outline below. */
+     colors). */
   .btn--sticker {
     gap: var(--space-10);
     font-weight: 800;
@@ -141,6 +113,18 @@ const classes =
     color: var(--color-paper);
   }
 
+  .btn--sticker.btn--outline {
+    background: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-gray-400);
+    font-weight: 500;
+  }
+
+  .btn--sticker.btn--outline:hover,
+  .btn--sticker.btn--outline:focus-visible {
+    background: var(--color-card);
+  }
+
   .btn--sticker.btn--sm {
     padding: var(--space-10) var(--space-20);
     font-size: 0.92rem;
@@ -152,7 +136,7 @@ const classes =
     font-size: 1.1rem;
   }
 
-  /* === Loading / disabled (sticker; flat lives in app.css) === */
+  /* === Loading / disabled === */
   .btn--sticker:disabled,
   .btn--sticker.is-loading {
     opacity: 0.65;
@@ -185,10 +169,6 @@ const classes =
   .btn--sticker:focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 3px;
-  }
-
-  :global(body.high-contrast) .btn--sticker {
-    border: var(--border-ink);
   }
 
   @media (forced-colors: active) {

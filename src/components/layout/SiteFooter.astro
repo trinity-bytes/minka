@@ -1,20 +1,23 @@
 ---
 /**
- * Landing footer: brand blurb, link columns, copyright and social links.
- * Entries without an `href` (no destination exists yet) render as plain
- * text instead of dead `#` links. Other public pages (about) pass
- * `anchorBase={url()}` so `#anchor` links point back to the landing.
+ * Landing footer: brand blurb with the Google Play badge, link columns
+ * (`strong` links stand out), copyright and social links. Entries without
+ * an `href` (no destination exists yet) render as plain text instead of
+ * dead `#` links. The 404 page passes `anchorBase={url()}` so `#anchor`
+ * links point back to the landing.
  * Visual: one ink-deep bento block with rounded top corners, pill/disc
  * social buttons and a giant full-contrast lowercase logotype spanning
  * the width, cropped by the bottom edge; it is the only footer logo and links home.
  */
 import Icon, { type IconName } from "../ui/Icon.astro";
+import StoreBadge from "../ui/StoreBadge.astro";
 import Logotype from "../brand/Logotype.astro";
-import { url } from "../../lib/url";
+import { INSTALL_HREF } from "../../lib/store";
 
 interface FooterLink {
   href?: string;
   label: string;
+  strong?: boolean;
 }
 
 interface FooterColumn {
@@ -38,13 +41,13 @@ const {
         { href: "#como-funciona", label: "Cómo funciona" },
         { href: "#beneficios", label: "Beneficios" },
         { href: "#plataforma", label: "La app" },
-        { href: "#testimonios", label: "Comunidad" },
+        { href: "#descargar", label: "Descargar la app", strong: true },
       ],
     },
     {
       title: "Empresa",
       links: [
-        { href: url("pages/about.html"), label: "Sobre nosotros" },
+        { label: "Sobre nosotros" },
         { label: "Contacto" },
         { label: "Prensa" },
         { label: "Carreras" },
@@ -87,6 +90,7 @@ const social: { icon: IconName; label: string; href?: string }[] = [
             Plataforma de trueque para economía circular. Construyendo una Lima más sostenible, un
             intercambio a la vez.
           </p>
+          <StoreBadge theme="light" href={withBase(INSTALL_HREF)} />
         </div>
         {
           footerColumns.map((column) => (
@@ -94,7 +98,9 @@ const social: { icon: IconName; label: string; href?: string }[] = [
               <h3 class="site-footer__title">{column.title}</h3>
               <ul class="site-footer__links">
                 {column.links.map((link) => (
-                  <li>{link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}</li>
+                  <li class:list={[link.strong && "is-strong"]}>
+                    {link.href ? <a href={link.href}>{link.label}</a> : <span>{link.label}</span>}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -150,11 +156,18 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     padding-bottom: 52px;
   }
 
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
   .site-footer__desc {
     color: color-mix(in srgb, var(--color-paper) 65%, transparent);
     font-size: 1rem;
     line-height: 1.6;
-    max-width: 300px;
+    max-width: 340px;
     margin: 0;
   }
 
@@ -183,6 +196,11 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     font-size: 0.96rem;
     text-decoration: none;
     transition: color var(--dur-fast) var(--ease-standard);
+  }
+
+  .site-footer__links .is-strong a {
+    color: var(--color-paper);
+    font-weight: 700;
   }
 
   .site-footer__links a:hover,
@@ -285,40 +303,6 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     a.site-footer__social-item:focus-visible {
       transform: none;
     }
-  }
-
-  /* High contrast: white block, black text and 2px outlines; links keep the
-     global HC link color. The wordmark turns solid ink. */
-  :global(body.high-contrast) .site-footer__block {
-    background: var(--color-hc-paper);
-    color: var(--color-hc-ink);
-    outline: 2px solid var(--color-hc-ink);
-    outline-offset: -2px;
-  }
-
-  :global(body.high-contrast) .site-footer__desc,
-  :global(body.high-contrast) .site-footer__copy,
-  :global(body.high-contrast) .site-footer__title,
-  :global(body.high-contrast) .site-footer__links span {
-    color: var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__bottom {
-    border-top-color: var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__social-item {
-    background: var(--color-hc-paper);
-    color: var(--color-hc-ink);
-    border: 2px solid var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__logo :global(.logotype__glyphs) {
-    fill: var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__logo :global(.logotype__leaf) {
-    fill: var(--color-hc-ink);
   }
 
   @media (forced-colors: active) {

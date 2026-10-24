@@ -1,0 +1,96 @@
+---
+/**
+ * "Disponible en Google Play" pill with the official Google Play icon (its
+ * four Google brand colors stay as drawn). Dark = ink pill for light
+ * surfaces; light = white pill with a hairline for dark surfaces.
+ * Renders a link when `href` is set, a static label otherwise.
+ */
+import type { HTMLAttributes } from "astro/types";
+import GooglePlayIcon from "../../assets/brand/google-play-icon.svg";
+
+interface Props extends HTMLAttributes<"a"> {
+  theme?: "dark" | "light";
+  href?: string;
+}
+
+const { theme = "dark", href, class: className, ...rest } = Astro.props;
+const Tag = href ? "a" : "span";
+---
+
+<Tag href={href} class:list={["store-badge", `store-badge--${theme}`, className]} {...rest}>
+  <GooglePlayIcon class="store-badge__icon" aria-hidden="true" />
+  <span class="store-badge__text">
+    <span class="store-badge__overline">Disponible en</span>
+    <span class="store-badge__name">Google Play</span>
+  </span>
+</Tag>
+
+<style>
+  .store-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 26px 10px 18px;
+    border-radius: var(--radius-full);
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .store-badge--dark {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .store-badge--light {
+    background: var(--color-card);
+    color: var(--color-ink);
+    border: 1px solid var(--color-border);
+  }
+
+  a.store-badge:hover,
+  a.store-badge:focus-visible {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  a.store-badge:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .store-badge :global(.store-badge__icon) {
+    flex: none;
+    width: 25.4px;
+    height: 28px;
+  }
+
+  .store-badge__text {
+    display: grid;
+  }
+
+  .store-badge__overline {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .store-badge--light .store-badge__overline {
+    color: var(--color-ink-2);
+  }
+
+  .store-badge__name {
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+
+  @media (forced-colors: active) {
+    .store-badge {
+      border: 1px solid ButtonText;
+    }
+  }
+</style>
