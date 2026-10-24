@@ -66,7 +66,7 @@ const classes = [
   /* === Sticker (landing pill) ===
      Flat since T9: the hairline carried over from the editorial theme is
      retired (transparent border keeps the size and shows under forced
-     colors); high contrast restores a 2px black outline below. */
+     colors). */
   .btn--sticker {
     gap: var(--space-10);
     font-weight: 800;
@@ -169,10 +169,6 @@ const classes = [
   .btn--sticker:focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 3px;
-  }
-
-  :global(body.high-contrast) .btn--sticker {
-    border: var(--border-ink);
   }
 
   @media (forced-colors: active) {

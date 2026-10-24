@@ -305,40 +305,6 @@ const social: { icon: IconName; label: string; href?: string }[] = [
     }
   }
 
-  /* High contrast: white block, black text and 2px outlines; links keep the
-     global HC link color. The wordmark turns solid ink. */
-  :global(body.high-contrast) .site-footer__block {
-    background: var(--color-hc-paper);
-    color: var(--color-hc-ink);
-    outline: 2px solid var(--color-hc-ink);
-    outline-offset: -2px;
-  }
-
-  :global(body.high-contrast) .site-footer__desc,
-  :global(body.high-contrast) .site-footer__copy,
-  :global(body.high-contrast) .site-footer__title,
-  :global(body.high-contrast) .site-footer__links span {
-    color: var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__bottom {
-    border-top-color: var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__social-item {
-    background: var(--color-hc-paper);
-    color: var(--color-hc-ink);
-    border: 2px solid var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__logo :global(.logotype__glyphs) {
-    fill: var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .site-footer__logo :global(.logotype__leaf) {
-    fill: var(--color-hc-ink);
-  }
-
   @media (forced-colors: active) {
     .site-footer__logo :global(.logotype__glyphs),
     .site-footer__logo :global(.logotype__leaf) {

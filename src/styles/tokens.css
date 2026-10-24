@@ -49,15 +49,6 @@
   --color-warning-ink: #7a5c00; /* 5.45:1 on --color-warning-soft */
   --color-info: #2874a6; /* 4.52:1 on bg */
 
-  /* High-contrast mode (settings > Alto Contraste, body.high-contrast in
-     global.css): pure black on white, AAA dark green, saturated link blue. */
-  --color-hc-ink: #000000;
-  --color-hc-ink-2: #1a1a1a;
-  --color-hc-paper: #ffffff;
-  --color-hc-primary: #14532d;
-  --color-hc-primary-dark: #0e3d21;
-  --color-hc-link: #00279c;
-
   /* Third-party brand colors (social login buttons only) */
   --color-brand-facebook: #166fe5;
 
@@ -117,8 +108,7 @@
   --shadow-soft: 0 1px 3px rgba(16, 41, 28, 0.05);
   --shadow-lift: 0 10px 28px -10px rgba(16, 41, 28, 0.18);
   --shadow-modal: 0 24px 64px -16px rgba(10, 29, 19, 0.28);
-  /* Outline roles: hairlines in the neutral family; body.high-contrast
-     (global.css) turns them into strong black outlines. */
+  /* Outline roles: hairlines in the neutral family. */
   --border-ink: 1px solid var(--color-border);
   --border-ink-thin: 1px solid var(--color-border);
 

@@ -60,9 +60,4 @@ const { tone = "paper", as: Tag = "span", class: className, ...rest } = Astro.pr
     --sticker-bg: var(--color-ink);
     --sticker-fg: var(--color-brand);
   }
-
-  /* Without the old ink border, high contrast needs an explicit outline. */
-  :global(body.high-contrast) .sticker {
-    outline: 2px solid var(--color-hc-ink);
-  }
 </style>

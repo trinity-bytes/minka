@@ -17,7 +17,7 @@ One shared look for the landing and the app: brand green `#2ecc71` as a fill, de
 | Ink and surfaces | `--color-ink`, `--color-ink-2`, `--color-paper` (page tint), `--color-paper-2`, `--color-card` (white). |
 | Accent | `--color-lavender`, `--color-lavender-soft`, `--color-lavender-ink`; text on lavender uses `--color-on-lavender`. No green on lavender. |
 | Tints and status | `--color-mint`, `--color-error*`, `--color-warning*`, `--color-info`. |
-| Outlines | `--border-ink` / `--border-ink-thin` are hairlines; high contrast turns them into black outlines. |
+| Outlines | `--border-ink` / `--border-ink-thin` are hairlines. |
 | Shape | Radii `--radius-*` (cards 28px, bento 38px, buttons and chips are pills). |
 | Elevation | Soft shadows only (`--shadow-sm` to `--shadow-modal`, `--shadow-lift`); no offset shadows. |
 | Motion | `--ease-*`, `--dur-*`, `--stagger-*`; every animation respects `prefers-reduced-motion`. |
@@ -56,4 +56,4 @@ Both fonts are self-hosted variable WOFF2 files in `public/assets/fonts/` (`src/
 - `npm test`, `npm run build`, `npm run check` (0 errors).
 - Run `npm run dev` and open `http://localhost:4321/minka/`.
 - Screenshot the changed pages at 1440, 1024 and 390px wide and compare them with the previous version.
-- Repeat with reduced motion, high contrast (`body.high-contrast`) and forced colors; walk the page with the keyboard.
+- Repeat with reduced motion and forced colors; walk the page with the keyboard.
