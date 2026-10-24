@@ -48,6 +48,8 @@ Mink’a es una plataforma digital orientada a la economía circular y el truequ
   - Beneficios del trueque y su aporte al ahorro.
   - Indicadores de impacto ambiental y social.
   - Voces reales de la comunidad (testimonios).
+  - Preguntas frecuentes en un acordeón nativo (una respuesta abierta a la vez).
+- **Microinteracciones:** parallax por capas en el hero, badge de Google Play magnético, video que se expande y olas que se inflan con el scroll; se desactivan con `prefers-reduced-motion` y en pantallas táctiles.
 - **Optimización del performance:** imágenes comprimidas y carga diferida para conexiones limitadas.
 - **Despliegue automatizado:** integración con GitHub Pages para actualizaciones rápidas.
 
