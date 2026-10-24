@@ -20,7 +20,7 @@ const landing = url();
 
 <BaseLayout
   title="Página no encontrada - Mink'a"
-  description="La página que buscas no existe o cambió de lugar. Vuelve al inicio de Mink'a o busca trueques cerca de ti."
+  description="La página que buscas no existe o cambió de lugar. Vuelve al inicio de Mink'a."
   bodyClass="not-found-page"
   preloadFonts={["fraunces", "inter"]}
 >
@@ -51,7 +51,6 @@ const landing = url();
         </p>
         <div class="not-found__actions">
           <Button href={landing} variant="primary">Volver al inicio</Button>
-          <Button href={url("pages/busqueda.html")}>Buscar trueques</Button>
         </div>
       </div>
     </div>
@@ -183,21 +182,5 @@ const landing = url();
     .not-found__block :global(.not-found__chip--c) {
       display: none;
     }
-  }
-
-  :global(body.high-contrast) .not-found__block {
-    background: var(--color-hc-paper);
-    outline: 2px solid var(--color-hc-ink);
-    outline-offset: -2px;
-  }
-
-  :global(body.high-contrast) .not-found__zero {
-    background: var(--color-hc-paper);
-    color: var(--color-hc-ink);
-    outline: 0.04em solid var(--color-hc-ink);
-  }
-
-  :global(body.high-contrast) .not-found__title :global(em) {
-    color: var(--color-hc-ink);
   }
 </style>

@@ -17,52 +17,43 @@ One shared look for the landing and the app: brand green `#2ecc71` as a fill, de
 | Ink and surfaces | `--color-ink`, `--color-ink-2`, `--color-paper` (page tint), `--color-paper-2`, `--color-card` (white). |
 | Accent | `--color-lavender`, `--color-lavender-soft`, `--color-lavender-ink`; text on lavender uses `--color-on-lavender`. No green on lavender. |
 | Tints and status | `--color-mint`, `--color-error*`, `--color-warning*`, `--color-info`. |
-| Outlines | `--border-ink` / `--border-ink-thin` are hairlines; high contrast turns them into black outlines. |
+| Outlines | `--border-ink` / `--border-ink-thin` are hairlines. |
 | Shape | Radii `--radius-*` (cards 28px, bento 38px, buttons and chips are pills). |
 | Elevation | Soft shadows only (`--shadow-sm` to `--shadow-modal`, `--shadow-lift`); no offset shadows. |
 | Motion | `--ease-*`, `--dur-*`, `--stagger-*`; every animation respects `prefers-reduced-motion`. |
 
-Contrast ratios are noted next to each text token. `src/scripts/tokens.ts` reads tokens at runtime for canvas and Chart.js.
+Contrast ratios are noted next to each text token.
 
 ## Type
 
 | Role | Font | Where |
 |------|------|-------|
 | Display | Fraunces Black, SOFT 100, opsz 144 (`.display`) | Landing headlines, brand moments |
-| Titles | Fraunces 700 (`--font-title-weight`) | App page titles only (`ui/PageHead`) |
+| Titles | Fraunces 700 (`--font-title-weight`) | Footer column titles |
 | UI | Inter | Everything else |
 
 Both fonts are self-hosted variable WOFF2 files in `public/assets/fonts/` (`src/styles/fonts.css`).
-
-## App shell (`src/components/layout/AppLayout.astro`)
-
-- Desktop: fixed `AppSidebar` on the left (icon rail at 769–1099px), the page in `<main>`, and an optional right rail (`shell="rail"` or a `rail` slot, from 1280px).
-- Phones: slim `AppHeader` on top and `AppTabBar` at the bottom.
-- Slots: default, `rail`, `before-main`, `after-main` (modals, fixed bars).
 
 ## Shared primitives
 
 | Component | Purpose |
 |-----------|---------|
 | `brand/Logotype`, `brand/Logomark` | SVG wordmark and leaf mark; tones follow tokens |
-| `ui/Button`, `ui/Badge`, `ui/Chip`, `ui/Toggle`, `ui/PillTabs` | Controls (pills, flat) |
-| `ui/Card`, `ui/CardSection`, `ui/PageHead`, `ui/SectionHead` | Surfaces and headings |
+| `ui/Button` | Pills: paper, primary, ink, outline |
+| `ui/SectionHead` | Section heading with sticker eyebrow |
+| `ui/StoreBadge` | "Disponible en Google Play" pill (dark/light) with the official icon; link target in `src/lib/store.ts` |
 | `ui/Avatar` | Initials avatar; tone from `src/scripts/lib/avatar.js` |
-| `ui/EmptyState`, `ui/ErrorState`, `ui/Skeleton` | Shared states; markup from `src/scripts/lib/states.js`, styles in `src/styles/states.css` |
-| `ui/Modal` | Dialog shell |
 | `ui/Sticker`, `ui/IconChip`, `ui/BlobMedia`, `ui/WordReveal` | Landing pieces (tilted pills, icon discs, organic photo crops, word reveal) |
+| `landing/PhoneFrame` | Android phone mockup around a 9:20 app screen exported from Figma |
 
-The `/brand` page (not linked, not in the sitemap) shows the brand primitives side by side.
+## Copy
 
-## Copy and i18n
-
-- UI copy is Spanish. English and Quechua live in `public/assets/scripts/core/translations.js`.
-- Markup present at load: add `data-i18n="key"` (or `data-i18n-placeholder`) on the element that holds only the text.
-- Strings built in JS: `tr(key, spanishFallback, vars)` from `src/scripts/lib/i18n.js`.
+- UI copy is Spanish.
+- Every install link points to the Google Play listing in `src/lib/store.ts`; while it is unset (the app is not published yet) they go to the `#descargar` section and no install QR is shown.
 
 ## Checks before a commit
 
 - `npm test`, `npm run build`, `npm run check` (0 errors).
 - Run `npm run dev` and open `http://localhost:4321/minka/`.
 - Screenshot the changed pages at 1440, 1024 and 390px wide and compare them with the previous version.
-- Repeat with reduced motion, high contrast (Settings > Alto Contraste) and forced colors; walk the page with the keyboard.
+- Repeat with reduced motion and forced colors; walk the page with the keyboard.

@@ -66,7 +66,7 @@ const steps: Step[] = [
   {
     tone: "brand",
     title: "Intercambia y celebra",
-    text: "Coordina el encuentro, completa el trueque y gana eco-puntos. Así cuidamos el planeta juntos.",
+    text: "Coordina el encuentro, cierra el trueque con el código QR de la app y gana eco-puntos. Así cuidamos el planeta juntos.",
     glyph: ["M4 8h15.5", "M15.5 4l4 4-4 4", "M20 16H4.5", "M8.5 12l-4 4 4 4"],
     photo: {
       src: intercambiaManos,
@@ -309,11 +309,6 @@ const steps: Step[] = [
     stroke-width: 1.7;
     stroke-linecap: round;
     stroke-linejoin: round;
-  }
-
-  :global(body.high-contrast) .step-card {
-    outline: 2px solid var(--color-hc-ink);
-    outline-offset: -2px;
   }
 
   @media (forced-colors: active) {

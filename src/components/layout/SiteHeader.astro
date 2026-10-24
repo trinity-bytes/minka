@@ -1,15 +1,16 @@
 ---
 /**
  * Landing header: floating white pill (detached from the top edge) with the
- * logotype, pill anchor links and pill CTAs; it gains a soft shadow once the
- * page scrolls. Below 860px the links move into a dropdown panel driven by
- * menu-disclosure (focus trap, Escape, focus return). Other public pages
- * (about, 404) pass `anchorBase={url()}` so the anchors point back to the
+ * logotype, pill anchor links and the download CTA; it gains a soft shadow
+ * once the page scrolls. Below 860px the links move into a dropdown panel
+ * driven by menu-disclosure (focus trap, Escape, focus return) while the
+ * CTA stays visible ("Instalar" on phones). The 404 page passes
+ * `anchorBase={url()}` so the anchors (CTA included) point back to the
  * landing.
  */
 import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
 import Logotype from "../brand/Logotype.astro";
-import { url } from "../../lib/url";
 
 interface NavLink {
   href: string;
@@ -20,9 +21,8 @@ interface Props {
   links?: NavLink[];
   ctaHref?: string;
   ctaLabel?: string;
-  /** Secondary pill (sign in); pass an empty label to hide it. */
-  loginHref?: string;
-  loginLabel?: string;
+  /** Shorter CTA label for phones (<= 480px). */
+  ctaShortLabel?: string;
   /** Logo target; defaults to the hero anchor. */
   homeHref?: string;
   /** Prefix for `#anchor` links when rendered outside the landing. */
@@ -33,18 +33,19 @@ const {
   links = [
     { href: "#como-funciona", label: "Cómo funciona" },
     { href: "#beneficios", label: "Beneficios" },
+    { href: "#plataforma", label: "La app" },
     { href: "#impacto", label: "Impacto" },
     { href: "#testimonios", label: "Testimonios" },
   ],
-  ctaHref = url("pages/auth.html"),
-  ctaLabel = "Empezar ahora",
-  loginHref = url("pages/auth.html"),
-  loginLabel = "Ingresar",
+  ctaHref = "#descargar",
+  ctaLabel = "Descargar la app",
+  ctaShortLabel = "Instalar",
   anchorBase = "",
 } = Astro.props;
 const withBase = (href: string) => (href.startsWith("#") ? `${anchorBase}${href}` : href);
 const homeHref = withBase(Astro.props.homeHref ?? "#inicio");
 const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
+const cta = withBase(ctaHref);
 ---
 
 <header class="site-header" data-site-header>
@@ -54,18 +55,12 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     </a>
     <nav class="site-nav" id="menu-principal" aria-label="Navegación principal">
       {navLinks.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
-      <!-- Mobile-only actions (inside the dropdown); desktop ones live in actions. -->
-      <div class="site-nav__actions">
-        {loginLabel && <a href={loginHref} class="site-header__login">{loginLabel}</a>}
-        <Button href={ctaHref} variant="primary" size="sm" class="site-header__cta">
-          {ctaLabel}
-        </Button>
-      </div>
     </nav>
     <div class="site-header__actions">
-      {loginLabel && <a href={loginHref} class="site-header__login">{loginLabel}</a>}
-      <Button href={ctaHref} variant="primary" size="sm" class="site-header__cta">
-        {ctaLabel}
+      <Button href={cta} variant="primary" size="sm" class="site-header__cta">
+        <Icon name="download" size={18} />
+        <span class="site-header__cta-long">{ctaLabel}</span>
+        <span class="site-header__cta-short">{ctaShortLabel}</span>
       </Button>
       <button
         type="button"
@@ -165,8 +160,7 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     gap: 4px;
   }
 
-  .site-nav__link,
-  .site-header__login {
+  .site-nav__link {
     display: inline-flex;
     align-items: center;
     padding: 10px 16px;
@@ -181,17 +175,9 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
   }
 
   .site-nav__link:hover,
-  .site-nav__link:focus-visible,
-  .site-header__login:hover,
-  .site-header__login:focus-visible {
+  .site-nav__link:focus-visible {
     background: var(--color-mint);
     color: var(--color-ink);
-  }
-
-  .site-header__login {
-    font-weight: 700;
-    color: var(--color-ink);
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--color-ink) 16%, transparent);
   }
 
   .site-header__actions {
@@ -203,11 +189,6 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
   .site-header__inner :global(.btn.site-header__cta) {
     border-color: transparent;
     padding: 10px 20px;
-  }
-
-  /* Mobile dropdown actions are hidden on desktop. */
-  .site-nav__actions {
-    display: none;
   }
 
   /* === Hamburger: two bars that morph into an X === */
@@ -259,18 +240,9 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
     outline-offset: 2px;
   }
 
-  :global(body.high-contrast) .site-header__inner {
-    background: var(--color-card);
-    border: 2px solid var(--color-hc-ink);
-  }
-
   @media (max-width: 1080px) {
     .site-nav__link {
       padding: 10px 12px;
-    }
-
-    .site-header__actions .site-header__login {
-      display: none;
     }
   }
 
@@ -307,31 +279,22 @@ const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
       font-size: 1rem;
     }
 
-    .site-nav__actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-      padding-top: 12px;
-      border-top: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
-    }
-
-    .site-nav__actions > * {
-      flex: 1 1 auto;
-      justify-content: center;
-    }
-
     .site-nav-toggle {
       display: inline-block;
     }
+  }
 
-    .site-header__actions .site-header__login,
-    .site-header__actions :global(.site-header__cta) {
+  .site-header__cta-short {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    .site-header__cta-long {
       display: none;
     }
 
-    :global(body.high-contrast) .site-nav {
-      border: 2px solid var(--color-hc-ink);
+    .site-header__cta-short {
+      display: inline;
     }
   }
 </style>
