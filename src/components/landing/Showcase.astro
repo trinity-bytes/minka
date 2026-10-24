@@ -1,34 +1,38 @@
 ---
-/** "La app por dentro": ink band with three browser-framed app screenshots. */
+/**
+ * "La app por dentro": ink band with three phones showing real app screens
+ * (home, listing detail, QR close), each tagged with a flat sticker, and the
+ * Google Play badge below. Desktop fans the side phones inwards; below 860px
+ * the phones become a swipeable scroll-snap carousel with position dots.
+ */
 import SectionHead from "../ui/SectionHead.astro";
 import Sticker from "../ui/Sticker.astro";
+import StoreBadge from "../ui/StoreBadge.astro";
 import LandingSection from "./LandingSection.astro";
-import { Picture } from "astro:assets";
-import appHome from "../../assets/images/landing/app-home.png";
-import appDashboard from "../../assets/images/landing/app-dashboard.png";
-import appChat from "../../assets/images/landing/app-chat.png";
+import PhoneFrame from "./PhoneFrame.astro";
+import { INSTALL_HREF } from "../../lib/store";
+import screenHome from "../../assets/images/landing/screen-inicio.png";
+import screenDetail from "../../assets/images/landing/screen-detalle.png";
+import screenQr from "../../assets/images/landing/screen-cierre-qr.png";
 
-const frames = [
+const phones = [
   {
     position: "side-l",
-    sticker: { label: "Explora tu barrio", tone: "mint", side: "l" },
-    url: "minka.pe/inicio",
-    image: appHome,
-    alt: "Pantalla de inicio de la app Mink'a con publicaciones populares y buscador",
+    sticker: { label: "Explora tu barrio", tone: "mint" },
+    screen: screenHome,
+    alt: "Inicio de la app Mink'a: buscador, categorías y trueques cerca de ti",
   },
   {
     position: "main",
-    sticker: { label: "Tu impacto, en números", tone: "lavender", side: "r" },
-    url: "minka.pe/impacto",
-    image: appDashboard,
-    alt: "Dashboard de impacto de Mink'a con CO₂ evitado, agua ahorrada y gráficos",
+    sticker: { label: "Propón un trueque", tone: "brand" },
+    screen: screenDetail,
+    alt: "Detalle de una bicicleta publicada, con el vecino verificado y el botón Proponer trueque",
   },
   {
     position: "side-r",
-    sticker: { label: "Negocia por chat", tone: "lavender-soft", side: "r" },
-    url: "minka.pe/chats",
-    image: appChat,
-    alt: "Chat de Mink'a para coordinar un trueque con puntos de encuentro sugeridos",
+    sticker: { label: "Cierra con QR", tone: "paper" },
+    screen: screenQr,
+    alt: "Cierre del trueque: código QR para que el otro vecino lo escanee desde su app",
   },
 ] as const;
 ---
@@ -36,158 +40,211 @@ const frames = [
 <LandingSection id="plataforma" folio="03" band="ink" class="showcase">
   <SectionHead
     eyebrow="La app por dentro"
-    eyebrowTone="lavender"
-    subtitle="Nada de maquetas: estas son las pantallas reales del prototipo que ya puedes probar."
+    eyebrowTone="mint"
+    subtitle="Así se ve Mink'a en tu celular: publica, encuentra y cierra trueques desde la app."
     inverse
   >
     Esto es <em>Mink'a</em> funcionando
   </SectionHead>
-  <div class="frames">
+  <div class="phones" data-phones tabindex="0" role="region" aria-label="Pantallas de la app Mink'a">
     {
-      frames.map((frame, i) => (
-        <figure
-          class:list={["frame", `frame--${frame.position}`]}
+      phones.map((phone, i) => (
+        <div
+          class:list={["phones__item", `phones__item--${phone.position}`]}
           data-reveal
           style={i ? `--reveal-delay: ${i * 120}ms` : undefined}
         >
-          <Sticker tone={frame.sticker.tone} class={`frame__sticker frame__sticker--${frame.sticker.side}`}>
-            {frame.sticker.label}
+          <Sticker tone={phone.sticker.tone} class="phones__sticker">
+            {phone.sticker.label}
           </Sticker>
-          <div class="frame__bar" aria-hidden="true">
-            <span class="frame__dot frame__dot--r" />
-            <span class="frame__dot frame__dot--y" />
-            <span class="frame__dot frame__dot--g" />
-            <span class="frame__url">{frame.url}</span>
-          </div>
-          <Picture
-            src={frame.image}
-            formats={["avif", "webp"]}
-            widths={[360, 540, 720, 1080]}
-            sizes="(max-width: 860px) 92vw, 480px"
-            loading="lazy"
-            decoding="async"
-            alt={frame.alt}
-          />
-        </figure>
+          <PhoneFrame screen={phone.screen} alt={phone.alt} sizes="(max-width: 860px) 62vw, 312px" />
+        </div>
       ))
     }
   </div>
+  <div class="phones__dots" aria-hidden="true">
+    {phones.map((_, i) => <span class:list={["phones__dot", i === 0 && "is-active"]} />)}
+  </div>
+  <div class="install">
+    <StoreBadge theme="light" href={INSTALL_HREF} />
+    <p class="install__note">Gratis · Android 8.0 o superior</p>
+  </div>
 </LandingSection>
 
+<script>
+  // Mark the dot of the phone most in view while the carousel scrolls.
+  const track = document.querySelector<HTMLElement>("[data-phones]");
+  const dots = document.querySelectorAll<HTMLElement>(".phones__dot");
+  if (track && dots.length && "IntersectionObserver" in window) {
+    const items = [...track.children];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const index = items.indexOf(entry.target);
+          dots.forEach((dot, i) => dot.classList.toggle("is-active", i === index));
+        }
+      },
+      { root: track, threshold: 0.6 },
+    );
+    items.forEach((item) => observer.observe(item));
+  }
+</script>
+
 <style>
-  .frames {
+  .phones {
     display: grid;
-    grid-template-columns: 1fr 1.3fr 1fr;
-    gap: 30px;
-    align-items: center;
+    grid-template-columns: 1fr 1.07fr 1fr;
+    gap: 36px;
+    align-items: start;
+    max-width: 1028px;
+    margin: 0 auto;
   }
 
-  .frame {
+  .phones:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 8px;
+    border-radius: var(--radius-lg);
+  }
+
+  .phones__item {
     position: relative;
-    margin: 0;
-    background: var(--color-card);
-    border: var(--border-ink);
-    border-radius: var(--radius-frame);
-    box-shadow: none;
-    overflow: hidden;
-    transition:
-      transform 0.25s ease,
-      box-shadow 0.25s ease;
   }
 
-  .frame:hover {
-    transform: rotate(0deg) scale(1.02);
-    z-index: 3;
+  .phones__item :global(.phone) {
+    margin: 0 auto;
   }
 
-  .frame--side-l {
-    transform: rotate(-3.5deg);
+  .phones__item--side-l,
+  .phones__item--side-r {
+    margin-top: 44px;
   }
 
-  .frame--side-r {
-    transform: rotate(3.5deg);
+  .phones__item--side-l :global(.phone),
+  .phones__item--side-r :global(.phone) {
+    width: 87%;
   }
 
-  .frame--main {
-    z-index: 2;
+  .phones__item--side-l :global(.phone) {
+    transform: rotate(4deg);
   }
 
-  .frame__bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-bottom: var(--border-ink);
-    background: var(--color-paper);
+  .phones__item--side-r :global(.phone) {
+    transform: rotate(-4deg);
   }
 
-  .frame__dot {
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    border: var(--border-ink);
-  }
-
-  .frame__dot--r {
-    background: var(--color-lavender-ink);
-  }
-
-  .frame__dot--y {
-    background: var(--color-lavender);
-  }
-
-  .frame__dot--g {
-    background: var(--color-brand);
-  }
-
-  .frame__url {
-    flex: 1;
-    margin-left: 8px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--color-ink-2);
-    background: var(--color-card);
-    border: var(--border-ink-thin);
-    border-radius: var(--radius-full);
-    padding: 3px 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .frame img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .frame .frame__sticker {
+  .phones__item :global(.phones__sticker) {
     position: absolute;
-    top: 34px;
-    z-index: 2;
+    z-index: 1;
+    top: 40px;
+    right: -6px;
   }
 
-  .frame .frame__sticker--l {
-    left: -10px;
-    --sticker-rotate: -6deg;
+  .phones__item--side-l :global(.phones__sticker) {
+    --sticker-rotate: 6deg;
   }
 
-  .frame .frame__sticker--r {
-    right: -10px;
-    --sticker-rotate: 5deg;
+  .phones__item--main :global(.phones__sticker) {
+    --sticker-rotate: 4deg;
   }
 
-  @media (max-width: 1024px) {
-    .frames {
-      grid-template-columns: 1fr;
-      max-width: 560px;
-      margin: 0 auto;
-      gap: 44px;
+  .phones__item--side-r :global(.phones__sticker) {
+    --sticker-rotate: -5deg;
+  }
+
+  .phones__dots {
+    display: none;
+  }
+
+  .install {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 20px;
+    margin-top: 64px;
+  }
+
+  .install__note {
+    margin: 0;
+    font-size: 1rem;
+    color: color-mix(in srgb, var(--color-paper) 75%, transparent);
+  }
+
+  /* === Phones: swipeable carousel === */
+  @media (max-width: 860px) {
+    .phones {
+      --item: min(62vw, 260px);
+      display: flex;
+      gap: 20px;
+      max-width: none;
+      margin: 0 calc(50% - 50vw);
+      padding: 10px calc(50vw - var(--item) / 2) 24px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
     }
 
-    .frame--side-l,
-    .frame--side-r {
-      transform: rotate(-1.5deg);
+    .phones::-webkit-scrollbar {
+      display: none;
+    }
+
+    .phones__item {
+      flex: 0 0 var(--item);
+      scroll-snap-align: center;
+    }
+
+    .phones__item--side-l,
+    .phones__item--side-r {
+      margin-top: 0;
+    }
+
+    .phones__item--side-l :global(.phone),
+    .phones__item--side-r :global(.phone) {
+      width: 100%;
+      transform: none;
+    }
+
+    .phones__item :global(.phones__sticker) {
+      top: 30px;
+      right: -12px;
+    }
+
+    .phones__dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .phones__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: color-mix(in srgb, var(--color-paper) 30%, transparent);
+      transition:
+        width 0.2s ease,
+        background-color 0.2s ease;
+    }
+
+    .phones__dot.is-active {
+      width: 24px;
+      background: var(--color-brand);
+    }
+
+    .install {
+      flex-direction: column;
+      margin-top: 32px;
+    }
+
+    .install__note {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .phones__dot {
+      transition: none;
     }
   }
 </style>
