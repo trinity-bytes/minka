@@ -2,7 +2,8 @@
 /**
  * Landing section wrapper: vertical rhythm, centered container, optional
  * giant folio number ("01") behind the content, and the colored "band"
- * variant with a wavy top edge (showcase).
+ * variant with wavy top and bottom edges (showcase) that swell from flat as
+ * they scroll into view.
  */
 interface Props {
   id?: string;
@@ -37,6 +38,18 @@ const { id, folio, band, compactTop = false, class: className } = Astro.props;
   <div class="container section__inner">
     <slot />
   </div>
+  {
+    band && (
+      <svg
+        class="band__wave band__wave--bottom"
+        viewBox="0 0 1440 64"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path d="M0,0 L1440,0 L1440,28 C1200,60 960,6 720,34 C480,62 240,4 0,30 Z" />
+      </svg>
+    )
+  }
 </section>
 
 <style>
@@ -101,6 +114,38 @@ const { id, folio, band, compactTop = false, class: className } = Astro.props;
 
   .band__wave path {
     fill: var(--band-bg);
+  }
+
+  .band__wave--bottom {
+    top: 100%;
+    bottom: auto;
+  }
+
+  /* Each wave swells from almost flat to its full height while it travels
+     from the bottom of the viewport toward the middle, anchored on the band
+     side so the seam never opens. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .band__wave {
+        transform-origin: 50% 100%;
+        animation: wave-swell linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 45%;
+      }
+
+      .band__wave--bottom {
+        transform-origin: 50% 0;
+      }
+
+      @keyframes wave-swell {
+        from {
+          scale: 1 0.12;
+        }
+        to {
+          scale: 1 1;
+        }
+      }
+    }
   }
 
   .band--ink {
