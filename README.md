@@ -43,7 +43,7 @@ Mink’a es una plataforma digital orientada a la economía circular y el truequ
 - **Diseño responsivo:** experiencia consistente en dispositivos móviles, tabletas y escritorio.
 - **Accesibilidad base:** uso de roles ARIA, contraste AA y soporte para navegación por teclado.
 - **Secciones informativas clave:**
-  - Hero con CTA principal.
+  - Hero con el badge de Google Play como CTA principal.
   - Tres pasos que explican cómo funciona Mink’a.
   - Beneficios del trueque y su aporte al ahorro.
   - Indicadores de impacto ambiental y social.
@@ -62,12 +62,12 @@ src/
 ├── components/
 │   ├── layout/               # BaseLayout, SiteHeader, SiteFooter
 │   ├── brand/                # Logotype y Logomark (SVG)
-│   ├── ui/                   # Primitivas compartidas: Button, Avatar, Sticker, BlobMedia,
-│                             # IconChip, SectionHead, WordReveal, Icon
-│   └── landing/              # Secciones de la landing
+│   ├── ui/                   # Primitivas compartidas: Button, StoreBadge, Avatar, Sticker,
+│                             # BlobMedia, IconChip, SectionHead, WordReveal, Icon
+│   └── landing/              # Secciones de la landing y PhoneFrame (mockup de celular)
 ├── assets/
-│   ├── brand/                # Trazos del logo (paths.ts) y copias SVG sueltas
-│   └── images/               # Imágenes optimizadas con astro:assets (AVIF/WebP + srcset)
+│   ├── brand/                # Trazos del logo (paths.ts), copias SVG e ícono de Google Play
+│   └── images/               # Fotos y pantallas de la app (astro:assets, AVIF/WebP + srcset)
 ├── styles/
 │   ├── tokens.css            # Única fuente de design tokens
 │   ├── fonts.css             # @font-face (WOFF2)
@@ -76,7 +76,7 @@ src/
 │   ├── lib/                  # Helpers puros con tests (avatar, contador de stats, palabras)
 │   ├── menu-disclosure.ts    # Menú móvil accesible (Escape, foco, focus trap)
 │   └── reveal.ts             # Animaciones de aparición
-└── lib/                      # url/asset con base
+└── lib/                      # url/asset con base y link de Google Play (store.ts)
 public/                       # Copiado tal cual a dist/
 ├── favicon.ico
 └── assets/fonts/             # Inter y Fraunces (variables) en WOFF2
