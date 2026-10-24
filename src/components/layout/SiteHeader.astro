@@ -1,13 +1,15 @@
 ---
 /**
  * Landing header: floating white pill (detached from the top edge) with the
- * logotype, pill anchor links and pill CTAs; it gains a soft shadow once the
- * page scrolls. Below 860px the links move into a dropdown panel driven by
- * menu-disclosure (focus trap, Escape, focus return). The 404 page passes
+ * logotype, pill anchor links and the download CTA; it gains a soft shadow
+ * once the page scrolls. Below 860px the links move into a dropdown panel
+ * driven by menu-disclosure (focus trap, Escape, focus return) while the
+ * CTA stays visible ("Instalar" on phones). The 404 page passes
  * `anchorBase={url()}` so the anchors (CTA included) point back to the
  * landing.
  */
 import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
 import Logotype from "../brand/Logotype.astro";
 
 interface NavLink {
@@ -19,6 +21,8 @@ interface Props {
   links?: NavLink[];
   ctaHref?: string;
   ctaLabel?: string;
+  /** Shorter CTA label for phones (<= 480px). */
+  ctaShortLabel?: string;
   /** Logo target; defaults to the hero anchor. */
   homeHref?: string;
   /** Prefix for `#anchor` links when rendered outside the landing. */
@@ -29,11 +33,13 @@ const {
   links = [
     { href: "#como-funciona", label: "Cómo funciona" },
     { href: "#beneficios", label: "Beneficios" },
+    { href: "#plataforma", label: "La app" },
     { href: "#impacto", label: "Impacto" },
     { href: "#testimonios", label: "Testimonios" },
   ],
   ctaHref = "#descargar",
-  ctaLabel = "Empezar ahora",
+  ctaLabel = "Descargar la app",
+  ctaShortLabel = "Instalar",
   anchorBase = "",
 } = Astro.props;
 const withBase = (href: string) => (href.startsWith("#") ? `${anchorBase}${href}` : href);
@@ -49,16 +55,12 @@ const cta = withBase(ctaHref);
     </a>
     <nav class="site-nav" id="menu-principal" aria-label="Navegación principal">
       {navLinks.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
-      <!-- Mobile-only actions (inside the dropdown); desktop ones live in actions. -->
-      <div class="site-nav__actions">
-        <Button href={cta} variant="primary" size="sm" class="site-header__cta">
-          {ctaLabel}
-        </Button>
-      </div>
     </nav>
     <div class="site-header__actions">
       <Button href={cta} variant="primary" size="sm" class="site-header__cta">
-        {ctaLabel}
+        <Icon name="download" size={18} />
+        <span class="site-header__cta-long">{ctaLabel}</span>
+        <span class="site-header__cta-short">{ctaShortLabel}</span>
       </Button>
       <button
         type="button"
@@ -189,11 +191,6 @@ const cta = withBase(ctaHref);
     padding: 10px 20px;
   }
 
-  /* Mobile dropdown actions are hidden on desktop. */
-  .site-nav__actions {
-    display: none;
-  }
-
   /* === Hamburger: two bars that morph into an X === */
   .site-nav-toggle {
     display: none;
@@ -287,30 +284,26 @@ const cta = withBase(ctaHref);
       font-size: 1rem;
     }
 
-    .site-nav__actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-      padding-top: 12px;
-      border-top: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
-    }
-
-    .site-nav__actions > * {
-      flex: 1 1 auto;
-      justify-content: center;
-    }
-
     .site-nav-toggle {
       display: inline-block;
     }
 
-    .site-header__actions :global(.site-header__cta) {
+    :global(body.high-contrast) .site-nav {
+      border: 2px solid var(--color-hc-ink);
+    }
+  }
+
+  .site-header__cta-short {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    .site-header__cta-long {
       display: none;
     }
 
-    :global(body.high-contrast) .site-nav {
-      border: 2px solid var(--color-hc-ink);
+    .site-header__cta-short {
+      display: inline;
     }
   }
 </style>

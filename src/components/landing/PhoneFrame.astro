@@ -1,0 +1,60 @@
+---
+/**
+ * Android phone mockup: ink body with a thin bezel around a screen exported
+ * from the app mockups (Figma, 412x917 frames, 9:20). The consumer sizes the
+ * figure (width, or height thanks to its aspect ratio); the bezel lives on an
+ * inner body so its percentage padding resolves against the phone width.
+ */
+import type { ImageMetadata } from "astro";
+import type { HTMLAttributes } from "astro/types";
+import { Picture } from "astro:assets";
+
+interface Props extends HTMLAttributes<"figure"> {
+  screen: ImageMetadata;
+  alt: string;
+  sizes: string;
+  loading?: "eager" | "lazy";
+}
+
+const { screen, alt, sizes, loading = "lazy", class: className, ...rest } = Astro.props;
+---
+
+<figure class:list={["phone", className]} {...rest}>
+  <span class="phone__body">
+    <Picture
+      src={screen}
+      formats={["avif", "webp"]}
+      widths={[240, 360, 480, 720]}
+      sizes={sizes}
+      loading={loading}
+      decoding="async"
+      alt={alt}
+      class="phone__screen"
+    />
+  </span>
+</figure>
+
+<style>
+  .phone {
+    margin: 0;
+    aspect-ratio: 252 / 539;
+  }
+
+  .phone__body {
+    display: block;
+    padding: 3.2%;
+    background: var(--color-ink);
+    border: 1px solid var(--color-ink-2);
+    border-radius: 15.9% / 7.4%;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .phone :global(.phone__screen) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 412 / 917;
+    border-radius: 13.7% / 6.1%;
+    background: var(--color-paper);
+  }
+</style>

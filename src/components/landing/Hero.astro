@@ -1,26 +1,32 @@
 ---
 /**
  * Landing hero, organic language: poster headline revealed word by word,
- * pill CTAs and a stats row of icon chips on the left; on the right a mint
- * stage whose blob-cropped photo bleeds off the card edge, with smaller blob
- * photos, flat stickers and a "neighbours" card overlapping it. Nothing
- * loops, so no pause control is needed here (the ribbon below has its own).
+ * the Google Play badge plus a "how it works" pill and a stats row of icon
+ * chips on the left; on the right a mint stage whose blob-cropped photo
+ * bleeds off the card edge, with a phone showing the app home screen, a
+ * smaller blob photo, flat stickers and a "neighbours" card overlapping it.
+ * Nothing loops, so no pause control is needed here (the ribbon below has
+ * its own).
  */
 import Avatar from "../ui/Avatar.astro";
 import BlobMedia from "../ui/BlobMedia.astro";
 import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
 import IconChip from "../ui/IconChip.astro";
+import StoreBadge from "../ui/StoreBadge.astro";
 import Sticker from "../ui/Sticker.astro";
 import WordReveal from "../ui/WordReveal.astro";
+import PhoneFrame from "./PhoneFrame.astro";
 import { Picture } from "astro:assets";
+import { INSTALL_HREF } from "../../lib/store";
 import bike from "../../assets/images/hero/bicicleta-vintage.jpg";
-import guitar from "../../assets/images/hero/guitarra-acustica.jpg";
 import books from "../../assets/images/hero/set-libros.jpg";
+import screenHome from "../../assets/images/landing/screen-inicio.png";
 
 const stats = [
-  { value: "1,250+", label: "trueques", icon: "spark", tone: "brand" },
-  { value: "750+", label: "vecinos", icon: "star", tone: "lavender" },
-  { value: "500 kg", label: "menos residuos", icon: "spark", tone: "mint" },
+  { value: "1,250+", label: "trueques", icon: "swap", tone: "brand" },
+  { value: "750+", label: "vecinos", icon: "people", tone: "lavender" },
+  { value: "500 kg", label: "menos residuos", icon: "leaf", tone: "mint" },
 ] as const;
 
 const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
@@ -37,12 +43,15 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
         delay={120}
       />
       <p class="hero__subtitle" data-reveal style="--reveal-delay: 420ms">
-        Publica lo que ya no usas, conecta con vecinos verificados e intercambia sin gastar un sol.
-        Ahorro real para ti, menos residuos para la ciudad.
+        Descarga la app, publica lo que ya no usas y conecta con vecinos verificados para
+        intercambiar sin gastar un sol. Ahorro real para ti, menos residuos para la ciudad.
       </p>
       <div class="hero__cta" data-reveal style="--reveal-delay: 520ms">
-        <Button href="#descargar" variant="primary">Empieza a truequear</Button>
-        <Button href="#como-funciona">Ver cómo funciona ↓</Button>
+        <StoreBadge href={INSTALL_HREF} />
+        <Button href="#como-funciona" variant="outline" size="sm">
+          <Icon name="arrow-down" size={18} />
+          Ver cómo funciona
+        </Button>
       </div>
       <ul class="hero__stats" data-reveal style="--reveal-delay: 620ms">
         {
@@ -85,20 +94,18 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
         data-reveal
         style="--reveal-delay: 300ms"
       />
-      <BlobMedia
-        src={guitar}
-        alt="Guitarra acústica disponible para intercambio"
-        shape="b"
-        ratio="1.05"
-        widths={[240, 480]}
-        sizes="(max-width: 900px) 36vw, 240px"
-        class="hero__guitar"
+      <PhoneFrame
+        screen={screenHome}
+        alt="Pantalla de inicio de la app Mink'a con buscador, categorías y trueques cerca de ti"
+        sizes="(max-width: 900px) 52vw, 260px"
+        loading="eager"
+        class="hero__phone"
         data-reveal
         style="--reveal-delay: 420ms"
       />
 
-      <Sticker tone="lavender" class="hero__sticker hero__sticker--free" data-reveal style="--reveal-delay: 640ms">
-        ¡Sin dinero de por medio!
+      <Sticker tone="ink" class="hero__sticker hero__sticker--free" data-reveal style="--reveal-delay: 640ms">
+        Gratis en Android
       </Sticker>
       <Sticker tone="brand" class="hero__sticker hero__sticker--direct" data-reveal style="--reveal-delay: 760ms">
         Directo con vecinos
@@ -161,7 +168,8 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
   .hero__cta {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
+    gap: 16px;
     margin-bottom: 28px;
   }
 
@@ -204,9 +212,9 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
 
   .hero__stage :global(.hero__bike) {
     position: absolute;
-    width: 112%;
-    right: -16%;
-    bottom: -14%;
+    width: 104%;
+    right: -22%;
+    bottom: -17%;
   }
 
   .hero__stage :global(.hero__bike img) {
@@ -214,23 +222,23 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
   }
 
   .hero__visual :global(.hero__books),
-  .hero__visual :global(.hero__guitar) {
+  .hero__visual :global(.hero__phone) {
     position: absolute;
     z-index: 1;
   }
 
   .hero__visual :global(.hero__books) {
-    width: 27%;
-    top: -3%;
-    left: 1%;
-    transform: rotate(-8deg);
+    width: 30%;
+    top: 0;
+    left: 0;
+    transform: rotate(8deg);
   }
 
-  .hero__visual :global(.hero__guitar) {
-    width: 36%;
-    left: -4%;
-    bottom: 9%;
-    transform: rotate(5deg);
+  /* Sized by height (82% of the visual) so it fits short viewports too. */
+  .hero__visual :global(.hero__phone) {
+    top: 13.6%;
+    left: 17%;
+    height: 82%;
   }
 
   .hero__visual :global(.hero__sticker) {
@@ -239,9 +247,9 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
   }
 
   .hero__visual :global(.hero__sticker--free) {
-    top: 9%;
-    right: -2%;
-    --sticker-rotate: 6deg;
+    top: 6%;
+    right: 5%;
+    --sticker-rotate: -6deg;
   }
 
   .hero__visual :global(.hero__sticker--direct) {
@@ -253,8 +261,8 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
   .hero__neighbours {
     position: absolute;
     z-index: 2;
-    right: 5%;
-    bottom: 6%;
+    right: 2%;
+    bottom: 3%;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -313,8 +321,30 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
     .hero__visual {
       width: 100%;
       max-width: 560px;
-      height: clamp(360px, 92vw, 520px);
+      height: auto;
+      aspect-ratio: 358 / 460;
       margin: 0 auto;
+    }
+
+    .hero__stage {
+      inset: 0;
+    }
+
+    .hero__visual :global(.hero__books) {
+      width: 38%;
+      top: 3%;
+      left: 2%;
+    }
+
+    .hero__visual :global(.hero__phone) {
+      top: 8.7%;
+      left: 23.2%;
+      width: 53.6%;
+      height: auto;
+    }
+
+    .hero__visual :global(.hero__sticker--direct) {
+      display: none;
     }
   }
 
@@ -332,18 +362,22 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
       margin: 18px 0;
     }
 
-    .hero__stage {
-      inset: 0 0 0 6%;
+    .hero__cta {
+      gap: 8px;
+    }
+
+    .hero__cta :global(.store-badge) {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .hero__cta :global(.btn--outline) {
+      border-color: transparent;
+      padding-inline: 12px;
     }
 
     .hero__visual :global(.hero__sticker--free) {
       right: 0;
-    }
-
-    .hero__visual :global(.hero__guitar) {
-      width: 38%;
-      left: -2%;
-      bottom: 14%;
     }
 
     .hero__neighbours {
