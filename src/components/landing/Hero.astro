@@ -70,7 +70,7 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
     <div class="hero__visual">
       <div class="hero__stage">
         <!-- LCP image: static (no reveal), eager, high priority. -->
-        <BlobMedia shape="a" ratio="1.12" class="hero__bike">
+        <BlobMedia shape="a" ratio="1.12" class="hero__bike hero__layer" style="--depth: -10">
           <Picture
             src={bike}
             formats={["avif", "webp"]}
@@ -90,28 +90,38 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
         ratio="1"
         widths={[200, 400]}
         sizes="200px"
-        class="hero__books"
+        class="hero__books hero__layer"
         data-reveal
-        style="--reveal-delay: 300ms"
+        style="--reveal-delay: 300ms; --depth: 14"
       />
       <PhoneFrame
         screen={screenHome}
         alt="Pantalla de inicio de la app Mink'a con buscador, categorías y trueques cerca de ti"
         sizes="(max-width: 900px) 52vw, 260px"
         loading="eager"
-        class="hero__phone"
+        class="hero__phone hero__layer"
         data-reveal
-        style="--reveal-delay: 420ms"
+        style="--reveal-delay: 420ms; --depth: 20"
       />
 
-      <Sticker tone="ink" class="hero__sticker hero__sticker--free" data-reveal style="--reveal-delay: 640ms">
+      <Sticker
+        tone="ink"
+        class="hero__sticker hero__sticker--free hero__layer"
+        data-reveal
+        style="--reveal-delay: 640ms; --depth: 30"
+      >
         Gratis en Android
       </Sticker>
-      <Sticker tone="brand" class="hero__sticker hero__sticker--direct" data-reveal style="--reveal-delay: 760ms">
+      <Sticker
+        tone="brand"
+        class="hero__sticker hero__sticker--direct hero__layer"
+        data-reveal
+        style="--reveal-delay: 760ms; --depth: 34"
+      >
         Directo con vecinos
       </Sticker>
 
-      <div class="hero__neighbours" data-reveal style="--reveal-delay: 860ms">
+      <div class="hero__neighbours hero__layer" data-reveal style="--reveal-delay: 860ms; --depth: 26">
         <span class="hero__avatars">
           {neighbours.map((name) => <Avatar name={name} size="sm" decorative />)}
         </span>
@@ -123,6 +133,47 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
     </div>
   </div>
 </section>
+
+<script>
+  import { approach, normalizedOffset } from "../../scripts/lib/pointer.js";
+
+  // Pointer parallax: each .hero__layer shifts up to its --depth in px toward
+  // the pointer (negative depth = background, moves away), eased per frame
+  // through --hero-px/--hero-py. Fine pointers only, never with reduced motion.
+  const hero = document.querySelector<HTMLElement>(".hero");
+  const visual = hero?.querySelector<HTMLElement>(".hero__visual");
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (hero && visual && finePointer && !reduceMotion) {
+    const current = { x: 0, y: 0 };
+    const target = { x: 0, y: 0 };
+    let frame = 0;
+
+    const tick = () => {
+      current.x = approach(current.x, target.x, 0.1);
+      current.y = approach(current.y, target.y, 0.1);
+      visual.style.setProperty("--hero-px", current.x.toFixed(4));
+      visual.style.setProperty("--hero-py", current.y.toFixed(4));
+      const settled =
+        Math.abs(target.x - current.x) < 0.001 && Math.abs(target.y - current.y) < 0.001;
+      frame = settled ? 0 : requestAnimationFrame(tick);
+    };
+
+    const follow = (x: number, y: number) => {
+      target.x = x;
+      target.y = y;
+      if (!frame) frame = requestAnimationFrame(tick);
+    };
+
+    hero.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "touch") return;
+      const offset = normalizedOffset(hero.getBoundingClientRect(), event.clientX, event.clientY);
+      follow(offset.x, offset.y);
+    });
+    hero.addEventListener("pointerleave", () => follow(0, 0));
+  }
+</script>
 
 <style>
   .hero {
@@ -295,6 +346,13 @@ const neighbours = ["Lucía Quispe", "Diego Huamán", "Rosa Mamani"];
   .hero__neighbours-text b {
     font-size: 0.98rem;
     color: var(--color-ink);
+  }
+
+  /* Pointer parallax (script above). `translate` composes with each layer's
+     `transform` tilt; the reveal animation owns it only while it runs. */
+  .hero__visual :global(.hero__layer) {
+    translate: calc(var(--hero-px, 0) * var(--depth, 0) * 1px)
+      calc(var(--hero-py, 0) * var(--depth, 0) * 1px);
   }
 
   /* === Tablet: stack, visual below the copy === */
