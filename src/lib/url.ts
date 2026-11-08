@@ -1,6 +1,7 @@
 /**
- * Base-aware URL helpers. The site is deployed under `base` (/minka), so every
- * internal link and public asset must be prefixed with BASE_URL. Hash-only
+ * Base-aware URL helpers. The site is served at the domain root today, but
+ * every internal link and public asset still goes through BASE_URL so a
+ * future `base` keeps working. Hash-only
  * (`#id`) and absolute (`https:`, `mailto:`) URLs are returned unchanged.
  */
 const BASE = import.meta.env.BASE_URL.replace(/\/+$/, "");

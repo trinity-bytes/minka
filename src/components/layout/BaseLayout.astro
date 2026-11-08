@@ -9,17 +9,16 @@ import "../../styles/tokens.css";
 import "../../styles/fonts.css";
 import "../../styles/global.css";
 import { asset, url } from "../../lib/url";
-// Social card stays raster for now (crawlers do not render SVG); replace with
-// a logotype-based card later.
-import ogDefault from "../../assets/images/minka-logo.png";
 
 type PreloadFont = "inter" | "fraunces";
 
 interface Props {
   title: string;
   description?: string;
-  /** Absolute or site-relative image for social cards. */
+  /** Absolute or site-relative 1200x630 image for social cards. */
   ogImage?: string;
+  /** Alt text for the social card image. */
+  ogImageAlt?: string;
   lang?: string;
   bodyClass?: string;
   mainClass?: string;
@@ -29,7 +28,9 @@ interface Props {
 const {
   title,
   description = "Mink'a es la comunidad de trueque de Lima. Intercambia objetos y servicios con tus vecinos: ahorra dinero y cuida el planeta.",
-  ogImage = ogDefault.src,
+  // Exported from the Figma "Publicación" board (Cover page, og-image frame).
+  ogImage = url("og-image.png"),
+  ogImageAlt = "Dos vecinos se encuentran en la calle para hacer un trueque",
   lang = "es",
   bodyClass,
   mainClass,
@@ -37,7 +38,7 @@ const {
 } = Astro.props;
 
 const site = Astro.site ?? new URL(Astro.url.origin);
-// build.format "file" reports /minka/index.html for the root page.
+// build.format "file" reports /index.html for the root page.
 const canonical = new URL(Astro.url.pathname.replace(/index\.html$/, ""), site).href;
 const ogImageUrl = new URL(ogImage, site).href;
 
@@ -63,7 +64,13 @@ const FONT_PRELOADS: Record<PreloadFont, { href: string; type: string }> = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+    <meta name="theme-color" content="#eef3ef" />
     <!-- ICO first with explicit sizes: sizes="any" makes Chrome prefer the ICO over the SVG. -->
     <link rel="icon" href={url("favicon.ico")} sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />

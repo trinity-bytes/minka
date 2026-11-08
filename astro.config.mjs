@@ -2,11 +2,11 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
-// Static build for GitHub Pages (project site under /minka).
+// Static build for GitHub Pages, served at the root of the custom domain
+// (public/CNAME holds minka.jahattrinidad.com).
 // build.format "file" emits `page.html` files (404.html is what Pages serves).
 export default defineConfig({
-  site: "https://trinity-bytes.github.io",
-  base: "/minka",
+  site: "https://minka.jahattrinidad.com",
   output: "static",
   trailingSlash: "ignore",
   build: {

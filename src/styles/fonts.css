@@ -2,7 +2,7 @@
    MINK'A - Font faces (single declaration)
    Font files live in public/assets/fonts (BaseLayout preloads them by
    URL). Root-relative URLs into public/ are rewritten by Vite with the
-   configured base (/minka) at build time.
+   configured base (the domain root today) at build time.
    ============================================ */
 @font-face {
   font-family: "Inter";

@@ -5,7 +5,7 @@
 </p>
 <p align="center"><strong>Economía circular al alcance de tu comunidad</strong></p>
 <p align="center">
-  <a href="https://trinity-bytes.github.io/minka/" target="_blank">
+  <a href="https://minka.jahattrinidad.com/" target="_blank">
     <img src="https://img.shields.io/badge/Demo%20en%20vivo-00a86b?style=for-the-badge&logo=github&logoColor=white" alt="Abrir demo en vivo" />
   </a>
 </p>
@@ -58,7 +58,7 @@ Mink’a es una plataforma digital orientada a la economía circular y el truequ
 ## 🏗️ Arquitectura de la Landing
 
 ```text
-astro.config.mjs              # Salida estática, base /minka, build.format "file", sitemap
+astro.config.mjs              # Salida estática en minka.jahattrinidad.com, build.format "file", sitemap
 src/
 ├── pages/                    # Rutas: index.astro (landing) y 404.astro
 ├── components/
@@ -80,9 +80,13 @@ src/
 │   └── reveal.ts             # Animaciones de aparición
 └── lib/                      # url/asset con base y link de Google Play (store.ts)
 public/                       # Copiado tal cual a dist/
+├── CNAME                     # Dominio propio de GitHub Pages
 ├── favicon.ico
+├── og-image.png              # Tarjeta social 1200×630 (og:image y twitter:image)
 └── assets/fonts/             # Inter y Fraunces (variables) en WOFF2
 ```
+
+Las imágenes para compartir salen del tablero "Publicación" (página Cover) del Figma. La vista previa del repositorio está en [docs/brand/github-social-preview.png](docs/brand/github-social-preview.png) y se carga a mano en GitHub → Settings → General → Social preview.
 
 Lenguaje visual (tokens, tipografía, primitivas y checks visuales): [docs/visual-language.md](docs/visual-language.md).
 
@@ -103,7 +107,7 @@ Lenguaje visual (tokens, tipografía, primitivas y checks visuales): [docs/visua
 
 1. **Clona el repositorio:** `git clone https://github.com/Reflow-Tech-UPC/Minka-Landingpage.git`
 2. **Instala dependencias:** requiere Node 24 (ver `.nvmrc`); ejecuta `npm install`.
-3. **Ejecuta en local:** `npm run dev` y abre `http://localhost:4321/minka/`.
+3. **Ejecuta en local:** `npm run dev` y abre `http://localhost:4321/`.
    - `npm run build`: genera el sitio estático en `dist/` (incluye `404.html` y `sitemap-index.xml`).
    - `npm run preview`: sirve `dist/` para validar el build.
    - `npm run check`: revisa tipos y plantillas con `astro check`.
@@ -127,7 +131,7 @@ Lenguaje visual (tokens, tipografía, primitivas y checks visuales): [docs/visua
 
 ## 🔗 Acceso Rápido
 
-- Landing Page: [https://trinity-bytes.github.io/minka/](https://trinity-bytes.github.io/minka/)
+- Landing Page: [https://minka.jahattrinidad.com/](https://minka.jahattrinidad.com/)
 - Repositorio: [https://github.com/trinity-bytes/minka](https://github.com/trinity-bytes/minka)
 
 <p align="center">💚 Construido con dedicación para impulsar la colaboración y la sostenibilidad por el team Reflow Tech.</p>
