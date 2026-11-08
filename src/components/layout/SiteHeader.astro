@@ -1,16 +1,19 @@
 ---
 /**
- * Landing header: floating white pill (detached from the top edge) with the
- * logotype, pill anchor links and the download CTA; it gains a soft shadow
- * once the page scrolls. Below 860px the links move into a dropdown panel
- * driven by menu-disclosure (focus trap, Escape, focus return) while the
- * CTA stays visible ("Instalar" on phones). The 404 page passes
- * `anchorBase={url()}` so the anchors (CTA included) point back to the
- * landing.
+ * Landing header: a flat bar aligned to the hero grid with the logotype,
+ * numbered anchor links (01-06) and the download CTA. At the top of the page
+ * it has no background or border; past ~80px of scroll it stays pinned edge
+ * to edge on the page background with a 1px bottom line (200ms ease-out
+ * fade, no pill, no shadow). Below 860px the links open as a full-screen
+ * menu driven by menu-disclosure (focus trap, Escape, focus return) with the
+ * Google Play badge at the bottom, while the CTA stays visible ("Instalar"
+ * on phones). The 404 page passes `anchorBase={url()}` so the anchors (CTA
+ * included) point back to the landing.
  */
 import Button from "../ui/Button.astro";
-import Icon from "../ui/Icon.astro";
+import StoreBadge from "../ui/StoreBadge.astro";
 import Logotype from "../brand/Logotype.astro";
+import { INSTALL_HREF } from "../../lib/store";
 
 interface NavLink {
   href: string;
@@ -34,6 +37,7 @@ const {
     { href: "#como-funciona", label: "Cómo funciona" },
     { href: "#beneficios", label: "Beneficios" },
     { href: "#plataforma", label: "La app" },
+    { href: "#conoce-mas", label: "Video" },
     { href: "#impacto", label: "Impacto" },
     { href: "#testimonios", label: "Testimonios" },
   ],
@@ -46,6 +50,8 @@ const withBase = (href: string) => (href.startsWith("#") ? `${anchorBase}${href}
 const homeHref = withBase(Astro.props.homeHref ?? "#inicio");
 const navLinks = links.map((link) => ({ ...link, href: withBase(link.href) }));
 const cta = withBase(ctaHref);
+const installHref = withBase(INSTALL_HREF);
+const folio = (index: number) => String(index + 1).padStart(2, "0");
 ---
 
 <header class="site-header" data-site-header>
@@ -54,11 +60,27 @@ const cta = withBase(ctaHref);
       <Logotype tone="ink" size={32} decorative />
     </a>
     <nav class="site-nav" id="menu-principal" aria-label="Navegación principal">
-      {navLinks.map((link) => <a href={link.href} class="site-nav__link">{link.label}</a>)}
+      <ul class="site-nav__list">
+        {
+          navLinks.map((link, index) => (
+            <li>
+              <a href={link.href} class="site-nav__link">
+                <span class="site-nav__num" aria-hidden="true">
+                  {folio(index)}
+                </span>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="site-nav__install">
+        <StoreBadge href={installHref} />
+        <p class="site-nav__note">Gratis · Android 8.0 o superior</p>
+      </div>
     </nav>
     <div class="site-header__actions">
       <Button href={cta} variant="primary" size="sm" class="site-header__cta">
-        <Icon name="download" size={18} />
         <span class="site-header__cta-long">{ctaLabel}</span>
         <span class="site-header__cta-short">{ctaShortLabel}</span>
       </Button>
@@ -71,6 +93,7 @@ const cta = withBase(ctaHref);
       >
         <span class="site-nav-toggle__bar" aria-hidden="true"></span>
         <span class="site-nav-toggle__bar" aria-hidden="true"></span>
+        <span class="site-nav-toggle__bar" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -79,9 +102,12 @@ const cta = withBase(ctaHref);
 <script>
   import { createMenu } from "../../scripts/menu-disclosure";
 
+  /** Scroll distance after which the bar gets its background and line. */
+  const PIN_AFTER = 80;
+
   const header = document.querySelector<HTMLElement>("[data-site-header]");
   if (header) {
-    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 40);
+    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > PIN_AFTER);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -94,6 +120,9 @@ const cta = withBase(ctaHref);
         onChange: (open) => {
           toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
           nav.classList.toggle("is-open", open);
+          header.classList.toggle("is-menu-open", open);
+          // The full-screen menu owns the viewport: freeze the page behind it.
+          document.documentElement.style.overflow = open ? "hidden" : "";
         },
       });
       nav.querySelectorAll("a").forEach((link) => {
@@ -109,75 +138,85 @@ const cta = withBase(ctaHref);
 
 <style>
   .site-header {
+    --header-h: 80px;
     position: fixed;
     inset: 0 0 auto 0;
     z-index: var(--z-header);
-    padding: 14px 24px 0;
-    pointer-events: none;
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 200ms ease-out,
+      border-color 200ms ease-out;
   }
 
+  .site-header.is-scrolled,
+  .site-header.is-menu-open {
+    background-color: var(--color-bg);
+    border-bottom-color: var(--color-border);
+  }
+
+  /* Same box as .hero__grid so the logo and CTA line up with the hero. */
   .site-header__inner {
     position: relative;
-    pointer-events: auto;
-    max-width: 1240px;
+    max-width: 1320px;
+    height: var(--header-h);
     margin: 0 auto;
-    padding: 6px 6px 6px 20px;
+    padding: 0 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    background: color-mix(in srgb, var(--color-card) 86%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
-    /* Concentric with the pill CTA inside: outer radius = inner radius + padding,
-       which for a pill button is a pill bar. Bulk is reduced via a slimmer
-       padding instead of a smaller radius. */
-    border-radius: var(--radius-full);
-    transition:
-      background-color var(--dur-base) var(--ease-standard),
-      box-shadow var(--dur-base) var(--ease-standard);
-  }
-
-  .site-header.is-scrolled .site-header__inner {
-    background: color-mix(in srgb, var(--color-card) 96%, transparent);
-    box-shadow: var(--shadow-lift);
+    gap: 24px;
   }
 
   .site-header__logo {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     /* Optical centering: the wordmark box reserves ascender/leaf space above the
        x-height, so its visual mass sits low. Lift it slightly. */
     translate: 0 -3px;
     border-radius: var(--radius-sm, 8px);
   }
 
-  /* === Pill links === */
-  .site-nav {
+  /* === Numbered links === */
+  .site-nav__list {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: clamp(16px, 2vw, 28px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .site-nav__link {
     display: inline-flex;
-    align-items: center;
-    padding: 10px 16px;
-    border-radius: var(--radius-full);
+    align-items: baseline;
+    gap: 6px;
+    padding: 8px 0;
     font-size: 0.93rem;
-    font-weight: 600;
-    color: var(--color-ink-2);
+    font-weight: 500;
+    color: var(--color-ink);
     text-decoration: none;
-    transition:
-      background-color var(--dur-fast) var(--ease-standard),
-      color var(--dur-fast) var(--ease-standard);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
+  }
+
+  .site-nav__num {
+    font-family: var(--font-display);
+    font-weight: var(--font-title-weight);
+    font-variation-settings: var(--font-display-axes-text);
+    font-size: 0.93rem;
+    color: var(--color-primary);
   }
 
   .site-nav__link:hover,
   .site-nav__link:focus-visible {
-    background: var(--color-mint);
-    color: var(--color-ink);
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-brand);
+  }
+
+  .site-nav__install {
+    display: none;
   }
 
   .site-header__actions {
@@ -191,7 +230,7 @@ const cta = withBase(ctaHref);
     padding: 10px 20px;
   }
 
-  /* === Hamburger: two bars that morph into an X === */
+  /* === Hamburger: three bars that morph into an X === */
   .site-nav-toggle {
     display: none;
     position: relative;
@@ -207,31 +246,40 @@ const cta = withBase(ctaHref);
 
   .site-nav-toggle__bar {
     position: absolute;
-    left: 13px;
-    width: 18px;
+    left: 15px;
+    width: 14px;
     height: 2px;
     border-radius: 2px;
     background: currentColor;
     transition:
       translate var(--dur-base) var(--ease-out),
-      rotate var(--dur-base) var(--ease-out);
+      rotate var(--dur-base) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-standard);
   }
 
-  .site-nav-toggle__bar:first-child {
-    top: 18px;
+  .site-nav-toggle__bar:nth-child(1) {
+    top: 16px;
   }
 
-  .site-nav-toggle__bar:last-child {
-    top: 24px;
+  .site-nav-toggle__bar:nth-child(2) {
+    top: 21px;
   }
 
-  .site-nav-toggle[aria-expanded="true"] .site-nav-toggle__bar:first-child {
-    translate: 0 3px;
+  .site-nav-toggle__bar:nth-child(3) {
+    top: 26px;
+  }
+
+  .site-nav-toggle[aria-expanded="true"] .site-nav-toggle__bar:nth-child(1) {
+    translate: 0 5px;
     rotate: 45deg;
   }
 
-  .site-nav-toggle[aria-expanded="true"] .site-nav-toggle__bar:last-child {
-    translate: 0 -3px;
+  .site-nav-toggle[aria-expanded="true"] .site-nav-toggle__bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .site-nav-toggle[aria-expanded="true"] .site-nav-toggle__bar:nth-child(3) {
+    translate: 0 -5px;
     rotate: -45deg;
   }
 
@@ -241,42 +289,84 @@ const cta = withBase(ctaHref);
   }
 
   @media (max-width: 1080px) {
+    .site-header__inner {
+      padding: 0 24px;
+    }
+
+    .site-nav__list {
+      gap: 14px;
+    }
+
     .site-nav__link {
-      padding: 10px 12px;
+      font-size: 0.86rem;
     }
   }
 
+  /* === Phone/tablet: full-screen menu under the bar === */
   @media (max-width: 860px) {
     .site-header {
-      padding: 10px 12px 0;
+      --header-h: 68px;
     }
 
     .site-header__inner {
-      padding: 6px 6px 6px 16px;
+      padding: 0 16px;
     }
 
     .site-nav {
       display: none;
-      position: absolute;
-      top: calc(100% + 10px);
-      left: 0;
-      right: 0;
+      position: fixed;
+      inset: var(--header-h) 0 0 0;
       flex-direction: column;
-      align-items: stretch;
-      gap: 4px;
-      padding: 12px;
-      background: var(--color-card);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lift);
+      justify-content: space-between;
+      gap: 32px;
+      padding: 24px 24px max(32px, env(safe-area-inset-bottom));
+      background: var(--color-bg);
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .site-nav.is-open {
       display: flex;
     }
 
+    .site-nav__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
     .site-nav__link {
-      padding: 12px 16px;
-      font-size: 1rem;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--color-border);
+      font-family: var(--font-display);
+      font-weight: var(--font-display-weight);
+      font-variation-settings: var(--font-display-axes);
+      font-size: clamp(1.9rem, 8.5vw, 2.4rem);
+      line-height: 1.1;
+      letter-spacing: var(--font-display-tracking);
+    }
+
+    .site-nav__num {
+      min-width: 2ch;
+      font-weight: inherit;
+      font-variation-settings: inherit;
+      font-size: inherit;
+    }
+
+    .site-nav__install {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .site-nav__note {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--color-ink-2);
     }
 
     .site-nav-toggle {
