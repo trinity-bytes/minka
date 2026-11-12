@@ -30,6 +30,8 @@ interface Props {
   homeHref?: string;
   /** Prefix for `#anchor` links when rendered outside the landing. */
   anchorBase?: string;
+  /** Show the landing page's scroll progress above the header. */
+  showProgress?: boolean;
 }
 
 const {
@@ -45,6 +47,7 @@ const {
   ctaLabel = "Descargar la app",
   ctaShortLabel = "Instalar",
   anchorBase = "",
+  showProgress = false,
 } = Astro.props;
 const withBase = (href: string) => (href.startsWith("#") ? `${anchorBase}${href}` : href);
 const homeHref = withBase(Astro.props.homeHref ?? "#inicio");
@@ -55,6 +58,7 @@ const folio = (index: number) => String(index + 1).padStart(2, "0");
 ---
 
 <header class="site-header" data-site-header>
+  {showProgress && <div class="site-header__progress" data-scroll-progress aria-hidden="true"></div>}
   <div class="site-header__inner">
     <a href={homeHref} class="site-header__logo" aria-label="Mink'a, inicio">
       <Logotype tone="ink" size={32} decorative />
@@ -101,6 +105,7 @@ const folio = (index: number) => String(index + 1).padStart(2, "0");
 
 <script>
   import { createMenu } from "../../scripts/menu-disclosure";
+  import { scrollProgress } from "../../scripts/lib/scroll-progress.js";
 
   /** Scroll distance after which the bar gets its background and line. */
   const PIN_AFTER = 80;
@@ -110,6 +115,22 @@ const folio = (index: number) => String(index + 1).padStart(2, "0");
     const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > PIN_AFTER);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+
+    const progress = header.querySelector<HTMLElement>("[data-scroll-progress]");
+    if (progress) {
+      let frame = 0;
+      const updateProgress = () => {
+        frame = 0;
+        const root = document.documentElement;
+        progress.style.transform = `scaleX(${scrollProgress(window.scrollY, root.scrollHeight, root.clientHeight)})`;
+      };
+      const scheduleProgress = () => {
+        if (!frame) frame = window.requestAnimationFrame(updateProgress);
+      };
+      updateProgress();
+      window.addEventListener("scroll", scheduleProgress, { passive: true });
+      window.addEventListener("resize", scheduleProgress);
+    }
 
     const toggle = header.querySelector<HTMLButtonElement>(".site-nav-toggle");
     const nav = header.querySelector<HTMLElement>(".site-nav");
@@ -153,6 +174,18 @@ const folio = (index: number) => String(index + 1).padStart(2, "0");
   .site-header.is-menu-open {
     background-color: var(--color-bg);
     border-bottom-color: var(--color-border);
+  }
+
+  .site-header__progress {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 1;
+    height: 5px;
+    background: linear-gradient(90deg, var(--color-brand) 0 72%, var(--color-lavender) 72% 90%, var(--color-lavender-ink) 90%);
+    box-shadow: 0 1px 0 var(--color-ink);
+    pointer-events: none;
+    transform: scaleX(0);
+    transform-origin: left center;
   }
 
   /* Same box as .hero__grid so the logo and CTA line up with the hero. */
